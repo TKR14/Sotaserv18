@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+acl_cnss_admin,cnss.bds_admin,model_cnss_bds,group_cnss_managers,1,1,1,1
+access_bds_wizard,bds.wizard,model_bds_wizard,group_cnss_managers,1,1,1,1

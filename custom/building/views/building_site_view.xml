@@ -1,0 +1,1488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="building_site_form_view">
+        <field name="name">building.site.form</field>
+        <field name="model">building.site</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Liste des Affaires" class="building_form" duplicate="false" share="false"
+                embed="false">
+                <field name="opening_visible" invisible="1" />
+
+                <header>
+                    <button name="%(action_create_document)d" string="Ouvrir"
+                        context="{'button':'ouvrir'}" class="oe_highlight" type="action"
+                        invisible="not opening_visible"
+                        groups="building.group_ods,building_plus.sotaserv_business_manager" />
+                    <button name="%(action_create_document)d" string="Arrêter"
+                        context="{'button':'arreter'}" class="oe_highlight" type="action"
+                        invisible="state in ('created', 'stopping', 'provisional_receipt', 'ultimately_reception', 'closing')"
+                        groups="building.group_ods" />
+                    <button name="%(action_create_document)d" string="Ré-ouvrir"
+                        context="{'button':'reouvrir'}" class="oe_highlight" type="action"
+                        invisible="state in ('created', 'open', 'provisional_receipt', 'ultimately_reception', 'closing')"
+                        groups="building.group_ods" />
+                    <button name="%(action_create_document)d" string="Réceptionner provisoirement"
+                        context="{'button':'provisoire'}" class="oe_highlight" type="action"
+                        invisible="state in ('created', 'stopping', 'provisional_receipt', 'ultimately_reception', 'closing')"
+                        groups="building.group_ods" />
+                    <button name="%(action_create_document)d" string="Réceptionner définitivement"
+                        context="{'button':'definitif'}" class="oe_highlight" type="action"
+                        invisible="state in ('created', 'open', 'stopping', 'ultimately_reception', 'closing')"
+                        groups="building.group_ods" />
+                    <button name="action_closing" string="Clôturer" class="oe_highlight"
+                        type="object"
+                        invisible="state in ('created', 'open', 'stopping', 'provisional_receipt', 'closing')"
+                        groups="building.group_ods" />
+                    <button name="action_create_advance_invoice"
+                        string="Créer Facture d'Avance"
+                        type="object"
+                        class="btn-primary"
+                        groups="building.group_create_site_advance_invoice"
+                        invisible="state not in ('open', 'created') or is_invisible_advance or prc_advance_deduction == 0" />
+                    <field name="is_invisible_advance" invisible="1" />
+                    <field name="prc_advance_deduction" invisible="1" />
+                    <field name="state" widget="statusbar" />
+                </header>
+
+                <sheet>
+                    <field name="has_building_order" invisible="1" />
+                    <field name="has_purchase_need" invisible="1" />
+
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="get_building_order" type="object"
+                            icon="fa-signal" invisible="not has_building_order">
+                            <span>BDP</span>
+                        </button>
+
+                        <button class="oe_stat_button" name="get_building_purchase_need" type="object"
+                            icon="fa-th-list" invisible="not has_purchase_need">
+                            <span>LDB</span>
+                        </button>
+                    </div>
+
+<!--                    <group colspan="4">-->
+<!--                        <group colspan="2">-->
+                            <group>
+                                <group>
+                                    <field name="number" readonly="1" />
+                                    <field name="code" required="1"/>
+                                    <field name="name" select="1" />
+                                    <field name="type_marche" select="1" readonly="state == 'open'" />
+                                    <field name="categ_marche_id" select="1" />
+                                    <field name="opp_id" readonly="0" />
+                                    <field name="partner_id" readonly="0" required="1" />
+                                    <field name="expected_revenue" class="oe_right"/>
+                                    <field name="last_attachment" invisible="1"/>
+                                    <field name="tax_id" options="{'no_open': True}"/>
+                                    <field name="create_date" readonly="1" invisible="1"/>
+                                    <field name="is_with_purchase_need" invisible="1" />
+                                </group>
+<!--                            </group>-->
+<!--                            <group>-->
+                                <group>
+                                    <field name="date_start" readonly="0" />
+                                    <field name="date_end" />
+                                    <field name="wsso_date" invisible="1"/>
+                                    <field name="final_deposit_date" invisible="1" />
+                                    <field name="guarantee_date" />
+                                    <field name="duration" readonly="1"/>
+                                    <field name="project_manager_id" />
+                                    <field name="site_manager_id" />
+                                    <field name="location_id" readonly="0" />
+                                    <field name="location_diesel_id" readonly="0" />
+                                    <field name="user_id" />
+                                    <field name="nature_service" />
+                                    <field name="description" string="Description"/>
+                                </group>
+                            </group>
+<!--                            </group>-->
+<!--                        </group>-->
+                        <!-- <group colspan="2" col="6">
+                                    <group string="Res. Matérields">
+                                        <field name="site_installation_amount" readonly="1"/>
+                                        <field name="mini_equipment_amount" readonly="1" />
+                                        <field name="equipment_amount" readonly="1" />
+                                        <field name="diesel_amount" readonly="1" />
+                                     </group>
+                                    <group string="Res. Humaines">
+                                        <field name="rh_supervisor_amount" readonly="1"/>
+                                        <field name="rh_executor_amount" readonly="1" />
+                                     </group>
+                                    <group string="Achats">
+                                         <field name="material_amount" readonly="1"/>
+                                         <field name="conso_amount" readonly="1" />
+                                        <field name="service_provision_amount" readonly="1"/>
+                                        <field name="subcontracting_amount" readonly="1" />
+                                     </group>
+                                     <group string="Tot. Charges">
+                                         <field name="indirect_load_amount" readonly="1" />
+                                         <field name="cost_amount" readonly="1" />
+                                    </group>
+                                    <group string="CA">
+                                         <field name="excuted_amount" readonly="1" />
+                                         <field name="invoiced_amount" readonly="1" />
+                                         <field name="diff_excuted_invoiced_amount" readonly="1" />
+                                    </group>
+                                </group> -->
+
+                        <!-- <group>
+                                    <group name="button_box">
+                                        <button type="object" name="order_tree_view" class="oe_button_box" icon="fa-usd">
+                                            <field string="Install. Chantier" name="site_installation_amount" widget="statinfo"/>
+                                        </button>
+                                        <button type="object" name="order_tree_view" class="oe_button_box" icon="fa-usd">
+                                            <field name="rh_supervisor_amount" widget="statinfo" string="Encadrement"/>
+                                        </button>
+                                        <button type="object" name="order_tree_view" class="oe_button_box" icon="fa-usd">
+                                            <field name="material_amount" widget="statinfo" string="Fournitures"/>
+                                        </button>
+                                        <button type="object" name="order_tree_view" class="oe_button_box" icon="fa-usd">
+                                            <field name="service_provision_amount" widget="statinfo" string="Pres. Services"/>
+                                        </button>
+                                        <button type="object" name="order_tree_view" class="oe_button_box" icon="fa-usd">
+                                            <field name="conso_amount" widget="statinfo" string="Consommables"/>
+                                        </button>
+                                        <button type="object" name="order_tree_view" class="oe_button_box" icon="fa-usd">
+                                            <field name="equipment_amount" widget="statinfo" string="Matériels"/>
+                                        </button>
+                                        <button type="object" name="order_tree_view" class="oe_button_box" icon="fa-usd">
+                                            <field name="mini_equipment_amount" widget="statinfo" string="Petit. Matériels"/>
+                                        </button>
+                                        <button type="object" name="order_tree_view" class="oe_button_box" icon="fa-usd">
+                                            <field name="diesel_amount" widget="statinfo" string="Gasoils"/>
+                                        </button>
+                                        <button type="object" name="order_tree_view" class="oe_button_box" icon="fa-usd">
+                                            <field name="rh_executor_amount" widget="statinfo" string="Mains d'oeuvre"/>
+                                        </button>
+                                        <button type="object" name="order_tree_view" class="oe_button_box" icon="fa-usd">
+                                            <field name="subcontracting_amount" widget="statinfo" string="Travaux"/>
+                                        </button>
+
+                                        <button type="object" name="order_tree_view" class="oe_button_box" icon="fa-usd">
+                                            <field name="excuted_amount" widget="statinfo" string="CA Exécuté"/>
+                                        </button>
+
+                                        <button type="object" name="order_tree_view" class="oe_button_box" icon="fa-usd">
+                                            <field name="invoiced_amount" widget="statinfo" string="CA Facturé"/>
+                                        </button>
+                                    </group>
+                                </group> -->
+
+                        <!-- </div> -->
+                        <!-- <div class="oe_right oe_section">
+                                <h1> <div class="oe_section_menu">Acompte</div></h1>
+                                <button icon="fa-plus" class="oe_section oe_stat_button" name="%(building_advance_inv_action)d"
+                        string="Acompte" type="action"  attrs="{'invisible':
+                        ['|','&amp;',('with_advance','=',False),('advance_invoiced','=',False),'&amp;',('with_advance','=',True),
+                        ('advance_invoiced','=',True)]}" />
+
+                                <br/><br/>
+                                <h1><div class="oe_section_menu">Affectations</div></h1>
+                                <button  icon="fa-plus" class="oe_section oe_stat_button" name="%(create_assigned_ressource_emp)d"
+                        string="Affecter Employée" type="action"  groups="" attrs="{'invisible':
+                        [('state','in',('stopping','provisional_receipt','ultimately_reception','closing'))]}"
+                        />
+                                <br/><br/>
+                                <button  icon="fa-plus" class="oe_section oe_stat_button"
+                        name="%(create_assigned_ressource_equipement)d" string="Affecter Matériel"
+                        type="action"  groups="" attrs="{'invisible':
+                        [('state','in',('stopping','provisional_receipt','ultimately_reception','closing'))]}"
+                        />
+                                <br/><br/>
+
+                                <br/><br/>
+                                <h1> <div class="oe_section_menu">Attachements</div></h1>
+                                <button icon="fa-plus"  class="oe_section oe_stat_button" name="%(create_attachment_action)d"
+                        string="Attachement Client" groups="" type="action" attrs="{'invisible':
+                        [('state','in',('draft','stopping','provisional_receipt','ultimately_reception','closing'))]}"
+                        />
+                                <br/><br/>
+                                <button icon="fa-plus"  class="oe_section oe_stat_button"
+                        name="%(create_supplier_attachment_action)d" string="Attachement
+                        Fournisseur" groups="" type="action" attrs="{'invisible':
+                        [('state','in',('draft','stopping','provisional_receipt','ultimately_reception','closing'))]}"
+                        />
+
+                                <br/><br/>
+                                <h1> <div class="oe_section_menu">Achats</div></h1>
+                                <button icon="fa-plus" class="oe_section oe_stat_button"
+                        name="%(building_request_purchase_action)d" string="Demande d'Achat"
+                        type="action" attrs="{'invisible':
+                        [('state','in',('stopping','provisional_receipt','ultimately_reception','closing'))]}"
+                        />
+                                <br/><br/>
+                                <button icon="fa-plus" class="oe_section oe_stat_button" name="%(building_request_price_action)d"
+                        string="Demande de prix" type="action" attrs="{'invisible':
+                        [('state','in',('stopping','provisional_receipt','ultimately_reception','closing'))]}"
+                        />
+
+                                <br/><br/>
+                                <h1><div class="oe_section_menu">Stocks</div></h1>
+                                <button  icon="fa-plus" class="oe_section oe_stat_button"
+                        name="%(action_view_create_internal_move_to_customer)d" string="Sortie de
+                        stock" type="action"  groups="" attrs="{'invisible':
+                        [('state','in',('draft','stopping','provisional_receipt','ultimately_reception','closing'))]}"
+                        />
+                                <br/><br/>
+
+                                <h1><div class="oe_section_menu">Contrats</div></h1>
+                                <button icon="fa-plus" class="oe_section oe_stat_button" groups=""
+                        name="%(building_subcontracting_create_action)d" string="Contrat de
+                        Sous-traitance" type="action" attrs="{'invisible':
+                        [('state','in',('draft','stopping','provisional_receipt','ultimately_reception','closing'))]}"
+                        />
+                                <br/><br/>
+                                <button icon="fa-plus" class="oe_section oe_stat_button" groups=""
+                        name="%(building_amendment_create_action)d" string="Avenant" type="action"
+                        attrs="{'invisible':
+                        [('state','in',('draft','stopping','provisional_receipt','ultimately_reception','closing'))]}"
+                        />
+                           </div> -->
+<!--                    </group>-->
+                    <notebook>
+                        <page string="Facturation">
+                            <group>
+                                <group>
+                                    <label for="prc_advance_deduction" style="white-space: nowrap;" string="Montant d'avance (HT)"/>
+                                    <field name="prc_advance_deduction" nolabel="1" readonly="is_invisible_advance" class="oe_right"/>
+                                    <label for="prc_gr" style="white-space: nowrap;"/>
+                                    <field name="prc_gr" nolabel="1" class="oe_right"/>
+                                    <label for="prc_all_risk_site_insurance" style="white-space: nowrap;" string="Montant Assurance TRC (HT)"/>
+                                    <field name="prc_all_risk_site_insurance" nolabel="1" class="oe_right"/>
+                                </group>
+                                <group>
+                                    <label for="prc_ten_year" style="white-space: nowrap;" string="Montant Assurance Décennale"/>
+                                    <field name="prc_ten_year" nolabel="1" class="oe_right"/>
+                                    <field name="is_opening_invisible" invisible="1"/>
+                                    <field name="vat_exempt" string="Exonération TVA"/>
+                                    <!-- <field name="penalite"/> -->
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Ouverture" invisible="is_opening_invisible">
+                            <group>
+                                <group>
+                                    <field name="amount_billed" class="oe_right"/>
+                                    <label for="advance_opening_amount" style="white-space: nowrap;" string="Montant d'avance (TTC)"/>
+                                    <field name="advance_opening_amount" nolabel="1" readonly="is_invisible_advance" class="oe_right"/>
+                                    <label for="rg_opening_prc" style="white-space: nowrap;" string="RG (TTC)"/>
+                                    <field name="rg_opening_prc" nolabel="1" class="oe_right"/>
+                                    <label for="malus_retention_opening_amount" style="white-space: nowrap;" string="Retenue de malfaçons (HT)"/>
+                                    <field name="malus_retention_opening_amount" nolabel="1" class="oe_right"/>
+                                </group>
+                                <group>
+                                    <label for="all_risk_site_insurance__opening_amount" style="white-space: nowrap;" string="Montant Assurance TRC (HT)"/>
+                                    <field name="all_risk_site_insurance__opening_amount" nolabel="1" class="oe_right"/>
+                                    <label for="ten_year__opening_amount" style="white-space: nowrap;" string="Montant Assurance Décennale (TTC)"/>
+                                    <field name="ten_year__opening_amount" nolabel="1" class="oe_right"/>
+                                    <field name="last_attachment_number" class="oe_right"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="building_site_tree_view">
+        <field name="name">building.site.tree</field>
+        <field name="model">building.site</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="List of Site">
+                <field name="name" optional="show" />
+                <field name="partner_id" optional="show" />
+                <field name="sold_amount" optional="show" />
+                <field name="invoiced_amount" optional="show" />
+                <field name="cashed_amount" optional="show" />
+                <field name="remains_covered_amount" optional="show" />
+                <field name="stored_amount" optional="show" />
+                <field name="total_ca" optional="show" />
+                <field name="total_ca_prc" optional="show" />
+                <field name="budget_amount" optional="show" />
+
+                <!-- <field name="number" optional="hide"/>
+                    <field name="name" optional="show"/>
+	                <field name="project_manager_id" optional="hide"/>
+	                <field name="site_manager_id" optional="hide"/>
+                    <field name="create_date" optional="hide"/>
+                    <field name="expected_revenue" optional="show"/>
+                    <field name="cashed_amount" optional="show"/>
+                    <field name="excuted_amount" optional="show"/>
+                    <field name="invoiced_amount" optional="show"/>
+                    <field name="diff_excuted_invoiced_amount" optional="hide"/>
+                    <field name="inventory_value" optional="hide"/>
+                    <field name="material_amount" optional="show"/>
+                    <field name="conso_amount" optional="show"/>
+                    <field name="diesel_amount" optional="show"/>
+                    <field name="other_amount" optional="show"/>
+                    <field name="total_dlm_amount" optional="show"/>
+                    <field name="dlm_amount" optional="show"/>
+                    <field name="rh_amount" optional="show"/>
+                    <field name="indirect_load_amount" optional="show"/>
+                    <field name="margin_amount" optional="show"/>
+                    <field name="state" optional="hide"/>
+                    <button name="details_site_report" type="object" string="détails"  class="oe_highlight"/> -->
+            </list>
+        </field>
+    </record>
+
+    <record id="building_site_filter" model="ir.ui.view">
+        <field name="name">building.site.select</field>
+        <field name="model">building.site</field>
+        <field name="arch" type="xml">
+            <search string="Search executed report ">
+                <field name="name" />
+                <field name="number" />
+                <separator />
+                <filter string="Brouillon " name="draft" domain="[('state', '=', 'draft')]" />
+                <filter string="Ouvert " name="open" domain="[('state', '=', 'open')]" />
+                <filter string="En arret " name="stopping" domain="[('state', '=', 'stopping')]" />
+                <filter string="Reception provisoire " name="provisional_receipt"
+                    domain="[('state', '=', 'provisional_receipt')]" />
+                <filter string="Reception definitif " name="draft"
+                    domain="[('state', '=', 'ultimately_reception')]" />
+                <filter string="Cloturé " name="closing" domain="[('state', '=', 'closing')]" />
+                <separator />
+                <group expand="0" string="Group By">
+                    <filter string="Status" name='filt_state' domain="[]"
+                        context="{'group_by':'state'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_building_site">
+        <field name="name">Affaires</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">building.site</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_with_purchase_need', '=', 1)]</field>
+        <field name="search_view_id" ref="building_site_filter" />
+        <field name="view_id" ref="building_site_tree_view" />
+    </record>
+
+    <record model="ir.ui.view" id="building_site_without_need_form_view">
+        <field name="name">building.site.without.need.form</field>
+        <field name="model">building.site</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Liste des Affaires" class="building_form" duplicate="false" share="false"
+                embed="false">
+
+                <header>
+                    <field name="state" invisible="1" />
+                </header>
+
+                <sheet>
+                    <group colspan="4">
+                        <group colspan="2">
+                            <group>
+                                <group>
+                                    <field name="number" readonly="1" />
+                                    <field name="name" select="1"
+                                        readonly="state == 'open'" />
+                                    <field name="is_with_purchase_need" invisible="0"
+                                        readonly="state == 'open'" />
+                                </group>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="location_id" readonly="state == 'open'" />
+                                    <field name="location_diesel_id" readonly="0" invisible="1" />
+                                </group>
+                            </group>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" ame="note_tab">
+                            <field name="description" nolabel="1" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="building_site_without_need_tree_view">
+        <field name="name">building.site.without.need.tree</field>
+        <field name="model">building.site</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="List of Site">
+                <field name="number" optional="hide" />
+                <field name="name" optional="show" />
+                <button name="details_site_report" type="object" string="détails"
+                    class="oe_highlight" />
+            </list>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="action_building_site_without_need">
+        <field name="name">Affaires Sans Liste des besoins</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">building.site</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_with_purchase_need', '=', 0)]</field>
+        <field name="view_ids"
+            eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.building_site_without_need_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building.building_site_without_need_form_view')})]" />
+        <field name="search_view_id" ref="building_site_filter" />
+        <field name="view_id" ref="building_site_without_need_tree_view" />
+    </record>
+
+    <record id="building_executed_form" model="ir.ui.view">
+        <field name="name">building.executed.form</field>
+        <field name="model">building.executed</field>
+        <field name="arch" type="xml">
+            <form string="Excution">
+                <header>
+                    <button name="action_open" type="object" invisible="state != 'draft'" string="Ouvrir"
+                        class="oe_highlight" />
+                    <button name="action_closing" type="object" invisible="state != 'open'" string="Cloturer"
+                        class="oe_highlight" />
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <!-- <group>
+                            <button name="actualize_executed_amounts_daily" type="object" string="Actualiser les chiffres"
+                    class="oe_highlight"/>
+                        </group> -->
+                    <group colspan="4">
+                        <group col="2">
+                            <field name="name" readonly="1" />
+                            <field name="opp_id" readonly="state == 'closing'"
+                                required="0" string="Marché" />
+                            <!-- <field name="site_id" domain="[('opp_id', '=', opp_id)]"
+                            readonly="state == 'closing'" required="1"/> -->
+                            <field name="site_id" domain="[('state', '!=', 'draft')]"
+                                readonly="state == 'closing'" required="1" />
+                            <field name="order_id" domain="[('site_id', '=', site_id)]"
+                                readonly="state == 'closing'" required="1" />
+                        </group>
+                        <group col="2">
+                            <field name="date_start" readonly="state == 'open'"
+                                required="1" />
+                            <field name="date_end" readonly="state == 'open'"
+                                required="1" />
+                            <field name="day_end_month" invisible="1" />
+                        </group>
+                        <!-- <group col="2">
+                                <field name="forcast_amount_business" readonly="1"/>
+                                <field name="previous_day_amount_business" readonly="1"/>
+                                <field name="executed_amount_business" readonly="1"/>
+                                <field name="cumul_executed_amount_business" readonly="1"/>
+                                <field name="total_amount_site_install" readonly="1"/>
+                                <field name="total_amount_ressource" readonly="1"/>
+                                <field name="total_amount_equipment" readonly="1"/>
+                                <field name="total_amount_mini_equipment" readonly="1"/>
+                                <field name="total_amount_diesel_consumption" readonly="1"/>
+                                <field name="total_amount_executor_ressource" readonly="1"/>
+                                <field name="amount_consumables" readonly="1"/>
+                                <field name="amount_supply_stock" readonly="1"/>
+                                <field name="amount_indirect_load" readonly="1"/>
+                                <field name="total_amount_vehicule" readonly="1"/>
+                                <field name="day_end_month" invisible="1"/>
+                            </group>
+                            <group col="2">
+                                <field name="amount_result_executed" readonly="1"/>
+                                <field name="prc_result_executed" readonly="1"/>
+                                <field name="amount_forcast_result" readonly="1"/>
+                                <field name="prc_result_forcast" readonly="1"/>
+                                <field name="prc_margin_budget" readonly="1"/>
+                            </group> -->
+                    </group>
+                    <notebook>
+                        <page string="Prévisionnels" ame="need_forcasted_tab">
+                            <field name="line_forcasted_ids"
+                                readonly="state in ('open', 'closing')">
+                                <list string="Lignes BP" editable="bottom">
+                                    <!-- <control>
+                                            <create name="add_price_control" string="Ajouter un N° de Prix"/>
+                                            <create name="add_section_control" string="Ajouter une Section" context="{'default_display_type':
+                                    'line_section'}"/>
+                                            <create name="add_note_control" string="Ajouter une Description" context="{'default_display_type':
+                                    'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle"/> -->
+                                    <field name="display_type" invisible="1" />
+                                    <field name="date" invisible="1" />
+                                    <field name="price_id"
+                                        domain="[('order_id', '=', parent.order_id)]" />
+                                    <!-- <field name="name" widget="section_and_note_text"/> -->
+                                    <field name="name" />
+                                    <field name="uom_id" />
+                                    <field name="price_unit" />
+                                    <field name="quantity1" />
+                                    <field name="quantity2" />
+                                    <field name="quantity3" />
+                                    <field name="quantity4" />
+                                    <field name="quantity5" />
+                                    <field name="quantity6" />
+                                    <field name="quantity7" />
+                                    <field name="quantity8" />
+                                    <field name="quantity9" />
+                                    <field name="quantity10" />
+                                    <field name="quantity11" />
+                                    <field name="quantity12" />
+                                    <field name="quantity13" />
+                                    <field name="quantity14" />
+                                    <field name="quantity15" />
+                                    <field name="quantity16" />
+                                    <field name="quantity17" />
+                                    <field name="quantity18" />
+                                    <field name="quantity19" />
+                                    <field name="quantity20" />
+                                    <field name="quantity21" />
+                                    <field name="quantity22" />
+                                    <field name="quantity23" />
+                                    <field name="quantity24" />
+                                    <field name="quantity25" />
+                                    <field name="quantity26" />
+                                    <field name="quantity27" />
+                                    <field name="quantity28" />
+                                    <field name="quantity29"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="quantity30"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="quantity31"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="amount_total" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Réalisations" ame="need_tab">
+                            <field name="line_ids"
+                                readonly="state in ('draft', 'closing')">
+                                <list string="Lignes BP" editable="bottom">
+                                    <!-- <control>
+                                            <create name="add_price_control" string="Ajouter un N° de Prix"/>
+                                            <create name="add_section_control" string="Ajouter une Section" context="{'default_display_type':
+                                    'line_section'}"/>
+                                            <create name="add_note_control" string="Ajouter une Description" context="{'default_display_type':
+                                    'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle"/> -->
+                                    <field name="display_type" invisible="1" />
+                                    <field name="date" invisible="1" />
+                                    <field name="price_id"
+                                        domain="[('order_id', '=', parent.order_id)]" />
+                                    <!-- <field name="name" widget="section_and_note_text"/> -->
+                                    <field name="name" />
+                                    <field name="uom_id" />
+                                    <field name="price_unit" />
+                                    <field name="quantity1" />
+                                    <field name="quantity2" />
+                                    <field name="quantity3" />
+                                    <field name="quantity4" />
+                                    <field name="quantity5" />
+                                    <field name="quantity6" />
+                                    <field name="quantity7" />
+                                    <field name="quantity8" />
+                                    <field name="quantity9" />
+                                    <field name="quantity10" />
+                                    <field name="quantity11" />
+                                    <field name="quantity12" />
+                                    <field name="quantity13" />
+                                    <field name="quantity14" />
+                                    <field name="quantity15" />
+                                    <field name="quantity16" />
+                                    <field name="quantity17" />
+                                    <field name="quantity18" />
+                                    <field name="quantity19" />
+                                    <field name="quantity20" />
+                                    <field name="quantity21" />
+                                    <field name="quantity22" />
+                                    <field name="quantity23" />
+                                    <field name="quantity24" />
+                                    <field name="quantity25" />
+                                    <field name="quantity26" />
+                                    <field name="quantity27" />
+                                    <field name="quantity28" />
+                                    <field name="quantity29"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="quantity30"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="quantity31"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="amount_total" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Installation de chantier" ame="site_install_tab">
+                            <field name="assigned_equipment_site_install_cost_ids"
+                                readonly="state in ('draft', 'closing')">
+                                <list string="equipement install" editable="bottom">
+                                    <!-- <control>
+                                            <create name="add_price_control" string="Ajouter une affectation"/>
+                                            <create name="add_section_control" string="Ajouter une Section" context="{'default_display_type':
+                                    'line_section'}"/>
+                                            <create name="add_note_control" string="Ajouter une Description" context="{'default_display_type':
+                                    'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle"/> -->
+                                    <field name="categ_execution" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="assignment_id" />
+                                    <!-- <field name="name" widget="section_and_note_text"/> -->
+                                    <field name="name" />
+                                    <field name="uom_id" />
+                                    <field name="cost" />
+                                    <field name="quantity" readonly="1" />
+                                    <field name="quantity1" />
+                                    <field name="quantity2" />
+                                    <field name="quantity3" />
+                                    <field name="quantity4" />
+                                    <field name="quantity5" />
+                                    <field name="quantity6" />
+                                    <field name="quantity7" />
+                                    <field name="quantity8" />
+                                    <field name="quantity9" />
+                                    <field name="quantity10" />
+                                    <field name="quantity11" />
+                                    <field name="quantity12" />
+                                    <field name="quantity13" />
+                                    <field name="quantity14" />
+                                    <field name="quantity15" />
+                                    <field name="quantity16" />
+                                    <field name="quantity17" />
+                                    <field name="quantity18" />
+                                    <field name="quantity19" />
+                                    <field name="quantity20" />
+                                    <field name="quantity21" />
+                                    <field name="quantity22" />
+                                    <field name="quantity23" />
+                                    <field name="quantity24" />
+                                    <field name="quantity25" />
+                                    <field name="quantity26" />
+                                    <field name="quantity27" />
+                                    <field name="quantity28" />
+                                    <field name="quantity29"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="quantity30"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="quantity31"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="total_cost_equipment" />
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Encadrement" ame="ressource_supervisor_tab">
+                            <field name="assigned_ressource_cost_ids"
+                                readonly="state in ('draft', 'closing')">
+                                <list string="ressources" editable="bottom">
+                                    <!-- <control>
+                                            <create name="add_price_control" string="Ajouter une affectation"/>
+                                            <create name="add_section_control" string="Ajouter une Section" context="{'default_display_type':
+                                    'line_section'}"/>
+                                            <create name="add_note_control" string="Ajouter une Description" context="{'default_display_type':
+                                    'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle"/> -->
+                                    <field name="categ_execution" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="assignment_id" />
+                                    <field name="attendance_id" invisible="1" />
+                                    <!-- <field name="name" widget="section_and_note_text"/> -->
+                                    <field name="name" />
+                                    <field name="name" />
+                                    <field name="uom_id" />
+                                    <field name="cost" />
+                                    <field name="quantity" readonly="1" />
+                                    <field name="quantity1" />
+                                    <field name="quantity2" />
+                                    <field name="quantity3" />
+                                    <field name="quantity4" />
+                                    <field name="quantity5" />
+                                    <field name="quantity6" />
+                                    <field name="quantity7" />
+                                    <field name="quantity8" />
+                                    <field name="quantity9" />
+                                    <field name="quantity10" />
+                                    <field name="quantity11" />
+                                    <field name="quantity12" />
+                                    <field name="quantity13" />
+                                    <field name="quantity14" />
+                                    <field name="quantity15" />
+                                    <field name="quantity16" />
+                                    <field name="quantity17" />
+                                    <field name="quantity18" />
+                                    <field name="quantity19" />
+                                    <field name="quantity20" />
+                                    <field name="quantity21" />
+                                    <field name="quantity22" />
+                                    <field name="quantity23" />
+                                    <field name="quantity24" />
+                                    <field name="quantity25" />
+                                    <field name="quantity26" />
+                                    <field name="quantity27" />
+                                    <field name="quantity28" />
+                                    <field name="quantity29"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="quantity30"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="quantity31"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="total_cost_ressource" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Matériels" ame="equipment_tab">
+                            <field name="assigned_equipment_cost_ids"
+                                readonly="state in ('draft', 'closing')">
+                                <list string="equipement" editable="bottom">
+                                    <!-- <control>
+                                            <create name="add_price_control" string="Ajouter une affectation"/>
+                                            <create name="add_section_control" string="Ajouter une Section" context="{'default_display_type':
+                                    'line_section'}"/>
+                                            <create name="add_note_control" string="Ajouter une Description" context="{'default_display_type':
+                                    'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle"/> -->
+                                    <field name="categ_execution" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="assignment_id" />
+                                    <!-- <field name="name" widget="section_and_note_text"/> -->
+                                    <field name="name" />
+                                    <field name="uom_id" />
+                                    <field name="cost" />
+                                    <field name="diesel_consumption" />
+                                    <field name="quantity" readonly="1" />
+                                    <field name="quantity1" />
+                                    <field name="quantity2" />
+                                    <field name="quantity3" />
+                                    <field name="quantity4" />
+                                    <field name="quantity5" />
+                                    <field name="quantity6" />
+                                    <field name="quantity7" />
+                                    <field name="quantity8" />
+                                    <field name="quantity9" />
+                                    <field name="quantity10" />
+                                    <field name="quantity11" />
+                                    <field name="quantity12" />
+                                    <field name="quantity13" />
+                                    <field name="quantity14" />
+                                    <field name="quantity15" />
+                                    <field name="quantity16" />
+                                    <field name="quantity17" />
+                                    <field name="quantity18" />
+                                    <field name="quantity19" />
+                                    <field name="quantity20" />
+                                    <field name="quantity21" />
+                                    <field name="quantity22" />
+                                    <field name="quantity23" />
+                                    <field name="quantity24" />
+                                    <field name="quantity25" />
+                                    <field name="quantity26" />
+                                    <field name="quantity27" />
+                                    <field name="quantity28" />
+                                    <field name="quantity29"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="quantity30"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="quantity31"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="total_cost_equipment" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Gasoil" ame="equipment_diesel_tab">
+                            <field name="assigned_diesel_cost_ids"
+                                readonly="state in ('draft', 'closing')">
+                                <list string="diesel" editable="bottom">
+                                    <!-- <control>
+                                            <create name="add_price_control" string="Ajouter une affectation"/>
+                                            <create name="add_section_control" string="Ajouter une Section" context="{'default_display_type':
+                                    'line_section'}"/>
+                                            <create name="add_note_control" string="Ajouter une Description" context="{'default_display_type':
+                                    'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle"/> -->
+                                    <field name="display_type" invisible="1" />
+                                    <field name="assignment_id" />
+                                    <!-- <field name="name" widget="section_and_note_text"/> -->
+                                    <field name="name" />
+                                    <field name="uom_id" />
+                                    <field name="cost" />
+                                    <field name="quantity" readonly="1" />
+                                    <field name="quantity1" />
+                                    <field name="quantity2" />
+                                    <field name="quantity3" />
+                                    <field name="quantity4" />
+                                    <field name="quantity5" />
+                                    <field name="quantity6" />
+                                    <field name="quantity7" />
+                                    <field name="quantity8" />
+                                    <field name="quantity9" />
+                                    <field name="quantity10" />
+                                    <field name="quantity11" />
+                                    <field name="quantity12" />
+                                    <field name="quantity13" />
+                                    <field name="quantity14" />
+                                    <field name="quantity15" />
+                                    <field name="quantity16" />
+                                    <field name="quantity17" />
+                                    <field name="quantity18" />
+                                    <field name="quantity19" />
+                                    <field name="quantity20" />
+                                    <field name="quantity21" />
+                                    <field name="quantity22" />
+                                    <field name="quantity23" />
+                                    <field name="quantity24" />
+                                    <field name="quantity25" />
+                                    <field name="quantity26" />
+                                    <field name="quantity27" />
+                                    <field name="quantity28" />
+                                    <field name="quantity29"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="quantity30"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="quantity31"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="amount_total" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Petit Matériels" ame="mini_equipment_tab">
+                            <field name="assigned_mini_equipment_cost_ids"
+                                readonly="state in ('draft', 'closing')">
+                                <list string="equipement" editable="bottom">
+                                    <!-- <control>
+                                            <create name="add_price_control" string="Ajouter une affectation"/>
+                                            <create name="add_section_control" string="Ajouter une Section" context="{'default_display_type':
+                                    'line_section'}"/>
+                                            <create name="add_note_control" string="Ajouter une Description" context="{'default_display_type':
+                                    'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle"/> -->
+                                    <field name="categ_execution" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="assignment_id" />
+                                    <!-- <field name="name" widget="section_and_note_text"/> -->
+                                    <field name="name" />
+                                    <field name="uom_id" />
+                                    <field name="cost" />
+                                    <field name="diesel_consumption" />
+                                    <field name="quantity" readonly="1" />
+                                    <field name="quantity1" />
+                                    <field name="quantity2" />
+                                    <field name="quantity3" />
+                                    <field name="quantity4" />
+                                    <field name="quantity5" />
+                                    <field name="quantity6" />
+                                    <field name="quantity7" />
+                                    <field name="quantity8" />
+                                    <field name="quantity9" />
+                                    <field name="quantity10" />
+                                    <field name="quantity11" />
+                                    <field name="quantity12" />
+                                    <field name="quantity13" />
+                                    <field name="quantity14" />
+                                    <field name="quantity15" />
+                                    <field name="quantity16" />
+                                    <field name="quantity17" />
+                                    <field name="quantity18" />
+                                    <field name="quantity19" />
+                                    <field name="quantity20" />
+                                    <field name="quantity21" />
+                                    <field name="quantity22" />
+                                    <field name="quantity23" />
+                                    <field name="quantity24" />
+                                    <field name="quantity25" />
+                                    <field name="quantity26" />
+                                    <field name="quantity27" />
+                                    <field name="quantity28" />
+                                    <field name="quantity29"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="quantity30"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="quantity31"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="total_cost_equipment" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Main-d’œuvres" ame="mini_ressource_executor_tab">
+                            <field name="assigned_ressource_executor_cost_ids"
+                                readonly="state in ('draft', 'closing')">
+                                <list string="equipement" editable="bottom">
+                                    <!-- <control>
+                                            <create name="add_price_control" string="Ajouter une affectation"/>
+                                            <create name="add_section_control" string="Ajouter une Section" context="{'default_display_type':
+                                    'line_section'}"/>
+                                            <create name="add_note_control" string="Ajouter une Description" context="{'default_display_type':
+                                    'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle"/> -->
+                                    <field name="categ_execution" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="attendance_id" invisible="1" />
+                                    <field name="assignment_id" />
+                                    <!-- <field name="name" widget="section_and_note_text"/> -->
+                                    <field name="name" />
+                                    <field name="uom_id" />
+                                    <field name="cost" />
+                                    <field name="quantity" readonly="1" />
+                                    <field name="quantity1" />
+                                    <field name="quantity2" />
+                                    <field name="quantity3" />
+                                    <field name="quantity4" />
+                                    <field name="quantity5" />
+                                    <field name="quantity6" />
+                                    <field name="quantity7" />
+                                    <field name="quantity8" />
+                                    <field name="quantity9" />
+                                    <field name="quantity10" />
+                                    <field name="quantity11" />
+                                    <field name="quantity12" />
+                                    <field name="quantity13" />
+                                    <field name="quantity14" />
+                                    <field name="quantity15" />
+                                    <field name="quantity16" />
+                                    <field name="quantity17" />
+                                    <field name="quantity18" />
+                                    <field name="quantity19" />
+                                    <field name="quantity20" />
+                                    <field name="quantity21" />
+                                    <field name="quantity22" />
+                                    <field name="quantity23" />
+                                    <field name="quantity24" />
+                                    <field name="quantity25" />
+                                    <field name="quantity26" />
+                                    <field name="quantity27" />
+                                    <field name="quantity28" />
+                                    <field name="quantity29"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="quantity30"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="quantity31"
+                                        column_invisible="parent.day_end_month in (28, 29, 30)" />
+                                    <field name="total_cost_ressource" />
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- <page string="Véhicules" ame="vehicule_tab">
+                                <field name="assigned_vehicule_cost_ids" widget="section_and_note_one2many" attrs="{'readonly':
+                        [('state','in',('closing'))]}">
+                                    <list string="vehicule" editable="bottom">
+                                        <control>
+                                            <create name="add_price_control" string="Ajouter une affectation"/>
+                                            <create name="add_section_control" string="Ajouter une Section" context="{'default_display_type':
+                        'line_section'}"/>
+                                            <create name="add_note_control" string="Ajouter une Description" context="{'default_display_type':
+                        'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="assignment_id"/>
+                                        <field name="name" widget="section_and_note_text"/>
+                                        <field name="uom_id"/>
+                                        <field name="cost"/>
+                                        <field name="quantity" readonly="1"/>
+                                        <field name="quantity1"/>
+                                        <field name="quantity2"/>
+                                        <field name="quantity3"/>
+                                        <field name="quantity4"/>
+                                        <field name="quantity5"/>
+                                        <field name="quantity6"/>
+                                        <field name="quantity7"/>
+                                        <field name="quantity8"/>
+                                        <field name="quantity9"/>
+                                        <field name="quantity10"/>
+                                        <field name="quantity11"/>
+                                        <field name="quantity12"/>
+                                        <field name="quantity13"/>
+                                        <field name="quantity14"/>
+                                        <field name="quantity15"/>
+                                        <field name="quantity16"/>
+                                        <field name="quantity17"/>
+                                        <field name="quantity18"/>
+                                        <field name="quantity19"/>
+                                        <field name="quantity20"/>
+                                        <field name="quantity21"/>
+                                        <field name="quantity22"/>
+                                        <field name="quantity23"/>
+                                        <field name="quantity24"/>
+                                        <field name="quantity25"/>
+                                        <field name="quantity26"/>
+                                        <field name="quantity27"/>
+                                        <field name="quantity28"/>
+                                        <field name="quantity29" attrs="{'column_invisible': [('parent.day_end_month','in', (28, 29,
+                        30))]}"/>
+                                        <field name="quantity30" attrs="{'column_invisible': [('parent.day_end_month','in', (28, 29,
+                        30))]}"/>
+                                        <field name="quantity31" attrs="{'column_invisible': [('parent.day_end_month','in', (28, 29,
+                        30))]}"/>
+                                        <field name="total_cost_vehicule"/>
+                                    </list>
+                                </field>
+                            </page> -->
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="building_executed_tree" model="ir.ui.view">
+        <field name="name">building.executed.tree</field>
+        <field name="model">building.executed</field>
+        <field name="arch" type="xml">
+            <list string="Excution">
+                <field name="name" optional="show" />
+                <field name="opp_id" optional="hide" />
+                <field name="site_id" optional="show" />
+                <field name="date_start" optional="hide" />
+                <field name="date_end" optional="hide" />
+                <field name="forcast_amount_business" optional="show" string="CA Prév" />
+                <field name="executed_amount_business" optional="show" />
+                <field name="total_amount_site_install" optional="show" string="Install. Chantier" />
+                <field name="total_amount_equipment" optional="show" />
+                <field name="total_amount_rental_equipment" optional="show" />
+                <field name="total_amount_mini_equipment" optional="show" />
+                <field name="total_amount_ressource" optional="show" string="MO" />
+                <field name="total_amount_executor_ressource" optional="show" />
+                <field name="amount_consumables" optional="show" string="Consommables" />
+                <field name="amount_supply_stock" optional="show" string="Fournitures" />
+                <field name="amount_forcast_result" optional="show" string="Res. Exploitation Prév" />
+                <field name="prc_result_forcast" optional="hide" />
+                <field name="amount_result_executed" optional="show" string="Res. Exploitation" />
+                <field name="prc_result_executed" optional="hide" />
+                <field name="state" optional="hide" />
+                <button name="actualize_executed_amounts_daily" type="object" string="details"
+                    class="oe_highlight" />
+            </list>
+        </field>
+    </record>
+
+    <record id="building_executed_filter" model="ir.ui.view">
+        <field name="name">building.executed.select</field>
+        <field name="model">building.executed</field>
+        <field name="arch" type="xml">
+            <search string="Search building need">
+                <field name="opp_id" />
+                <field name="site_id" />
+                <separator />
+                <group expand="0" string="Group By">
+                    <filter string="AO" name='filt_opp' domain="[]" context="{'group_by':'opp_id'}" />
+                    <filter string="Affaire" name='filt_site' domain="[]"
+                        context="{'group_by':'site_id'}" />
+                    <filter string="Status" name='filt_state' domain="[]"
+                        context="{'group_by':'state'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="building_executed_action" model="ir.actions.act_window">
+        <field name="name">Suivi des réalisations</field>
+        <field name="res_model">building.executed</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="building_executed_filter" />
+        <field name="context">{'search_default_filt_site':1}</field>
+    </record>
+
+    <record id="building_assignment_form" model="ir.ui.view">
+        <field name="name">building.assignment.form</field>
+        <field name="model">building.assignment</field>
+        <field name="arch" type="xml">
+            <form string="assignment">
+                <sheet>
+                    <group colspan="4">
+                        <group col="2">
+                            <field name="name" readonly="1" />
+                            <field name="site_id" readonly="1" />
+                        </group>
+                        <!-- <group col="2">
+                                <field name="provisional_amount_business" readonly="1"/>
+                                <field name="executed_amount_business" readonly="1"/>
+                                <field name="total_amount_ressource" readonly="1"/>
+                                <field name="total_amount_equipment" readonly="1"/>
+                                <field name="total_amount_vehicule" readonly="1"/>
+                                <field name="day_end_month" invisible="1"/>
+                            </group> -->
+                    </group>
+                    <notebook>
+                        <page string="Installation de chantier" ame="need_site_installation_tab">
+                            <field name="site_installation_ids">
+                                <list string="affectations" editable="bottom">
+                                    <field name="equipment_id" />
+                                    <field name="name" />
+                                    <field name="quantity" invisible='1' />
+                                    <field name="uom_id" />
+                                    <field name="assignment_time" />
+                                    <!-- <field name="assignment_amount"/> -->
+                                    <!-- <field name="duree"/> -->
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Encadrement" ame="need_rh_supervisor_tab">
+                            <field name="ressource_humain_supervisor_ids">
+                                <list string="affectations" editable="bottom">
+                                    <field name="employee_id" />
+                                    <field name="name" />
+                                    <field name="uom_id" />
+                                    <field name="assignment_time" />
+                                    <!-- <field name="assignment_amount"/> -->
+                                    <!-- <field name="duree"/>
+                                        <field name="duree_j"/>
+                                        <field name="duree_h"/> -->
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Matériels" ame="need_equipment_tab">
+                            <field name="equipment_ids">
+                                <list string="affectations" editable="bottom">
+                                    <field name="vehicle_id" />
+                                    <field name="code" />
+                                    <field name="uom_id" />
+                                    <field name="consumption" />
+                                    <!-- <field name="duree"/>
+                                        <field name="duree_j"/>
+                                        <field name="duree_h"/> -->
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Petit Matériels" ame="need_mini_equipment_tab">
+                            <field name="mini_equipment_ids">
+                                <list string="affectations" editable="bottom">
+                                    <field name="equipment_id" />
+                                    <field name="name" />
+                                    <field name="uom_id" />
+                                    <field name="assignment_time" />
+                                    <!-- <field name="assignment_amount"/> -->
+                                    <!-- <field name="consumption"/> -->
+                                    <!-- <field name="duree"/>
+                                        <field name="duree_j"/>
+                                        <field name="duree_h"/> -->
+                                </list>
+                            </field>
+                        </page>
+                        <!-- <page string="Gasoil" ame="need_diesel_consumption_tab">
+                                <field name="diesel_consumption_ids">
+                                    <list string="affectations" editable="bottom">
+                                        <field name="equipment_id"/>
+                                        <field name="name"/>
+                                        <field name="uom_id"/>
+                                        <field name="duree"/>
+                                        <field name="duree_j"/>
+                                        <field name="duree_h"/>
+                                        <field name="consumption"/>
+                                    </list>
+                                </field>
+                            </page> -->
+                        <page string="Main-d’œuvres" ame="need_rh_executor_tab">
+                            <field name="ressource_humain_executor_ids">
+                                <list string="affectations" editable="bottom">
+                                    <field name="employee_id" />
+                                    <field name="name" />
+                                    <field name="uom_id" />
+                                    <field name="assignment_time" />
+                                    <!-- <field name="assignment_amount"/> -->
+                                    <!-- <field name="duree"/>
+                                        <field name="duree_j"/>
+                                        <field name="duree_h"/> -->
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="building_assignment_master_tree" model="ir.ui.view">
+        <field name="name">building.assignment.tree</field>
+        <field name="model">building.assignment</field>
+        <field name="arch" type="xml">
+            <list string="Affectation">
+                <field name="name" />
+                <field name="site_id" />
+            </list>
+        </field>
+    </record>
+
+    <record id="building_assignment_filter" model="ir.ui.view">
+        <field name="name">building.assignment.select</field>
+        <field name="model">building.assignment</field>
+        <field name="arch" type="xml">
+            <search string="Search assignment">
+                <field name="site_id" />
+                <field name="name" />
+                <separator />
+                <group expand="0" string="Group By">
+                    <filter string="Affaire" name='filt_site' domain="[]"
+                        context="{'group_by':'site_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="building_assignment_action" model="ir.actions.act_window">
+        <field name="name">Affectations</field>
+        <field name="res_model">building.assignment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="building_assignment_filter" />
+        <field name="context">{'search_default_filt_site':1,'search_default_open': 1}</field>
+    </record>
+
+    <record id="building_assignment_emp_tree" model="ir.ui.view">
+        <field name="name">building.assignment.line.emp.tree</field>
+        <field name="model">building.assignment.line</field>
+        <field name="arch" type="xml">
+            <list string="Affectation">
+                <field name="site_id" />
+                <field name="employee_id" />
+                <field name="code" string="Matricule" />
+                <field name="uom_id" />
+                <field name="cost" />
+                <field name="date_start" />
+                <field name="date_end" />
+                <field name="assignment_time" />
+                <!-- <field name="assignment_amount"/> -->
+                <field name="state" />
+                <field name="type_assignment" invisible="1" />
+                <button name="%(assigned_close_act)d" type="action" invisible="state != 'open'"
+                    string="Rendre Disponible" class="oe_highlight" />
+                <button name="action_canceled" type="object" invisible="state != 'open'" string="Annuler"
+                    class="oe_highlight" />
+            </list>
+        </field>
+    </record>
+
+    <record id="building_assignment_equipment_tree" model="ir.ui.view">
+        <field name="name">building.assignment.line.equip.tree</field>
+        <field name="model">building.assignment.line</field>
+        <field name="arch" type="xml">
+            <list string="Affectation">
+                <field name="site_id" />
+                <field name="equipment_id" />
+                <field name="code" string="Code" />
+                <field name="uom_id" />
+                <field name="cost" />
+                <field name="date_start" />
+                <field name="date_end" />
+                <field name="assignment_time" />
+                <field name="state" />
+                <field name="type_assignment" invisible="1" />
+                <button name="%(assigned_close_act)d" type="action" invisible="state != 'open'"
+                    string="Rendre Disponible" class="oe_highlight" />
+                <button name="action_canceled" type="object" invisible="state != 'open'" string="Annuler"
+                    class="oe_highlight" />
+            </list>
+        </field>
+    </record>
+
+    <record id="assigned_view_form_confirm_cancel" model="ir.ui.view">
+        <field name="name">assigned.view.form.confirm.cancel</field>
+        <field name="model">building.assignment.line</field>
+        <field name="arch" type="xml">
+            <form class="confirm_like_modal">
+                <p>Êtes-vous sûr de vouloir annuler cette affectation ?</p>
+                <footer>
+                    <button name="action_canceled" type="object" string="Annuler" class="btn-danger"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="building_assignment_vehicle_tree" model="ir.ui.view">
+        <field name="name">building.assignment.line.vec.tree</field>
+        <field name="model">building.assignment.line</field>
+        <field name="arch" type="xml">
+            <list string="Affectation"
+                decoration-success="state == 'closed'"
+                decoration-danger="state == 'canceled'"
+                decoration-warning="state == 'open'">
+
+                <field name="site_id" />
+                <field name="vehicle_id" />
+                <field name="code" string="Code" />
+                <field name="cost" />
+                <field name="date_start" />
+                <field name="date_end" />
+                <field name="assignment_time" />
+                <field name="attendance_type" />
+                <field name="state" widget="badge" readonly="1" decoration-warning="state == 'open'" decoration-success="state == 'closed'" decoration-danger="state == 'canceled'"/>
+                <field name="type_assignment" invisible="1" />
+                <button name="%(assigned_close_act)d" type="action" invisible="state != 'open'" string="Rendre Disponible" class="btn-success"/>
+                <button name="open_cancel_confirm" type="object" invisible="state != 'open'" string="Annuler" class="btn-secondary"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_assignment_vehicle_tree_inherit" model="ir.ui.view">
+        <field name="name">building.assignment.vehicle.tree.inherit</field>
+        <field name="model">building.assignment.line</field>
+        <field name="inherit_id" ref="building.building_assignment_vehicle_tree"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='%(assigned_close_act)d']" position="replace"/>
+            <xpath expr="//button[@name='open_cancel_confirm']" position="replace"/>
+        </field>
+    </record>
+
+    <record id="building_assignment_product_tree" model="ir.ui.view">
+        <field name="name">building.assignment.line.product.tree</field>
+        <field name="model">building.assignment.line</field>
+        <field name="arch" type="xml">
+            <list string="Affectation">
+                <field name="site_id" />
+                <field name="product_id" />
+                <field name="code" string="Code" />
+                <field name="quantity" />
+                <field name="uom_id" />
+                <field name="cost" />
+                <field name="date_start" />
+                <field name="date_end" />
+                <field name="assignment_time" />
+                <field name="state" />
+                <field name="type_assignment" invisible="1" />
+                <button name="%(assigned_close_act)d" type="action" invisible="state != 'open'"
+                    string="Rendre Disponible" context="{'is_product': True}" class="oe_highlight" />
+                <button name="action_canceled" type="object" invisible="state != 'open'" string="Annuler"
+                    class="oe_highlight" />
+            </list>
+        </field>
+    </record>
+
+
+    <record id="building_assignment_line_filter" model="ir.ui.view">
+        <field name="name">building.assignment.line.select</field>
+        <field name="model">building.assignment.line</field>
+        <field name="arch" type="xml">
+            <search string="Search assignment">
+                <field name="site_id" />
+                <field name="employee_id" />
+                <field name="equipment_id" />
+                <field name="vehicle_id" />
+                <field name="product_id" />
+                <separator />
+                <filter string="Affectation Ouverte" name="open" domain="[('state','=','open')]" />
+                <filter string="Affectation Terminée" name="closed" domain="[('state','=','closed')]" />
+                <filter string="Annulée" name="canceled" domain="[('state','=','canceled')]" />
+                <separator />
+                <group expand="0" string="Group By">
+                    <filter string="Status" name='state' domain="[]" context="{'group_by':'state'}" />
+                    <filter string="Affaire" name='site_id' domain="[]" context="{'group_by':'site_id'}" />
+                    <filter string="Matériel" name='vehicle_id' domain="[]" context="{'group_by':'vehicle_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <!-- <record id="building_assignment_emp_action" model="ir.actions.act_window">
+        <field name="name">Affectations des ressources</field>
+        <field name="res_model">building.assignment.line</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="building_assignment_line_filter" />
+        <field name="context">{'search_default_filt_site':1, 'search_default_open':1}</field>
+        <field name="domain">[('type_assignment','=','emp')]</field>
+        <field name="view_id" ref="building_assignment_emp_tree" />
+    </record>
+
+    <record id="building_assignment_equipment_action" model="ir.actions.act_window">
+        <field name="name">Affectations des équipements</field>
+        <field name="res_model">building.assignment.line</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="building_assignment_line_filter" />
+        <field name="context">{'search_default_filt_site':1, 'search_default_filt_categ':1}</field>
+        <field name="domain">['|',('categ_assignment', '=', 'site_installation'), ('categ_assignment', '=', 'mini_equipment')]</field>
+        <field name="view_id" ref="building_assignment_equipment_tree" />
+    </record>
+
+    <record id="building_assignment_vehicle_action" model="ir.actions.act_window">
+        <field name="name">Affectations des véhicules</field>
+        <field name="res_model">building.assignment.line</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="building_assignment_line_filter" />
+        <field name="context">{'search_default_filt_site':1}</field>
+        <field name="domain">[('categ_assignment','=','equipment')]</field>
+        <field name="view_id" ref="building_assignment_vehicle_tree" />
+    </record>
+
+    <record id="building_assignment_product_action" model="ir.actions.act_window">
+        <field name="name">Affectations Coffrages/Echafaudages</field>
+        <field name="res_model">building.assignment.line</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="building_assignment_line_filter" />
+        <field name="context">{'search_default_filt_site':1}</field>
+        <field name="domain">[('categ_assignment','=','product')]</field>
+        <field name="view_id" ref="building_assignment_product_tree" />
+    </record> -->
+
+    <record id="building_site_categ_tree" model="ir.ui.view">
+        <field name="name">building.categ.site.tree</field>
+        <field name="model">building.categ.site</field>
+        <field name="arch" type="xml">
+            <list string="categ">
+                <field name="code" />
+                <field name="name" />
+            </list>
+        </field>
+    </record>
+
+    <record id="building_site_categ_action" model="ir.actions.act_window">
+        <field name="name">Catégorie des projets</field>
+        <field name="res_model">building.categ.site</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="building_limit_control_site_tree" model="ir.ui.view">
+        <field name="name">building.limit.control.site.tree</field>
+        <field name="model">building.limit.control.site</field>
+        <field name="arch" type="xml">
+            <list string="limit control">
+                <field name="categ_site_id" />
+                <field name="rubrique" />
+                <field name="prc_limit" />
+            </list>
+        </field>
+    </record>
+
+    <record id="building_limit_control_site_action" model="ir.actions.act_window">
+        <field name="name">Seuils de controle par categ de projet</field>
+        <field name="res_model">building.limit.control.site</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="building_order_readonly_action" model="ir.actions.act_window">
+        <field name="name">BP</field>
+        <field name="res_model">building.order</field>
+        <field name="target">current</field>
+        <field name="view_ids"
+            eval="[(5, 0, 0),
+                    (0, 0, {'view_mode': 'form', 'view_id': ref('building.view_order_form_readonly')})]" />
+        <field name="view_mode">form</field>
+    </record>
+
+    <record id="building_purchase_need_readonly_action" model="ir.actions.act_window">
+        <field name="name">LDB</field>
+        <field name="res_model">building.purchase.need</field>
+        <field name="target">current</field>
+        <field name="view_ids"
+            eval="[(5, 0, 0),
+                    (0, 0, {'view_mode': 'form', 'view_id': ref('building.building_purchase_need_form_readonly')})]" />
+        <field name="view_mode">form</field>
+    </record>
+
+</odoo>

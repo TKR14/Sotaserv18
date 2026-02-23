@@ -1,0 +1,92 @@
+<odoo>
+
+    <record id="building_site_view_form_profiles" model="ir.ui.view">
+        <field name="name">building.site.view.form.profiles</field>
+        <field name="model">building.site</field>
+        <field name="inherit_id" ref="building.building_site_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']//button[@name='get_building_purchase_need']" position="after">
+                <button name="action_get_profiles" type="object" class="oe_stat_button" icon="fa-user">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text"><field name="profiles_count"/> profils</span>
+                    </div>
+                </button>
+            </xpath>
+
+            <xpath expr="//field[@name='duration']" position="attributes">
+                <attribute name="readonly">state != 'open'</attribute>
+            </xpath>
+        </field>
+      </record>
+
+    <record id="res_groups_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.groups.view.form.inherit</field>
+        <field name="model">res.groups</field>
+        <field name="inherit_id" ref="base.view_groups_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='share']" position="after">
+                <field name="type"/>
+                <field name="model_id" invisible="type != 'button'"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="readonly">type == 'profile'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='type']" position="attributes">
+                <attribute name="readonly">type == 'profile'</attribute>
+            </xpath>
+        </field>
+      </record>
+
+    <record id="building_profile_assignment_view_tree" model="ir.ui.view">
+        <field name="name">building.profile.assignment.view.tree</field>
+        <field name="model">building.profile.assignment</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="site_id" invisible="context.get('default_site_id')"/>
+                <field name="user_id" options="{'no_create': True, 'no_open': True}" required="1"/>
+                <field name="group_id" options="{'no_create': True, 'no_open': True}" required="1"/>
+                <field name="active" widget="boolean_toggle" readonly="context.get('disable_toggle')"/>
+            </list>
+        </field>
+    </record>
+    
+    <record id="building_profile_assignment_view_search" model="ir.ui.view">
+        <field name="name">building.profile.assignment.view.search</field>
+        <field name="model">building.profile.assignment</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Active" name="filter_active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="filter_inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_by_site_id" context="{'group_by': 'site_id'}"/>
+                    <filter name="group_by_group_id" context="{'group_by': 'group_id'}"/>
+                    <filter name="group_by_user_id" context="{'group_by': 'user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="building_profile_assignment_action" model="ir.actions.act_window">
+        <field name="name">Profils</field>
+        <field name="res_model">building.profile.assignment</field>
+        <field name="view_mode">list</field>
+        <field name="context">{
+            "active_test": False,
+            "search_default_group_by_site_id": True,
+            "search_default_group_by_group_id": True,
+            "search_default_filter_active": True,
+            "disable_toggle": True,
+            "create": False,
+            "delete": False,
+            "edit": False,
+        }</field>
+    </record>
+
+    <menuitem
+        id="building_profile_assignment_menu"
+        parent="building.menu_site_config"
+        action="building_profile_assignment_action"
+        sequence="6"
+    />
+
+</odoo>

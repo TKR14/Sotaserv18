@@ -1,0 +1,7 @@
+"id","name","group_id/id","model_id/id","perm_read","perm_write","perm_create","perm_unlink"
+
+access_stock_picking_transfer,stock_picking_transfer,,model_stock_picking_transfer,1,1,1,1
+access_stock_picking_transfer_line,stock_picking_transfer_line,,model_stock_picking_transfer_line,1,1,1,1
+access_stock_picking_transfer_group,stock_picking_transfer_group,,model_stock_picking_transfer_group,1,1,1,1
+access_stock_picking_transfer_group_reference,stock_picking_transfer_group_reference,,model_stock_picking_transfer_group_reference,1,1,1,1
+access_stock_inventory_wizard,stock_inventory_wizard,,model_stock_inventory_wizard,1,1,1,1

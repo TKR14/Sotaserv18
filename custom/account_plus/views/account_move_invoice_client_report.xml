@@ -1,0 +1,229 @@
+<odoo>
+    <record id="invoice_decompte_client_report_action" model="ir.actions.report">
+        <field name="name">Facture Decompte Client</field>
+        <field name="model">account.move</field>
+        <field name="report_name">account_plus.invoice_decompte_client_report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="print_report_name">'Facture_Decompte_Client_N_%s.pdf' % (object.ref)</field>
+    </record>
+
+    <template id="invoice_decompte_client_report">
+        <t t-call="web.html_container">
+            <meta charset="utf-8"/>
+            <t t-set="docs" t-value="data"/>
+            <style>
+                body {
+                    font-family: "Times New Roman", Times, serif;
+                    line-height: 1.4;
+                    margin: 26px;
+                    color: #000;
+                }
+
+                .page-header {
+                    text-align: end;
+                    font-size: 16px;
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                }
+
+                .page-header-tow {
+                    text-align: left;
+                    font-size: 16px;
+                    margin-bottom: 30px;
+                }
+
+                .page-header-span {
+                    text-decoration: underline;
+                    font-size: 16px;
+                    text-align: center;
+                    line-height: 1.5;
+                }
+
+                .referance-box {
+                    border: 1px solid black;
+                    padding: 26px;
+                    text-align: center;
+                    font-family: "Times New Roman", Times, serif;
+                    font-size: 14px;
+                    width: fit-content;
+                    margin: 26px auto;
+                    font-weight: bold;
+                }
+
+                .amount-box {
+                    border: 1px solid black;
+                    padding: 26px;
+                    text-align: center;
+                    font-family: "Times New Roman", Times, serif;
+                    font-size: 12px;
+                    width: fit-content;
+                    <!-- margin: 26px auto; -->
+                    font-weight: bold;
+                }
+
+                .row {
+                    display: flex;
+                    justify-content: space-between;
+                    font-family: "Times New Roman", Times, serif;
+                    font-size: 16px;
+                    padding: 5px 10px;
+                    width: 100%;
+                    box-sizing: border-box;
+                    margin-top: 16%
+                }
+
+                .label {
+                    font-weight: bold;
+                }
+
+                .value {
+                    font-weight: bold;
+                }
+
+                .invoice_footer {
+                    position: absolute;
+                    bottom: 10px;
+                }
+
+                .company-info {
+                    line-height: 1.2;
+                    color: rgb(0, 102, 0);
+                    font-size: 12px;
+                    position: relative;
+                    left: 53px;
+                    margin-top: 10px;
+                }
+
+                .company-info span {
+                    display: block;
+                    text-align: center;
+                    white-space: nowrap;
+                    font-size: 11px;
+                    margin-top: 3px;
+                }
+
+                .company-info strong {
+                    font-weight: bold;
+                }
+
+                .company-info .underline {
+                    border-bottom: 2px solid rgb(60, 63, 60);
+                    margin-bottom: 5px;
+                    padding-bottom: 5px;
+                    width: 100%;
+                    margin: 20px auto;
+                }
+
+                .vat_exempt {
+                    position: relative;
+                    top: 35px;
+                }
+            </style>
+
+            <div class="logo">
+                <img t-att-src="image_data_uri(request.env['res.company'].search([], limit=1).logo)" 
+                    alt="Logo" style="max-width: 200px; height: auto;" />
+            </div>
+
+            <div class="page-header">
+                <span class="page-header-span">Date : <t t-esc="docs[0]['invoice_date']"/></span><br/>
+            </div>
+
+            <div class="page-header-tow">
+                <span class="page-header-span"><b>Client :</b> <t t-esc="docs[0]['partner']"/></span><br/>
+                <span class="page-header-span"><b>Projet :</b> <t t-esc="docs[0]['site']"/></span>
+            </div>
+
+            <div class="referance-box">
+                <span>
+                    FACTURE <t t-esc="docs[0]['ref']"/>
+                </span>
+            </div>
+
+            <table width="100%" style="border-collapse: collapse; margin-top: 26px; padding: 10px;">
+                <tr>
+                    <th style="width: 50%; border: 1px solid black; padding: 10px;">DESIGNATION</th>
+                    <th style="width: 16.67%; border: 1px solid black; padding: 5px;">MONTANT HT</th>
+                    <th style="width: 16.67%; border: 1px solid black; padding: 10px;">TVA</th>
+                    <th style="width: 16.67%; border: 1px solid black; padding: 10px;">TOTAL TTC</th>
+                </tr>
+                <tr>
+                    <td style="width: 50%; border: 1px solid black; padding: 10px;"><t t-esc="docs[0]['name']"/></td>
+                    <td style="width: 16.67%; border: 1px solid black; padding: 5px; text-align: end; font-size: 13px;"><t t-raw="'{:,.2f}'.format(docs[0]['amount_untaxed']).replace(',', ' ').replace('.', ',')" /></td>
+                    <td style="width: 16.67%; border: 1px solid black; padding: 10px; text-align: end; font-size: 13px;"><t t-raw="'{:,.2f}'.format(docs[0]['tax_amount']).replace(',', ' ').replace('.', ',')" /></td>
+                    <td style="width: 16.67%; border: 1px solid black; padding: 10px; text-align: end; font-size: 13px;"><t t-raw="'{:,.2f}'.format(docs[0]['amount_total_before_deduction']).replace(',', ' ').replace('.', ',')" /></td>
+                </tr>
+                <tr>
+                    <td style="width: 50%; border: 1px solid black; padding: 10px;">A déduire 5% de garantie</td>
+                    <td style="width: 16.67%; border: 1px solid black; padding: 5px; text-align: end; font-size: 13px;"><t t-raw="'{:,.2f}'.format(docs[0]['amount_gr_untaxed']).replace(',', ' ').replace('.', ',')" /></td>
+                    <td style="width: 16.67%; border: 1px solid black; padding: 10px; text-align: end; font-size: 13px;"><t t-raw="'{:,.2f}'.format(docs[0]['amount_gr_tax']).replace(',', ' ').replace('.', ',')" /></td>
+                    <td style="width: 16.67%; border: 1px solid black; padding: 10px; text-align: end; font-size: 13px;"><t t-raw="'{:,.2f}'.format(docs[0]['prc_gr']).replace(',', ' ').replace('.', ',')" /></td>
+                </tr>
+                <tr>
+                    <td style="width: 50%; border: 1px solid black; padding: 10px;">A déduire 15 %  armortissement avance de démarrage</td>
+                    <td style="width: 16.67%; border: 1px solid black; padding: 5px; text-align: end; font-size: 13px;"><t t-raw="'{:,.2f}'.format(docs[0]['amount_advance_untaxed']).replace(',', ' ').replace('.', ',')" /></td>
+                    <td style="width: 16.67%; border: 1px solid black; padding: 10px; text-align: end; font-size: 13px;"><t t-raw="'{:,.2f}'.format(docs[0]['amount_advance_tax']).replace(',', ' ').replace('.', ',')" /></td>
+                    <td style="width: 16.67%; border: 1px solid black; padding: 10px; text-align: end; font-size: 13px;"><t t-raw="'{:,.2f}'.format(docs[0]['prc_advance_deduction']).replace(',', ' ').replace('.', ',')" /></td>
+                </tr>
+                <tr>
+                    <td style="width: 50%; border: 1px solid black; padding: 10px;">Garantie Décennale</td>
+                    <td style="width: 16.67%; border: 1px solid black; padding: 5px; text-align: end; font-size: 13px;"><t t-raw="'{:,.2f}'.format(docs[0]['amount_prc_ten_year_untaxed']).replace(',', ' ').replace('.', ',')" /></td>
+                    <td style="width: 16.67%; border: 1px solid black; padding: 10px; text-align: end; font-size: 13px;"><t t-raw="'{:,.2f}'.format(docs[0]['amount_prc_ten_year_tax']).replace(',', ' ').replace('.', ',')" /></td>
+                    <td style="width: 16.67%; border: 1px solid black; padding: 10px; text-align: end; font-size: 13px;"><t t-raw="'{:,.2f}'.format(docs[0]['prc_ten_year']).replace(',', ' ').replace('.', ',')" /></td>
+                </tr>
+                <tr>
+                    <td style="width: 50%; border: 1px solid black; padding: 10px; text-align: center; font-weight: bold;">NET à Payer</td>
+                    <td style="width: 16.67%; border: 1px solid black; padding: 5px; text-align: center; font-size: 13px; font-weight: bold;"><t t-raw="'{:,.2f}'.format(docs[0]['amount_untaxed'] - (docs[0]['amount_gr_untaxed'] + docs[0]['amount_advance_untaxed'] + docs[0]['amount_prc_ten_year_untaxed'])).replace(',', ' ').replace('.', ',')" /></td>
+                    <td style="width: 16.67%; border: 1px solid black; padding: 10px; text-align: center; font-size: 13px; font-weight: bold;"><t t-raw="'{:,.2f}'.format(docs[0]['tax_amount'] - (docs[0]['amount_gr_tax'] + docs[0]['amount_advance_tax'] + docs[0]['amount_prc_ten_year_tax'])).replace(',', ' ').replace('.', ',')" /></td>
+                    <td style="width: 16.67%; border: 1px solid black; padding: 10px; text-align: center; font-size: 13px; font-weight: bold;"><t t-raw="'{:,.2f}'.format(docs[0]['amount_total']).replace(',', ' ').replace('.', ',')" /></td>
+                </tr>
+            </table>
+
+            <p>Arrêter la présente facture à la somme de:</p>
+            <div class="amount-box">
+                <span>
+                    <t t-esc="docs[0]['amount_total_in_words']"/>
+                </span>
+            </div>
+            <t t-if="docs[0]['amount_tax'] == 0">
+                <p class="vat_exempt"><t t-esc="docs[0]['vat_exempt']"/></p>
+            </t>
+            <p style="text-align: end; margin-top: 30%; font-weight: bold;">L' ENTREPRENEUR</p>
+            <div class="invoice_footer">
+                <div class="company-info">
+                    <div class="underline"></div>
+                    <span>
+                        SARL au Capital de 
+                        <t t-esc="'{:,.0f}'.format(docs[0]['company_id']['capital']).replace(',', ' ')"/> 
+                        FCFA - RCCM : 
+                        <t t-esc="docs[0]['company_id']['rccm']"/> - NIU N°: 
+                        <t t-esc="docs[0]['company_id']['niu_nemuro']"/> - CNPS : 
+                        <t t-esc="docs[0]['company_id']['cnps']"/>
+                    </span>
+
+                    <span>
+                        Siège Social : 
+                        <t t-esc="docs[0]['company_id']['street']"/> 
+                        <t t-esc="docs[0]['company_id']['street2']"/> 
+                        <t t-esc="docs[0]['company_id']['city']"/> 
+                        <t t-esc="docs[0]['company_id']['country']"/>
+                    </span>
+
+                    <span>
+                        Tél.: <t t-esc="docs[0]['company_id']['phone']"/> / Mobile: 
+                        <t t-esc="docs[0]['company_id']['mobile']"/> 
+                        Email: <t t-esc="docs[0]['company_id']['email']"/> - Site Web: 
+                        <t t-esc="docs[0]['company_id']['website']"/>
+                    </span>
+
+                    <span>
+                        Compte Bancaire NSIA BANQUE N°: 
+                        <t t-esc="docs[0]['company_id']['bank_account']"/>
+                    </span>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

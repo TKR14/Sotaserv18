@@ -1,0 +1,71 @@
+<odoo>
+    <record id="building.action_maintenance_request_server_resource_material_tree_view" model="ir.actions.server">
+        <field name="name">Demandes Matériels</field>
+        <field name="model_id" ref="model_maintenance_request_resource_material"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_demande_material()</field>
+    </record>
+
+    <record id="building.action_maintenance_request_server_resource_material_line_tree_view" model="ir.actions.server">
+        <field name="name">Ligne Demandes Matériels</field>
+        <field name="model_id" ref="model_maintenance_request_resource_material_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_demande_material_line()</field>
+    </record>
+
+    <record id="building.action_maintenance_request_server_resource_material_to_affected_tree_view" model="ir.actions.server">
+        <field name="name">Demandes Matériels a Affecter</field>
+        <field name="model_id" ref="model_maintenance_request_resource_material"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_material_requests_allocated()</field>
+    </record>
+
+    <record id="building.building_assignment_vehicle_action_server" model="ir.actions.server">
+        <field name="name">Affectations des véhicules</field>
+        <field name="model_id" ref="model_building_assignment_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_material_vehicle_assignments()</field>
+    </record>
+
+    <record id="building.action_server_materials_worked_hours_tree_view" model="ir.actions.server">
+        <field name="name">Pointages Matériels</field>
+        <field name="model_id" ref="model_materials_worked_hours"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_material_scores()</field>
+    </record>
+
+    <record id="building.action_server_materials_tree_view" model="ir.actions.server">
+        <field name="name">Matériel</field>
+        <field name="model_id" ref="model_fleet_vehicle"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_material()</field>
+    </record>
+
+    <record id="building.action_line_material_requests_tree_view" model="ir.actions.act_window">
+        <field name="name">Les Lignes de Demande à Affecter</field>
+        <field name="res_model">maintenance.request.resource.material.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[("state", "in", ["approved"])]</field>
+        <field name="context">{"delete": False, "create": False, "edit": False,}</field>
+    </record>
+
+    <record id="building.purchase_request_action" model="ir.actions.act_window">
+        <field name="name">Demande d'achat</field>
+        <field name="res_model">purchase.request</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="building.logistics_purchase_requisition_lines" model="ir.actions.server">
+        <field name="name">Lignes de demande d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_request_lines("Logistique")</field>
+    </record>
+
+    <record id="building.action_server_state_materials_tree_view" model="ir.actions.server">
+        <field name="name">Statut du Matériel</field>
+        <field name="model_id" ref="model_fleet_vehicle_state"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_state_material()</field>
+    </record>
+</odoo>

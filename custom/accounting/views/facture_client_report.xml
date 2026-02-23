@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="cust_paper_formata4_for_fact_decomp" model="report.paperformat">
+    <field name="name">A4 Facts</field>
+    <field name="format">A4</field>
+    <field name="page_height">0</field>
+    <field name="page_width">0</field>
+    <field name="orientation">Portrait</field>
+    <field name="margin_top">10</field>
+    <field name="margin_bottom">1</field>
+    <field name="margin_left">7</field>
+    <field name="margin_right">7</field>
+    <field name="header_spacing">35</field>
+    <field name="dpi">90</field>
+  </record>
+
+  <record id="action_report_facture_client" model="ir.actions.report">
+    <field name="name">Facture Client</field>
+    <field name="model">account.move</field>
+    <field name="paperformat_id" ref="cust_paper_formata4_for_fact_decomp" />
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">accounting.facture_client</field>
+    <field name="binding_model_id" ref="account.model_account_move" />
+  </record>
+
+</odoo>

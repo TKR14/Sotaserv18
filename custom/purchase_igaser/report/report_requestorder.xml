@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="report_requestorder">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <style>
+                        .page {
+                            font-size: 19px;
+                        }
+
+                        header {
+                            width: 100%;
+                            height: 100px;
+                        }
+
+                        header table {
+                            width: 100%;
+                        }
+
+                        header td {
+                            width: 33.33%;
+                        }
+
+                        header .date-time {
+                            text-align: left;
+                        }
+
+                        header .company-name {
+                            text-align: center;
+                        }
+
+                        h1 {
+                            font-size: 46px;
+                            margin-top: 100px;
+                            border: 1px solid black;
+                            text-align: center;
+                        }
+
+                        .inline {
+                            float: left;
+                        }
+
+                        h4 {
+                            font-size: 28px;
+                            border: 1px solid black;
+                            text-align: center;
+                        }
+
+                        table:not(header table),
+                        th,
+                        td {
+                            border: 1px solid black;
+                            border-collapse: collapse;
+                        }
+
+                        table.center {
+                            margin-left: auto;
+                            margin-right: auto;
+                        }
+
+                        .mytable,
+                        th,
+                        td {
+                            border: none;
+                        }
+
+                        .mytable td {
+                            text-align: center;
+                            padding: 5px;
+                        }
+
+                        .mytable th {
+                            text-align: center;
+                            padding: 13px;
+                            <!-- color: red; -->
+                        }
+                    </style>
+                    <div class="oe_structure" />
+                    <header>
+                        <table>
+                            <tr>
+                                <td class="date-time" t-esc="datetime.datetime.now().strftime('%Y-%m-%d %H:%M')"></td>
+                                <td class="company-name">IGASER SARL</td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </header>
+                    <h1>DEMANDE D'ACHAT <span t-field="o.name"/></h1>
+                    <br/>
+                    <div id="maindiv">
+                        <div class="inline" style="border: 1px solid;width: 40%;font-weight: bold;">Affaire: <span t-field="o.site_id.name"/></div>
+                        <div class="inline" style="border: 1px solid;margin-left: 19%;width: 40%;font-weight: bold;">Date : <span t-field="o.date_start"/>
+                        </div>
+                    </div>
+                    <div style="clear: both;"></div>
+                    <t t-if='o.vehicle_id'>
+                        <span style='font-weight: bold;'>IG: </span><span t-field='o.vehicle_id.name2' style='font-weight: bold;'></span>
+                    </t>
+                    <br/><br/><br/>
+                    <h4>Description de la demande d'achats</h4>
+                    <br/>
+                    <table class="center mytable" style="width: 100%; font-size:80%">
+                        <thead>
+                            <tr>
+                                <th>Référence</th>
+                                <th>Désignation/Spécifications</th>
+                                <th>Qté</th>
+                                <th>Uté</th>
+                                <th>Fournisseurs à Consulter</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.line_ids" t-as="line">
+                                <tr style="border-top: 1px solid;">
+                                    <td><span t-field="line.product_id.name"/></td>
+                                    <td><span t-field="line.name"/></td>
+                                    <td><span t-field="line.product_qty"/></td>
+                                    <td><span t-field="line.product_uom_id.name"/></td>
+                                    <td></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <p style="border: 1px solid;text-align: center;padding-bottom: 10%;">Justification de l'achat et Service concerné
+                    </p>
+                    <br/>
+                    <table class="center" style="width: 100%; font-size:80%">
+                        <tr>
+                            <td>Degrés d'urgence </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="height: 40px; overflow:hidden;padding-top: 20px;">
+                                    Pas Urgent :
+                                </div>
+                            </td>
+                            <td>
+                                <div style="height: 40px; overflow:hidden;padding-top: 20px;">
+                                    Urgent :
+                                </div>
+                            </td>
+                            <td>
+                                <div style="height: 40px; overflow:hidden;padding-top: 20px;">
+                                    Trés Urgent :
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <br/>
+                    <p style="border: 1px solid;text-align: center;padding-bottom: 10%;">Observation et remarque</p>
+                    <br/>
+                    <table style="width: 30%; font-size:80%;float:left;">
+                        <tr>
+                            <th>Demandeur</th>
+                        </tr>
+                        <tr>
+                            <td style="padding-left:5px;">
+                                <div style="height: 90px; overflow:hidden;">
+                                    <p style="padding-left: 5px;font-weight: bold;">Nom :</p>
+                                    <p style="padding-left: 5px;font-weight: bold;">Signature :</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <table style="width: 30%; font-size:80%;float:left;margin-left: 35px;">
+                        <tr>
+                            <th>DGA</th>
+                        </tr>
+                        <tr>
+                            <td style="padding-left:5px;">
+                                <div style="height: 90px; overflow:hidden;">
+                                    <p style="padding-left: 5px;font-weight: bold;">Nom :</p>
+                                    <p style="padding-left: 5px;font-weight: bold;">Signature :</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <table style="width: 30%; font-size:80%;float:left;margin-left: 35px;">
+                        <tr>
+                            <th>DG</th>
+                        </tr>
+                        <tr>
+                            <td style="padding-left:5px;">
+                                <div style="height: 90px; overflow:hidden;">
+                                    
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,23 @@
+<odoo>
+    <record id="stock_deduction_modal_view" model="ir.ui.view">
+        <field name="name">stock.deduction.modal.view</field>
+        <field name="model">stock.deduction.modal.wizard</field>
+        <field name="arch" type="xml">
+            <form class="confirm_like_modal">
+                <sheet>
+                    <group>
+                        <field name="stock_ids" invisible="1"/>
+                        <field name="is_last" invisible="1"/>
+                        <field name="amount_total" readonly="1"/>
+                        <field name="remaining_advance" readonly="1"/>
+                        <field name="amount_advance_deduction" readonly="is_last"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_amount_advance_deduction_verification" type="object" class="btn-primary" string="Confirmer"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,27 @@
+<odoo>
+    <record id="view_decompte_confirmation_wizard" model="ir.ui.view">
+        <field name="name">decompte.confirmation.wizard.form</field>
+        <field name="model">decompte.confirmation.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Confirmation">
+                <sheet>
+                    <group>
+                        <field name="message" readonly="1" nolabel="1"/>
+                    </group>
+                    <footer>
+                        <button name="action_confirm" type="object" string="Confirmer" class="oe_highlight"/>
+                        <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_decompte_confirmation_wizard" model="ir.actions.act_window">
+        <field name="name">Confirmation Décompte</field>
+        <field name="res_model">decompte.confirmation.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_decompte_confirmation_wizard"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

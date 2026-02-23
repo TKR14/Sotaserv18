@@ -1,0 +1,56 @@
+<odoo>
+    <delete id="purchase_request.menu_purchase_request_pro_mgt" model="ir.ui.menu"/>
+
+    <menuitem
+        id="purchase.menu_purchase_rfq"
+        parent="purchase.menu_procurement_management"
+        sequence="3"
+    />
+
+    <menuitem
+        id="menu_purchase_price_comparison"
+        parent="purchase.menu_procurement_management"
+        action="purchase_price_comparison_action"
+        sequence="4"
+    />
+
+    <menuitem
+        id="menu_siege"
+        name="Siège"
+        groups="purchase_igaser.group_siege"
+    />
+
+    <menuitem
+        id="purchase_request_menu_siege_pr"
+        name="Principal"
+        parent="menu_siege"
+        action="purchase_request_action_siege_pr"
+        sequence="1"
+        groups="purchase_igaser.group_siege_pr"
+    />
+
+    <menuitem
+        id="purchase_request_menu_siege_fg"
+        name="Frais généraux"
+        parent="menu_siege"
+        action="purchase_request_action_siege_fg"
+        sequence="1"
+        groups="purchase_igaser.group_siege_fg"
+    />
+
+    <menuitem
+        id="purchase_request_menu_siege_lg"
+        name="Logistique"
+        parent="menu_siege"
+        action="purchase_request_action_siege_lg"
+        sequence="1"
+        groups="purchase_igaser.group_siege_lg"
+    />
+
+    <menuitem
+        id="account_move_menu_factures_validated"
+        name="Bons de Commande"
+        parent="account_plus.account_move_menu_commades_cg"
+        action="purchase_form_action_cg"
+    />
+</odoo>

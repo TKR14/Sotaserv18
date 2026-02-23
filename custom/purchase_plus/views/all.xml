@@ -1,0 +1,110 @@
+<odoo>
+    <record id="purchase_request_action_all" model="ir.actions.act_window">
+        <field name="name">DA</field>
+        <field name="res_model">purchase.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="purchase_request_line_action_all" model="ir.actions.act_window">
+        <field name="name">LDA</field>
+        <field name="res_model">purchase.request.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="purchase_order_action_all" model="ir.actions.act_window">
+        <field name="name">DP/BC</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="stock_picking_action_all" model="ir.actions.act_window">
+        <field name="name">Réception/Transfert/Sortie</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="purchase_entry_action_all" model="ir.actions.act_window">
+        <field name="name">Décompte</field>
+        <field name="res_model">purchase.entry</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="stock_move_action_all" model="ir.actions.act_window">
+        <field name="name">Mouvements de stocks</field>
+        <field name="res_model">stock.move</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="stock_quant_action_all" model="ir.actions.act_window">
+        <field name="name">Stocks / Emplacement</field>
+        <field name="res_model">stock.quant</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="unfiltered_all_group" model="res.groups">
+        <field name="name">TOUT</field>
+    </record>
+
+    <menuitem
+        id="unfiltered_all_menu"
+        name="TOUT"
+        sequence="999"
+        groups="unfiltered_all_group"
+    />
+
+    <menuitem
+        id="purchase_request_menu_all"
+        name="DA"
+        action="purchase_request_action_all"
+        parent="unfiltered_all_menu"
+        sequence="1"
+    />
+
+    <menuitem
+        id="purchase_request_line_menu_all"
+        name="LDA"
+        action="purchase_request_line_action_all"
+        parent="unfiltered_all_menu"
+        sequence="2"
+    />
+
+    <menuitem
+        id="purchase_order_menu_all"
+        name="DP/BC"
+        action="purchase_order_action_all"
+        parent="unfiltered_all_menu"
+        sequence="3"
+    />
+
+    <menuitem
+        id="stock_picking_menu_all"
+        name="Réception/Transfert/Sortie"
+        action="stock_picking_action_all"
+        parent="unfiltered_all_menu"
+        sequence="4"
+    />
+
+    <menuitem
+        id="purchase_entry_menu_all"
+        name="Décompte"
+        action="purchase_entry_action_all"
+        parent="unfiltered_all_menu"
+        sequence="5"
+    />
+
+    <menuitem
+        id="stock_move_menu_all"
+        name="Mouvements de stocks"
+        action="stock_move_action_all"
+        parent="unfiltered_all_menu"
+        sequence="6"
+    />
+
+    <menuitem
+        id="stock_quant_menu_all"
+        name="Stocks / Emplacement"
+        action="stock_quant_action_all"
+        parent="unfiltered_all_menu"
+        sequence="7"
+    />
+</odoo>

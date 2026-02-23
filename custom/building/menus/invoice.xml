@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+
+        <!-- Facturation-->
+        <menuitem id="menu_invoices_customer_site" name="Facturation Clients" parent="menu_site_root" sequence="6"/>
+        <menuitem action="action_building_invoice_advance_tree" id="menu_invoice_advance_customer" sequence="1" parent="menu_invoices_customer_site"/>
+        <menuitem action="action_building_invoice_attachment_customer_tree" sequence="3" id="menu_invoice_attachment_customer" parent="menu_invoices_customer_site"/>
+        <menuitem action="action_building_invoice_issued_customer_tree" id="menu_invoice_issued_customer" sequence="5" parent="menu_invoices_customer_site"/>
+        <menuitem action="action_building_due_invoice_customer_tree" id="menu_invoice_dur_customer" sequence="6" parent="menu_invoices_customer_site"/>
+
+        <menuitem id="menu_invoices_supplier_site" name="Facturation Fournisseurs" parent="menu_site_root"  sequence="7"/>
+        <menuitem action="action_building_invoice_supplier_advance_tree" id="menu_invoice_advance_supplier" sequence="1" parent="menu_invoices_supplier_site"/>
+        <menuitem action="action_building_invoice_attachment_supplier_tree" id="menu_invoice_attachment_supplier" sequence="2" parent="menu_invoices_supplier_site"/>
+        <menuitem action="action_building_invoice_supplier_other_tree" id="menu_invoice_supplier_other" sequence="3" parent="menu_invoices_supplier_site"/>
+        <menuitem action="action_invoice_supplier_due_tree" id="menu_invoice_due_supplier" sequence="4" parent="menu_invoices_supplier_site"/>
+
+
+        <!-- -cautions -->
+        <!-- <menuitem id="menu_site_deposit_root" name="Cautions" parent="menu_invoices_site"  sequence="6" />
+        <menuitem id="menu_list_deposit" name="Cautions"  action="action_caution_tree_view" parent="menu_site_deposit_root" sequence="1"/> -->
+
+
+    </data>
+</openerp>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="payroll_contract">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <style>
+                            * {
+                                margin: 0;
+                                padding: 0;
+                                box-sizing: border-box;
+                            }
+                    
+                            table,
+                            th,
+                            td {
+                                border: 1px solid black;
+                                border-collapse: collapse;
+                                margin-left: auto;
+                                margin-right: auto;
+                            }
+                    
+                            h3 {
+                                text-align: center;
+                                border: 1px solid;
+                            }
+                            .underline{
+                                text-decoration: underline;
+                            }
+                            .font-bold{
+                                font-weight: bold;
+                            }
+
+                            p{
+                                font-size: 15px;
+                                line-height: 0.3em;
+                            }
+                            <!-- .container{
+                                margin: auto;
+                                width: 60%;
+                                /* border: 3px solid green; */
+                                padding: 10px;
+                            } -->
+                        </style>
+                        <div class="oe_structure" />
+                        <table style="width: 100%">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center;padding: 5px;">CONTRAT</th>
+                                    <th style="text-align: center;">CODE : PS.RH.F13
+                                    </th>
+                                </tr>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td style="text-align: center;">VERSION : 01</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td style="text-align: center;">DATE : 21/10/2013</td>
+                                </tr>
+                            </tbody>
+                            </thead>
+                        </table>
+                        <br/><br/>
+                        <!--Table ends here-->
+                        <h3>CONTRAT DE TRAVAIL A DUREE CHANTIER <span t-field="o.name" /></h3>
+                        <br/>
+                        <div class="container">
+                            <p>Entre la Société: <span style="font-bold" t-field="o.env.user.company_id.name" /></p>
+                            <br/>
+                            <p>Sise à : <span style="font-bold" t-field="o.env.user.company_id.street" /></p>
+                            <br/>
+                            <p>Et</p>
+                            <br/>
+                            <p>Monsieur : <span t-field="o.employee_id.name" /> </p>
+                            <br/>
+                            <p>Demeurant à : <span t-field="o.employee_id.address" /></p>
+                            <br/>
+                            <p class="font-bold">CIN : <span style="font-weight: normal" t-field="o.employee_id.identification_id" /> MATRICULE : 
+                            <span style="font-weight: normal" t-field="o.employee_id.registration_number" /> </p>
+                            <p>Il est convenu ce qui suit</p>
+                            <br/>
+                            <p class="underline font-bold">ARTICLE 1 : Date d’embauche</p> 
+                            <p>Le présent contrat prend effet à compter du : <span t-field="o.first_contract_date" /> jusqu’à accomplir un travail déterminé, qui correspond à la</p>
+                            <p>durée globale ou partielle du projet.</p>
+                            <p class="underline font-bold">ARTICLE 2 : Fonctions </p>
+                            <p>Vous êtes recruté comme : <span t-field="o.job_id" /></p>
+                            <p class="underline font-bold">ARTICLE 3 : Affectation</p>
+                            <p>Vous êtes affecté sur le projet : <span t-field="o.workplace" /></p>
+                            <p class="underline font-bold">ARTICLE 4 : Engagement durée du contrat</p>
+                            <p>Vous êtes engagé à exercer des travaux liés au chantier <span t-field="o.workplace" />. Dans le cadre des instructions et consignes</p>
+                            <p>particulières de travail qui lui seront données et à respecter une stricte obligation de discrétion sur tout ce qui concerne</p>
+                            <p>l'activité de la société (Article 16 D.T)</p>
+                            <p class="underline font-bold">ARTICLE 5 : Période d’essai</p>
+                            <p>La période d'essai est fixée à 15 jours.</p>
+                            <p>Pendant cette période, le présent contrat peut être rompu à tout moment, à l'initiative de l’une de l’autre des parties</p>
+                            <p>contractantes, moyennant un préavis de 8 jours.</p>
+                            <p class="underline font-bold">ARTICLE 6 : Rémunérations, Congés</p>
+                            <p>-La rémunération du salarié par heure net est de : ... </p>
+                            <p>-Le régime des congés est déterminé conformément aux usages en vigueur dans la Société. En Virement à la fin de son</p>
+                            <p>contrat, vos droits à congés seront calculés sur la base de 1.5 jours ouvrables par mois, en fonction de votre présence au</p>
+                            <p>travail ou périodes assimilées (arrêt de travail de courte durée pour maladie ou accident). Ce droit est ouvert à l’issue d’une</p>
+                            <p>période de six mois de service continu.</p>
+                            <p class="underline font-bold">ARTICLE 7 : Horaires de travail</p>
+                            <p>Vos appointements précités comprennent, conformément aux usages en vigueur dans notre Société, la rémunération</p>
+                            <p>forfaitisée de toutes les heures de travail correspondant à l’horaire affiché ainsi que celles exigées par la profession et par</p>
+                            <p>vos fonctions dans le lieu d’affectation, la durée du travail étant celle de votre lieu d’affectation que vous vous</p>
+                            <p>engagez à respecter. </p>
+                            <p class="underline font-bold">ARTICLE 8 ; CONDITIONS DE VALIDATION DU CONTRAT </p>
+                            <p>La validité de votre contrat de travail est subordonnée :</p>
+                            <ul>
+                                <li><p>A l’aptitude médicale à votre emploi constatée par la visite médicale que vous devrez passer auprès du Médecin du</p>
+                                <p>travail agrée par l’Entreprise.</p></li>
+                                <li><p>A l’absence de toute condamnation considérée comme incompatible avec le poste qui vous est confié.</p></li>
+                                <li><p>A l’absence de tout lien contractuel et de non concurrence avec un autre employeur à la date de votre engagement</p>
+                                <p>dans notre Société. Vous avez déclaré jouir de votre entière liberté à ce sujet.</p></li>
+                                <li><p>A l’obtention le cas échéant des documents nécessaires pour l’exercice de votre fonction (liste non exhaustive à</p>
+                                <p>préciser au cas par cas : Carte CIN, photos d’identité, certificat d’aptitude physique permis de conduire, etc…).</p></li>
+                            </ul>
+                            <p class="underline font-bold">ARTICLE 9 : Exigences et devoirs</p>
+                            <p style="padding-left: 10px;">La nouvelle recrue est appelée à respecter le règlement interne d’IGASER </p>
+                            <p>Le salarié doit respecter les consignes de sécurité de la société utilisatrice. Si des équipements de protection</p>
+                            <p>individuelle lui ont été remis, il doit obligatoirement les porter, faute de quoi il sera passible de sanction pouvant</p>
+                            <p>aller jusqu’au licenciement.la faute grave telle que stipulée dans l’article 39 /37 (DT).</p>
+                            <p class="underline font-bold">ARTICLE 10 : Fin de contrat</p>
+                            <p>Le présent contrat cessera de plein droit au Fin de Chantier, sans préavis ni indemnités. Ce contrat n'ouvrira pas droit au</p>
+                            <p>bénéfice de l'indemnité légale de précarité d'emploi.</p>
+                            <p class="underline font-bold">ARTICLE 11 : Compétence</p>
+                            <p>Toutes contestations ou litiges nés du présent contrat, seront soumis à la compétence du tribunal d’EL JADIDA.</p>
+                            <br/>
+                            <p>Fait à El Jadida, le : <span t-field="o.date_start" /></p>
+                            <p>Mr : <span t-field="o.employee_id.name" /></p>
+                            <br/>
+                            <p style="padding-left: 500px;">IGASER, Mr Ighafi Abderrazzaq</p>
+                            <p style="padding-left: 505px;">Bon pour accord</p>
+                            <p>Lu et approuvé</p>
+                            <p>Signature</p>      
+                            <br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                            <p style="padding-left: 30px;">Pour la bonne règle, le contrat et ses annexes devront porter votre paraphe au bas de chaque feuillet et votre</p>
+                            <p style="padding-left: 80px;">signature légalisée sur la dernière page précédée de la mention « lu et approuvé » suivie de la date.</p>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

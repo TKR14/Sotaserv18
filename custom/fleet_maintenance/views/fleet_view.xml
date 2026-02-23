@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- <record model="ir.ui.view" id="fleet_vehicle_view_form_inherit">
+        <field name="name">fleet.vehicle.form.inherit</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='image_128']" position="before">
+                <field name="vehicle_picture" widget="image" class="vehicle_picture"/>
+            </xpath>
+            <xpath expr="//label[@for='model_id']" position="before">
+                <label for="code" class="oe_edit_only"/>
+                <h1>
+                    <field name="code" placeholder="Code Céhicule: Ex IG86"/>
+                </h1>
+                <label for="name2" class="oe_edit_only"/>
+                <h1>
+                    <field name="name2" placeholder="Nom Véhicule..."/>
+                </h1>
+                <label for="classification" class="oe_edit_only"/>
+                <h1>
+                    <field name="classification" placeholder="UTILITAIRE ET SERVICEN..."/>
+                </h1>
+            </xpath>
+            <xpath expr="//field[@name='acquisition_date']" position="before">
+                <field name="categ_fleet_id"/>
+                <field name="type_vihicle"/>
+                <field name="serial_number"/>
+                <field name="cost"/>
+                <field name="uom_id"/>
+                <field name="cost_h"/>
+                <field name="uom_h_id"/>
+                <field name="consumption"/>
+            </xpath>
+            <xpath expr="//field[@name='residual_value']" position="before">
+                <field name="po_date"/>
+                <field name="sale_date"/>
+                <field name="sale_value"/>
+            </xpath>
+
+            <xpath expr="//field[@name='residual_value']" position="after">
+                <field name="is_amort"/>
+                <field name="amort_year" attrs="{'invisible': [('is_amort', '=', False)]}"/>
+                <field name="nb_year_amort" attrs="{'invisible': [('is_amort', '=', False)]}"/>
+                <field name="is_rental"/>
+                <field name="rental_end_date" attrs="{'invisible': [('is_rental', '=', False)]}"/>
+            </xpath>
+
+            <xpath expr="//label[@for='future_driver_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='future_driver_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='plan_to_change_car']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//group[@name='contract']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//group[@name='contract']" position="after">
+                <group string="Controle Vidange" name="change_control">
+                    <field name="controle_value_change"/>
+                    <field name="unit_change"/>
+                </group>
+            </xpath>
+
+        </field>
+    </record> -->
+
+    <record model="ir.ui.view" id="fleet_vehicle_view_list_inherit">
+        <field name="name"> fleet.vehicle.list.inherit</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='license_plate']" position="before">
+                <field name="code"/>
+                <field name="name2"/>
+                <field name="location"/>
+                <field name="state"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- <record model="ir.ui.view" id="fleet_vehicle_view_search_inherit">
+        <field name="name">fleet.vehicle.search.inherit</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='location']" position="after">
+                <field name="code"/>
+                <field name="name2"/>
+            </xpath>
+        </field>
+    </record> -->
+
+
+    <record model="ir.ui.view" id="fleet_vehicle_log_services_view_form_inherit">
+        <field name="name">fleet.vehicle.log.services.form.inherit</field>
+        <field name="model">fleet.vehicle.log.services</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group/group/div[@class='o_row']" position="after">
+                <field name="category" invisible="1"/>
+                <field name="date_next_change_oil" invisible="category == 'contract'"/>
+                <field name="next_odometre" string="Kilomètrage/Heurs" invisible="category == 'contract'"/>
+                <field name="next_change_oil" invisible="category == 'contract'"/>
+                <field name="duree" invisible="category == 'contract'"/>
+                <field name="start_date" invisible="category == 'service'"/>
+                <field name="end_date" invisible="category == 'service'"/>
+            </xpath>
+            <xpath expr="//field[@name='odometer']" position="replace">
+                <field name="odometer" invisible="1"/>
+            </xpath>
+            <xpath expr="//label[@for='odometer']" position="replace">
+                <label for="odometer" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="fleet_vehicle_consumption_form_view">
+        <field name="name">fleet.vehicle.consumption.form</field>
+        <field name="model">fleet.vehicle.consumption</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="gasoil">
+                <header>
+                    <button name="action_validated" string="Valider" class="oe_highlight" type="object"  
+                        invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <group >
+                        <field name="type_consumption"  />
+                        <field name="dest_from_principal_location"  invisible="type_consumption != 'principal_station'"/>
+                        <field name="dest_from_mobile_location"  invisible="type_consumption != 'mobile_station'"/>
+                        <field name="principal_location_id"  invisible="type_consumption != 'principal_station'"/>
+                        <field name="mobile_location_id"  invisible="type_consumption == 'in_site' or dest_from_principal_location != 'to_mobile_location'"/>
+                        <field name="vehicle_id"  invisible="(type_consumption == 'principal_station' and dest_from_principal_location == 'to_mobile_location') or (type_consumption == 'mobile_station' and dest_from_mobile_location == 'to_site_location')"/>
+                        <field name="product_id"  />
+                    </group>
+                    <group >
+                        <field name="site"  invisible="1"/>
+                        <field name="consumption_date"  />
+                        <field name="num_move"  />
+                    </group>
+                    <group >
+                        <field name="counter_value"  />
+                        <field name="qty"  />
+                        <field name="price_unit"  />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="fleet_vehicle_consumption_list_view">
+        <field name="name">fleet.vehicle.consumption.list</field>
+        <field name="model">fleet.vehicle.consumption</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="gasoil">
+                <field name="vehicle_id"  />
+                <field name="product_id"  />
+                <field name="site"  invisible="1"/>
+                <field name="consumption_date"  />
+                <field name="num_move"  />
+                <field name="counter_value"  />
+                <field name="qty"  />
+                <field name="price_unit"  />
+                <field name="amount"  />
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_fleet_vehicle_consumption_list_view">
+        <field name="name">Bons de sorties Gasoil</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fleet.vehicle.consumption</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_vehicle_consumption__list" parent="fleet.menu_root" action="action_fleet_vehicle_consumption_list_view" sequence="9"/>
+
+    <record model="ir.ui.view" id="fhr_equipment_request_view_form_inherit1">
+        <field name="name">equipment.request.form.inherit</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='maintenance_type']" position="after">
+                <field name="odometre" invisible="type_maint != 'vehicle'"/>
+                <field name="uom_id" invisible="type_maint != 'vehicle'"/>
+                <field name="is_service_delivery"/>
+                <field name="partner_id" invisible="not is_service_delivery"/>
+                <field name="contract_num" invisible="not is_service_delivery"/>
+                <!-- <field name="order_num" invisible="not is_service_delivery"/> -->
+                <field name="order_id" />
+                <field name="order_num" />
+                <field name="pick_num" invisible="not is_service_delivery"/>
+                <field name="external_cost" invisible="1"/>
+                <field name="cost"/>
+                <field name="stopping_cost" invisible="1"/>
+
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="stopping_date"/>
+                <field name="start_date"/>
+            </xpath>
+            <xpath expr="//field[@name='equipment_id']" position="before">
+                <field name="type_maint" widget="radio"/>
+                <field name="vehicle_id" invisible="type_maint != 'vehicle'"/>
+                <field name="product_id" invisible="type_maint != 'coff'"/>
+            </xpath>
+            <xpath expr="//field[@name='equipment_id']" position="replace">
+                <field name="equipment_id" invisible="type_maint != 'equip'"/>
+            </xpath>
+
+            <xpath expr="//field[@name='description']" position="after">
+                <notebook>
+                    <page string="Moteur" name="motor" invisible="type_maint != 'vehicle'">
+                        <field name="note_motor" nolabel="1" readonly="0">
+                            <list string="motor" editable="bottom">
+                                <field name="anom"/>
+                                <field name="trait"/>
+                                <field name="pieces"/>
+                                <field name="observ"/>
+                            </list>
+                        </field>
+                    </page>
+                    <page string="Châssis" name="chasis" invisible="type_maint != 'vehicle'">
+                        <field name="note_chasis" nolabel="1" readonly="0">
+                            <list string="chasis" editable="bottom">
+                                <field name="anom"/>
+                                <field name="trait"/>
+                                <field name="pieces"/>
+                                <field name="observ"/>
+                            </list>
+                        </field>
+                    </page>
+                    <page string="Electrique" name="electrique" invisible="type_maint != 'vehicle'">
+                        <field name="note_elec" nolabel="1" readonly="0">
+                            <list string="electrique" editable="bottom">
+                                <field name="anom"/>
+                                <field name="trait"/>
+                                <field name="pieces"/>
+                                <field name="observ"/>
+                            </list>
+                        </field>
+                    </page>
+                    <page string="Hydraulique" name="hydro" invisible="type_maint != 'vehicle'">
+                        <field name="note_hydro" nolabel="1" readonly="0">
+                            <list string="hydro" editable="bottom">
+                                <field name="anom"/>
+                                <field name="trait"/>
+                                <field name="pieces"/>
+                                <field name="observ"/>
+                            </list>
+                        </field>
+                    </page>
+                    <page string="Pneumatique" name="pneu" invisible="type_maint != 'vehicle'">
+                        <field name="note_pneu" nolabel="1" readonly="0">
+                            <list string="pneu" editable="bottom">
+                                <field name="anom"/>
+                                <field name="trait"/>
+                                <field name="pieces"/>
+                                <field name="observ"/>
+                            </list>
+                        </field>
+                    </page>
+                    <page string="Autres" name="other">
+                        <field name="note_other" nolabel="1" readonly="0">
+                            <list string="other" editable="bottom">
+                                <field name="anom"/>
+                                <field name="trait"/>
+                                <field name="pieces"/>
+                                <field name="observ"/>
+                            </list>
+                        </field>
+                    </page>
+                    <page string="Réalisations" name="realized">
+                        <field name="line_ids" nolabel="1" readonly="1">
+                            <list string="realized">
+                                <field name="date_exec"/>
+                                <field name="qty_realized"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <!-- <record model="ir.ui.view" id="maintenance_request_resource_material_form_view">
+        <field name="name">maintenance.request.resource.material.form</field>
+        <field name="model">maintenance.request.resource.material</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="gasoil">
+                <header>
+                    <button name="action_requested" string="Demander" class="oe_highlight" type="object"  
+                        states = "draft"/>
+                    <button name="action_dlm" string="DLM" class="oe_highlight" type="object"  
+                        states = "requested"/>
+                    <button name="action_dga" string="Valider DGA" class="oe_highlight" type="object"  
+                        states = "dlm"/>
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <group >
+                        <field name="site_id"  />
+                        <field name="request_date"  />
+                    </group>
+                    <notebook>
+                        <page string="Demandes">
+                            <field name="line_ids" nolabel="1">
+                                <list string="Demandes" editable="bottom">
+                                    <field name="site_id"  readonly="1"/>
+                                    <field name="request_date"  readonly="1"/>
+                                    <field name="categ_vec_id"  />
+                                    <field name="code"  />
+                                    <field name="request_type"  />
+                                    <field name="qty"/>
+                                    <field name="shipping_date"/>
+                                    <field name="duration"  />
+                                    <field name="state"  readonly="1"/>
+                                </list>
+                            </field>
+                       </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="maintenance_request_resource_material_list_view">
+        <field name="name">maintenance.request.resource.material.list</field>
+        <field name="model">maintenance.request.resource.material</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="gasoil">
+                <field name="site_id"  />
+                <field name="request_date"  />
+                <field name="state"  />
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_maintenance_request_resource_material_list_view">
+        <field name="name">Demandes Matériels</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">maintenance.request.resource.material</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_maintenance_request_resource_material_list" parent="fleet.menu_root" action="action_maintenance_request_resource_material_list_view" sequence="10"/> -->
+
+    <record model="ir.ui.view" id="maintenance_vahicle_category_form_view">
+        <field name="name">maintenance.vehicle.category.form</field>
+        <field name="model">maintenance.vehicle.category</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="categ">
+                <sheet>
+                    <group >
+                        <field name="name"  />
+                        <field name="code"  />
+                    </group>
+                    <group >
+                        <field name="cost"  />
+                        <field name="uom_id"  />
+                        <field name="cost_h"  />
+                        <field name="uom_h_id"  />
+                        <field name="consumption"  />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="maintenance_vahicle_category_list_view">
+        <field name="name">maintenance.vehicle.category.list</field>
+        <field name="model">maintenance.vehicle.category</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="gasoil">
+                <field name="name"  />
+                <field name="code"  />
+                <field name="cost"  />
+                <field name="uom_id"  />
+                <field name="cost_h"  />
+                <field name="uom_h_id"  />
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_maintenance_vahicle_category_list_view">
+        <field name="name">Catégories Matériels</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">maintenance.vehicle.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_maintenance_vahicle_category_list" parent="fleet.fleet_configuration" action="action_maintenance_vahicle_category_list_view" sequence="9"/>
+
+    <!-- <record id="view_product_building_inherit" model="ir.ui.view">
+        <field name="name">product.template.building.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <div name="options" position="inside">
+                <div>
+                    <field name="is_coffrage" attrs="{'invisible': [('type', '=', 'service')]}"/>
+                    <label for="is_coffrage" attrs="{'invisible': [('type', '=', 'service')]}"/>
+                </div>
+            </div>
+        </field>
+    </record> -->
+</odoo>

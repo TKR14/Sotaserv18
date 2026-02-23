@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_site_dashboard_form" model="ir.ui.view">
+        <field name="name">building.site.dashboard.form</field>
+        <field name="model">account.analytic.line</field>
+        <field name="priority" eval="10"/>
+        <field name="arch" type="xml">
+            <form string="Suivi des chantiers" create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="site_id"/>
+                            <field name="date"/>
+                            <field name="ref"/>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="amount" sum="Total"/>
+                            <field name="unit_amount" sum="Total Quantity"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="account_id"/>
+                            <field name="general_account_id"/>
+                            <field name="type_analytic_line"/>
+                            <field name="state"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_site_dashboard_tree" model="ir.ui.view">
+        <field name="name">building.site.dashboard.list</field>
+        <field name="model">account.analytic.line</field>
+        <field name="priority" eval="10"/>
+        <field name="arch" type="xml">
+            <list string="Suivi des chantiers" create="0">
+                <field name="site_id" string="Chantier"/>
+                <field name="date"/>
+                <field name="ref"/>
+                <field name="name"/>
+                <field name="order_id" column_invisible="True"/>
+                <field name="amount" sum="Total"/>
+                <field name="unit_amount" sum="Total Quantity"/>
+                <field name="account_id"/>
+                <field name="general_account_id"/>
+                <field name="type_analytic_line"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_site_dashboard_graph_value" model="ir.ui.view">
+        <field name="name">building.site.dashboard.graph</field>
+        <field name="model">account.analytic.line</field>
+        <field name="priority" eval="12"/>
+        <field name="arch" type="xml">
+            <graph string="Suivi des chantiers" type="bar" sample="1">
+                <field name="site_id" type="row"/>
+                <field name="account_id" type="row"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_site_dashboard_filter" model="ir.ui.view">
+        <field name="name">building.site.dashboard.select</field>
+        <field name="model">account.analytic.line</field>
+        <field name="arch" type="xml">
+            <search string="Suivi de chantier">
+                <field name="name" string="Compte Analytique"/>
+                <field name="date"/>
+                <field name="account_id"/>
+                
+                <filter name="timesheets" string="Temps de Travail" domain="[('type_analytic_line','=','timesheet')]"/>
+                <filter name="subcontractings" string="Sous-traitance" domain="[('type_analytic_line','=','subcontracting')]"/>
+                <filter name="workforces" string="Main-d’œuvres" domain="[('type_analytic_line','=','workforce')]"/>
+                <filter name="rental_materials" string="Location de Matériaux" domain="[('type_analytic_line','=','rental_materials')]"/>
+                <separator/>
+                <filter name="invoiceds" string="Facturé" domain="[('state','=','invoiced')]"/>
+                <filter name="paids" string="Payé" domain="[('state','=','paid')]"/>
+                
+                <group string="Group By" expand="0">
+                    <filter name="account_analytic" string="Compte Analytique" context="{'group_by':'account_id'}"/>
+                    <filter name="general_account" string="Compte général" context="{'group_by':'general_account_id'}"/>
+                    <filter name="site" string="Chantier" context="{'group_by':'site_id'}"/>
+                    <filter name="type_analytic_line" string="Type" context="{'group_by':'type_analytic_line'}"/>
+                    <filter name="state" string="Status" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="site_dashboard_act" model="ir.actions.act_window">
+        <field name="name">Tableau de bord</field>
+        <field name="res_model">account.analytic.line</field>
+        <field name="view_mode">graph,list,form</field>
+        <field name="search_view_id" ref="view_site_dashboard_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune donnée analytique à afficher.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="building_menu_action_dashboard" 
+              name="Tableau de bord" 
+              action="site_dashboard_act" 
+              parent="building.menu_site" 
+              sequence="0"/>
+</odoo>

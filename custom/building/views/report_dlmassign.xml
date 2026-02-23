@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="report_dlmassign">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <style>
+                            * {
+                                margin: 10px;
+                            }
+
+                            table,
+                            th,
+                            td {
+                                border: 1px solid black;
+                                border-collapse: collapse;
+                            }
+
+                            table.center {
+                                margin-left: auto;
+                                margin-right: auto;
+                            }
+
+                            .fP,
+                            .sP {
+                                display: inline;
+                            }
+
+                            .mytable td {
+                                text-align: center;
+                            }
+
+                            .mytable th {
+                                padding: 8px;
+                                text-align: center;
+                            }
+
+                            table th {
+                                padding: 8px;
+                                text-align: center;
+                            }
+                    </style>
+                    <div class="oe_structure" />
+                    <table class="center" style="width: 100%; font-size:80%">
+                        <tr>
+                            <th rowspan="2" style="font-size: 20px; padding: 10px;">Demande de Matériel</th>
+                            <td style="padding: 10px;">Ref:</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;">Version: </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <p>
+                        Date:
+                        <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')" />
+                    </p>
+                    <br />
+                    <br />
+                    <div>
+                        <t t-if="start_date or end_date">
+                            <p class="secondP" style="font-weighht: bold;padding-left: 35%;">
+                                Période Du
+                                <span t-esc="start_date"/>
+                                Au
+                                <span t-esc="end_date"/>
+                            </p>
+                        </t>
+                        <p class="thirdP" style="padding-left: 10%;"></p>
+                    </div>
+                    <br />
+                    <t t-if="get_list_sites">
+                        <t t-foreach="get_list_sites" t-as="site">
+                            <table style="width: 100%;font-size: 10px;">
+                                <tr>
+                                    <td width="100%" style="border-right: 1px solid;border-bottom: 1px solid;font-size: 15px;font-weight: bold;">
+                                        <span t-field="site.name" />
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <t t-foreach="get_types_assignment(start_date, end_date, site.id)" t-as="type_assignment">
+                                <table style="width: 100%;font-size: 10px;">
+                                    <tr>
+                                        <td width="100%" style="border-right: 1px solid;border-bottom: 1px solid;font-size: 15px;font-weight: bold;">
+                                            <span t-esc="get_value_categ_assignment_selection(type_assignment)" />
+                                        </td>
+                                    </tr>
+                                </table>
+                                    <table class="center mytable" style="width: 100%;font-family:Courier New, Courier, monospace; font-size:80%">
+                                        <thead>
+                                            <tr>
+                                                <th width="20">Code</th>
+                                                <th width="20">Désignation</th>
+                                                <th width="20">Date d'affectation</th>
+                                                <th width="20">Date fin prévu</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="get_materiels(start_date, end_date, site.id, type_assignment)" t-as="mat">
+                                            <tr>
+                                                <td>
+                                                    <span t-field="mat.code" />
+                                                </td>
+
+                                                <td>
+                                                    <span t-field="mat.equipment_id" />
+                                                </td>
+                                                <td>
+                                                    <span t-field="mat.date_start" />
+                                                </td>
+                                                <td>
+                                                    <span t-field="mat.date_end" />
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                        </t>
+                    </t>
+                </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

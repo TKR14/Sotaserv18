@@ -1,0 +1,95 @@
+<odoo>
+    <record id="view_incident_materiel_tree" model="ir.ui.view">
+        <field name="name">incident.materiel.view.list</field>
+        <field name="model">incident.materiel</field>
+        <field name="arch" type="xml">
+            <list string="Incident Matériel">
+                <field name="site_id"/>
+                <field name="fleet_id"/>
+                <field name="date"/>
+                <field name="type"/>
+                <field name="state"
+                    widget="badge"
+                    decoration-danger="state == 'draft'"
+                    decoration-success="state == 'approved'"
+                    decoration-warning="state == 'submitted'"
+                    decoration-primary="state == 'resolved'"
+                    decoration-muted="state == 'rejected'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_incident_materiel_search" model="ir.ui.view">
+        <field name="name">incident.materiel.view.search</field>
+        <field name="model">incident.materiel</field>
+        <field name="arch" type="xml">
+            <search string="Search assignment">
+                <filter name="draft" string="Brouillon" domain="[('state','=','draft')]" />
+                <filter name="submitted" string="Soumis" domain="[('state','=','submitted')]" />
+                <filter name="approved" string="Validé" domain="[('state','=','approved')]" />
+                <filter name="resolved" string="Traité" domain="[('state','=','resolved')]" />
+                <filter name="rejected" string="Rejeté" domain="[('state','=','rejected')]" />
+                <separator />
+                <group string="Group By">
+                    <filter string="Status" name='state' domain="[]" context="{'group_by':'state'}" />
+                    <filter string="Affaire" name='site_id' domain="[]" context="{'group_by':'site_id'}" />
+                    <filter string="Matériel" name='fleet_id' domain="[]" context="{'group_by':'fleet_id'}"/>
+                    <filter string="Type" name='type' domain="[]" context="{'group_by':'type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_incident_materiel_form" model="ir.ui.view">
+        <field name="name">incident.materiel.view.form</field>
+        <field name="model">incident.materiel</field>
+        <field name="arch" type="xml">
+            <form string="Incident Matériel" class="o_incident_materiel_form_view">
+                <header>
+                    <button name="submit_incident" string="Soumettre" type="object" class="btn-primary" 
+                            invisible="state != 'draft'" groups="building_plus.sotaserv_chef_projet"/>
+                    
+                    <button name="open_return_to_wizard" string="Remettre" type="object" class="btn-secondary" 
+                            invisible="state != 'submitted'" context="{'method': 'draft_incident'}" groups="logistics.logistics_group"/>
+                    
+                    <button name="approve_incident" string="Valider" type="object" class="btn-primary" 
+                            invisible="state != 'submitted'" groups="logistics.logistics_group"/>
+                    
+                    <button name="open_return_to_wizard" string="Remettre" type="object" class="btn-secondary" 
+                            invisible="state != 'approved'" context="{'method': 'return_to_submitted'}" groups="logistics.logistics_group"/>
+                    
+                    <button name="resolve_incident" string="Traiter" type="object" class="btn-primary" 
+                            invisible="state != 'approved'" groups="logistics.logistics_group"/>
+                    
+                    <button name="open_rejection_wizard" string="Rejeter" type="object" class="btn-danger" 
+                            invisible="state != 'submitted'" context="{'method': 'reject_incident'}" groups="logistics.logistics_group"/>
+                    
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,resolved"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="set_type" invisible="1"/>
+                            <field name="site_id" options="{'no_create': True, 'no_open': True}" 
+                                   readonly="state != 'draft'"/>
+                            
+                            <field name="fleet_id" options="{'no_create': True, 'no_open': True}" 
+                                   readonly="state != 'draft' or not site_id"/>
+                            
+                            <field name="type" readonly="not set_type"/>
+                        </group>
+                        <group>
+                            <field name="date" readonly="1"/>
+                            <field name="description" readonly="state != 'draft'"/>
+                        </group>    
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>

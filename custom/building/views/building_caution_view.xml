@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="caution_form_view">
+                <field name="name">building.caution.form</field>
+                <field name="model">building.caution</field>
+                <field name="type">form</field>
+                <field name="arch" type="xml">
+                    <form string="Liste des cautions">
+                        <header>
+                            <button name="action_diposed" invisible="state != 'draft'" string="Déposer" class="oe_highlight" type="object" />
+                            <button name="action_released" invisible="state != 'caution_diposed'" string="Déposer Mainlevée" class="oe_highlight" type="object"/>
+                            <button name="action_retrieved" invisible="state != 'released'" string="Récupérer" class="oe_highlight" type="object"/>
+                            <field name="state" widget="statusbar" statusbar_visible="draft,caution_diposed,released,retrieved_caution"/>
+                	    </header>
+                        <group>
+                            <group col="2">
+                                <separator string="Dates et Montant" colspan="2"/>
+                                <!-- <field name="bail_application_id"/> -->
+                                <field name="date_start"/>
+                                <field name="date_end"/>
+                                <field name="amount_caution" />
+                                <field name="type_caution" readonly="1"/>
+                            </group>
+                            <group col="2">
+                                 <separator string="Informations" colspan="2"/>
+                                 <field name="site_id"/>
+                                 <field name="origin_id" string="Ref. Bordereau"/>
+                                 <field name="ref_tendering"/>
+                                 <field name="partner_id" />
+                            </group>
+                        </group>
+                    </form>
+                </field>
+           </record>
+
+           <record model="ir.ui.view" id="caution_tree_view">
+                <field name="name">building.caution.tree</field>
+                <field name="model">building.caution</field>
+                <field name="type">list</field>
+                <field name="arch" type="xml">
+                    <list string="Liste des cautions">
+                        <field name="origin_id" string="Ref. Bordereau"/>
+                        <field name="ref_tendering" />
+                        <field name="partner_id" />
+                        <field name="amount_caution" />
+                        <field name="type_caution" />
+                        <field name="site_id" />
+                        <field name="state" />
+                    </list>
+                </field>
+           </record>
+
+            <record id="view_building_caution_filter" model="ir.ui.view">
+                <field name="name">building.caution.select</field>
+                <field name="model">building.caution</field>
+                <field name="arch" type="xml">
+                    <search string="Search building caution">
+                        <field name="partner_id" operator="child_of"/>
+                        <field name="origin_id" string="Ref. Bordereau"/>
+                        <field name="site_id"/>
+                        <field name="type_caution"/>
+                        <separator/>
+                        <filter name="state_draft" string="Brouillon" domain="[('state','=','draft')]"/>
+                        <filter name="state_caution_diposed" string="Déposé" domain="[('state','=','caution_diposed')]"/>
+                        <filter name="state_caution_released" string="Mainlevée" domain="[('state','=','released')]"/>
+                        <separator/>
+                        <group expand="0" string="Group By">
+                            <filter name="site_filt" string="Affaire" domain="[]" context="{'group_by':'site_id'}"/>
+                            <filter name="partner_filt" string="Client" domain="[]" context="{'group_by':'partner_id'}"/>
+                            <filter name="type_caution_filt" string="Type" domain="[]" context="{'group_by':'type_caution'}"/>
+                        </group>
+                   </search>
+                </field>
+            </record>
+
+            
+           <record model="ir.actions.act_window" id="action_caution_tree_view">
+                <field name="name">Cautions</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model">building.caution</field>
+                <field name="view_mode">list,form</field>
+                <field name="search_view_id" ref="view_building_caution_filter"/>
+           </record>
+	</data>
+</openerp>

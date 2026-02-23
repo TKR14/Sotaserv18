@@ -1,0 +1,193 @@
+<odoo>
+    <record id="hr_assignment_request_sequence" model="ir.sequence">
+        <field name="name">HrAssignmentRequest</field>
+        <field name="code">hr.assignment.request</field>
+        <field name="prefix">DARH/%(y)s/%(month)s/</field>
+        <field name="padding">4</field>
+    </record>
+
+    <record id="hr_assignment_request_view_form" model="ir.ui.view">
+        <field name="name">hr.assignment.request.view.form</field>
+        <field name="model">hr.assignment.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button
+                        name="button_note"
+                        type="object"
+                        string="Motif du refus"
+                        invisible="note == ''"
+                        class="btn-secondary"
+                        groups="hr_assignment.hr_assignment_request_group_validated"
+                    />
+                    <button
+                        name="button_draft"
+                        type="object"
+                        string="Remettre en brouillon"
+                        class="btn-secondary"
+                        invisible="note != '' or state not in ['validated', 'rejected']"
+                        groups="hr_assignment.hr_assignment_request_group_validated"
+                    />
+                    <button
+                        name="button_validated"
+                        type="object"
+                        string="Valider"
+                        invisible="state != 'draft'"
+                        class="btn-primary"
+                        groups="hr_assignment.hr_assignment_request_group_validated"
+                    />
+                    <button
+                        name="button_approved"
+                        type="object"
+                        string="Approuver"
+                        invisible="state != 'validated'"
+                        class="btn-primary"
+                        groups="hr_assignment.hr_assignment_request_group_approved"
+                    />
+                    <button
+                        name="button_note"
+                        type="object"
+                        string="Rejeter"
+                        invisible="state != 'validated'"
+                        class="btn-danger"
+                        groups="hr_assignment.hr_assignment_request_group_approved"
+                    />
+                    <button 
+                       name="action_return_to_validated" 
+                       type="object" 
+                       string="Remettre" 
+                       invisible="state != 'approved'"
+                       class="btn-secondary" 
+                       groups="hr_assignment.hr_assignment_request_group_remettre_drh"
+                    />
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,validated,approved,in_progress,done"
+                    />
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Rejetée" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+                    <widget name="web_ribbon" title="Traitée" bg_color="text-bg-success" invisible="state != 'done'"/>
+                    <widget name="web_ribbon" title="Close" bg_color="text-bg-success" invisible="state != 'closed'"/>
+                    
+                    <label for="name" class="oe_inline"/>
+                    <h1>
+                        <field name="name" readonly="1" class="oe_inline"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="site_id" readonly="state != 'draft'" options="{'no_create': True, 'no_open': True}" required="1"/>
+                        </group>
+                        <group>
+                            <field name="requested_by" options="{'no_create': True, 'no_open': True}" readonly="1" force_save="1"/>
+                            <field name="requested_on" readonly="1" force_save="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lignes" name="lines_page">
+                            <field name="job_category_ids" invisible="1"/>
+                            <field name="job_ids" invisible="1"/>
+                            <field name="line_ids" readonly="state != 'draft' or not site_id" options="{'no_create': True, 'no_open': True}">
+                                <list editable="bottom" decoration-danger="state == 'rejected'">
+                                    <field name="job_category_id" options="{'no_create': True, 'no_open': True}" required="1" domain="[('id', 'in', parent.job_category_ids)]"/>
+                                    <field name="job_id" required="1" options="{'no_create': True, 'no_open': True}" domain="[('id', 'in', parent.job_ids)]" readonly="not job_category_id"/>
+
+                                    <field name="uom_id" options="{'no_open': True}" readonly="1"/>
+                                    <field name="budget" readonly="1"/>
+                                    <field name="clocked" readonly="1"/>
+                                    <field name="pct_consumed" readonly="1"/>
+                                    
+                                    <field name="number_requested" string="Nombre" required="1" readonly="not job_id"/>
+                                    <field name="date_requested" string="Date" required="1" readonly="not job_id"/>
+                                    <field
+                                        name="state"
+                                        widget="badge"
+                                        column_invisible="parent.state in ['draft', 'validated']"
+                                        decoration-info="state == 'draft'"
+                                        decoration-warning="state in ['validated', 'approved', 'in_progress']" 
+                                        decoration-success="state in ['done', 'closed']" 
+                                        decoration-danger="state == 'rejected'"
+                                    />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Historique" name="history_page">
+                            <div class="oe_chatter">
+                                <field name="note" invisible="1"/>
+                                <field name="message_ids" options="{'post_refresh': 'recipients'}"/>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_assignment_request_view_form_note" model="ir.ui.view">
+        <field name="name">hr.assignment.request.view.form.note</field>
+        <field name="model">hr.assignment.request</field>
+        <field name="arch" type="xml">
+            <form class="confirm_like_modal">
+                <sheet>
+                    <field name="note" readonly="context.get('rejected')"/>
+                </sheet>
+                <footer>
+                    <button name="button_rejected" type="object" string="Rejeter" class="btn-danger" invisible="not context.get('validated')"/>
+                    <button name="button_reset_note" type="object" string="Ok" class="btn-primary" invisible="not context.get('rejected')"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_assignment_request_view_tree" model="ir.ui.view">
+        <field name="name">hr.assignment.request.view.list</field>
+        <field name="model">hr.assignment.request</field>
+        <field name="arch" type="xml">
+            <list export_xlsx="0" decoration-info="state == 'draft'" decoration-danger="state == 'rejected'">
+                <field name="name"/>
+                <field name="requested_by"/>
+                <field name="requested_on"/>
+                <field name="site_id"/>
+                <field 
+                    name="state" 
+                    widget="badge"
+                    decoration-info="state == 'draft'"
+                    decoration-warning="state in ['validated', 'approved', 'in_progress']"
+                    decoration-success="state in ['done', 'closed']"
+                    decoration-danger="state == 'rejected'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_assignment_request_view_search" model="ir.ui.view">
+        <field name="name">hr.assignment.request.view.search</field>
+        <field name="model">hr.assignment.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="site_id"/>
+                <field name="requested_by"/>
+
+                <filter string="Mes demandes" name="filter_requested_by_uid" domain="[('requested_by', '=', uid)]"/>
+                <separator/>
+                <filter string="Dû dans 7 jours" name="filter_line_ids_due_in_7_days" domain="[('line_ids.date_requested', '&lt;=', (context_today() + datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Dû dans 4 semaines" name="filter_line_ids_due_in_4_weeks" domain="[('line_ids.date_requested', '&lt;=', (context_today() + datetime.timedelta(weeks=4)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Brouillon" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Validée" name="filter_validated" domain="[('state', '=', 'validated')]"/>
+                <filter string="À affecter" name="filter_approved" domain="[('state', '=', 'approved')]"/>
+                <filter string="Affection en cours" name="filter_in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Traitée" name="filter_done" domain="[('state', '=', 'done')]"/>
+                <filter string="Rejetée" name="filter_rejected" domain="[('state', '=', 'rejected')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_site_id" string="Chantier" context="{'group_by': 'site_id'}"/>
+                    <filter name="group_by_requested_by" string="Demandé par" context="{'group_by': 'requested_by'}"/>
+                    <separator/>
+                    <filter name="group_by_requested_on" string="Date" context="{'group_by': 'requested_on'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

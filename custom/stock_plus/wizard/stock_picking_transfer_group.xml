@@ -1,0 +1,28 @@
+<odoo>
+    <record id="stock_picking_transfer_group_view_form" model="ir.ui.view">
+        <field name="name">stock.picking.transfer.group.view.form</field>
+        <field name="model">stock.picking.transfer.group</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="add_to_group" widget="toggle"/>
+                    <field name="site_id" readonly="1" options="{'no_open': True, 'no_create': True}"/>
+                    <field name="date" required="not add_to_group"/>
+                    <field name="reference_id" invisible="not add_to_group" required="add_to_group" options="{'no_open': True, 'no_create': True}"/>
+                    <field name="reference" readonly="1" force_save="1" invisible="add_to_group"/>
+                </group>
+                <group>
+                    <field name="picking_ids" options="{'no_open': True, 'no_create': True}" nolabel="1" readonly="1">
+                        <list create="0" delete="0" edit="0" options="{'no_open': True, 'no_create': True}">
+                            <field name="name" options="{'no_open': True, 'no_create': True}"/>
+                        </list>
+                    </field>
+                </group>
+                <footer>
+                    <button string="Grouper" type="object" name="button_regroup" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record> 
+</odoo>

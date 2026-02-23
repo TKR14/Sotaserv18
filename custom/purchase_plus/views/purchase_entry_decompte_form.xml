@@ -1,0 +1,131 @@
+<odoo>
+    <record id="purchase_entry_decompt_view_form" model="ir.ui.view">
+        <field name="name">purchase.entry.decompt.view.form</field>
+        <field name="model">purchase.entry</field>
+        <field name="arch" type="xml">
+            <form string="Attachement" class="o_purchase_order" create="false" delete="false">
+                <header>
+                    <field name="under_ninty_five" invisible="1" />
+                    <button name="print_decompt" string="Imprimer" class="btn-primary" type="object"/>
+                    <button name="open_cancellation_reason_wizard" string="Remettre" type="object" class="btn-primary" invisible="state_decompte != 'draft' or state_decompte_not_done != 'draft'" context="{'method': 'back_to_draft'}"/>
+                    <button name="open_confirmation_wizard" string="Valider" type="object" class="btn-primary" invisible="state_decompte != 'draft'" context="{'method': 'validated_dz_action'}" groups="building_plus.sotaserv_directeur_zone"/>
+                    <button name="open_cancellation_reason_wizard" string="Remettre" type="object" class="btn-primary" invisible="state_decompte != 'validated_dz' or state_decompte_not_done != 'validated_dz'" context="{'method': 'remettre_to_draft_decompt'}" groups="building_plus.sotaserv_directeur_zone"/>
+
+                    <button name="open_cancellation_reason_wizard" string="Remettre" type="object" class="btn-primary" invisible="is_done == False or state_decompte != 'provider_validated'" context="{'method': 'remettre_to_validated_dz_done'}" groups="account_plus.acount_move_group_Aud,building_plus.sotaserv_directrice_technique" />
+                    <button name="open_cancellation_reason_wizard" string="Remettre" type="object" class="btn-primary" invisible="is_done == True or state_decompte_not_done != 'done'" context="{'method': 'remettre_to_validated_dz_not_done'}" groups="account_plus.acount_move_group_Aud,building_plus.sotaserv_directrice_technique" />
+                    <button name="open_cancellation_reason_wizard" string="Remettre" type="object" class="btn-primary" invisible="(state_decompte != 'done') or (is_done == False)" context="{'method': 'remettre_to_provider_validated'}" groups="account_plus.acount_move_group_Aud,building_plus.sotaserv_directrice_technique" />
+
+                    <button name="open_confirmation_wizard" string="Valider" type="object" class="btn-primary" invisible="state_decompte != 'validated_dz' or state_decompte_not_done != 'validated_dz'" context="{'method': 'provider_validation_action'}" groups="account_plus.acount_move_group_Aud,building_plus.sotaserv_directrice_technique" />
+                    <button name="open_confirmation_wizard" string="Valider" type="object" class="btn-primary" invisible="state_decompte != 'provider_validated' or is_done == False" context="{'method': 'action_done'}" groups="building_plus.sotaserv_directrice_technique"/>
+                    
+                    <button name="open_confirmation_wizard" string="Facturer" type="object" class="btn-primary" invisible="state_decompte != 'done' or state_decompte_not_done != 'done'" context="{'method': 'action_create_decompte_bill'}" groups="building_plus.sotaserv_directrice_technique"/>
+
+                    <button name="action_mark_as_final" type="object" class="btn-primary" string="Marquer comme Final" invisible="is_done == True or under_ninty_five == True or state_decompte != 'provider_validated'" confirm="Voulez-vous vraiment continuer?" groups="building_plus.sotaserv_directrice_technique"/>
+                    <button name="open_cancellation_reason_wizard" type="object" string="Remettre" invisible="(state_decompte != 'bill') or (state_decompte_not_done != 'bill') or (is_remettre_invisible != True) or (is_invoiced == True)" context="{'method': 'remettre_to_dt'}" groups="building_plus.sotaserv_directrice_technique"/>
+                    <field name="state_decompte" widget="statusbar" 
+                        statusbar_visible="draft,validated_dz,provider_validated,done,bill"
+                        invisible="not is_done"
+                        />
+                    <field name="state_decompte_not_done" widget="statusbar" 
+                        statusbar_visible="draft,validated_dz,done,bill"
+                        invisible="is_done == True"
+                        />
+                    <field name="is_invoiced" invisible="1"/>
+                    <field name="is_remettre_invisible" invisible="1"/>
+                    <field name="is_facture_not_draft" invisible="1"/>
+                <button name="create_invoice" string="Créer Facture" type="object" invisible="state_decompte != 'done' or state_decompte_not_done != 'done' or is_facture_not_draft == True"/>
+                </header>
+                <sheet>
+                    <group colspan="4" class="container">
+                        <group string="Informations BC" colspan="1">
+                            <field name="is_automatically_done" invisible="1"/>
+                            <field name="site_id" id="site_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="supplier_id" id="supplier_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="purchase_id" id="purchase_id" readonly="1" options="{'no_open': True}"/>
+                            <label for="amount_commande"/>
+                            <div class="o_row">
+                                <field name="amount_commande" readonly="1"/>
+                                <field name="currency_id" widget="many2one" readonly="1" options="{'no_open': True}"/>
+                            </div>
+                            <field name="number" readonly="1" options="{'no_open': True}"/>
+                            <field name="start_date" id="start_date" readonly="1"/>
+                            <field name="end_date" id="end_date" readonly="1"/>
+                            <field name="is_done" widget="boolean_toggle" string="Décompte final" groups="building_plus.sotaserv_directeur_zone,building_plus.sotaserv_chef_projet,building_plus.sotaserv_conduct_trv" force_save="1" readonly="state_decompte != 'draft' or is_automatically_done"/>
+                        </group>
+                        <group colspan="1" string="Situation Globale" class="oe_group2">
+                            <field name="accumulations_work" style="width: 150px !important;"/>
+                            <field name="accumulation_previous_amounts" style="width: 150px !important;"/>
+                            <field name="amount_invoiced" style="width: 150px !important;"/>
+                            <field name="penalty_red" style="width: 150px !important;"/>
+                            <field name="gross_amount_ht" style="width: 150px !important;"/>
+                            <field name="amount_invoiced_ttc" style="width: 150px !important;"/>
+                            <field name="avance_red" style="width: 150px !important;"/>
+                            <field name="rg_red" style="width: 150px !important;"/>
+                            <field name="net_amount_to_be_invoiced" style="width: 150px !important;"/>
+                            <field name="executed" class="rg" style="width: 150px !important;"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lignes décompte">
+                            <field name="line_ids" widget="section_and_note_one2many" mode="list" options="{'no_open': True}">
+                                <list editable="bottom" delete="false" create="false">
+                                    <field name="name" readonly="1" options="{'no_open': True}" style="width: 1000px !important;"/>
+                                    <field name="ordered_ht" readonly="1" options="{'no_open': True}" style="width: 1000px !important;"/>
+                                    <field name="cumulative_ht" readonly="1" options="{'no_open': True}" style="width: 1000px !important;"/>
+                                    <field name="cumulative_tva" readonly="1" options="{'no_open': True}" style="width: 1000px !important;"/>
+                                    <field name="cumulative_ttc" readonly="1" options="{'no_open': True}" style="width: 1000px !important;"/>
+                                    <!-- <field name="detail_id" /> -->
+                                    <button name="show_detail_decompte" type="object" string="Détail" class="btn-primary" icon="fa-info-circle"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="À facturer">
+                            <field name="line_idss" widget="section_and_note_one2many" mode="list" options="{'no_open': True}">
+                                <list editable="bottom" delete="false" create="false">
+                                    <!-- <field name="display_type" invisible="1"/> -->
+                                    <field name="name" readonly="1" options="{'no_open': True}" />
+                                    <field name="product_uom" invisible="1" readonly="1" options="{'no_open': True}" />
+                                    <field name="product_qty" invisible="1" readonly="1" options="{'no_open': True}" />
+                                    <field name="price_unit" invisible="1" readonly="1" options="{'no_open': True}" />
+                                    <field name="amount_invoiced_tva" invisible="1"/>
+                                    <field name="amount_ht_invoiced" readonly="1" style="width: 300px;"/>
+                                    <button name="show_to_be_invoiced_detail" type="object" string="Détail" class="btn-primary" icon="fa-info-circle"/>
+                                </list>
+                            </field>
+			            </page>
+                        <page string="Déductions">
+                            <group colspan="2">
+                                <group colspan="1" string="Déductions">
+                                    <field name="is_avance_readonly" invisible="1"/>
+                                    <field name="avance" readonly="is_avance_readonly or state_decompte != 'draft'" force_save="1"/>
+                                    <field name="return_of_guarantee" readonly="1"/>
+                                    <field name="penalty" readonly="state_decompte != 'draft'"/>
+					            </group>
+                                <group colspan="1" string="Cumul déductions">
+                                    <field name="remaining_advance" style="width: 150px !important;"/>
+                                    <field name="remaining_rg" style="width: 150px !important;"/>
+                                    <field name="remaining_penalty" style="width: 150px !important;"/>
+                                </group>
+				            </group>
+			            </page>
+                        <page string="Inf.BC">
+                            <group>
+                                <group>
+                                    <field name="represent" required="1"/>
+                                    <label for="amount_avance" style="white-space: nowrap;"/>
+                                    <field name="amount_avance" class="oe_right" readonly="1" nolabel="1"/>
+                                    <field name="percentage_rg" class="oe_right" readonly="1"/>
+					            </group>
+				            </group>
+			            </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter" modifiers="{}">
+                    <field name="message_follower_ids" modifiers="{'readonly':[['state','!=','draft']]}" id="message_follower_ids"/>
+                    <field name="activity_ids" modifiers="{'readonly':[['state','!=','draft']]}" id="activity_ids"/>
+                    <field name="message_ids" modifiers="{'readonly':[['state','!=','draft']]}" id="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>

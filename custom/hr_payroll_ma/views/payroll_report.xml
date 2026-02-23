@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_payslip_igaser" model="ir.actions.report">
+        <field name="name">Bulletin de Paie Sotaserv</field>
+        <field name="model">hr.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_payroll_ma.payslip_igaser</field>
+        <field name="report_file">hr_payroll_ma.payslip_igaser</field>
+        <field name="print_report_name">'Bulletin de Paie N° %s' % object.name</field>
+        <field name="binding_model_id" ref="om_hr_payroll.model_hr_payslip" />
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_payslip_stc" model="ir.actions.report">
+        <field name="name">Bulletin de Paie STC</field>
+        <field name="model">hr.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_payroll_ma.payslip_sotaserv</field>
+        <field name="report_file">hr_payroll_ma.payslip_sotaserv</field>
+        <field name="print_report_name">'Bulletin de Paie STC N° %s' % object.name</field>
+        <field name="binding_model_id" ref="om_hr_payroll.model_hr_payslip" />
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- <record id="action_report_pay_jr_igaser" model="ir.actions.report">
+        <field name="name">IGASER - Journal de Paie</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_payroll_ma.payroll_jr_payslip</field>
+        <field name="report_file">hr_payroll_ma.payroll_jr_payslip</field>
+        <field name="print_report_name">'IGASER - Journal de Paie'</field>
+        <field name="binding_model_id" ref="om_hr_payroll.model_hr_payslip_run" />
+        <field name="binding_type">report</field>
+    </record> -->
+
+    <!-- <record id="action_report_pay_jr_cumul_igaser" model="ir.actions.report">
+        <field name="name">IGASER - Cumul Journal de Paie</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_payroll_ma.payroll_jr_cumul</field>
+        <field name="report_file">hr_payroll_ma.payroll_jr_cumul</field>
+        <field name="print_report_name">'IGASER - Cumul Journal de Paie'</field>
+        <field name="binding_model_id" ref="om_hr_payroll.model_hr_payslip_run" />
+        <field name="binding_type">report</field>
+    </record> -->
+
+    <!-- <record id="action_report_pay_jr_imputation" model="ir.actions.report">
+        <field name="name">IGASER - Journal Imputation Comptable</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_payroll_ma.payroll_jr_imputation</field>
+        <field name="report_file">hr_payroll_ma.payroll_jr_imputation</field>
+        <field name="print_report_name">'IGASER - Journal Imputation Comptable'</field>
+        <field name="binding_model_id" ref="om_hr_payroll.model_hr_payslip_run" />
+        <field name="binding_type">report</field>
+    </record> -->
+
+    <!-- <record id="action_report_pay_jr_imputation" model="ir.actions.report">
+        <field name="name">IGASER - Etat Cnss</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_payroll_ma.payroll_cnss</field>
+        <field name="report_file">hr_payroll_ma.payroll_cnss</field>
+        <field name="print_report_name">'IGASER - Etat Cnss'</field>
+        <field name="binding_model_id" ref="om_hr_payroll.model_hr_payslip_run" />
+        <field name="binding_type">report</field>
+    </record> -->
+
+    <record id="action_report_contract" model="ir.actions.report">
+        <field name="name">IGASER - Etat Contrat</field>
+        <field name="model">hr.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_payroll_ma.payroll_contract</field>
+        <field name="report_file">hr_payroll_ma.payroll_contract</field>
+        <field name="print_report_name">'IGASER - Etat Contrat'</field>
+        <field name="binding_model_id" ref="om_hr_payroll.model_hr_contract" />
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

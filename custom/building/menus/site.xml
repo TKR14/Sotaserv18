@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <!-- -Affaires -->
+
+        <menuitem id="menu_site_root" name="Affaires" web_icon="building,static/description/icon.png" groups="building.building_group"/>
+        <menuitem id="menu_site" name="Affaires" parent="menu_site_root"  sequence="1"/>
+        <menuitem id="menu_list_site" name="Affaires" action="action_building_site" parent="menu_site"  sequence="0" />
+        <menuitem action="building_purchase_need_action" id="menu_tendering_need_action" parent="menu_site" sequence="1" groups="building.group_purchase_need"/>
+        <menuitem id="building_assignment_tree" name="Affectations" action="building_assignment_action" parent="menu_site"  sequence="2" groups="building.group_assign"/>
+        <menuitem id="menu_site_config" name="Configuration" parent="menu_site_root" sequence="8"/>
+        <menuitem id="menu_attachment_type" action="attachment_type_act"  parent="menu_site_config" groups ="" sequence="1"/>
+        <menuitem id="menu_building_site_categ" action="building_site_categ_action"  parent="menu_site_config" groups ="" sequence="2"/>
+        <menuitem id="menu_building_limit_control_site" action="building_limit_control_site_action"  parent="menu_site_config" groups ="" sequence="3"/>
+        <menuitem action="building_purchase_need_template_menuitem_action" id="menu_tendering_need_template_action" parent="building.menu_site_config" sequence="5" name="Template liste des besoins"/>
+        <!-- <menuitem id="menu_building_assignment_emp_action" name="Affectations des ressources" action="building_assignment_emp_action" parent="menu_site"  sequence="3" />
+        <menuitem id="menu_building_assignment_equipment_action" name="Affectations des équipements" action="building_assignment_equipment_action" parent="menu_site"  sequence="4" /> -->
+        <!-- <menuitem id="menu_building_assignment_vehicle_action" name="Affectations des véhicules" action="building_assignment_vehicle_action" parent="menu_site"  sequence="5" /> -->
+        <menuitem id="menu_list_excution" name="Exploitations" action="building_executed_action" parent="menu_site"  sequence="6" groups="building.group_exp"/>
+        <!-- <menuitem id="menu_list_excution_report" name="CA Journalier" action="building_executed_report_action" parent="menu_site"  sequence="7" /> -->
+        <menuitem id="menu_list_excution_line_report" name="CA Journalier" action="building_executed_report_line_action" parent="menu_site"  sequence="8" groups="building.group_ca"/>
+        <!-- <menuitem id="menu_list_excution_details_report" name="CA Par Sous Rubrique" action="building_executed_report_detail_action" parent="menu_site"  sequence="9" /> -->
+
+        <!-- -documents Affaires -->
+        <menuitem id="menu_documents" name="Ordres de service" parent="menu_site_root"  sequence="2" groups="building.group_ods"/>
+        <!-- <menuitem id="building_menu_action_attachment" name="Documents" action="base.action_attachment"  parent="menu_documents" sequence="3" groups="building.group_ods"/> -->
+
+        <!-- Attachement-->
+
+        <!-- <menuitem id="menu_building_attachment_parent" name="Attachements" parent="menu_site_root"  sequence="3" groups="building.group_attach_cust"/> -->
+    	<!-- <menuitem id="menu_building_attachment"  action="building_attachment_act_server"  parent="menu_building_attachment_parent" groups="building.group_attach_cust"/> -->
+        <menuitem id="menu_building_attachment_inv"  action="building_attachment_inv_act"  parent="account.menu_finance_receivables" groups="account.group_account_invoice" sequence="0"/>
+        <!-- <menuitem id="menu_create_building_attachment"  action="create_attachment_action"  parent="menu_building_attachment_parent" groups="building.group_attach_cust"/> -->
+        <!-- <menuitem id="menu_building_supplier_attachment" action="building_supplier_attachment_act"  parent="menu_building_attachment_parent" groups="building.group_attach_suppl"/>
+        <menuitem id="menu_create_building_supplier_attachment"  action="create_supplier_attachment_action"  parent="menu_building_attachment_parent" groups="building.group_attach_suppl"/> -->
+
+        <!-- contrats-->
+
+        <!-- <menuitem id="menu_building_contracts_parent" name="Contrats" parent="menu_site_root"  sequence="4" groups="building.group_attach_contracts"/>
+        <menuitem id="menu_building_list_ctr_avenant"  name="Avenants" action="action_orders_amendment"  parent="menu_building_contracts_parent" groups="building.group_attach_contracts"/>
+        <menuitem id="menu_building_amendment_create"  action="building_amendment_create_action"  parent="menu_building_contracts_parent" groups="building.group_attach_contracts"/> -->
+        
+        <!-- <menuitem id="menu_building_subcontracting" action="action_subcontracting"  parent="menu_building_contracts_parent" groups="building.group_attach_contracts"/>
+        <menuitem id="menu_building_subcontracting_create"  action="building_subcontracting_create_action"  parent="menu_building_contracts_parent" groups="building.group_attach_contracts"/> -->
+
+        <!-- Menu appels offres-->
+<!--         <menuitem id="menu_tendering_site" name="Appels d'offres" parent="menu_site_root"  sequence="0"/>
+        <menuitem id="menu_building_pipeline_site" name="Suivi des Consultations" action="crm.action_your_pipeline"  parent="menu_tendering_site"  sequence="1"/>
+ -->        <!-- <menuitem id="menu_building_price_calculation" name="Chiffrages" action="action_building_price_calculation"  parent="menu_tendering_site"  sequence="2"/> -->
+<!--         <menuitem action="building_purchase_need_action" id="menu_tendering_need_action" parent="menu_tendering_site" groups="" sequence="2"/>
+
+        <menuitem id="menu_building_order_site" name="Bordereaux de prix" action="action_orders"  parent="menu_tendering_site"  sequence="3"/>
+        <menuitem id="menu_building_caution_list" parent="menu_tendering_site" 
+        action="crm_igaser.action_account_caution_tree_view" sequence="4"/>
+ -->
+        <!--Configuration -->
+        
+
+        <!-- #a rajouter les eils de controle -->
+<!--         <menuitem id="menu_resource_materiel" name="Ressources Matérielles" parent="menu_site_config" sequence="3"/>
+       	<menuitem id="menu_building_resource_material" name="Matériels" action="action_building_resource_material" parent="menu_resource_materiel" sequence="1"/>
+        <menuitem id="menu_resource_category" name="Catégories de matériels" action="action_resource_category_view" parent="menu_resource_materiel" sequence="2" />
+
+        <menuitem id="menu_resource_humain" name="Ressources Humaines" parent="menu_site_config" sequence="4"/>
+
+        <menuitem id="menu_resource_profile" name="Profils" parent="menu_resource_humain"  action="action_resource_profile_view" sequence="150"/>
+        <menuitem id="menu_building_resource_human" name="Personnels" parent="menu_resource_humain" action="action_building_resource_human"  sequence="250"/>
+ -->
+</odoo>

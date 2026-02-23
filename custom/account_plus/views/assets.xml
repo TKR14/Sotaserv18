@@ -1,0 +1,7 @@
+<odoo>
+    <template id="assets_backend" name="custom js for delete" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/account_plus/static/js/basic_controller.js"/>
+        </xpath>
+    </template>
+</odoo>

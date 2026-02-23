@@ -1,0 +1,196 @@
+.building_form .oe_form_sheet_width {
+    min-width: 650px;
+    max-width: 1200px;
+    margin: 0px auto;
+}
+
+.building_form .oe_section {
+    font-weight: bold;
+    margin-left: 0px;
+    margin-right: 0px;
+    color: #7c7bad;
+    width: 195px;
+    background: #f0eeee;
+}
+
+.building_form .oe_section .oe_stat_button {
+    font-weight: bold;
+    width: 195px !important;
+    height: 40px;
+    color: #666;
+    margin: 1px 1px 1px 1px;
+    padding: 0;
+    border: 1px solid #7c7bad;
+    border-radius: 0;
+    box-shadow: none;
+    background: ghostwhite;
+}
+
+.building_form .oe_section_menu {
+    font-weight: bold;
+    text-align: center;
+    color: #7c7bad;
+    background: #f0eeee;
+    height: 30px;
+    width: 195px !important;
+    margin: 1px 1px 1px 1px;
+    padding: 0;
+    font-size: 15px;
+}
+
+.building_form .fieldset {
+    background-color: #ffffff;
+    width: 450px;
+    padding: 10px;
+    border: 2px solid #7b68ee;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+.building_form .legend {
+    color: #7b68ee;
+    width: 50%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 90%;
+}
+
+.building_form .contents {
+    position: absolute;
+}
+
+.need_rh_tab .o_section_and_note_text_cell:not(tr.o_is_line_section td), .need_mini_equipment_tab .o_section_and_note_text_cell:not(tr.o_is_line_section td) {
+    width: 0px !important;
+    padding: 0px !important;
+}
+
+.need_rh_tab_temp .o_boolean_toggle_cell,
+.need_product_tab_temp .o_boolean_toggle_cell,
+.need_service_provision_tab_temp .o_boolean_toggle_cell,
+.need_mini_equipment_tab_temp .o_boolean_toggle_cell,
+.need_equipment_tab_temp .o_boolean_toggle_cell,
+.need_diesel_consumption_tab .o_boolean_toggle_cell,
+.need_small_equipment_tab_temp .o_boolean_toggle_cell {
+    min-width: 45px !important;
+    width: 45px !important;
+}
+
+.need_rh_tab_temp th:first-child,
+.need_product_tab_temp th:first-child,
+.need_service_provision_tab_temp th:first-child,
+.need_mini_equipment_tab_temp th:first-child,
+.need_equipment_tab_temp th:first-child,
+.need_diesel_consumption_tab th:first-child,
+.need_small_equipment_tab_temp th:first-child {
+    min-width: 50px !important;
+    width: 50px !important;
+}
+
+.need_rh_tab_temp tbody tr td:first-child,
+.need_product_tab_temp tbody tr td:first-child,
+.need_service_provision_tab_temp tbody tr td:first-child,
+.need_mini_equipment_tab_temp tbody tr td:first-child,
+.need_equipment_tab_temp tbody tr td:first-child,
+.need_diesel_consumption_tab tbody tr td:first-child,
+.need_small_equipment_tab_temp tbody tr td:first-child {
+    text-align: left !important;
+}
+
+/* product_category_view_form_buyers */
+.buyer_ids {
+    width: 240px;
+}
+
+.buyer_ids i {
+    width: 20% !important;
+}
+
+.buyer_ids .o_field_widget {
+    max-width: 80% !important;
+}
+
+.building_purchase_need_form .o_stat_info_details {
+    margin-left: 5px;
+}
+
+.building_purchase_need_form .dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.building_purchase_need_form .dropdown_list {
+    position: absolute;
+    display: none;
+    top: 43px;
+    right: -1px;
+    background-color: #f9f9f9;
+    border: 1px solid #ced4da;
+    width: 180px;
+    z-index: 1;
+}
+
+.building_purchase_need_form .dropdown_list button {
+    display: inline-block;
+    padding: 10px;
+    color: black;
+    width: 100%;
+    text-decoration: none;
+    text-align: left;
+    border: 0;
+    border-radius: 0;
+    border-bottom: 1px solid #ced4da;
+}
+
+.building_purchase_need_form .dropdown_list button:last-child {
+    border-bottom: 0;
+}
+
+.building_purchase_need_form .dropdown_list button:hover {
+    background-color: #f7f7f7;
+}
+
+.building_purchase_need_form .dropdown:hover .dropdown_list {
+    display: block;
+}
+
+.building_purchase_need_form .page_subtotal tbody {
+    float: right;
+}
+
+.pb_view_contant .o_column_sortable:nth-of-type(2) {
+    max-width: 399px !important;
+    width: 399px !important;
+}
+.pb_view_contant .o_column_sortable:nth-of-type(3) {
+    min-width: 92px !important; 
+    width: 92px !important;
+}
+.pb_view_contant .o_column_sortable:nth-of-type(4) {
+    width: 126px !important;
+}
+.pb_view_contant .o_column_sortable:nth-of-type(5) {
+    min-width: 92px !important;
+    width: 98px !important;
+}
+.pb_view_contant .o_column_sortable:nth-of-type(6) {
+    min-width: 92px !important;
+    width: 141px !important;
+}
+
+.create_att_bp .o_column_sortable:nth-of-type(3) {
+    max-width: 60px !important;
+    width: 60px !important;
+}
+
+.attachmnet_group .o_group.o_inner_group.o_group_col_6:first-of-type {
+    width: 65%;
+}
+
+.attachmnet_group .o_group.o_inner_group.o_group_col_6:nth-of-type(2) {
+    width: 30%;
+}
+
+.create_att_bp .o_section_and_note_text_cell.o_column_sortable {
+    max-width: 500px !important;
+}

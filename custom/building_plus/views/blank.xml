@@ -1,0 +1,21 @@
+<odoo>
+    <!-- FORM -->
+    <record id="blank_view_form" model="ir.ui.view">
+        <field name="name">blank.view.form</field>
+        <field name="model">blank</field>
+        <field name="arch" type="xml">
+            <form>
+            </form>
+        </field>
+    </record>
+
+    <!-- TREE -->
+    <record id="blank_view_tree" model="ir.ui.view">
+        <field name="name">blank.view.tree</field>
+        <field name="model">blank</field>
+        <field name="arch" type="xml">
+            <list>
+            </list>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>        
+
+        <record id="building_executed_report_tree" model="ir.ui.view">
+            <field name="name">building.executed.report.tree</field>
+            <field name="model">building.executed.report</field>
+            <field name="arch" type="xml">
+                <list string="Excution" >
+                    <field name="year"/>
+                    <field name="month"/>
+                    <field name="date"/>
+                    <field name="site_id"/>
+                    <field name="amount_exploitation_charges"/>
+                    <field name="forcast_amount_business"/>
+                    <field name="amount_forcast_result"/>
+                    <field name="previous_day_amount_business"/>
+                    <field name="executed_amount_business"/>
+                    <field name="amount_result_executed"/>
+                    <button name="building_executed_line_tree_view" type="object" string="détails"  class="oe_highlight"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="building_executed_report_filter" model="ir.ui.view">
+            <field name="name">building.executed.report.select</field>
+            <field name="model">building.executed.report</field>
+            <field name="arch" type="xml">
+                <search string="Search executed report ">
+                    <field name="site_id"/>
+                    <field name="year"/>
+                    <field name="month"/>
+                    <separator/>
+                    <filter string="01" name="m1" domain="[('month', '=', '1')]"/>
+                    <filter string="02" name="m2" domain="[('month', '=', '2')]"/>
+                    <filter string="03" name="m3" domain="[('month', '=', '3')]"/>
+                    <filter string="04" name="m4" domain="[('month', '=', '4')]"/>
+                    <filter string="05" name="m5" domain="[('month', '=', '5')]"/>
+                    <filter string="06" name="m6" domain="[('month', '=', '6')]"/>
+                    <filter string="07" name="m7" domain="[('month', '=', '7')]"/>
+                    <filter string="08" name="m8" domain="[('month', '=', '8')]"/>
+                    <filter string="09" name="m9" domain="[('month', '=', '9')]"/>
+                    <filter string="10" name="m10" domain="[('month', '=', '10')]"/>
+                    <filter string="11" name="m11" domain="[('month', '=', '11')]"/>
+                    <filter string="12" name="m12" domain="[('month', '=', '12')]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Année" name='filt_year' domain="[]" context="{'group_by':'year'}"/>
+                        <filter string="Mois" name='filt_month' domain="[]" context="{'group_by':'month'}"/>
+                        <filter string="Affaire" name='filt_site' domain="[]" context="{'group_by':'site_id'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+
+        <record id="building_executed_report_action" model="ir.actions.act_window">
+            <field name="name">Suivi CA Journalier</field>
+            <field name="res_model">building.executed.report</field>
+            <field name="view_mode">list</field>
+            <field name="search_view_id" ref="building_executed_report_filter"/>
+            <field name="context">{'search_default_filt_year':1, 'search_default_filt_month':1, 'search_default_filt_site':1}</field>
+        </record>
+        
+
+        <record id="building_executed_report_line_tree" model="ir.ui.view">
+            <field name="name">building.executed.line.report.tree</field>
+            <field name="model">building.executed.line.report</field>
+            <field name="arch" type="xml">
+                <list string="Excution" >
+                    <field name="year"/>
+                    <field name="month"/>
+                    <field name="date"/>
+                    <field name="site_id"/>
+                    <field name="executed_id"/>
+                    <field name="r0"/>
+                    <field name="r1"/>
+                    <field name="amount"/>
+                    <button name="building_executed_details_tree_view" type="object" string="détails"  class="oe_highlight"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="building_executed_report_line_filter" model="ir.ui.view">
+            <field name="name">building.executed.line.report.select</field>
+            <field name="model">building.executed.line.report</field>
+            <field name="arch" type="xml">
+                <search string="Search executed report ">
+                    <field name="site_id"/>
+                    <field name="year"/>
+                    <field name="month"/>
+                    <separator/>
+                    <filter string="01" name="m1" domain="[('month', '=', '1')]"/>
+                    <filter string="02" name="m2" domain="[('month', '=', '2')]"/>
+                    <filter string="03" name="m3" domain="[('month', '=', '3')]"/>
+                    <filter string="04" name="m4" domain="[('month', '=', '4')]"/>
+                    <filter string="05" name="m5" domain="[('month', '=', '5')]"/>
+                    <filter string="06" name="m6" domain="[('month', '=', '6')]"/>
+                    <filter string="07" name="m7" domain="[('month', '=', '7')]"/>
+                    <filter string="08" name="m8" domain="[('month', '=', '8')]"/>
+                    <filter string="09" name="m9" domain="[('month', '=', '9')]"/>
+                    <filter string="10" name="m10" domain="[('month', '=', '10')]"/>
+                    <filter string="11" name="m11" domain="[('month', '=', '11')]"/>
+                    <filter string="12" name="m12" domain="[('month', '=', '12')]"/>
+                    <separator/>
+                    <filter string="Prévisionnels" name="forcasteds" domain="[('r0', '=', 'forcated')]"/>
+                    <filter string="Réalisations" name="executeds" domain="[('r0', '=', 'executed')]"/>
+                    <filter string="Charges" name="loads" domain="[('r0', '=', 'load')]"/>
+                    <filter string="Location Interne" name="loads" domain="[('is_rental', '=', False)]"/>
+                    <filter string="Location Externe" name="loads" domain="[('is_rental', '=', True)]"/>
+
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Année" name='filt_year' domain="[]" context="{'group_by':'year'}"/>
+                        <filter string="Mois" name='filt_month' domain="[]" context="{'group_by':'month'}"/>
+                        <filter string="Affaire" name='filt_site' domain="[]" context="{'group_by':'site_id'}"/>
+                        <filter string="Rubrique" name='filt_r0' domain="[]" context="{'group_by':'r0'}"/>
+                        <filter string="Sous Rubrique" name='filt_r1' domain="[]" context="{'group_by':'r1'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="building_executed_report_line_graph">
+            <field name="name">building.executed.line.report.graph</field>
+            <field name="model">building.executed.line.report</field>
+            <field name="arch" type="xml">
+                <graph string="CA" type="bar">
+                    <field name="r0" type="row"/>
+                    <field name="prc_amount_per_executed" type="measure"/>
+                    <field name="amount" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="building_executed_report_line_action" model="ir.actions.act_window">
+            <field name="name">Lignes CA Journalier</field>
+            <field name="res_model">building.executed.line.report</field>
+            <field name="view_mode">list,graph</field>
+            <field name="search_view_id" ref="building_executed_report_line_filter"/>
+            <field name="context">{'search_default_filt_year':1, 'search_default_filt_month':1, 'search_default_filt_site':1, 'search_default_filt_r0':1, 'search_default_filt_r1':1}</field>
+        </record>
+
+        <record id="building_executed_report_detail_tree" model="ir.ui.view">
+            <field name="name">building.executed.detail.report.tree</field>
+            <field name="model">building.executed.detail.report</field>
+            <field name="arch" type="xml">
+                <list string="Excution" >
+                    <field name="year"/>
+                    <field name="month"/>
+                    <field name="date"/>
+                    <field name="site_id"/>
+                    <field name="name"/>
+                    <field name="quantity"/>
+                    <field name="uom_id"/>
+                    <field name="price_unit"/>
+                    <field name="amount_total"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="building_executed_report_detail_filter" model="ir.ui.view">
+            <field name="name">building.executed.detail.report.select</field>
+            <field name="model">building.executed.detail.report</field>
+            <field name="arch" type="xml">
+                <search string="Search executed report ">
+                    <field name="site_id"/>
+                    <field name="year"/>
+                    <field name="month"/>
+                    <separator/>
+                    <filter string="01" name="m1" domain="[('month', '=', '1')]"/>
+                    <filter string="02" name="m2" domain="[('month', '=', '2')]"/>
+                    <filter string="03" name="m3" domain="[('month', '=', '3')]"/>
+                    <filter string="04" name="m4" domain="[('month', '=', '4')]"/>
+                    <filter string="05" name="m5" domain="[('month', '=', '5')]"/>
+                    <filter string="06" name="m6" domain="[('month', '=', '6')]"/>
+                    <filter string="07" name="m7" domain="[('month', '=', '7')]"/>
+                    <filter string="08" name="m8" domain="[('month', '=', '8')]"/>
+                    <filter string="09" name="m9" domain="[('month', '=', '9')]"/>
+                    <filter string="10" name="m10" domain="[('month', '=', '10')]"/>
+                    <filter string="11" name="m11" domain="[('month', '=', '11')]"/>
+                    <filter string="12" name="m12" domain="[('month', '=', '12')]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Année" name='filt_year' domain="[]" context="{'group_by':'year'}"/>
+                        <filter string="Mois" name='filt_month' domain="[]" context="{'group_by':'month'}"/>
+                        <filter string="Affaire" name='filt_site' domain="[]" context="{'group_by':'site_id'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+        <record id="building_executed_report_detail_action" model="ir.actions.act_window">
+            <field name="name">Details CA Journalier</field>
+            <field name="res_model">building.executed.detail.report</field>
+            <field name="view_mode">list</field>
+            <field name="search_view_id" ref="building_executed_report_detail_filter"/>
+            <field name="context">{'search_default_filt_year':1, 'search_default_filt_month':1, 'search_default_filt_site':1}</field>
+        </record>
+
+
+
+        <record id="building_purchase_need_report_filter" model="ir.ui.view">
+            <field name="name">building.purchase.need.report.select</field>
+            <field name="model">building.purchase.need.report</field>
+            <field name="arch" type="xml">
+                <search string="Search executed report ">
+                    <field name="opp_id"/>
+                    <field name="site_id"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Affaire" name='filt_site' domain="[]" context="{'group_by':'site_id'}"/>
+                        <filter string="Rubrique" name='filt_r0' domain="[]" context="{'group_by':'r0'}"/>
+                        <filter string="Marché" name='filt_opp' domain="[]" context="{'group_by':'opp_id'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="building_purchase_need_report_graph">
+            <field name="name">building.purchase.need.report.graph</field>
+            <field name="model">building.purchase.need.report</field>
+            <field name="arch" type="xml">
+                <graph string="CA" type="bar">
+                    <field name="r0" type="row"/>
+                    <field name="prc_amount_per_load" type="measure"/>
+                    <field name="amount" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="building_purchase_need_report_tree" model="ir.ui.view">
+            <field name="name">building.purchase.need.report.tree</field>
+            <field name="model">building.purchase.need.report</field>
+            <field name="arch" type="xml">
+                <list string="Charges" decoration-danger="prc_amount_per_load&gt;prc_seuil">
+                    <field name="site_id"/>
+                    <field name="r0"/>
+                    <field name="amount"/>
+                    <field name="prc_amount_per_load"/>
+                    <field name="prc_seuil"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="building_purchase_need_report_action" model="ir.actions.act_window">
+            <field name="name">Besoins</field>
+            <field name="res_model">building.purchase.need.report</field>
+            <field name="view_mode">list,graph</field>
+            <field name="search_view_id" ref="building_executed_report_line_filter"/>
+            <field name="context">{'search_default_filt_site':1}</field>
+        </record>
+
+        <record id="building_site_report_tree" model="ir.ui.view">
+            <field name="name">building.site.report.tree</field>
+            <field name="model">building.site.report</field>
+            <field name="arch" type="xml">
+                <list string="Site report" decoration-danger="prc_amount_per_invoiced&gt;prc_seuil">
+                    <field name="site_id"/>
+                    <field name="r0"/>
+                    <field name="amount"/>
+                    <field name="prc_amount_per_invoiced"/>
+                    <field name="prc_seuil"/>
+                    <button name="building_site_report_details_tree_view" type="object" string="détails"  class="oe_highlight"/>
+                </list>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="building_site_report_graph">
+            <field name="name">building.site.report.graph</field>
+            <field name="model">building.site.report</field>
+            <field name="arch" type="xml">
+                <graph string="CA" type="bar">
+                    <field name="r0" type="row"/>
+                    <field name="prc_amount_per_invoiced" type="measure"/>
+                    <field name="amount" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="building_site_report_filter" model="ir.ui.view">
+            <field name="name">building.site.report.select</field>
+            <field name="model">building.site.report</field>
+            <field name="arch" type="xml">
+                <search string="Search site report ">
+                    <field name="site_id"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Affaire" name='filt_site' domain="[]" context="{'group_by':'site_id'}"/>
+                        <filter string="Rubrique" name='filt_r0' domain="[]" context="{'group_by':'r0'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+        <record id="building_site_report_action" model="ir.actions.act_window">
+            <field name="name">Situation générale</field>
+            <field name="res_model">building.site.report</field>
+            <field name="view_mode">list,graph</field>
+            <field name="search_view_id" ref="building_site_report_filter"/>
+            <field name="context">{'search_default_filt_site':1}</field>
+        </record>
+
+        <record id="building_site_invoiced_report_tree" model="ir.ui.view">
+            <field name="name">building.site.invoiced.report.tree</field>
+            <field name="model">building.site.invoiced.report</field>
+            <field name="arch" type="xml">
+                <list string="Site report" >
+                    <field name="year" optional="hide"/>
+                    <field name="month" optional="hide"/>
+                    <field name="date" optional="show" string="Date Fact"/>
+                    <field name="site_id" optional="show"/>
+                    <field name="attach_id" optional="show"/>
+                    <field name="invoice_id" optional="show"/>
+                    <field name="partner_id" optional="show"/>
+                    <field name="type_marche" optional="hide"/>
+                    <field name="invoice_state" optional="hide"/>
+                    <field name="user_id" optional="show"/>
+                    <field name="no_price" optional="hide"/>
+                    <field name="description" optional="show"/>
+                    <field name="sale_qty" optional="hide" string="Qte Marché"/>
+                    <field name="qty" optional="show" string="Qte Fact"/>
+                    <field name="uom_id" optional="show"/>
+                    <field name="price_unit" optional="show"/>
+                    <field name="amount" optional="show"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="building_site_invoiced_report_filter" model="ir.ui.view">
+            <field name="name">building.site.invoiced.report.select</field>
+            <field name="model">building.site.invoiced.report</field>
+            <field name="arch" type="xml">
+                <search string="Search site report ">
+                    <field name="site_id"/>
+                    <field name="attach_id"/>
+                    <field name="invoice_id"/>
+                    <field name="year"/>
+                    <field name="month"/>
+                    <separator/>
+                    <filter string="01" name="m1" domain="[('month', '=', '1')]"/>
+                    <filter string="02" name="m2" domain="[('month', '=', '2')]"/>
+                    <filter string="03" name="m3" domain="[('month', '=', '3')]"/>
+                    <filter string="04" name="m4" domain="[('month', '=', '4')]"/>
+                    <filter string="05" name="m5" domain="[('month', '=', '5')]"/>
+                    <filter string="06" name="m6" domain="[('month', '=', '6')]"/>
+                    <filter string="07" name="m7" domain="[('month', '=', '7')]"/>
+                    <filter string="08" name="m8" domain="[('month', '=', '8')]"/>
+                    <filter string="09" name="m9" domain="[('month', '=', '9')]"/>
+                    <filter string="10" name="m10" domain="[('month', '=', '10')]"/>
+                    <filter string="11" name="m11" domain="[('month', '=', '11')]"/>
+                    <filter string="12" name="m12" domain="[('month', '=', '12')]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Affaire" name='filt_site' domain="[]" context="{'group_by':'site_id'}"/>
+                        <filter string="Attachement" name='filt_attach' domain="[]" context="{'group_by':'attach_id'}"/>
+                        <filter string="Facture" name='filt_invoice' domain="[]" context="{'group_by':'invoice_id'}"/>
+                        <filter string="Type Pres" name='filt_invoice_state' domain="[]" context="{'group_by':'invoice_state'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+        <record id="building_site_invoiced_report_action" model="ir.actions.act_window">
+            <field name="name">CA</field>
+            <field name="res_model">building.site.invoiced.report</field>
+            <field name="view_mode">list</field>
+            <field name="search_view_id" ref="building_site_invoiced_report_filter"/>
+            <field name="context">{'search_default_filt_site':1}</field>
+        </record>
+
+        <record id="building_site_stock_report_tree" model="ir.ui.view">
+            <field name="name">building.site.stock.report.tree</field>
+            <field name="model">building.site.stock.report</field>
+            <field name="arch" type="xml">
+                <list string="Site report" >
+                    <field name="year" optional="hide"/>
+                    <field name="month" optional="hide"/>
+                    <field name="date" optional="show"/>
+                    <field name="purchase_user_id" optional="hide"/>
+                    <field name="purchase_id" optional="hide"/>
+                    <field name="picking_id" optional="show"/>
+                    <field name="no_pick_supplier" optional="hide"/>
+                    <field name="partner_id" optional="hide"/>
+                    <field name="site_id" optional="show"/>
+                    <field name="type_op" optional="hide"/>
+                    <field name="pick_categ" optional="show"/>
+                    <field name="stock_user_id" optional="show"/>
+                    <field name="description" optional="show"/>
+                    <field name="qty" optional="show"/>
+                    <field name="uom_id" optional="show"/>
+                    <field name="price_unit" optional="show"/>
+                    <field name="amount" optional="show"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="building_site_stock_report_filter" model="ir.ui.view">
+            <field name="name">building.site.stock.report.select</field>
+            <field name="model">building.site.stock.report</field>
+            <field name="arch" type="xml">
+                <search string="Search site report ">
+                    <field name="site_id"/>
+                    <field name="picking_id"/>
+                    <field name="year"/>
+                    <field name="month"/>
+                    <separator/>
+                    <filter string="01" name="m1" domain="[('month', '=', '1')]"/>
+                    <filter string="02" name="m2" domain="[('month', '=', '2')]"/>
+                    <filter string="03" name="m3" domain="[('month', '=', '3')]"/>
+                    <filter string="04" name="m4" domain="[('month', '=', '4')]"/>
+                    <filter string="05" name="m5" domain="[('month', '=', '5')]"/>
+                    <filter string="06" name="m6" domain="[('month', '=', '6')]"/>
+                    <filter string="07" name="m7" domain="[('month', '=', '7')]"/>
+                    <filter string="08" name="m8" domain="[('month', '=', '8')]"/>
+                    <filter string="09" name="m9" domain="[('month', '=', '9')]"/>
+                    <filter string="10" name="m10" domain="[('month', '=', '10')]"/>
+                    <filter string="11" name="m11" domain="[('month', '=', '11')]"/>
+                    <filter string="12" name="m12" domain="[('month', '=', '12')]"/>
+                    <separator/>
+
+                    <group expand="0" string="Group By">
+                        <filter string="Affaire" name='filt_site' domain="[]" context="{'group_by':'site_id'}"/>
+                        <filter string="Livraison" name='filt_pick' domain="[]" context="{'group_by':'picking_id'}"/>
+                        <filter string="Type de Produit" name='filt_pick_categ' domain="[]" context="{'group_by':'pick_categ'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+        <record id="building_site_stock_report_action" model="ir.actions.act_window">
+            <field name="name">Stock</field>
+            <field name="res_model">building.site.stock.report</field>
+            <field name="view_mode">list</field>
+            <field name="search_view_id" ref="building_site_stock_report_filter"/>
+            <field name="context">{'search_default_filt_site':1}</field>
+        </record>
+
+</odoo>

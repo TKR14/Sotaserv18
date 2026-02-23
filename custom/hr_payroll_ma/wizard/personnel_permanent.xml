@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="personnel_permanent_view" model="ir.ui.view">
+        <field name="name">personnel.permanent.view</field>
+        <field name="model">personnel.permanent</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="year" />
+                    </group>
+                    <group>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Imprimer" class="btn-primary" name="get_year" type="object" />
+                    <button string="Annuler" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="personnel_permanent_action" model="ir.actions.act_window">
+        <field name="name">9421</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">personnel.permanent</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="personnel_permanent_view" />
+        <field name="target">new</field>
+    </record>
+
+    <!-- <menuitem id="om_hr_payroll.menu_hr_payroll_analyse" name="Analyse" sequence="90"
+        parent="om_hr_payroll.menu_hr_payroll_root" />
+
+    <menuitem id="personnel_permanent_menu" name="9421" sequence="110"
+        parent="om_hr_payroll.menu_hr_payroll_analyse" action="personnel_permanent_action" /> -->
+
+    <record id="personnel_permanent_paperformat" model="report.paperformat">
+        <field name="name">Personnel Permanent Rapport Format</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">15</field>
+        <field name="margin_bottom">5</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+    </record>
+
+    <record id="personnel_permanent_report" model="ir.actions.report">
+        <field name="name">personnel_permanent</field>
+        <field name="model">personnel.permanent</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_payroll_ma.personnel_permanent_template</field>
+        <field name="paperformat_id" ref="hr_payroll_ma.personnel_permanent_paperformat" />
+    </record>
+
+    <template id="personnel_permanent_template">
+        <t t-call="web.basic_layout">
+
+            <!-- <t t-set="employees" t-value="request.env['hr.employee'].get_employees()" /> -->
+            <t t-set="employees" t-value="request.env['hr.payslip'].get_employees(year)" />
+
+            <t t-set="e" t-value="0" />
+
+            <t t-set="start" t-value="0" />
+            <t t-set="end" t-value="12" />
+
+            <t t-set="page" t-value="ceil(len(employees)/12)" />
+
+            <!-- TOTAL GENERAL -->
+            <!-- 1 -->
+            <t t-set="tg_1" t-value="0" />
+            <!-- 2 -->
+            <t t-set="tg_2" t-value="0" />
+            <!-- 3 -->
+            <t t-set="tg_3" t-value="0" />
+            <!-- 4 -->
+            <t t-set="tg_4" t-value="0" />
+            <!-- t -->
+            <t t-set="tg_t" t-value="0" />
+            <!-- 5 -->
+            <t t-set="tg_5" t-value="0" />
+            <!-- 6 -->
+            <t t-set="tg_6" t-value="0" />
+            <!-- 7 -->
+            <t t-set="tg_7" t-value="0" />
+            <!-- 8 -->
+            <t t-set="tg_8" t-value="0" />
+            <!-- 9 -->
+            <t t-set="tg_9" t-value="0" />
+            <!-- 10 -->
+            <t t-set="tg_10" t-value="0" />
+            <!-- chrgfam -->
+            <t t-set="tg_chrgfam" t-value="0" />
+            <!-- worked_days -->
+            <t t-set="tg_worked_days" t-value="0" />
+            <!-- 11 -->
+            <t t-set="tg_r_ir" t-value="0" />
+
+            <t t-foreach="range(page)" t-as="p">
+                <div class="page" style="page-break-before: always;">
+
+                    <style> * { padding: 0; margin: 0; } .page { position: relative; height: 245mm;
+                        font-weight: bold; } .title, .sub-title { width: 100%; font-size: 10pt;
+                        position: relative; margin-bottom: 5px; } .title { text-align: center; }
+                        .title .h1 { font-weight: bold; font-size: 12pt; text-align: center;
+                        margin-bottom: 5px; } .title p:last-child { position: absolute; top: 0;
+                        right: 0; font-weight: normal; } .sub-title p { display: inline-block; }
+                        .sub-title p:last-child { float: right; text-align: right; } table {
+                        border-collapse: collapse; border: 2px solid #000; } tbody, thead { border:
+                        2px solid #000; } .border-top { <!-- border-top: 2px solid #000; --> } .border-bottom td, .border-bottom-td {
+                        border-bottom: 2px solid #000; } .border-top td { padding: 7px 4px 0; }
+                        .border-bottom td { padding: 4px 4px 3px; } .border-bottom td { padding: 4px
+                        4px 3px; } tr, th, td { border: 1px solid rgba(0,0,0,0.5); } th {
+                        text-align: center; font-size: 7pt; line-height: 7pt; padding: 1px 2px;
+                        vertical-align: middle; } th.th-bold { font-weight: bold; line-height: 8pt;
+                        } td { font-size: 9pt; vertical-align: top; font-weight: normal; }
+                        td:not(.address) { padding: 3px 4px 1px; white-space: nowrap; } .address {
+                        font-size: 7.5pt; line-height: 8pt; padding: 0; } .divider td { padding:
+                        2px; border-left: hidden; border-right: hidden; } td:nth-last-child(-n+8) {
+                        text-align: right; } .page-total { width: 100%; position: absolute; bottom:
+                        0; } .page-total table { position: absolute; right: 0; float: right; width:
+                        72.2%; } .page-total p { font-size: 7pt; line-height: 7.5pt; } .no-border {
+                        border-left: hidden; border-bottom: hidden; border-right: 2px solid #000; }
+                        .total { font-weight: bold; } </style>
+
+                    <!-- TOTAL PAGE -->
+                    <!-- 1 -->
+                    <t t-set="tp_1" t-value="0" />
+                    <!-- 2 -->
+                    <t t-set="tp_2" t-value="0" />
+                    <!-- 3 -->
+                    <t t-set="tp_3" t-value="0" />
+                    <!-- 4 -->
+                    <t t-set="tp_4" t-value="0" />
+                    <!-- t -->
+                    <t t-set="tp_t" t-value="0" />
+                    <!-- 5 -->
+                    <t t-set="tp_5" t-value="0" />
+                    <!-- 6 -->
+                    <t t-set="tp_6" t-value="0" />
+                    <!-- 7 -->
+                    <t t-set="tp_7" t-value="0" />
+                    <!-- 8 -->
+                    <t t-set="tp_8" t-value="0" />
+                    <!-- 9 -->
+                    <t t-set="tp_9" t-value="0" />
+                    <!-- 10 -->
+                    <t t-set="tp_10" t-value="0" />
+                    <!-- chrgfam -->
+                    <t t-set="tp_chrgfam" t-value="0" />
+                    <!-- worked_days -->
+                    <t t-set="tp_worked_days" t-value="0" />
+                    <!-- 11 -->
+                    <t t-set="tp_r_ir" t-value="0" />
+
+                    <!-- HEADER -->
+                    <div class="title">
+                        <p class="h1">ETAT CONCERNANT LE PERSONNEL PERMANENT</p>
+                        <p>Année <span
+                                t-esc="year" /></p>
+                        <p>Page <span t-esc="p + 1" />/<span t-esc="page" /></p>
+                    </div>
+
+                    <div class="sub-title">
+                        <t t-set="company" t-value="request.env['res.company'].search([])[0]"></t>
+                        <p>N° d'identification fiscale de l'employeur : <span t-esc="company.vat" /></p>
+                        <p>Nom et Prénom (s) ou raison sociale : <span t-esc="company.name" /></p>
+                    </div>
+
+                    <div>
+                        <table>
+                            <thead>
+                                <tr class="border-top">
+                                    <th style="width: 5.3%;" rowspan="2" class="th-bold">NUMERO
+                                        DE MATRICULE</th>
+                                    <th style="width: 23%;" class="th-bold">Nom et prénom</th>
+                                    <th style="width: 6.1%;">N° C.I.N. ou Carte
+                                        d'étranger</th>
+                                    <th style="width: 6.1%;" rowspan="2">N° d'identifi cation
+                                        fiscale</th>
+                                    <th style="width: 2.6%;" rowspan="2">Situa tion
+                                        famil liale (*)</th>
+                                    <th style="width: 7.3%;">Montant brut des traitements, salaires
+                                        et émoluments (1)</th>
+                                    <th style="width: 7%;">Montant des indemnités versées (3)</th>
+                                    <th style="width: 6.2%;" rowspan="2">Taux
+                                        des frais professionnels</th>
+                                    <th style="width: 6.2%;">Montant du revenu brut
+                                        imposable (5)</th>
+                                    <th style="width: 7%;">Montant des cotisations d'assurance (7)</th>
+                                    <th style="width: 12%;" colspan="2">Montant
+                                        des autres retenues (8)</th>
+                                    <th style="width: 6.1%;">Montant du revenu net imposable
+                                        (10)</th>
+                                    <th style="width: 5.3%;">Période en Jours</th>
+                                </tr>
+                                <tr class="border-bottom">
+                                    <th class="th-bold">Adresse
+                                        Personnelle</th>
+                                    <th>N° P.P R. ou CNSS</th>
+                                    <th>Montant des avantages
+                                        en argent ou en nature (2)</th>
+                                    <th>Montant des éléments exonérés
+                                        (4)</th>
+                                    <th>Montant des frais professionnels (6)</th>
+                                    <th>Montant des
+                                        échéances prélevées (9)</th>
+                                    <th>Date de l'AC (**)</th>
+                                    <th>Date du PH
+                                        (***)</th>
+                                    <th>Nombre de réductions <span style="white-space: nowrap;">pour
+                                        charges</span><br />de famille</th>
+                                    <th>I.R Prélevé</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <t t-foreach="employees[start:end]" t-as="employee">
+
+                                    <!-- 1 -->
+                                    <t t-set="r_1"
+                                        t-value="request.env['hr.payslip'].calc_rubrique_total(year, employee, ['SBG'])"></t>
+                                    <!-- 2 -->
+                                    <!-- <t t-set="r_2"
+                                    t-value="request.env['hr.payslip'].calc_rubrique_total(year,
+                                    employee, ['TPI'])"></t> #AELJ# -->
+                                    <t t-set="r_2"
+                                        t-value="request.env['hr.payslip'].calc_rubrique_total(year, employee, [])"></t>
+                                    <!-- 3 -->
+                                    <t t-set="r_3"
+                                        t-value="request.env['hr.payslip'].calc_rubrique_total(year, employee, [])"></t>
+                                    <!-- 4 -->
+                                    <t t-set="r_4"
+                                        t-value="request.env['hr.payslip'].calc_rubrique_total(year, employee, ['TPNI', 'GS_TOT'])"></t>
+                                    <!-- t -->
+                                    <t t-set="r_t"
+                                        t-value="request.env['hr.payslip'].calc_rubrique_total(year, employee, [])"></t>
+                                    <!-- 5 -->
+                                    <!-- <t t-set="r_5" t-value="(r_1 + r_2 + 0) - r_4"></t> #AELJ# -->
+                                    <t t-set="r_5" t-value="(r_1 + 0 + 0) - r_4"></t>
+                                    <!-- 6 -->
+                                    <t t-set="r_6"
+                                        t-value="request.env['hr.payslip'].calc_rubrique_total(year, employee, ['ABT'])"></t>
+                                    <!-- 7 -->
+                                    <t t-set="r_7"
+                                        t-value="request.env['hr.payslip'].calc_rubrique_total(year, employee, [])"></t>
+                                    <!-- 8 -->
+                                    <t t-set="r_8"
+                                        t-value="request.env['hr.payslip'].calc_rubrique_total(year, employee, ['TRET'])"></t>
+                                    <!-- 9 -->
+                                    <t t-set="r_9"
+                                        t-value="request.env['hr.payslip'].calc_rubrique_total(year, employee, [])"></t>
+                                    <!-- 10 -->
+                                    <t t-set="r_10" t-value="r_5 - (r_6 + r_7 + r_8 + r_9)"></t>
+                                    <!-- chargfam -->
+                                    <t t-set="chargfam"
+                                        t-value="request.env['hr.payslip'].calc_rubrique_total(year, employee, ['CHRGFAM'])"></t>
+                                    <!-- worked_days -->
+                                    <t t-set="worked_days"
+                                        t-value="request.env['hr.payslip'].calc_rubrique_total(year, employee, ['WDAYS'])"></t>
+                                    <!-- r_ir -->
+                                    <t t-set="r_ir"
+                                        t-value="request.env['hr.payslip'].calc_rubrique_total(year, employee, ['69'])"></t>
+
+                                    <!-- 1 -->
+                                    <t t-set="tp_1" t-value="tp_1 + r_1" />
+                                    <!-- 2 -->
+                                    <t t-set="tp_2" t-value="tp_2 + r_2" />
+                                    <!-- 3 -->
+                                    <t t-set="tp_3" t-value="tp_3 + r_3" />
+                                    <!-- 4 -->
+                                    <t t-set="tp_4" t-value="tp_4 + r_4" />
+                                    <!-- t -->
+                                    <t t-set="tp_t" t-value="tp_t + r_t" />
+                                    <!-- 5 -->
+                                    <t t-set="tp_5" t-value="tp_5 + r_5" />
+                                    <!-- 6 -->
+                                    <t t-set="tp_6" t-value="tp_6 + r_6" />
+                                    <!-- 7 -->
+                                    <t t-set="tp_7" t-value="tp_7 + r_7" />
+                                    <!-- 8 -->
+                                    <t t-set="tp_8" t-value="tp_8 + r_8" />
+                                    <!-- 9 -->
+                                    <t t-set="tp_9" t-value="tp_9 + r_9" />
+                                    <!-- 10 -->
+                                    <t t-set="tp_10" t-value="tp_10 + r_10" />
+                                    <!-- chrgfam -->
+                                    <t t-set="tp_chrgfam" t-value="tp_chrgfam + chargfam" />
+                                    <!-- worked_days -->
+                                    <t t-set="tp_worked_days" t-value="tp_worked_days + worked_days" />
+                                    <!-- r_ir -->
+                                    <t t-set="tp_r_ir" t-value="tp_r_ir + r_ir" />
+
+                                    <tr class="border-top">
+                                        <td class="border-bottom-td" rowspan="2"
+                                            style="width: 5%; text-align: center; vertical-align: middle;">
+                                            <span t-esc="employee.registration_number" />
+                                        </td>
+                                        <td style="font-weight: bold; width: 23%;">
+                                            <span t-esc="employee.name" />
+                                        </td>
+                                        <td>
+                                            <span t-esc="employee.identification_id" />
+                                        </td>
+                                        <td class="border-bottom-td" rowspan="2"></td>
+                                        <td class="border-bottom-td" rowspan="2"
+                                            style="text-align: center; vertical-align: middle;">
+                                            <span>
+                                                <t t-if='employee.marital == "single"'>C</t>
+                                                <t t-elif='employee.marital == "married"'>M</t>
+                                                <t t-elif='employee.marital == "divorced"'>D</t>
+                                                <t t-elif='employee.marital == "widower"'>V</t>
+                                            </span>
+                                        </td>
+                                        <td t-esc="r_1"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="r_3"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="r_t"
+                                            t-options='{"widget": "float", "precision": 2}'
+                                            class="border-bottom-td"
+                                            style="text-align: center;"
+                                            rowspan="2"></td>
+                                        <td t-esc="r_5"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="r_7"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="r_8"
+                                            t-options='{"widget": "float", "precision": 2}'
+                                            colspan="2"></td>
+                                        <td t-esc="r_10"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="worked_days"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                    </tr>
+                                    <tr class="border-bottom">
+                                        <td class="address">
+                                            <span t-esc="employee.address" />
+                                        </td>
+                                        <td>
+                                            <span t-esc="employee.ssnid" />
+                                        </td>
+                                        <td t-esc="r_2"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="r_4"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="r_6"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="r_9"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td t-esc="chargfam"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="r_ir"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                    </tr>
+                                </t>
+
+                                <tr class="divider">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+
+                                <!-- 1 -->
+                                <t t-set="tg_1" t-value="tg_1 + tp_1" />
+                                <!-- 2 -->
+                                <t t-set="tg_2" t-value="tg_2 + tp_2" />
+                                <!-- 3 -->
+                                <t t-set="tg_3" t-value="tg_3 + tp_3" />
+                                <!-- 4 -->
+                                <t t-set="tg_4" t-value="tg_4 + tp_4" />
+                                <!-- t -->
+                                <t t-set="tg_t" t-value="tg_t + tp_t" />
+                                <!-- 5 -->
+                                <t t-set="tg_5" t-value="tg_5 + tp_5" />
+                                <!-- 6 -->
+                                <t t-set="tg_6" t-value="tg_6 + tp_6" />
+                                <!-- 7 -->
+                                <t t-set="tg_7" t-value="tg_7 + tp_7" />
+                                <!-- 8 -->
+                                <t t-set="tg_8" t-value="tg_8 + tp_8" />
+                                <!-- 9 -->
+                                <t t-set="tg_9" t-value="tg_9 + tp_9" />
+                                <!-- 10 -->
+                                <t t-set="tg_10" t-value="tg_10 + tp_10" />
+                                <!-- chrgfam -->
+                                <t t-set="tg_chrgfam" t-value="tg_chrgfam + tp_chrgfam" />
+                                <!-- worked_days -->
+                                <t t-set="tg_worked_days" t-value="tg_worked_days + tp_worked_days" />
+                                <!-- r_ir -->
+                                <t t-set="tg_r_ir" t-value="tg_r_ir + tp_r_ir" />
+
+
+                                <t t-if="p + 1 == page">
+                                    <tr class="border-top">
+                                        <td class="no-border" rowspan="2" colspan="2"></td>
+                                        <th class="total" rowspan="2" colspan="3">TOTAL GENERAL</th>
+                                        <td t-esc="tg_1" style="width: 10.1%;"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="tg_3" style="width: 9.6%;"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="tg_t" style="width: 8.7%; text-align: center;"
+                                            rowspan="2"
+                                            class="border-bottom-td"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="tg_5" style="width: 8.7%;"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="tg_7" style="width: 9.6%;"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="tg_8" style="width: 17.0%;" colspan="2"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="tg_10" style="width: 8.5%;"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="tg_worked_days" tyle="width: 7.5%;"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                    </tr>
+                                    <tr class="border-bottom">
+                                        <td t-esc="tg_2"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="tg_4"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="tg_6"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="tg_9"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td t-esc="tg_chrgfam"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                        <td t-esc="tg_r_ir"
+                                            t-options='{"widget": "float", "precision": 2}'></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- FOOTER -->
+                    <div class="page-total">
+                        <table>
+                            <tr>
+                                <th class="total" style="width: 20.6%;" rowspan="2">TOTAL
+                                    PAGE</th>
+                                <td t-esc="tp_1" style="width: 10.1%;"
+                                    t-options='{"widget": "float", "precision": 2}'></td>
+                                <td t-esc="tp_3" style="width: 9.6%;"
+                                    t-options='{"widget": "float", "precision": 2}'></td>
+                                <td t-esc="tp_t" style="width: 8.7%; text-align: center;"
+                                    rowspan="2"
+                                    class="border-bottom-td"
+                                    t-options='{"widget": "float", "precision": 2}'></td>
+                                <td t-esc="tp_5" style="width: 8.7%;"
+                                    t-options='{"widget": "float", "precision": 2}'></td>
+                                <td t-esc="tp_7" style="width: 9.6%;"
+                                    t-options='{"widget": "float", "precision": 2}'></td>
+                                <td t-esc="tp_8" style="width: 17.0%;" colspan="2"
+                                    t-options='{"widget": "float", "precision": 2}'></td>
+                                <td t-esc="tp_10" style="width: 8.5%;"
+                                    t-options='{"widget": "float", "precision": 2}'></td>
+                                <td t-esc="tp_worked_days" tyle="width: 7.5%;"
+                                    t-options='{"widget": "float", "precision": 2}'></td>
+                            </tr>
+                            <tr>
+                                <td t-esc="tp_2" t-options='{"widget": "float", "precision": 2}'></td>
+                                <td t-esc="tp_4" t-options='{"widget": "float", "precision": 2}'></td>
+                                <td t-esc="tp_6" t-options='{"widget": "float", "precision": 2}'></td>
+                                <td t-esc="tp_9" t-options='{"widget": "float", "precision": 2}'></td>
+                                <td></td>
+                                <td></td>
+                                <td t-esc="tp_chrgfam"
+                                    t-options='{"widget": "float", "precision": 2}'></td>
+                                <td t-esc="tp_r_ir" t-options='{"widget": "float", "precision": 2}'></td>
+                            </tr>
+                        </table>
+
+                        <p>(*) C = Célibataire, M = Marié(e), D = Divorcé(e), V = Veuf(ve)<br />
+                            (**) Date de l'autorisation de construire.<br /> (***) Date du permis
+                            d'habiter.<br /> (5) = [(1)+(2)+(3)]-(4); (6) = (5) x taux des frais
+                            professionnels.<br /> (7) : Montant des cotisations d'assurance
+                            retraite.<br /> (8) : Montant des retenues opérées au titre de la CNSS
+                            et des <br />organismes de prévoyance sociale.<br /> (9) : Montant des
+                            échéances prélevées au titre des intérêts ou principal et intérêts de
+                            prêts contractés pour acquisition ou la construction de logement destiné
+                            a l'habitation principale. (art 28-II et 59-V du C.G.I).<br />(10) =
+                            (5)-[(6)+(7)+(8)+(9)] </p>
+                    </div>
+                </div>
+                <!--
+                ##################  ADD BY AELJ
+                ################################################### -->
+
+                <!-- TOTAL PAGE -->
+                <!-- 1 -->
+                <t t-set="tp_1" t-value="0" />
+                <!-- 2 -->
+                <t t-set="tp_2" t-value="0" />
+                <!-- 3 -->
+                <t t-set="tp_3" t-value="0" />
+                <!-- 4 -->
+                <t t-set="tp_4" t-value="0" />
+                <!-- t -->
+                <t t-set="tp_t" t-value="0" />
+                <!-- 5 -->
+                <t t-set="tp_5" t-value="0" />
+                <!-- 6 -->
+                <t t-set="tp_6" t-value="0" />
+                <!-- 7 -->
+                <t t-set="tp_7" t-value="0" />
+                <!-- 8 -->
+                <t t-set="tp_8" t-value="0" />
+                <!-- 9 -->
+                <t t-set="tp_9" t-value="0" />
+                <!-- 10 -->
+                <t t-set="tp_10" t-value="0" />
+                <!-- chrgfam -->
+                <t t-set="tp_chrgfam" t-value="0" />
+                <!-- worked_days -->
+                <t t-set="tp_worked_days" t-value="0" />
+                <!-- 11 -->
+                <t t-set="tp_r_ir" t-value="0" />
+                <!--
+                ######################################################################################## -->
+
+                <t t-set="start" t-value="start + 12" />
+                <t t-set="end" t-value="end + 12" />
+                <p></p>
+            </t>
+
+        </t>
+    </template>
+
+</odoo>

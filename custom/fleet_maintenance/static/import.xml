@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<odoo>
+
+    <template id="assets_backend" name="building assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/fleet_maintenance/static/src/css/fleet_maintenance.css"/>
+        </xpath>
+    </template>
+
+</odoo>

@@ -1,0 +1,51 @@
+<odoo>
+    <record id="view_purchase_entry_decompt_tree" model="ir.ui.view">
+        <field name="name">purchase.entry.decompt.tree</field>
+        <field name="model">purchase.entry</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="site_id" width="200"/>
+                <field name="supplier_id" width="200"/>
+                <field name="purchase_id" width="200"/>
+                <field name="number" width="200"/>
+                <field name="start_date" string="Date début" width="200"/>
+                <field name="end_date" string="Date fin" width="200"/>
+                <field name="state_decompte" widget="badge" string="statut" width="200"
+                    decoration-info="state_decompte == 'draft'"
+                    decoration-warning="state_decompte == 'validated_dz'"
+                    decoration-success="state_decompte == 'provider_validated'"
+                    decoration-danger="state_decompte == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_purchase_entry_decompt_dg" model="ir.actions.act_window">
+        <field name="name">Décompte fournisseur</field>
+        <field name="res_model">purchase.entry</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0), 
+                                      (0, 0, {'view_mode': 'list', 'view_id': ref('view_purchase_entry_decompt_tree')}), 
+                                      (0, 0, {'view_mode': 'form', 'view_id': ref('purchase_entry_decompt_view_form')})]"/>
+        <field name="context">{"create": False, "delete": False,}</field>
+    </record>
+
+    <record id="action_purchase_entry_decompt" model="ir.actions.server">
+        <field name="name">Décompte fournisseurs</field>
+        <field name="model_id" ref="model_purchase_entry"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_decompte()</field>
+    </record>
+
+    <record id="view_purchase_entry_decompte_search" model="ir.ui.view">
+        <field name="name">view.purchase.entry.decompte.search</field>
+        <field name="model">purchase.entry</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="site_id"/>
+                <field name="supplier_id"/>
+                <field name="purchase_id"/>
+                <field name="number"/>
+            </search>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_order">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="report.internal_layout">
+                <div class="page">
+                    <div class="col-xs-10 pull-right">
+                         <div>
+                              <strong><span t-field="o.partner_id.name"/></strong>
+                         </div>
+                         <div>
+                             <strong><span t-field="o.partner_id.street"/><span t-field="o.partner_id.street2"/></strong>
+                         </div>
+                         <div>
+                             <strong><span t-field="o.partner_id.city"/></strong>
+                         </div>
+                        <div>
+                             <strong><span t-field="o.partner_id.country_id.name"/></strong>
+                        </div>
+                    </div>
+
+                    <div align="center">
+                        <h3><strong>BORDEREAU DES PRIX N° : </strong><span t-att-style="style" t-esc="o.name"/></h3>
+                    </div>
+
+                    <br/><br/><br/>
+                    <div class="col-xs-10 pull-left">
+                          <div>
+                              <strong>APPEL D'OFFRE N°: </strong><span t-field="o.ref_tendering"/>
+                         </div>
+                         <div>
+                             <strong>OBJET :</strong>
+                         </div>
+                     </div>
+
+                    <br/><br/><br/><br/><br/><br/>
+                     <table class="table table-condensed" t-if="o.order_line">
+                         <thead>
+                            <tr>
+                                <th><strong>N° de PRIX</strong></th>
+                                <th><strong>DESIGNATION</strong></th>
+                                <th><strong>UNITÉ</strong></th>
+                                <th><strong>QUANTITÉ</strong></th>
+                                <th><strong>Prix Unitaire</strong></th>
+                                <th><strong>Prix Total</strong></th>
+                            </tr>
+                         </thead>
+                         <tbody>
+                            <tr t-foreach="o.order_line" t-as="line">
+                                <td><span t-field="line.price_number"/></td>
+                                <td><span t-field="line.name"/></td>
+                                <td><span t-field="line.product_uom.name"/></td>
+                                <td><span t-field="line.quantity"/></td>
+                                <td><span t-field="line.price_unit"/></td>
+                                <td><span t-field="line.price_subtotal"/></td>
+                            </tr>
+                         </tbody>
+                     </table>
+                </div>
+
+                <div class="right">
+                      <table class="table table-condensed">
+                          <thead>
+                            <tr>
+                                <th><strong>Montant global de l'offre Hors Taxes : </strong></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                <td> <span t-field="o.amount_untaxed"/></td>
+                            </tr>
+                          </tbody>
+                      </table>
+                     <table class="table table-condensed">
+                          <thead>
+                            <tr>
+                                <th><strong>Montant de la TVA  : </strong></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                <td> <span t-field="o.amount_tax"/></td>
+                            </tr>
+                          </tbody>
+                     </table>
+                     <table class="table table-condensed">
+                          <thead>
+                            <tr>
+                                <th><strong>Montant global TVA comprise  : </strong></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                <td> <span t-field="o.amount_total"/></td>
+                            </tr>
+                          </tbody>
+                     </table>
+                </div>
+            </t>
+        </t>
+    </t>
+</template>
+</data>
+</openerp>

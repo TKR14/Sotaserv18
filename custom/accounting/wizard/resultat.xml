@@ -1,0 +1,806 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="view_resultat_wizard" model="ir.ui.view">
+		<field name="name">resultat.wizard.view</field>
+		<field name="model">resultat.wizard</field>
+		<field name="arch" type="xml">
+			<form>
+				<group>
+					<group>
+						<field name="to_date"/>
+					</group>
+					<group>
+						<field name="state" widget="radio"/>
+					</group>
+				</group>
+				<footer>
+					<button string="Imprimer" class="btn-primary" name="print_dates" type="object"/>
+					<button string="Annuler" class="btn-secondary" special="cancel"/>
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<record id="action_resultat_wizard" model="ir.actions.act_window">
+		<field name="name">Résultat</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">resultat.wizard</field>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="view_resultat_wizard" />
+		<field name="target">new</field>
+	</record>
+
+	<menuitem id="menu_resultat_wizard" name="Résultat" sequence="20" parent="account.account_reports_legal_statements_menu" action="action_resultat_wizard" />
+
+	<record id="report_resultat_wizard" model="ir.actions.report">
+		<field name="name">Résultat</field>
+		<field name="model">resultat.wizard</field>
+		<field name="report_type">qweb-pdf</field>
+		<field name="report_name">accounting.resultat_wizard</field>
+	</record>
+
+	<template id="resultat_wizard">
+		<t t-call="web.html_container">
+			<style>
+				@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&amp;display=swap');
+				<!-- @font-face {
+					font-family: 'Lato';
+					font-style: normal;
+					src: url('../static/src/fonts/Lato-Regular.ttf') format('truetype'),
+					url('../static/src/fonts/Lato-Bold.ttf') format('truetype');
+				} -->
+
+				* {
+					margin: 0;
+					padding: 0;
+					font-size: 10pt;
+					font-family: 'Lato';
+				}
+
+				table {
+					width: 100%;
+					border-collapse: collapse;
+				}
+
+                .logo-pagination {
+                    margin-bottom: 40px;
+                }
+
+                .border {
+                    border: 1px solid #000;
+                    text-align: center;
+                    vertical-align: middle;
+                    line-height: 1.8;
+                }
+
+                .td-logo {
+                    width: 65%;
+                }
+
+                .header {
+                    margin-bottom: 40px;
+                }
+
+                .header tr td {
+                    padding: 2px 10px 2px 0;
+                    width: 25%;
+                }
+
+                .header tr td:nth-child(2) {
+                    width: 35%;
+                }
+
+                .header tr td:nth-child(3) {
+                    width: 15%;
+                }
+
+                .header td:nth-child(even) {
+                    font-weight: bold;
+                }
+
+				.main {
+					margin-bottom: 40px;
+				}
+
+				.main th, .main td {
+					border: 1px solid #000;
+					padding: 6px 4px;
+				}
+
+				.main td {
+					vertical-align: top;
+					text-align: right;
+				}
+
+				.main tr td:first-child, .main tr:first-child th:first-child {
+					width: 0px;
+				}
+
+				.bold {
+					font-weight: bold;
+				}
+
+				.bold td:nth-child(n+2):nth-child(-n+5) {
+					background: #e8e8e8;
+				}
+
+				.main td:first-child, .main td:nth-child(n+3):nth-child(-n+5) {
+					text-align: center;
+					width: 0;
+				}
+
+				.main td:nth-child(3) {
+					width: 13px !important;
+				}
+
+				.main td:nth-child(2) {
+					text-align: left;
+				}
+
+				.footer {
+					width: 95%;
+					margin: auto;
+				}
+
+				.footer td {
+					border: none;
+					padding: 4px 1px;
+					vertical-align: top;
+				}
+
+				.footer td:first-child {
+					font-size: 12pt;
+				}
+			</style>
+
+            <t t-if="state == 'posted'">
+                <t t-set="items" t-value="request.env['account.move'].search([('state', '=', 'posted')])"/>
+            </t>
+            <t t-else="">
+                <t t-set="items" t-value="request.env['account.move'].search([])"/>
+            </t>
+
+			<div class="page">
+                <table class="logo-pagination">
+                    <tr>
+                        <td class="td-logo" rowspan="4">
+                            <img t-att-src="image_data_uri(request.env['res.company'].search([])[0].logo)" style="width: 200px;"/>
+                        </td>
+                        <td class="border no-border-bot">COMPTE DE RESULTAT SYSTEME NORMAL<br/>Page 1/2</td>
+                    </tr>
+                </table>
+
+                <table class="header">
+                    <tr>
+                        <td>Dénomination sociale de l'entité :</td>
+                        <td colspan="3">SOTASERV - CI</td>
+                    </tr>
+                    <tr>
+                        <td>Adresse :</td>
+                        <td>18 BP 2566 ABIDJAN 18 - ABOBO</td>
+                        <td>Sigle usuel :</td>
+                        <td>SOTASERV-CI</td>
+                    </tr>
+                    <tr>
+                        <td>N° de compte contribuable (NCC) :</td>
+                        <td>16 37553 T</td>
+                        <td>Exercice clos de :</td>
+                        <td><t t-esc="to_f_date"/></td>
+                    </tr>
+                    <tr>
+                        <td>N° de télédéclarant (NTD) :</td>
+                        <td>6161436539232</td>
+                        <td>Durée (en mois) :</td>
+                        <td>12</td>
+                    </tr>
+                </table>
+
+				<table class="main">
+					<thead>
+						<tr>
+							<th>REF</th>
+							<th>LIBELLES</th>
+							<th></th>
+							<th>(2)</th>
+							<th>NOTE</th>
+							<th>EXERCICE AU <t t-esc="from_f_date"/></th>
+							<th>EXERCICE AU <t t-esc="n1_to_date"/></th>
+						</tr>
+					</thead>
+					<tbody>
+						<t t-set="c1" t-value="items.calc_bilan(0, to_date, '701')"></t>
+						<t t-set="c2" t-value="items.calc_bilan(0, n1_to_date, '701')"></t>
+						
+						<t t-set="c3" t-value="items.calc_bilan(0, to_date, '601')"></t>
+						<t t-set="c4" t-value="items.calc_bilan(0, n1_to_date, '601')"></t>
+
+						<t t-set="c5" t-value="items.calc_bilan(0, to_date, '6031')"></t>
+						<t t-set="c6" t-value="items.calc_bilan(0, n1_to_date, '6031')"></t>
+
+						<t t-set="c7" t-value="c1 + c5"></t>
+						<t t-set="c8" t-value="c2 + c6"></t>
+
+						<tr>
+							<td>TA</td>
+							<td>Ventes de marchandises</td>
+							<td>A</td>
+							<td>+</td>
+							<td>21</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c1"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c2"/></td>
+						</tr>
+						<tr>
+							<td>RA</td>
+							<td>Achats de marchandises</td>
+							<td></td>
+							<td>-</td>
+							<td>22</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c3"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c4"/></td>
+						</tr>
+						<tr>
+							<td>RB</td>
+							<td>Variation de stocks de marchandises</td>
+							<td></td>
+							<td>-/+</td>
+							<td>6</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c5"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c6"/></td>
+						</tr>
+						<tr class="bold">
+							<td>XA</td>
+							<td>MARGE COMMERCIALE (Somme TA à RB)</td>
+							<td></td>
+							<td></td>
+							<td></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c7"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c8"/></td>
+						</tr>
+
+						<t t-set="c9" t-value="items.calc_bilan(0, to_date, '702') + items.calc_bilan(0, to_date, '703') + items.calc_bilan(0, to_date, '704')"></t>
+						<t t-set="c10" t-value="items.calc_bilan(0, n1_to_date, '702') + items.calc_bilan(0, n1_to_date, '703') + items.calc_bilan(0, n1_to_date, '704')"></t>
+						
+						<t t-set="c11" t-value="items.calc_bilan(0, to_date, '705')"></t>
+						<t t-set="c12" t-value="items.calc_bilan(0, n1_to_date, '705')"></t>
+
+						<t t-set="c13" t-value="items.calc_bilan(0, to_date, '73')"></t>
+						<t t-set="c14" t-value="items.calc_bilan(0, n1_to_date, '73')"></t>
+
+						<t t-set="c15" t-value="c1 + c9 + c11 + c13"></t>
+						<t t-set="c16" t-value="c2 + c10 + c12 + c14"></t>
+						
+						<tr>
+							<td>TB</td>
+							<td>Ventes de produits fabriqués</td>
+							<td>B</td>
+							<td>+</td>
+							<td>21</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c9"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c10"/></td>
+						</tr>
+						<tr>
+							<td>TC</td>
+							<td>Travaux, services vendus </td>
+							<td>C</td>
+							<td>+</td>
+							<td>21</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c11"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c12"/></td>
+						</tr>
+						<tr>
+							<td>TD</td>
+							<td>Produits accessoires</td>
+							<td>D</td>
+							<td>+</td>
+							<td>21</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c13"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c14"/></td>
+						</tr>
+						<tr class="bold">
+							<td>XB</td>
+							<td>CHIFFRE D'AFFAIRES (A + B + C + D)</td>
+							<td></td>
+							<td></td>
+							<td></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c15"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c16"/></td>
+						</tr>
+
+						<t t-set="c17" t-value="items.calc_bilan(0, to_date, '73')"></t>
+						<t t-set="c18" t-value="items.calc_bilan(0, n1_to_date, '73')"></t>
+
+						<t t-set="c19" t-value="items.calc_bilan(0, to_date, '72')"></t>
+						<t t-set="c20" t-value="items.calc_bilan(0, n1_to_date, '72')"></t>
+
+						<t t-set="c21" t-value="items.calc_bilan(0, to_date, '71')"></t>
+						<t t-set="c22" t-value="items.calc_bilan(0, n1_to_date, '71')"></t>
+
+						<t t-set="c23" t-value="items.calc_bilan(0, to_date, '75')"></t>
+						<t t-set="c24" t-value="items.calc_bilan(0, n1_to_date, '75')"></t>
+
+						<t t-set="c25" t-value="items.calc_bilan(0, to_date, '78')"></t>
+						<t t-set="c26" t-value="items.calc_bilan(0, n1_to_date, '78')"></t>
+
+						<t t-set="c27" t-value="items.calc_bilan(0, to_date, '602')"></t>
+						<t t-set="c28" t-value="items.calc_bilan(0, n1_to_date, '602')"></t>
+
+						<t t-set="c29" t-value="items.calc_bilan(0, to_date, '6032')"></t>
+						<t t-set="c30" t-value="items.calc_bilan(0, n1_to_date, '6032')"></t>
+
+						<t t-set="c31" t-value="items.calc_bilan(0, to_date, '604') + items.calc_bilan(0, to_date, '605')"></t>
+						<t t-set="c32" t-value="items.calc_bilan(0, n1_to_date, '604') + items.calc_bilan(0, n1_to_date, '605')"></t>
+
+						<t t-set="c33" t-value="items.calc_bilan(0, to_date, '6033')"></t>
+						<t t-set="c34" t-value="items.calc_bilan(0, n1_to_date, '6033')"></t>
+
+						<t t-set="c35" t-value="items.calc_bilan(0, to_date, '61')"></t>
+						<t t-set="c36" t-value="items.calc_bilan(0, n1_to_date, '61')"></t>
+
+						<t t-set="c37" t-value="items.calc_bilan(0, to_date, '62') + items.calc_bilan(0, to_date, '63')"></t>
+						<t t-set="c38" t-value="items.calc_bilan(0, n1_to_date, '62') + items.calc_bilan(0, n1_to_date, '63')"></t>
+
+						<t t-set="c39" t-value="items.calc_bilan(0, to_date, '64')"></t>
+						<t t-set="c40" t-value="items.calc_bilan(0, n1_to_date, '64')"></t>
+
+						<t t-set="c41" t-value="items.calc_bilan(0, to_date, '65')"></t>
+						<t t-set="c42" t-value="items.calc_bilan(0, n1_to_date, '65')"></t>
+
+						<t t-set="c43" t-value="c15 + c3 + c5 + c17 + c19 + c21 + c23 + c25 + c27 + c29 + c31 + c33 + c35 + c37 + c39 + c41"></t>
+						<t t-set="c44" t-value="c16 + c4 + c6 + c18 + c20 + c22 + c24 + c26 + c28 + c30 + c32 + c34 + c36 + c38 + c40 + c42"></t>
+
+						<tr>
+							<td>TE</td>
+							<td>Production stockée (ou déstockage)</td>
+							<td></td>
+							<td>-/+</td>
+							<td>6</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c17"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c18"/></td>
+						</tr>
+						<tr>
+							<td>TF</td>
+							<td>Production immobilisée</td>
+							<td></td>
+							<td>+</td>
+							<td>21</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c19"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c20"/></td>
+						</tr>
+						<tr>
+							<td>TG</td>
+							<td>Subventions d’exploitation</td>
+							<td></td>
+							<td>+</td>
+							<td>21</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c21"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c22"/></td>
+						</tr>
+						<tr>
+							<td>TH</td>
+							<td>Autres produits</td>
+							<td></td>
+							<td>+</td>
+							<td>21</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c23"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c24"/></td>
+						</tr>
+						<tr>
+							<td>TI</td>
+							<td>Transferts de charges d'exploitation</td>
+							<td></td>
+							<td>+</td>
+							<td>12</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c25"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c26"/></td>
+						</tr>
+						<tr>
+							<td>RC</td>
+							<td>Achats de matières premières et fournitures liées</td>
+							<td></td>
+							<td>-</td>
+							<td>22</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c27"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c28"/></td>
+						</tr>
+						<tr>
+							<td>RD</td>
+							<td>Variation de stocks de matières premières et fournitures liées</td>
+							<td></td>
+							<td>-/+</td>
+							<td>6</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c29"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c30"/></td>
+						</tr>
+						<tr>
+							<td>RE</td>
+							<td>Autres achats</td>
+							<td></td>
+							<td>-</td>
+							<td>22</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c31"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c32"/></td>
+						</tr>
+						<tr>
+							<td>RF</td>
+							<td>Variation de stocks d’autres approvisionnements</td>
+							<td></td>
+							<td>-/+</td>
+							<td>6</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c33"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c34"/></td>
+						</tr>
+						<tr>
+							<td>RG</td>
+							<td>Transports</td>
+							<td></td>
+							<td>-</td>
+							<td>23</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c35"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c36"/></td>
+						</tr>
+						<tr>
+							<td>RH</td>
+							<td>Services extérieurs</td>
+							<td></td>
+							<td>-</td>
+							<td>24</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c37"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c38"/></td>
+						</tr>
+						<tr>
+							<td>RI</td>
+							<td>Impôts et taxes</td>
+							<td></td>
+							<td>-</td>
+							<td>25</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c39"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c40"/></td>
+						</tr>
+						<tr>
+							<td>RJ</td>
+							<td>Autres charges</td>
+							<td></td>
+							<td>-</td>
+							<td>26</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c41"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c42"/></td>
+						</tr>
+						<tr class="bold">
+							<td>XC</td>
+							<td>VALEUR AJOUTEE (XB +RA+RB) + (somme TE à RJ)</td>
+							<td></td>
+							<td></td>
+							<td></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c43"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c44"/></td>
+						</tr>
+
+						<t t-set="c45" t-value="items.calc_bilan(0, to_date, '66')"></t>
+						<t t-set="c46" t-value="items.calc_bilan(0, n1_to_date, '66')"></t>
+
+						<t t-set="c47" t-value="c43 + c45"></t>
+						<t t-set="c48" t-value="c44 + c46"></t>
+						
+						<tr>
+							<td>RK</td>
+							<td>Charges de personnel</td>
+							<td></td>
+							<td>-</td>
+							<td>27</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c45"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c46"/></td>
+						</tr>
+						<tr class="bold">
+							<td>XD</td>
+							<td>EXCEDENT BRUT D'EXPLOITATION (XC+RK)</td>
+							<td></td>
+							<td></td>
+							<td></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c47"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c48"/></td>
+						</tr>
+
+						<t t-set="c49" t-value="items.calc_bilan(0, to_date, '78') + items.calc_bilan(0, to_date, '79')"></t>
+						<t t-set="c50" t-value="items.calc_bilan(0, n1_to_date, '78') + items.calc_bilan(0, n1_to_date, '79')"></t>
+
+						<t t-set="c51" t-value="items.calc_bilan(0, to_date, '68') + items.calc_bilan(0, to_date, '69')"></t>
+						<t t-set="c52" t-value="items.calc_bilan(0, n1_to_date, '68') + items.calc_bilan(0, n1_to_date, '69')"></t>
+
+						<t t-set="c53" t-value="c47 + c49 + c51"></t>
+						<t t-set="c54" t-value="c48 + c50 + c52"></t>
+
+						<tr>
+							<td>TJ</td>
+							<td>Reprises d’amortissements, provisions et dépréciations</td>
+							<td></td>
+							<td>+</td>
+							<td>28</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c49"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c50"/></td>
+						</tr>
+						<tr>
+							<td>RL</td>
+							<td>Dotations aux amortissements, aux provisions et dépréciations</td>
+							<td></td>
+							<td>-</td>
+							<td>3C&amp;28</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c51"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c52"/></td>
+						</tr>
+						<tr class="bold">
+							<td>XE</td>
+							<td>RESULTAT D'EXPLOITATION (XD+TJ+ RL)</td>
+							<td></td>
+							<td></td>
+							<td></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c53"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c54"/></td>
+						</tr>
+					</tbody>
+				</table>
+
+				<table class="footer">
+					<tr>
+						<td>(1)</td>
+						<td>Les montants seront précédés de signes (+) ou (-) en fonction de leurs soldes dans la balance générale :<br/>
+							(+/-) : Solde débiteur &quot; (-)&quot;, solde créditeur &quot; (+)&quot;</td>
+					</tr>
+					<tr>
+						<td>(2)</td>
+						<td>Les signes de cette colonne sont indicateurs du sens structurel des soldes, ils ne jouent pas le rôle de signes<br/>
+							opérateurs.</td>
+					</tr>
+				</table>
+
+                <p style="page-break-after: always;"></p>
+			</div>
+			
+			<div class="page">
+                <table class="logo-pagination">
+                    <tr>
+                        <td class="td-logo" rowspan="4">
+                            <img t-att-src="image_data_uri(request.env['res.company'].search([])[0].logo)" style="width: 200px;"/>
+                        </td>
+                        <td class="border no-border-bot">COMPTE DE RESULTAT SYSTEME NORMAL<br/>Page 2/2</td>
+                    </tr>
+                </table>
+
+                <table class="header">
+                    <tr>
+                        <td>Dénomination sociale de l'entité :</td>
+                        <td colspan="3">SOTASERV - CI</td>
+                    </tr>
+                    <tr>
+                        <td>Adresse :</td>
+                        <td>18 BP 2566 ABIDJAN 18 - ABOBO</td>
+                        <td>Sigle usuel :</td>
+                        <td>SOTASERV-CI</td>
+                    </tr>
+                    <tr>
+                        <td>N° de compte contribuable (NCC) :</td>
+                        <td>16 37553 T</td>
+                        <td>Exercice clos de :</td>
+                        <td><t t-esc="to_f_date"/></td>
+                    </tr>
+                    <tr>
+                        <td>N° de télédéclarant (NTD) :</td>
+                        <td>6161436539232</td>
+                        <td>Durée (en mois) :</td>
+                        <td></td>
+                    </tr>
+                </table>
+
+				<table class="main">
+					<thead>
+						<tr>
+							<th>REF</th>
+							<th>LIBELLES</th>
+							<th></th>
+							<th>(2)</th>
+							<th>NOTE</th>
+							<th>EXERCICE AU <t t-esc="from_f_date"/></th>
+							<th>EXERCICE AU <t t-esc="n1_to_date"/></th>
+						</tr>
+					</thead>
+					<tbody>
+						<t t-set="c55" t-value="items.calc_bilan(0, to_date, '77')"></t>
+						<t t-set="c56" t-value="items.calc_bilan(0, n1_to_date, '77')"></t>
+
+						<t t-set="c57" t-value="items.calc_bilan(0, to_date, '79')"></t>
+						<t t-set="c58" t-value="items.calc_bilan(0, n1_to_date, '79')"></t>
+
+						<t t-set="c59" t-value="items.calc_bilan(0, to_date, '787')"></t>
+						<t t-set="c60" t-value="items.calc_bilan(0, n1_to_date, '787')"></t>
+
+						<t t-set="c61" t-value="items.calc_bilan(0, to_date, '67')"></t>
+						<t t-set="c62" t-value="items.calc_bilan(0, n1_to_date, '67')"></t>
+						
+						<t t-set="c63" t-value="items.calc_bilan(0, to_date, '697')"></t>
+						<t t-set="c64" t-value="items.calc_bilan(0, n1_to_date, '697')"></t>
+
+						<t t-set="c65" t-value="c55 + c57 + c59 + c61 + c63"></t>
+						<t t-set="c66" t-value="c56 + c58 + c60 + c62 + c64"></t>
+
+						<t t-set="c67" t-value="c53 + c65"></t>
+						<t t-set="c68" t-value="c54 + c66"></t>
+
+						<tr>
+							<td>TK</td>
+							<td>Revenus financiers et assimilés </td>
+							<td></td>
+							<td> +</td>
+							<td>29</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c55"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c56"/></td>
+						</tr>
+						<tr>
+							<td>TL</td>
+							<td>Reprises de provisions et dépréciations financières</td>
+							<td></td>
+							<td> +</td>
+							<td>28</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c57"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c58"/></td>
+						</tr>
+						<tr>
+							<td>TM</td>
+							<td>Transferts de charges financières</td>
+							<td></td>
+							<td> +</td>
+							<td>12</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c59"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c60"/></td>
+						</tr>
+						<tr>
+							<td>RM</td>
+							<td>Frais financiers et charges assimilées</td>
+							<td></td>
+							<td> -</td>
+							<td>29</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c61"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c62"/></td>
+						</tr>
+						<tr>
+							<td>RN</td>
+							<td>Dotations aux provisions et aux dépréciations financières</td>
+							<td></td>
+							<td> -</td>
+							<td>3C&amp;28</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c63"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c64"/></td>
+						</tr>
+						<tr class="bold">
+							<td>XF</td>
+							<td>RESULTAT FINANCIER (somme TK à RN)</td>
+							<td></td>
+							<td></td>
+							<td></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c65"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c66"/></td>
+						</tr>
+						<tr class="bold">
+							<td>XG</td>
+							<td>RESULTAT DES ACTIVITES ORDINAIRES (XE+XF)</td>
+							<td></td>
+							<td></td>
+							<td></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c67"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c68"/></td>
+						</tr>
+
+						<t t-set="c69" t-value="items.calc_bilan(0, to_date, '82')"></t>
+						<t t-set="c70" t-value="items.calc_bilan(0, n1_to_date, '82')"></t>
+
+						<t t-set="c71" t-value="items.calc_bilan(0, to_date, '84')"></t>
+						<t t-set="c72" t-value="items.calc_bilan(0, n1_to_date, '84')"></t>
+
+						<t t-set="c73" t-value="items.calc_bilan(0, to_date, '81')"></t>
+						<t t-set="c74" t-value="items.calc_bilan(0, n1_to_date, '81')"></t>
+
+						<t t-set="c75" t-value="items.calc_bilan(0, to_date, '83')"></t>
+						<t t-set="c76" t-value="items.calc_bilan(0, n1_to_date, '83')"></t>
+
+						<t t-set="c77" t-value="c69 + c75"></t>
+						<t t-set="c78" t-value="c70 + c76"></t>
+
+						<tr>
+							<td>TN</td>
+							<td>Produits des cessions d'immobilisations</td>
+							<td></td>
+							<td>+</td>
+							<td>3D</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c69"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c70"/></td>
+						</tr>
+						<tr>
+							<td>TO</td>
+							<td>Autres Produits HAO</td>
+							<td></td>
+							<td>+</td>
+							<td>30</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c71"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c72"/></td>
+						</tr>
+						<tr>
+							<td>RO</td>
+							<td>Valeurs comptables des cessions d'immobilisations</td>
+							<td></td>
+							<td> -</td>
+							<td>3D</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c73"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c74"/></td>
+						</tr>
+						<tr>
+							<td>RP</td>
+							<td>Autres Charges HAO</td>
+							<td></td>
+							<td> -</td>
+							<td>30</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c75"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c76"/></td>
+						</tr>
+						<tr class="bold">
+							<td>XH</td>
+							<td>RESULTAT HORS ACTIVITES ORDINAIRES (somme TN à RP)</td>
+							<td></td>
+							<td></td>
+							<td></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c77"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c78"/></td>
+						</tr>
+
+						<t t-set="c79" t-value="items.calc_bilan(0, to_date, '87')"></t>
+						<t t-set="c80" t-value="items.calc_bilan(0, n1_to_date, '87')"></t>
+
+						<t t-set="c81" t-value="items.calc_bilan(0, to_date, '89')"></t>
+						<t t-set="c82" t-value="items.calc_bilan(0, n1_to_date, '89')"></t>
+
+						<t t-set="c83" t-value="c67 + c77 + c79 + c81"></t>
+						<t t-set="c84" t-value="c68 + c78 + c80 + c82"></t>
+
+						<tr>
+							<td>RQ</td>
+							<td>Participation des travailleurs</td>
+							<td></td>
+							<td> -</td>
+							<td>30</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c79"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c80"/></td>
+						</tr>
+						<tr>
+							<td>RS</td>
+							<td>Impôts sur le résultat</td>
+							<td></td>
+							<td> -</td>
+							<td>37</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c81"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c82"/></td>
+						</tr>
+						<tr class="bold">
+							<td>XI</td>
+							<td>RESULTAT NET (XG+XH+RQ+RS)</td>
+							<td></td>
+							<td></td>
+							<td></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c83"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c84"/></td>
+						</tr>
+					</tbody>
+				</table>
+
+				<table class="footer">
+					<tr>
+						<td>(1)</td>
+						<td>Les montants seront précédés de signes (+) ou (-) en fonction de leurs soldes dans la balance générale :<br/>
+							(+/-) : Solde débiteur &quot; (-)&quot;, solde créditeur &quot; (+)&quot;</td>
+					</tr>
+					<tr>
+						<td>(2)</td>
+						<td>Les signes de cette colonne sont indicateurs du sens structurel des soldes, ils ne jouent pas le rôle de signes<br/>
+							opérateurs.</td>
+					</tr>
+				</table>
+			</div>
+		</t>
+	</template>
+</odoo>

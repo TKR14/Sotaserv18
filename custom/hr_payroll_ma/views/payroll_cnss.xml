@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="payroll_cnss">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <style>
+                       
+                        table,
+                        th,
+                        td {
+                            border: 1px solid;
+                            border-collapse: collapse;
+                        }
+                
+                        td {
+                            border: none;
+                            border-right: 1px solid;
+                        }
+                        .firstP, .secondP, .thirdP {
+                            display: inline;
+                        }
+                        table,th {
+                            text-align: center;
+                        }
+     
+                    </style>
+                        <div class="oe_structure" />
+
+                        <header>
+                            <div>
+                                <p class="firstP" style="font-weight: bold;padding-left: 8%;">IGASER</p>
+                                <p class="secondP" style="font-weight: bold;font-size: larger;padding-left: 25%;">Etat CNSS</p>
+                                <p class="thirdP" style="padding-left: 10%;">
+                                    Date d'édition:
+                                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')" />
+                                </p>
+                            </div>
+                            <br />
+                            <div>
+                                <p style="text-align: center;">
+                                    Période du
+                                    <span t-field="o.date_start" />
+                                    au
+                                    <span t-field="o.date_end" />
+                                </p>
+                            </div>
+                        </header>
+                        <br />
+
+
+                        <table style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th width="5">Matricule</th>
+                                    <th width="15">Nom Employé</th>
+                                    <th width="15">Date d’entrée</th>
+                                    <th width="16">Salaire Net</th>
+                                    <th width="16">Montant CNSS</th>
+                                    <th width="17">Montant AMO</th>
+                                    <th width="16">Total CNSS+AMO</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <t t-set="total_netpay" t-value="0" />
+                                <t t-set="total_cnss" t-value="0" />
+                                <t t-set="total_amo" t-value="0" />
+                                <t t-set="total_cnss_amo" t-value="0" />
+                                <t t-foreach="o.slip_ids" t-as="s">
+                                    <tr>
+                                        <td style="text-align: center;">
+                                            <span t-esc="s.employee_id.registration_number" />
+                                        </td>
+                                        <td style="text-align: left;padding-left: 5px;">
+                                            <span t-esc="s.employee_id.name" />
+                                        </td>
+                                        <td style="text-align: left;padding-left: 5px;">
+                                            <span t-esc="s.employee_id.recruitment_date" />
+                                        </td>
+                                        <t t-foreach="s.line_ids" t-as="line">
+                                            <t t-if="line.code == 'NETPAY'">
+                                                <td style="text-align: right;padding-right: 5px;">
+                                                    <span t-field="line.total" t-options='{"widget": "float", "precision": 2}' />
+                                                </td>
+                                                <t t-set="total_netpay" t-value="total_netpay + line.total" />
+                                            </t>
+                                        </t>
+                                        <t t-foreach="s.line_ids" t-as="line">
+                                            <t t-if="line.code == '68'">
+                                                <td style="text-align: right;padding-right: 5px;">
+                                                    <span t-field="line.total" t-options='{"widget": "float", "precision": 2}' />
+                                                </td>
+                                                <t t-set="total_cnss" t-value="total_cnss + line.total" />
+                                            </t>
+                                        </t>
+                                        <t t-foreach="s.line_ids" t-as="line">
+                                            <t t-if="line.code == '70'">
+                                                <td style="text-align: right;padding-right: 5px;">
+                                                    <span t-field="line.total" t-options='{"widget": "float", "precision": 2}' />
+                                                </td>
+                                                <t t-set="total_amo" t-value="total_amo + line.total" />
+                                            </t>
+                                        </t>
+                                        <t t-foreach="s.line_ids" t-as="line">
+                                            <t t-if="line.code == 'TRET'">
+                                                <td style="text-align: right;padding-right: 5px;">
+                                                    <span t-field="line.total" t-options='{"widget": "float", "precision": 2}' />
+                                                </td>
+                                                <t t-set="total_cnss_amo" t-value="total_cnss_amo + line.total" />
+                                            </t>
+                                        </t>
+                                    </tr>
+                                </t>
+                                <!--TOTAUX-->
+                                <tr>
+                                    <td style="border-top: 1px solid;font-weight: bold;font-family: sans-serif;" colspan="3">TOTAUX</td>
+                                    <td style="border-top: 1px solid;text-align: right;padding-right: 5px;">
+                                        <span t-esc="total_netpay" t-options='{"widget": "float", "precision": 2}' />
+                                    </td>
+                                    <td style="border-top: 1px solid;text-align: right;padding-right: 5px;">
+                                        <span t-esc="total_cnss" t-options='{"widget": "float", "precision": 2}' />
+                                    </td>
+                                    <td style="border-top: 1px solid;text-align: right;padding-right: 5px;">
+                                        <span t-esc="total_amo" t-options='{"widget": "float", "precision": 2}' />
+                                    </td>
+                                    <td style="border-top: 1px solid;text-align: right;padding-right: 5px;">
+                                        <span t-esc="total_cnss_amo" t-options='{"widget": "float", "precision": 2}' />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- <div style="page-break-after: always;" /> -->
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

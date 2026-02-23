@@ -1,0 +1,40 @@
+<odoo>
+    <record id="product_template_view_form_inherit" model="ir.ui.view">
+        <field name="name">product.template.view.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view" />
+        <field name="arch" type="xml">
+            <field name="list_price" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <field name="standard_price" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <div name="standard_price_uom" position="after">
+                <label for="reference_price" groups="base.group_user"/>
+                <div name="reference_price_uom" groups="base.group_user">
+                    <field name="reference_price" widget="monetary" options="{'currency_field': 'cost_currency_id', 'field_digits': True}" readonly="1"/>
+                    <span groups="uom.group_uom" class="oe_read_only"> par <field name="uom_name"/></span>
+                </div>
+            </div>
+            <page name="invoicing" position="after">
+                <page string="Historique des prix" name="price_log_tab">
+                    <field name="price_log_ids" options="{'no_open': True}" readonly="1">
+                        <list string="Changements de prix" create="0" edit="0" delete="0">
+                            <field name="site_id"/>
+                            <field name="order_id"/>
+                            <field name="old_price"/>
+                            <field name="new_price"/>
+                            <field name="create_date" string="Date"/>
+                            <field name="create_uid" string="Utilisateur"/>
+                        </list>
+                    </field>
+                </page>
+            </page>
+            <field name="default_code" position="before">
+                <field name="is_fuel" invisible="1"/>
+                <field name="fuel_type" invisible="not is_fuel" required="is_fuel"/>
+            </field>
+        </field>
+    </record>
+</odoo>

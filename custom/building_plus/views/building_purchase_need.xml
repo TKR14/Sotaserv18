@@ -1,0 +1,111 @@
+<odoo>
+    <record id="building_purchase_need_action_sotaserv_rh" model="ir.actions.act_window">
+        <field name="name">Liste des besoins</field>
+        <field name="res_model">building.purchase.need</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">
+            {
+                "create": False,
+                "delete": False,
+                "edit": False,
+
+                "hide_line_ids": True,
+                "hide_service_provision_ids": True,
+                "hide_mini_equipment_ids": True,
+                "hide_equipment_ids": True,
+                "hide_small_equipment_ids": True,
+                "hide_fuel_ids": True,
+                "hide_flow_ids": True,
+                "hide_get_lines": True,
+                "hide_totals": True,
+
+                "hide_total_lines": True,
+                "hide_total_service_provisions": True,
+                "hide_total_mini_equipments": True,
+                "hide_total_equipments": True,
+                "hide_total_small_equipments": True,
+                "hide_total_fuels": True,
+            }
+        </field>
+        <field name="domain">[("is_template", "=", False)]</field>
+        <field name="search_view_id" ref="building.building_purchase_need_filter"/>
+        <field name="view_ids" eval="
+            [
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.building_purchase_need_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building.building_purchase_need_form_readonly')})
+            ]
+        "/>
+    </record>
+
+    <record id="building_purchase_need_action_group_achat" model="ir.actions.act_window">
+        <field name="name">Liste des besoins</field>
+        <field name="res_model">building.purchase.need</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">
+            {
+                "create": False,
+                "delete": False,
+                "edit": False,
+
+                "hide_ressource_humain_ids": True,
+                "hide_equipment_ids": True,
+                "hide_small_equipment_ids": True,
+                "hide_flow_ids": True,
+                "hide_get_lines": True,
+                "hide_totals": True,
+
+                "hide_total_ressource_humains": True,
+                "hide_total_equipments": True,
+                "hide_total_small_equipments": True,
+            }
+        </field>
+        <field name="domain">[("is_template", "=", False)]</field>
+        <field name="search_view_id" ref="building.building_purchase_need_filter"/>
+        <field name="view_ids" eval="
+            [
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.building_purchase_need_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building.building_purchase_need_form_readonly')})
+            ]
+        "/>
+    </record>
+
+    <record id="building_purchase_need_action_group_logistics" model="ir.actions.act_window">
+        <field name="name">Liste des besoins</field>
+        <field name="res_model">building.purchase.need</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">
+            {
+                "create": False,
+                "delete": False,
+                "edit": False,
+
+                "hide_ressource_humain_ids": True,
+                "hide_line_ids": True,
+                "hide_mini_equipment_ids": True,
+                "hide_fuel_ids": True,
+                "hide_flow_ids": True,
+
+                "hide_flow_ids": True,
+                "hide_get_lines": True,
+                "hide_totals": True,
+
+                "hide_total_ressource_humains": True,
+                "hide_total_lines": True,
+                "hide_total_mini_equipments": True,
+                "hide_total_fuels": True,
+                "hide_totals": True,
+            }
+        </field>
+        <field name="domain">[("is_template", "=", False)]</field>
+        <field name="search_view_id" ref="building.building_purchase_need_filter"/>
+        <field name="view_ids" eval="
+            [
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.building_purchase_need_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building.building_purchase_need_form_readonly')})
+            ]
+        "/>
+    </record>
+</odoo>

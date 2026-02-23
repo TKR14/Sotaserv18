@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<!--on met les enregistrement ici dans la balise odoo -->
+
+	<record id='cnss_bds_action' model='ir.actions.act_window'>
+		<field name="name"> Gestion des CNSS BDS </field>
+		<field name="res_model">cnss.bds</field>
+		<field name="view_mode">list,form</field>
+	</record>
+	<menuitem name="CNSS" id="cnss_base_menu" />
+	<menuitem name="CNSS BDS" id="cnss_bds_menu" parent="cnss_base_menu"
+		action="cnss_bds_action" />
+	<menuitem name="BDS" id="cnss_ddd_menu" parent="cnss_base_menu" />
+
+	<record id="cnss_bds_view_form" model="ir.ui.view">
+		<field name="name">CNSS BDS Form</field>
+		<field name="model">cnss.bds</field>
+		<field name="arch" type="xml">
+			<form edit="0">
+				<sheet>
+					<group>
+						<field name="l_type_enreg" />
+						<field name="n_num_affilie" />
+						<field name="l_annee" />
+						<field name="l_mois" />
+						<field name="l_period" />
+						<field name="n_num_assure" />
+						<field name="employee_ids" widget="many2one_tags" />
+						<field name="l_num_cin" />
+						<field name="n_enfants" />
+						<field name="n_af_a_payer" />
+						<field name="n_af_a_deduire" />
+						<field name="n_af_net_a_payer" />
+						<field name="n_af_a_reverser" />
+						<field name="n_jour_declares" />
+						<field name="n_salaire_reel" />
+						<field name="n_salaire_plaf" />
+						<field name="n_situation" />
+						<field name="n_ctr" />
+						<field name="n_filler" />
+						<field name="l_status" readonly="1" />
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<!-- <act_window name="Cancel Order"
+		id="action_cancel_order"
+		res_model="cnss.bds"
+	binding_model="cnss.bds"
+		binding_views="list"
+		view_mode="form"
+		target="new"
+	 /> -->
+
+	<!-- call form params -->
+	<!-- <record id="bds_params_view" model="ir.ui.view">
+		<field name="name">
+	bds.params.view</field>
+		<field name="model">cnss.bds</field>
+		<field name="arch" type="xml">
+	<form>
+				<group>
+					<field name="l_period" />
+				</group>
+				<footer>
+					<button
+	string="Imprimer" class="btn-primary" name="action_genere_bds"
+						type="object" />
+					<button
+	string="Annuler" class="btn-secondary" special="cancel" />
+				</footer>
+			</form>
+		</field>
+	</record>
+
+
+	<record id="bds_imprimer_action" model="ir.actions.act_window">
+		<field
+	name="name">Imprimer
+			BDS</field>
+		<field name="type">ir.actions.act_window</field>
+		<field
+	name="res_model">cnss.bds</field>
+		<field name="view_mode">form</field>
+		<field name="view_id"
+	ref="bds_params_view" />
+		<field name="target">new</field>
+	</record>
+
+	
+	<menuitem
+	name="Imprimer BDS" id="cnss_bds_imprimer" parent="cnss_base_menu"
+		action="bds_imprimer_action"
+	/> -->
+
+
+	<!-- ################-->
+
+	<record model="ir.actions.server" id="action_genere_bds">
+		<field name="name">Generer BDS</field>
+		<field name="model_id" ref="model_cnss_bds" />
+		<field name="type">ir.actions.server</field>
+		<field name="binding_model_id" ref="model_cnss_bds" />
+		<field name="state">code</field>
+		<field name="code">
+			action = records.action_genere_bds()
+		</field>
+		<field name="binding_view_types">list</field>
+	</record>
+
+	<record id="cnss_bds_list" model="ir.ui.view">
+
+		<field name="name">Liste
+			CNSS BDS</field>
+		<field name="model">cnss.bds</field>
+
+		<field name="arch" type="xml">
+			<list>
+				<field name="l_status" />
+				<field name="employee_ids" />
+				<field name="l_type_enreg" />
+				<field name="n_num_affilie" />
+				<field name="l_annee" />
+				<field name="l_mois" />
+				<field name="n_num_assure" />
+				<field name="l_num_cin" />
+				<field name="n_enfants" />
+				<field name="n_jour_declares" />
+				<field name="n_salaire_reel" />
+				<field name="n_salaire_plaf" />
+				<field name="n_situation" />
+				<field name="n_ctr" />
+				<!-- <button name="action_genere" string="Generer" class="oe_highlight"
+				type="object" /> -->
+			</list>
+		</field>
+	</record>
+
+
+</odoo>

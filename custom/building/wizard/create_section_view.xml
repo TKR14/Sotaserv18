@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="create_section_wizard_view" model="ir.ui.view">
+        <field name="name">create.section.wizard.view</field>
+        <field name="model">create.section.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="categories" />
+                    
+                    <field name="section_name" 
+                           invisible="categories == 'building.purchase.need.small.equipment'" 
+                           required="categories != 'building.purchase.need.small.equipment'"/>
+                    
+                    <field name="category_name" 
+                           invisible="categories != 'building.purchase.need.small.equipment'" 
+                           required="categories == 'building.purchase.need.small.equipment'" 
+                           options="{'no_create': True, 'no_open': True}"/>
+                    
+                    <field name="sequence_number" />
+                </group>
+                <footer>
+                    <button string="Ajouter" class="btn-primary" name="create_section" type="object" />
+                    <button string="Annuler" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="create_section_wizard_action" model="ir.actions.act_window">
+        <field name="name">Ajouter section</field>
+        <field name="res_model">create.section.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="create_section_wizard_view" />
+        <field name="target">new</field>
+    </record>
+
+</odoo>

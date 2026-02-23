@@ -1,0 +1,46 @@
+<odoo>
+    <record id="hr_assignment_request_group_validated" model="res.groups">
+        <field name="name">Valider</field>
+        <field name="type">button</field>
+        <field name="model_id" ref="model_hr_assignment_request"/>
+    </record>
+
+    <record id="hr_assignment_request_group_approved" model="res.groups">
+        <field name="name">Approuver</field>
+        <field name="type">button</field>
+        <field name="model_id" ref="model_hr_assignment_request"/>
+    </record>
+
+    <record id="group_temporary" model="res.groups">
+        <field name="name">Temporaire</field>
+    </record>
+
+    <record id="group_demandes_materiels" model="res.groups">
+        <field name="name">Demandes Matériels/ Remettre</field>
+    </record>
+
+    <record id="hr_assignment_request_group_remettre_drh" model="res.groups">
+        <field name="name">Remettre Demande RH</field>
+    </record>
+
+    <record id="hr_assignment_request_group_remettre_drh_line" model="res.groups">
+        <field name="name">Remettre Ligne Demande RH</field>
+    </record>
+
+    <record id="group_valide_maintenance_request_material" model="res.groups">
+        <field name="name">Valider</field>
+        <field name="type">button</field>
+        <field name="model_id" ref="building.model_maintenance_request_resource_material"/>
+    </record>
+
+    <record id="group_approve_maintenance_request_material" model="res.groups">
+        <field name="name">Approuver</field>
+        <field name="type">button</field>
+        <field name="model_id" ref="building.model_maintenance_request_resource_material"/>
+    </record>
+
+     <record id="sotaserv_rh" model="res.groups">
+        <field name="name">SOTASERV_RH</field>
+        <field name="type">profile</field>
+    </record>
+</odoo>

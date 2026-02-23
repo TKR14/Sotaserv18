@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="view_stock_move_internal" model="ir.ui.view">
+            <field name="name">stock.move.internal.form</field>
+            <field name="model">stock.move.internal</field>
+            <field name="arch" type="xml">
+                <form string="Créer un mouvement interne">
+                	<group>
+                        <field name="order_id" required="1" invisible="1"/>
+                		<field name="location_src_id"/>
+                		<field name="location_dest_id"/>
+                    	<field name="picking_id" readonly="True"/>
+                  	</group>
+                    <group>
+                        <field name="move_ids" nolabel="1">
+                            <list string="Mouvement interne" editable="bottom" >
+                                <field name="product_id" required="True" />
+                                <!-- <field name="analytic_id" readonly="True" /> -->
+                                <field name="quantity" />
+                                <field name="move_id" invisible="1"/>
+                                <field name="product_uom_id" />
+                            </list>
+                        </field>
+                    </group>
+                    <footer>
+                    	<button name="action_create_internal_move" string="Créer" groups="" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Annuler" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_stock_move_internal_to_customer" model="ir.ui.view">
+            <field name="name">stock.move.internal.cutomer.form</field>
+            <field name="model">stock.move.internal</field>
+            <field name="arch" type="xml">
+                <form string="Créer un mouvement interne">
+                	<group>
+                        <field name="order_id" required="1"/>
+                		<field name="location_src_id"/>
+                		<field name="location_dest_id"/>
+                    	<field name="picking_id" readonly="True"/>
+                  	</group>
+                    <group>
+                        <field name="move_ids" nolabel="1">
+                            <list string="Mouvement interne" editable="bottom" >
+                                <field name="product_id" required="True" />
+                                <!-- <field name="analytic_id" readonly="0" /> -->
+                                <field name="quantity" />
+                                <field name="move_id" invisible="1"/>
+                                <field name="product_uom_id" />
+                            </list>
+                        </field>
+                    </group>
+                    <footer>
+                    	<button name="action_create_internal_move" string="Créer" groups="" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Annuler" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="action_view_create_internal_move" model="ir.actions.act_window">
+            <field name="name">Création des Mouvements interne</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.move.internal</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_stock_move_internal"/>
+        </record>
+
+        <record id="action_view_create_internal_move_to_customer" model="ir.actions.act_window">
+            <field name="name">Création des Mouvements interne</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.move.internal</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_stock_move_internal_to_customer"/>
+        </record>
+
+        <!-- <act_window id="action_building_internal_move_to_customer_create"
+            multi="True"
+            key2="client_action_multi" name="Créer une sortie de stock de l'Affaire"
+            res_model="stock.move.internal" src_model="building.site"
+            view_mode="form" target="new" view_type="form" view_id="view_stock_move_internal_to_customer"/> -->
+
+
+    </data>
+</openerp>

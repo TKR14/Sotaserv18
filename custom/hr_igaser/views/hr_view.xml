@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+        <record id="view_employee_form_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.form.inherit</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='identification_id']" position="after">
+                    <field name="registration_number"/>
+                </xpath>
+                <!-- <xpath expr="//field[@name='address_home_id']" position="after">
+                    <field name="address"/>
+                </xpath>
+                <xpath expr="//field[@name='address_home_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath> -->
+                <xpath expr="//field[@name='job_id']" position="after">
+                    <field name="contract_type"/>
+                    <field name="recruitment_date"/>
+                </xpath>
+                <field name="identification_id" position="replace">
+                    <field name="identification_id" string="C.N.I" groups="hr.group_hr_user"/>
+                </field>
+                <field name="identification_id" position="after">
+                    <field name="ssnid" string="N° CNPS" />
+                </field>
+                <!-- <group name="work_permit" position="after">
+                    <group string="Banque" name="bank">
+                        <field name="bank"/>
+                        <field name="rib"/>
+                    </group>
+                </group> -->
+            </field>
+        </record>
+
+        <record id="view_employee_filter_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.search.inherit</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="registration_number" string="Matricule" />
+                    <field name="work_location_id" string="Chantier" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_attendance_tree_inherit" model="ir.ui.view">
+            <field name="name">hr.attendance.tree.inherit</field>
+            <field name="model">hr.attendance</field>
+            <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='employee_id']" position="after">
+                    <field name="site"/>
+                </xpath>
+            </field>
+        </record>
+
+</odoo>

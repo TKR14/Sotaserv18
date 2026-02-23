@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="purchase_plus_line_view_tree_inherit" model="ir.ui.view">
+            <field name="name">purchase.plus.line.view.list.inherit</field>
+            <field name="model">purchase.request.line</field>
+            <field name="inherit_id" ref="purchase_igaser.purchase_request_line_view_tree"/>
+            <field name="arch" type="xml">
+                <field name="state" position="attributes">
+                    <attribute name="column_invisible">True</attribute>
+                </field>
+
+                <field name="state" position="after">
+                    <field name="state_name" column_invisible="True" /> 
+                    <field name="rejected_by_buyer" column_invisible="True" />
+                    
+                    <field name="state_id" widget="badge" 
+                           decoration-info="state_name == 'Brouillon'" 
+                           decoration-warning="state_name == 'Validée'" 
+                           decoration-success="state_name == 'Approuvée'" 
+                           decoration-danger="state_name == 'Rejetée'"/>
+
+                    <button name="show_reason" string="Motif" class="btn-primary" type="object" 
+                            invisible="not rejected_by_buyer or state != 'rejected'" 
+                            groups="building_plus.sotaserv_chef_projet"/>
+                    
+                    <button name="requester_cancel" string="Annuler" class="btn-danger" type="object" 
+                            invisible="not rejected_by_buyer or state != 'rejected'" 
+                            groups="building_plus.sotaserv_chef_projet,building_plus.sotaserv_conduct_trv,building_plus.sotaserv_directeur_zone"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="purchase_request_view_form_note" model="ir.ui.view">
+            <field name="name">purchase.request.view.form.note</field>
+            <field name="model">purchase.request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <field name="note" readonly="context.get('draft')" nolabel="1" placeholder="Saisissez votre note ici..."/>
+                    </sheet>
+                    <footer>
+                        <button name="button_rejected" type="object" string="Rejeter" class="btn-danger"
+                            invisible="not context.get('rejected')"/>
+                        <button name="button_draft" type="object" string="Remettre en brouillon"
+                            class="btn-primary" invisible="not context.get('draft')"/>
+                        <button string="Annuler" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="purchase_plus_purchase_request_line_view_search" model="ir.ui.view">
+            <field name="name">purchase.plus.purchase.request.line.view.search</field>
+            <field name="model">purchase.request.line</field>
+            <field name="inherit_id" ref="purchase_igaser.purchase_request_line_view_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="replace">
+                    <search>
+                        <field name="request_id"  string="Demande d'achat"/>
+                        <field name="product_id"  string="Article"/>
+                        <field name="name"        string="Description"/>
+                        <field name="supplier_id" string="Fournisseur"/>
+
+                        <separator/>
+                        <filter name="approved"             string="Demande Approuvée" domain="[('state_id.selection_id.value', '=', 'approved')]"/>
+                        <filter name="purchase_validated"   string="Achat Validé"      domain="[('state_id.selection_id.value', '=', 'purchase_validated')]"/>
+                        <filter name="order_established"    string="Commande Établie"  domain="[('state_id.selection_id.value', '=', 'order_established')]"/>
+                        <filter name="order_done"           string="Commande Clôturée" domain="[('state_id.selection_id.value', '=', 'order_done')]"/>
+                        <filter name="transfer_validated"   string="Transfert Validé"  domain="[('state_id.selection_id.value', '=', 'transfer_validated')]"/>
+                        <separator/>
+                        <filter name="draft"                string="Brouillon"         domain="[('state_id.selection_id.value', '=', 'draft')]"/>
+                        <filter name="rejected"             string="Demande Rejetée"   domain="[('state_id.selection_id.value', '=', 'rejected')]"/>
+
+                        <group expand="0" string="Regrouper par">
+                            <filter name="group_state_id"    string="Statut"          context="{'group_by': 'state_id'}"/>
+                            <filter name="group_request_id"  string="Demande d'achat" context="{'group_by': 'request_id'}"/>
+                            <filter name="group_product_id"  string="Article"         context="{'group_by': 'product_id'}"/>
+                        </group>
+                    </search>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

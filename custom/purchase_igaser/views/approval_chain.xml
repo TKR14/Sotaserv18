@@ -1,0 +1,109 @@
+<odoo>
+
+    <record id="approval_chain_view_form" model="ir.ui.view">
+        <field name="name">approval.chain.view.form</field>
+        <field name="model">approval.chain</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box oe_read_only" name="button_box">
+                        <button name="action_get_steps" type="object" class="oe_stat_button" icon="fa-bars">
+                            <div class="o_field_widget o_stat_info">
+                                <span><field name="steps_count"/> étapes</span>
+                            </div>
+                        </button>
+                        <button name="action_get_lines" type="object" class="oe_stat_button" icon="fa-bars" 
+                                invisible="steps_count == 0">
+                            <div class="o_field_widget o_stat_info">
+                                <span><field name="lines_count"/> lignes</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title oe_read_only">
+                        <label for="model_id"/>
+                        <h1><field name="model_id"/></h1>
+                    </div>
+                    <group>
+                        <group class="oe_title oe_edit_only">
+                            <field name="model_id" 
+                                   readonly="steps_count &gt; 0" 
+                                   required="True" 
+                                   options="{'no_create':True, 'no_open':True}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="approval_chain_view_tree" model="ir.ui.view">
+        <field name="name">approval.chain.view.list</field>
+        <field name="model">approval.chain</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="model_id"/>
+                <field name="steps_count"/>
+                <field name="lines_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="approval_chain_step_view_tree" model="ir.ui.view">
+        <field name="name">approval.chain.step.view.list</field>
+        <field name="model">approval.chain.step</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="parent_id" column_invisible="True"/>
+                <field name="order" required="1"/>
+                <field name="name" required="1"/>
+                <field name="group_id" options="{'no_create':True, 'no_open':True}" required="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="approval_chain_line_view_tree" model="ir.ui.view">
+        <field name="name">approval.chain.line.view.list</field>
+        <field name="model">approval.chain.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="step_1" column_invisible="context.get('default_steps_count', 0) &lt; 1"/>
+                <field name="step_2" column_invisible="context.get('default_steps_count', 0) &lt; 2"/>
+                <field name="step_3" column_invisible="context.get('default_steps_count', 0) &lt; 3"/>
+                <field name="step_4" column_invisible="context.get('default_steps_count', 0) &lt; 4"/>
+                <field name="step_5" column_invisible="context.get('default_steps_count', 0) &lt; 5"/>
+                <field name="step_6" column_invisible="context.get('default_steps_count', 0) &lt; 6"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="approval_chain_line_view_search" model="ir.ui.view">
+        <field name="name">approval.chain.line.view.search</field>
+        <field name="model">approval.chain.line</field>
+        <field name="arch" type="xml">
+            <search>
+            </search>
+        </field>
+    </record>
+
+    <record id="approval_chain_action" model="ir.actions.act_window">
+        <field name="name">Chaînes d'approbation</field>
+        <field name="res_model">approval.chain</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('model_id.model', '!=', 'maintenance.request.resource.material')]</field>
+    </record>
+
+    <record id="approval_material_chain_action" model="ir.actions.act_window">
+        <field name="name">Chaînes d'approbation</field>
+        <field name="res_model">approval.chain</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('model_id.model', '=', 'maintenance.request.resource.material')]</field>
+    </record>
+
+    <menuitem
+        id="approval_chain_menu"
+        parent="purchase.menu_purchase_config"
+        action="approval_chain_action"
+        sequence="2"
+    />
+
+</odoo>

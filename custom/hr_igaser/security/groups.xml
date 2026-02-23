@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Custom Groups -->
+        <record id="product_buyer_default_supervisors_group" model="res.groups">
+            <field name="name">Superviseurs d'Articles par Défaut</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_building_subcontracting_create" model="ir.ui.view">
+            <field name="name">building.subcontracting.create.form</field>
+            <field name="model">building.subcontracting.create</field>
+            <field name="arch" type="xml">
+                <form string="Créer un Contrat de sous-traitance">
+                	<group>
+                    	<field name="site_id" invisible="0"/>
+                    	<field name="order_id" invisible="0" required="1" string="BP" domain="[('site_id', '=', site_id)]"/>
+                        <field name="partner_id"/>
+                  	</group>
+                    <group>
+                    	<field name="tax_id"/>
+                  	</group>
+                    <!-- <group>
+                    	<field name="with_advance"/>
+                    	<field name="deposit_number" attrs="{'invisible': [('with_advance', '=',False)]}"/>
+                        <field name="guaranty_number" />
+                  	</group> -->
+
+                    <group >
+                        <field name="subcontracting_ids" nolabel="1" readonly="0">
+                            <list string="Articles" editable="bottom" mode="list,form">
+		              				<field name="product_id" readonly="0" invisible="1"/>
+                                    <field name="name" readonly="0" string="Produit"/>
+		             				<field name="product_uom_id" readonly="0"/>
+		             				<field name="quantity" string="Quantité"/>
+		             				<field name="price_unit"/>
+                                    <field name="order_line_id" invisible="1"/>
+                            </list>
+                        </field>
+                    </group>
+                    <footer>
+                    	<button name="create_contract_outsourcing" string="Créer" groups="" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Annuler" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+
+        <record id="building_subcontracting_create_action" model="ir.actions.act_window">
+            <field name="name">Création Contrat de sous-traitance</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">building.subcontracting.create</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <!-- <act_window id="action_building_subcontracting_create"
+            multi="True"
+            key2="client_action_multi" name="Créer un contrat de sous-traitance"
+            res_model="building.subcontracting.create" src_model="building.site"
+            view_mode="form" target="new" view_type="form" /> -->
+
+    </data>
+</openerp>

@@ -1,0 +1,15 @@
+.hr_payslip_run_payment_form_class .o_notebook_headers {
+    display: none;
+}
+
+.hr_payslip_run_payment_form_class .tab-pane.active {
+    padding: 0 !important;
+}
+
+.hr_payslip_run_payment_form_class .o_notebook {
+    margin-top: 9px !important;
+}
+
+.hr_payslip_run_payment_form_class .o_list_view {
+    margin-bottom: 0 !important;
+}

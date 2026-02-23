@@ -1,0 +1,16 @@
+<odoo>
+    <record model="ir.ui.view" id="account_stock_plus_view_form_inherit">
+        <field name="name">account.stock.plus.view.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//header" position="after">
+                <div class="alert alert-warning mb-0" role="alert" attrs="{'invisible': [('state', '!=', 'cancel')]}">
+                    Motif d'annulation:
+                    <field name="reason" style="margin-bottom: 0; font-weight: bolder;" id="reason"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

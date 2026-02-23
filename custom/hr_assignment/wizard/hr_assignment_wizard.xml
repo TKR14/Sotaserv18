@@ -1,0 +1,47 @@
+<odoo>
+    <record id="hr_assignment_wizard_view_form" model="ir.ui.view">
+        <field name="name">hr.assignment.wizard.view.form</field>
+        <field name="model">hr.assignment.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="months" invisible="1"/>
+                            <field name="year" required="1" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="month" 
+                                   required="1" 
+                                   options="{'no_open': True, 'no_create': True}" 
+                                   widget="many2many_tags" 
+                                   invisible="not year" 
+                                   domain="[('id', 'in', months)]"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="button_download" string="Télécharger" type="object" class="btn-primary"/>
+                    <button special="cancel" string="Annuler" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_assignment_wizard_line_view_tree" model="ir.ui.view">
+        <field name="name">hr.assignment.wizard.line.view.list</field>
+        <field name="model">hr.assignment.wizard.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <header>
+                    <button name="button_add_timeclock_lines" string="Ajouter" type="object" class="btn-primary"/>
+                </header>
+                <field name="date" required="1"/>
+                <field name="job_category_id" options="{'no_open': True, 'no_create': True}" required="1"/>
+                <field name="job_id" options="{'no_open': True, 'no_create': True}" required="1"/>
+                <field name="uom_id" options="{'no_open': True, 'no_create': True}" required="1"/>
+                <field name="employee_id" options="{'no_open': True, 'no_create': True}" required="1"/>
+                <field name="is_present" required="1"/>
+                <field name="hours" required="1"/>
+            </list>
+        </field>
+    </record>
+</odoo>

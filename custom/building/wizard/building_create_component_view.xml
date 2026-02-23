@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+     
+		<record model="ir.ui.view" id="building_component_create_form">
+	        <field name="name">building.component.form</field>
+	        <field name="model">building.component</field>
+	        <field name="type">form</field>
+	        <field name="arch" type="xml">
+	        	<form string="Produits">
+					<group>
+						<field name="type"/>
+		            </group>
+	        		<group>
+			            <field name="component_line_ids" nolabel="1" attrs="{'invisible': [('type', '=','price')]}">
+			            	<tree string="Compostants" editable="botom">
+			            		<field name="name" />
+			            		<field name="parent_id" invisible="1"/>
+			            	</tree>
+			            </field>
+						<field name="component_line_2_ids" nolabel="1" attrs="{'invisible': [('type', '=','component')]}">
+			            	<tree string="Compostants" editable="botom">
+								<field name="price_number" />
+			            		<field name="name" />
+								<field name="quantity"/>
+								<field name="product_uom"/>
+			            		<field name="parent_id" invisible="1"/>
+			            	</tree>
+			            </field>
+		            </group>     
+	              	<footer>
+	                	<button name="create_component" string="Créer"  type="object" class="oe_highlight"/>
+	                	or
+	                	<button string="Annuler" class="oe_link" special="cancel" />
+	           		</footer>
+	            </form>
+	        </field>
+		</record>
+            
+		<record model="ir.actions.act_window" id="action_create_component">
+		    <field name="name">Compostants</field>
+		    <field name="res_model">building.component</field>
+		    <field name="view_type">form</field>
+		    <field name="view_mode">form</field>
+			<field name="view_id" ref="building_component_create_form"/>
+		    <field name="target">new</field>
+		</record>
+
+		<record model="ir.ui.view" id="building_chapter_create_form">
+	        <field name="name">building.component.form</field>
+	        <field name="model">building.component</field>
+	        <field name="type">form</field>
+	        <field name="arch" type="xml">
+	        	<form string="Produits">
+	        		<group>
+			            <field name="component_line_ids" nolabel="1">
+			            	<tree string="Compostants" editable="botom">
+			            		<field name="name" />
+			            		<field name="parent_id" invisible="1"/>
+			            	</tree>
+			            </field>
+		            </group>
+	              	<footer>
+	                	<button name="create_chapter" string="Créer"  type="object" class="oe_highlight"/>
+	                	or
+	                	<button string="Annuler" class="oe_link" special="cancel" />
+	           		</footer>
+	            </form>
+	        </field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_create_chapter">
+		    <field name="name">Chapitres</field>
+		    <field name="res_model">building.component</field>
+		    <field name="view_type">form</field>
+		    <field name="view_mode">form</field>
+			<field name="view_id" ref="building_chapter_create_form"/>
+		    <field name="target">new</field>
+		</record>
+
+    </data>
+</openerp>

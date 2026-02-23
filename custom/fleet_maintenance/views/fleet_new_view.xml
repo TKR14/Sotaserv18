@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="fleet_vehicle_view_form_inherit">
+        <field name="name">fleet.vehicle.form.inherit</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="arch" type="xml">
+            <form position="replace">
+                <form>
+                    <header modifiers="{}">
+                        <field name="state_id" widget="statusbar" options="{'clickable': '1'}" can_create="true" can_write="true" modifiers="{}" id="state_id"/>
+                        <field name="state_name" invisible="1"/>
+                        <button name="action_set_draft" type="object" string="Remettre" class="btn-primary" invisible="state_name != 'Inscrit'" groups="fleet_maintenance.fleet_vehicle_draft"/>
+                        <button name="action_set_inscrit" type="object" string="Inscrire" class="btn-primary" invisible="state_name == 'Inscrit'"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box" modifiers="{}">
+                            <!-- <button name="action_view_bills" type="object" class="oe_stat_button" icon="fa-pencil-square-o" invisible="bill_count == 0" help="Afficher la facture fournisseur pour ce véhicule." modifiers="{'invisible':[['bill_count','=',0]]}" options="{}">
+                                <field name="bill_count" widget="statinfo" string="Factures" modifiers="{'readonly':true}" id="bill_count"/>
+                            </button> -->
+                            <button name="open_assignation_logs" type="object" class="oe_stat_button" icon="fa-history" modifiers="{}" options="{}">
+                                <field name="history_count" widget="statinfo" string="Historique des Conducteurs" modifiers="{'readonly':true}" id="history_count"/>
+                            </button>
+                            <button name="return_action_to_open" type="object" class="oe_stat_button" icon="fa-book" context="{'xml_id':'fleet_vehicle_log_contract_action'}" help="Afficher le contrat pour ce véhicule" modifiers="{}" options="{}">
+                                <field name="contract_count" widget="statinfo" string="Contrats" modifiers="{'readonly':true}" id="contract_count"/>
+                            </button>
+                            <button name="return_action_to_open" type="object" class="oe_stat_button" icon="fa-wrench" context="{'xml_id':'fleet_vehicle_log_services_action'}" help="montrer l'historique des interventions pour ce véhicule" modifiers="{}" options="{}">
+                                <field name="service_count" widget="statinfo" string="Services" modifiers="{'readonly':true}" id="service_count"/>
+                            </button>
+                            <field name="vehicle_type" invisible="1"/>
+                            <button name="return_action_to_open" type="object" class="oe_stat_button" icon="fa-tachometer" context="{'xml_id':'fleet_vehicle_odometer_action'}" help="Voir les relevés kilométriques de ce vehicule" invisible="vehicle_type != 'car'" modifiers="{'invisible':[['vehicle_type','!=','car']]}" options="{}">
+                                <field name="odometer_count" widget="statinfo" string="kilomètrage" modifiers="{'readonly':true}" id="odometer_count"/>
+                            </button>
+                        </div>
+                        <field name="vehicle_picture" widget="image" class="vehicle_picture"/>
+                        <field name="image_128" widget="image" class="oe_avatar"/>
+                        <group>
+                            <group string="Informations générales">
+                                <field name="categ_fleet_id" readonly="state_name == 'Inscrit'" options="{'no_open': True, 'no_create': True}" />
+                                <field name="code" readonly="state_name == 'Inscrit'" />
+                                <field name="name2" readonly="state_name == 'Inscrit'" />
+                                <field name="po_date" readonly="state_name == 'Inscrit'" />
+                                <field name="net_car_value" readonly="state_name == 'Inscrit'" />
+                                <field name="acquisition_date" readonly="state_name == 'Inscrit'"/>
+                                <field name="license_plate" readonly="state_name == 'Inscrit'"/>
+                                <field name="color" readonly="state_name == 'Inscrit'"/>
+                                <field name="seats" readonly="state_name == 'Inscrit'"/>
+                                <field name="doors" readonly="state_name == 'Inscrit'"/>
+                                <!-- <label for="cost" /> -->
+                                <field name="cost" readonly="state_name == 'Inscrit'" />
+                                <!-- <div class="o_row">
+                                    <field name="uom_id" readonly="state_name == 'Inscrit'" options="{'no_open': True, 'no_create': True}"/>
+                                </div> -->
+                            </group>
+                            <group string="Autres informations">
+                                <field name="is_reception_vehicle" invisible="1"/>
+                                <field name="product_id" options="{'no_open': True, 'no_create': True}" readonly="state_name == 'Inscrit' or is_reception_vehicle"/>
+                                <field name="model_id" readonly="state_name == 'Inscrit'" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="attendance_type" readonly="state_name == 'Inscrit'"/>
+                                <field name="model_year" readonly="state_name == 'Inscrit'" />
+                                <field name="serial_number" readonly="state_name == 'Inscrit'" />
+                                <field name="vin_sn" readonly="state_name == 'Inscrit'"/>
+                                <field name="transmission" readonly="state_name == 'Inscrit'"/>
+                                <field name="type_vihicle" readonly="state_name == 'Inscrit'"/>
+                                <field name="horsepower" readonly="state_name == 'Inscrit'"/>
+                                <field name="consumption" readonly="state_name == 'Inscrit'"/>
+                                <label for="odometer"/>
+                                <div class="o_row">
+                                    <field name="odometer" id="odometer" readonly="state_name == 'Inscrit'"/>
+                                    <field name="odometer_unit" id="odometer_unit" readonly="state_name == 'Inscrit'"/>
+                                </div>
+                                <field name="controle_value_change" readonly="state_name == 'Inscrit'"/>
+                                <field name="unit_change" readonly="state_name == 'Inscrit'"/>
+                                <h4>Description</h4>
+                                <field name="description" nolabel="1" placeholder="Écrivez ici toute autre information concernant ce matériel" readonly="state_name == 'Inscrit'" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </form>
+        </field>
+    </record>
+</odoo>

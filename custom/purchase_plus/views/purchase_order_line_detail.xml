@@ -1,0 +1,82 @@
+<odoo>
+    <record id="purchase_order_line_view_form_details" model="ir.ui.view">
+        <field name="name">purchase.order.line.view.form.details</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <div class="d-flex flex-wrap p-3">
+                    <div class="flex-fill me-3">
+                        <div class="oe_title">
+                            <h2><span>Article :</span></h2>
+                            <h2>
+                                <field name="product_id" readonly="1" options="{'no_open': True}"/>
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="flex-fill me-3 ms-4">
+                        <div class="oe_title">
+                            <h2><span>Montant Total :</span></h2>
+                            <h2>
+                                <div class="d-flex align-items-center">
+                                    <field name="price_subtotal" readonly="1" widget="monetary" class="me-2"/>
+                                    <span class="fs-6 text-muted">CFA</span>
+                                </div>
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="flex-fill ms-5">
+                        <div class="oe_title">
+                            <h2><span>À ventiler :</span></h2>
+                            <h2>
+                                <div class="d-flex align-items-center">
+                                    <field name="ventilate" readonly="1" widget="monetary" class="me-2"/>
+                                    <span class="fs-6 text-muted">CFA</span>
+                                </div>
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+                
+                <notebook>
+                    <page string="Détails" name="details">
+                        <field name="detail_ids">
+                            <list editable="bottom">
+                                <field name="name"/>
+                                <field name="unit_measurement" string="UDM" options="{'no_create': True}"/>
+                                <field name="quantity_type" string="Type"/>
+                                <field name="quantity_pr" 
+                                       readonly="quantity_type == 'percentage'" 
+                                       force_save="1"/>
+                                <field name="price_unit" widget="monetary"/>
+                                <field name="subtotal" widget="monetary" sum="Total Sous-total"/>
+                            </list>
+                        </field>
+                        <group class="oe_subtotal_footer">
+                            <field name="amount_total" colspan="2" readonly="1" widget="monetary" string="Total Général"/>
+                        </group>
+                    </page>
+                </notebook>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_purchase_order_line_detail_tree" model="ir.ui.view">
+        <field name="name">purchase.order.line.detail.list</field>
+        <field name="model">purchase.order.line.detail</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name" />
+                <field name="price_unit" />
+                <field name="subtotal" sum="Total"/>
+                <field name="purchase_order_line_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_purchase_order_line_detail" model="ir.actions.act_window">
+        <field name="name">Détails de la ligne de bon de commande</field>
+        <field name="res_model">purchase.order.line.detail</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_purchase_order_line_detail_tree"/>
+    </record>
+</odoo>

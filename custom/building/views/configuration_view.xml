@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	
+
+             ###### Resource Profile view ######
+
+            <record model="ir.ui.view" id="resource_profile_tree_form">
+                <field name="name">resource.profile.form</field>
+                <field name="model">resource.profile</field>
+                <field name="type">form</field>
+                <field name="arch" type="xml">
+                    <form string="Profil">
+                        <sheet>
+                            <group col="4" colspan="4">
+                                <field name="name" />
+                                <field name="cost" />
+                                <field name="default_unit" /> <!-- Working Time id is3 -->
+                                <field name="parent_id"/>
+                            </group>
+                            <group col="4" colspan="4">
+                                <field name="description"/>
+                            </group>
+
+                            <separator string="Liste des ressources humaines" colspan="2"/>
+                            <group>
+                                <field name="resource_ids" nolabel="1" readonly="1">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="registration_number"/>
+                                        <field name="schedule_cost"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </sheet>
+
+                    </form>
+                </field>
+            </record>
+
+           <record model="ir.ui.view" id="resource_profile_tree_view">
+                <field name="name">resource.profile.tree</field>
+                <field name="model">resource.profile</field>
+                <field name="type">list</field>
+                <field name="arch" type="xml">
+                    <list string="Profils">
+                        <field name="name"/>
+                       	<field name="cost"/>
+                        <field name="default_unit"/>
+                    </list>
+                </field>
+            </record>
+            <record model="ir.actions.act_window" id="action_resource_profile_view">
+                <field name="name"> Profils</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model">resource.profile</field>
+                <field name="view_mode">list,form</field>
+            </record>
+
+
+          ###### Resource category view ######
+
+            <record model="ir.ui.view" id="resource_category_tree_form">
+                <field name="name">resource.category.form</field>
+                <field name="model">resource.category</field>
+                <field name="type">form</field>
+                <field name="arch" type="xml">
+                    <form string="Famille">
+                        <sheet>
+                            <group col="4" colspan="4">
+                                <field name="name" string="Catégorie"/>
+                                <field name="cost" />
+                                <field name="default_unit" /> <!-- Working Time id is3 -->
+                                <field name="parent_id"/>
+                            </group>
+                            <group col="4" colspan="4">
+                                <field name="description"/>
+                            </group>
+
+                            <separator string="Liste des ressources matérielles" colspan="2"/>
+                            <group>
+                                <field name="resource_ids" nolabel="1" readonly="1">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="registration_number"/>
+                                        <field name="schedule_cost"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </sheet>
+                    </form>
+                </field>
+            </record>
+
+           <record model="ir.ui.view" id="resource_category_tree_view">
+                <field name="name">resource.category.tree</field>
+                <field name="model">resource.profile</field>
+                <field name="type">list</field>
+                <field name="arch" type="xml">
+                    <list string="Familles">
+                        <field name="name"/>
+                       	<field name="cost"/>
+                        <field name="default_unit"/>
+                    </list>
+                </field>
+            </record>
+            <record model="ir.actions.act_window" id="action_resource_category_view">
+                <field name="name">Catégories</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model">resource.category</field>
+                <field name="view_mode">list,form</field>
+            </record>
+
+        ###### Resource load view ######
+
+            <record model="ir.ui.view" id="resource_load_tree_form">
+                <field name="name">resource.load.form</field>
+                <field name="model">resource.load</field>
+                <field name="type">form</field>
+                <field name="arch" type="xml">
+                    <form string="Charge">
+                        <sheet>
+                            <group col="4" colspan="4">
+                                <field name="name" />
+                                <field name="cost" />
+                                <field name="default_unit" /> <!-- Working Time id is3 -->
+                            </group>
+                        </sheet>
+                    </form>
+
+                </field>
+            </record>
+
+           <record model="ir.ui.view" id="resource_load_tree_view">
+                <field name="name">resource.load.tree</field>
+                <field name="model">resource.load</field>
+                <field name="type">list</field>
+                <field name="arch" type="xml">
+                    <list string="Charges">
+                        <field name="name"/>
+                       	<field name="cost"/>
+                        <field name="default_unit"/>
+                    </list>
+                </field>
+            </record>
+            <record model="ir.actions.act_window" id="action_resource_load_view">
+                <field name="name">Charges</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model">resource.load</field>
+                <field name="view_mode">list,form</field>
+            </record>
+
+    </data>
+</openerp>

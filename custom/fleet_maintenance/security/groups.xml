@@ -1,0 +1,5 @@
+<odoo>
+    <record id="fleet_vehicle_draft" model="res.groups">
+        <field name="name">Matériel / Remettre</field>
+    </record>
+</odoo>

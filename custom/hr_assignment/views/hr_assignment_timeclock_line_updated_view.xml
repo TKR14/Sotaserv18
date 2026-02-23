@@ -1,0 +1,42 @@
+<odoo>
+    <record id="hr_assignment_timeclock_line_updated_view" model="ir.ui.view">
+        <field name="name">hr.assignment.timeclock.line.updated.list</field>
+        <field name="model">hr.assignment.timeclock.line.updated</field>
+        <field name="arch" type="xml">
+            <list expand="1" export_xlsx="0" 
+                  decoration-info="state == 'updated'" 
+                  decoration-success="state == 'validated'" 
+                  decoration-danger="state == 'canceled'">
+                <header>
+                    <button name="action_validate" type="object" string="Valider" class="btn-success ms-2" groups="building_plus.sotaserv_dg"/>
+                    <button name="action_rejecte" type="object" string="Rejeter" class="btn-danger ms-2" groups="building_plus.sotaserv_dg"/>
+                </header>
+                <field name="line_site_id" optional="show"/>
+                <field name="line_job_id" optional="show"/>
+                <field name="line_employee_id" optional="show"/>
+                <field name="line_hours" optional="show"/>
+                <field name="hours" optional="show"/>
+                <field name="state" widget="badge" decoration-info="state == 'updated'" decoration-success="state == 'validated'" decoration-danger="state == 'canceled'"/>
+                <field name="decision" column_invisible="True" widget="badge" decoration-info="decision == 'requested'" decoration-danger="decision == 'rejected'" decoration-success="decision == 'validated'"/>
+                <button name="get_reason" type="object" class="btn-primary" icon="fa-eye"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_assignment_timeclock_line_updated_action" model="ir.actions.act_window">
+        <field name="name">Validation Pointages</field>
+        <field name="res_model">hr.assignment.timeclock.line.updated</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[("decision", "=", "requested")]</field>
+        <field name="context">{"delete": False, "create": False, "edit": False}</field>
+    </record>
+
+    <!-- <menuitem
+        id="menu_dg_acore_tracking"
+        name="Validation Pointages"
+        parent="building_plus.menu_dg"
+        action="hr_assignment.hr_assignment_timeclock_line_updated_action"
+        sequence="3"
+    /> -->
+    <!-- ajouter le menu building plus  -->
+</odoo>

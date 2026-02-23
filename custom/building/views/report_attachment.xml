@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_attachment">
+            <t t-name="building.report_attachment">
+                <t t-call="web.html_container">
+                    <t t-foreach="docs" t-as="o">
+                        <t t-call="web.external_layout">
+
+                            <div class="page">
+
+                                <div class="row">
+                                    <div class="col-xs-5 col-xs-offset-7">
+                                        <address  style="font-family: URW Palladio L;"  t-field="o.partner_id" t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}"/>
+                                    </div>
+                                </div>
+
+                               <br/><br/>
+
+                                <div align="center">
+                                    <h5 style="font-family: URW Palladio L;"><strong>ATTACHEMENT DES TRAVAUX REALISES N° : <span t-att-style="style" t-esc="o.number"/></strong></h5>
+                                    <h6 style="font-family: URW Palladio L;"><strong>DU : <u><span t-field="o.start_date"/></u> AU <u><span t-field="o.end_date"/></u></strong></h6>
+                                </div>
+
+                               <br/><br/>
+
+                              <div class="col-xs-10 pull-left">
+                                     <!-- <div style="font-family: URW Palladio L;font-size: 12;">
+                                         APPEL D'OFFRE N°: <span t-if="o.type_attachment == 'sale'" t-field="o.order_id.ref_tendering"/><span t-if="o.type_attachment == 'purchase'" t-field="o.subcontracting_id.origin_id.ref_tendering"/>
+                                     </div>
+                                     <div style="font-family: URW Palladio L;font-size: 12;">
+                                         MARCHE N° :<span t-if="o.type == 'sale'" t-field="o.order_id.ref_project"/><span t-if="o.type == 'purchase'" t-field="o.subcontracting_id.origin_id.ref_project"/>
+                                     </div> -->
+                                     <div style="font-family: URW Palladio L;font-size: 12;">
+                                         OBJET : <span t-field="o.name"/>
+                                     </div>
+                                </div>
+
+                                <br/><br/><br/><br/><br/>
+
+                                <table class="table table-bordered" t-if="o.line_ids">
+                                     <thead style="display: table-header-group;">
+                                        <tr style="page-break-inside: avoid;">
+                                            <th rowspan="2" class="text-center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 15px;"><strong>N°</strong></th>
+                                            <th rowspan="2" class="text-center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 15px;"><strong>Désignation des travaux</strong></th>
+                                            <th rowspan="2" class="text-center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 15px;"><strong>Unité</strong></th>
+                                            <th colspan="4" class="text-center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 15px;"><strong>Quantité</strong></th>
+                                        </tr>
+                                         <tr style="page-break-inside: avoid;">
+                                            <th class="text-center" style="font-family: URW Palladio L;font-size: 14px;"><strong>Quantité <br/>au<br/> Contrat</strong></th>
+                                            <th class="text-center"  style="font-family: URW Palladio L;font-size: 14px;"><strong>Quantité <br/>exécutée<br/> précédemment</strong></th>
+                                            <th class="text-center"  style="font-family: URW Palladio L;font-size: 14px;"><strong>Quantité <br/>exécutée<br/> du mois</strong></th>
+                                            <th class="text-center"  style="font-family: URW Palladio L;font-size: 14px;"><strong>Quantité <br/>total<br/> exécutée</strong></th>
+                                        </tr>
+
+                                     </thead>
+                                     <tbody>
+                                        <tr style="page-break-inside: avoid;" t-foreach="o.line_ids" t-as="line">
+                                            <t t-if="line.display_type">
+                                                <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"><strong><span t-field="line.chapter"/></strong></td>
+                                                <td style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;text-justify : inter-word;"><span t-field="line.name"/></td>
+                                                <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"></td>
+                                                <td align="center" t-if="o.type_attachment == 'sale'" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"></td>
+                                                <!-- <td align="center" t-if="o.type == 'purchase'" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"><strong><span t-field="line.line_subcontracting_id.quantity"/></strong></td> -->
+                                                <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"></td>
+                                                <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"></td>
+                                                <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"></td>
+                                            </t>
+                                            <t t-else="">
+                                                <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"><strong><span t-field="line.chapter"/></strong></td>
+                                                <td style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;text-justify : inter-word;"><span t-field="line.name"/></td>
+                                                <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"><span t-field="line.product_uom_id.name"/></td>
+                                                <td align="center" t-if="o.type_attachment == 'sale'" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"><strong><span t-field="line.line_dqe_id.quantity"/></strong></td>
+                                                <!-- <td align="center" t-if="o.type == 'purchase'" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"><strong><span t-field="line.line_subcontracting_id.quantity"/></strong></td> -->
+                                                <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"><strong><span t-field="line.previous_quantity"/></strong></td>
+                                                <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"><strong><span t-field="line.current_quantity"/></strong></td>
+                                                <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"><strong><span t-field="line.cumulative_quantity"/></strong></td>
+                                            </t>
+
+                                        </tr>
+                                     </tbody>
+                                </table>
+
+                                <br/>
+
+                                <div align="center" style="font-family: URW Palladio L;font-size: 15;">
+                                    <strong><span>Pour Le Client</span></strong>
+                                    <strong><span style="margin-left: 20em;">Pour L'Entreprise</span></strong>
+                                    <br/>
+                                    <span>Fait Le:......../......./.................À...........................</span>
+                                    <span style="margin-left: 5em;">Fait Le:......../......./.................À...........................</span>
+                                </div>
+
+                            </div>
+                        </t>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="report_request_price_comparison_document">
+    <t t-call="web.internal_layout">
+        <div style="text-align: center;font-size:15;font-weight: bold;">Tableau Comparatif des offres N° <span t-field="doc.name"/></div>
+        <br/><br/>
+        <div class="page">
+            <table class="table table-sm o_main_table">
+                <thead>
+                    <tr>
+                        <th style="border-top-style:hidden;"></th>
+                        <th style="border-top-style:hidden;"></th>
+                        <th name="th_supplier" style="border:1px solid black;text-align: center;font-size:10;" t-att-colspan="len(doc.get_partners())">Fournisseurs</th>
+                    </tr>
+                    <tr>
+                        <th style="border-top-style:hidden;"></th>
+                        <th style="border-top-style:hidden;"></th>
+                        <t t-foreach="doc.get_partners()" t-as="partner_id">
+                            <th style="width:100px;border:1px solid black;text-align: center;font-size:medium;"><t t-esc="doc.get_partners()[partner_id]"/></th>
+                        </t>
+                    </tr>
+                    <tr>
+                        <th name="th_description" style="width:200px;border:1px solid black;text-align: center;font-size:medium;">DESIGNATION</th>
+                        <th name="th_quantity" style="width:120px;border:1px solid black;text-align: center;font-size:medium;">QTE</th>
+                        <t t-foreach="doc.get_partners()" t-as="partner_id">
+                            <th style="width:100px;border:1px solid black;text-align: center;font-size:medium;" name="th_price">PU HT</th>
+                        </t>
+                        <th name="th_note" style="width:150px;border:1px solid black;text-align: center;font-size:medium;">REMARQUE</th>
+                    </tr>
+                </thead>
+                <tbody style="border:1px solid black;">
+                    <t t-foreach="doc.get_lines()" t-as="product_id">
+                        <tr style="border:1px solid black;">
+                            <td name="td_name" style="width:200px;border:1px solid black;text-align: left;font-size:10;"><span t-esc="doc.get_lines()[product_id]['name']"/></td>
+                            <td name="td_quantity" style="width:120px;border:1px solid black;text-align: center;font-size:10;">
+                                <span t-esc="doc.get_lines()[product_id]['qty']"/>
+                            </td>
+                            <t t-foreach="doc.get_partners()" t-as="partner_id">
+                                <td name="td_priceunit" style="width:100px;border:1px solid black;text-align: center;font-size:10;">
+                                    <span t-esc="doc.get_lines()[product_id][partner_id]"/>
+                                </td>
+                            </t>
+                            <td name="td_note" style="width:120px;border:1px solid black;text-align: center;font-size:10;">
+                                <span t-esc="doc.get_lines()[product_id]['note']"/>
+                            </td>
+                        </tr>
+                    </t>
+                    <tr style="border:1px solid black;">
+                        <td name="td_comment" style="border:1px solid black;text-align: center;font-size:10;vertical-align: middle;
+" rowspan="8">COMMENTAIRE</td>
+                        <tr style="border:1px solid black;">
+                            <td name="td_total" style="border:1px solid black;text-align: center;font-size:10;">TOTAL</td>
+                            <t t-foreach="doc.get_partners()" t-as="partner_id">
+                                <td name="td_value_total" style="width:100px;border:1px solid black;text-align: center;font-size:10;">
+                                    <span t-esc="doc.get_comment()[partner_id]['total']"/>
+                                </td>
+                            </t>
+                            <td style="border:1px solid black;"></td>
+                        </tr>
+                        <tr style="border:1px solid black;">
+                            <td name="td_paiement" style="border:1px solid black;text-align: center;font-size:10;">MODE PAIEMENT</td>
+                            <t t-foreach="doc.get_partners()" t-as="partner_id">
+                                <td name="td_value_payment" style="width:100px;border:1px solid black;text-align: center;font-size:10;">
+                                    <span t-esc="doc.get_comment()[partner_id]['payment']"/>
+                                </td>
+                            </t>
+                            <td style="border:1px solid black;"></td>
+                        </tr>
+                        <tr style="border:1px solid black;">
+                            <td name="td_delivery" style="border:1px solid black;text-align: center;font-size:10;">MODE LIVRAISON</td>
+                            <t t-foreach="doc.get_partners()" t-as="partner_id">
+                                <td name="td_value_delivery" style="width:100px;border:1px solid black;text-align: center;font-size:10;">
+                                    <span t-esc="doc.get_comment()[partner_id]['delivery']"/>
+                                </td>
+                            </t>
+                            <td style="border:1px solid black;"></td>
+                        </tr>
+                        <tr style="border:1px solid black;">
+                            <td name="td_guaranty" style="border:1px solid black;text-align: center;font-size:10;">GARANTIE</td>
+                            <t t-foreach="doc.get_partners()" t-as="partner_id">
+                                <td name="td_value_guaranty" style="width:100px;border:1px solid black;text-align: center;font-size:10;">
+                                    <span t-esc="doc.get_comment()[partner_id]['guaranty']"/>
+                                </td>
+                            </t>
+                            <td style="border:1px solid black;"></td>
+                        </tr>
+                        <tr style="border:1px solid black;">
+                            <td name="td_delivery_time" style="border:1px solid black;text-align: center;font-size:10;">DELAI DE LIVRAISON </td>
+                            <t t-foreach="doc.get_partners()" t-as="partner_id">
+                                <td name="td_value_delivery_time" style="width:100px;border:1px solid black;text-align: center;font-size:10;">
+                                    <span t-esc="doc.get_comment()[partner_id]['delay']"/>
+                                </td>
+                            </t>
+                            <td style="border:1px solid black;"></td>
+                        </tr>
+                        <tr style="border:1px solid black;">
+                            <td name="td_available" style="border:1px solid black;text-align: center;font-size:10;">DISPONIBILITE</td>
+                            <t t-foreach="doc.get_partners()" t-as="partner_id">
+                                <td name="td_value_available" style="width:100px;border:1px solid black;text-align: center;font-size:10;">
+                                    <span t-esc="doc.get_comment()[partner_id]['available']"/>
+                                </td>
+                            </t>
+                            <td style="border:1px solid black;"></td>
+                        </tr>
+                        <tr style="border:1px solid black;">
+                            <td name="td_offer_validity" style="border:1px solid black;text-align: center;font-size:10;">VALIDITE DE L'OFFRE</td>
+                            <t t-foreach="doc.get_partners()" t-as="partner_id">
+                                <td name="td_value_offer_validity" style="width:100px;border:1px solid black;text-align: center;font-size:10;">
+                                    <span t-esc="doc.get_comment()[partner_id]['validity']"/>
+                                </td>
+                            </t>
+                            <td style="border:1px solid black;"></td>
+                        </tr>
+                    </tr>
+                    <t t-if="len(doc.get_recommendations()) &gt; 0">
+                        <tr style="border:1px solid black;">
+                            <td name="td_comment" style="border:1px solid black;text-align: center;font-size:10;vertical-align: middle;" t-att-rowspan="len(doc.get_recommendations())+1">RECOMMANDATIONS</td>
+                            <t t-foreach="doc.get_recommendations()" t-as="rec">
+                                <tr style="border:1px solid black;">
+                                    <td name="td_rec" style="border:1px solid black;text-align: center;font-size:10;"><span t-esc="rec"/></td>
+                                    <t t-foreach="doc.get_partners()" t-as="partner_id">
+                                        <td name="td_value_rec" style="width:100px;border:1px solid black;text-align: center;font-size:10;">
+                                            <span t-esc="doc.get_recommendations()[rec][partner_id]"/>
+                                        </td>
+                                    </t>
+                                    <td style="border:1px solid black;"></td>
+                                </tr>
+                            </t>
+                       </tr>
+                    </t>
+                </tbody>
+            </table>
+
+            <br/><br/>
+            
+            <table class="table table-sm o_main_table">
+                <thead>
+                    <tr>
+                        <th style="border-top-style:hidden;"></th>
+                        <th name="th_validation" style="border:1px solid black;text-align: center;font-size:10;">ACCORD</th>
+                        <th name="th_validation" style="border:1px solid black;text-align: center;font-size:10;">RESPONSABLE ACHATS</th>
+                        <th name="th_validation" style="border:1px solid black;text-align: center;font-size:10;">DIRECTEUR GENERAL ADJOINT</th>
+                        <th name="th_validation" style="border:1px solid black;text-align: center;font-size:10;">DIRECTEUR GENERAL</th>
+                    </tr>
+                    <tr>
+                        <th name="th_decision" style="border:1px solid black;text-align: center;font-size:10;">DECISIONS / ACTIONS</th>
+                        <th name="th_date" style="border:1px solid black;text-align: center;font-size:10;">DATE</th>
+                        <th name="th_date1" style="border:1px solid black;text-align: center;font-size:10;"><span t-field="doc.date_decision"/></th>
+                        <th name="th_date2" style="border:1px solid black;text-align: center;font-size:10;"><span t-field="doc.date_decision"/></th>
+                        <th name="th_date3" style="border:1px solid black;text-align: center;font-size:10;"><span t-field="doc.date_decision"/></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td name="th_decision" style="border:1px solid black;text-align: center;font-size:10;vertical-align: middle;" rowspan="3"><span t-field="doc.order_id.partner_id.name"/></td>
+                        <tr>
+                            <td name="th_date" style="border:1px solid black;text-align: center;font-size:10;">NOM</td>
+                            <td name="th_date1" style="border:1px solid black;text-align: center;font-size:10;">M. CHAFAI</td>
+                            <td name="th_date1" style="border:1px solid black;text-align: center;font-size:10;">M. DECHRAOUI </td>
+                            <td name="th_date1" style="border:1px solid black;text-align: center;font-size:10;">M. IGHAFI</td>
+                        </tr>
+                        <tr>
+                            <td name="th_date1" style="border:1px solid black;text-align: center;font-size:10;">SIGNATURE</td>
+                            <td name="th_date1" style="border:1px solid black;text-align: center;font-size:10;"></td>
+                            <td name="th_date1" style="border:1px solid black;text-align: center;font-size:10;"></td>
+                            <td name="th_date1" style="border:1px solid black;text-align: center;font-size:10;"></td>
+                        </tr>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </t>
+</template>
+
+
+<template id="report_request_price_comparison">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="purchase_igaser.report_request_price_comparison_document"/>
+        </t>
+    </t>
+</template>
+
+</odoo>
+

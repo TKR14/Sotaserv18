@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- QWeb Reports -->
+        <report
+            id="action_report_attachment"
+            model="building.attachment"
+            report_type="qweb-pdf"
+            string="Attachement"
+            name="building.report_attachment"
+            file="building.report_attachment"
+        />
+<!-- 
+        <report
+            id="action_report_invoice"
+            model="account.invoice"
+            report_type="qweb-pdf"
+            string="Facture Attachement"
+            name="building.report_invoice"
+            file="building.report_invoice"
+        />
+
+        <report
+            id="action_report_order"
+            model="building.order"
+            report_type="qweb-pdf"
+            string="DQE"
+            name="building.report_order"
+            file="building.report_order"
+        />
+ -->
+
+    <record id="action_report_dlmassign" model="ir.actions.report">
+        <field name="name">Affectations matériels</field>
+        <field name="model">dlm.common.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">building.report_dlmassign</field>
+        <field name="report_file">building.report_dlmassign</field>
+    </record>
+    <record id="action_report_requestvehicle" model="ir.actions.report">
+        <field name="name">Demandes matériels</field>
+        <field name="model">maintenance.request.resource.material</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">building.report_requestvehicle</field>
+        <field name="report_file">building.report_requestvehicle</field>
+        <field name="binding_model_id" ref="building.model_maintenance_request_resource_material"/>
+    </record>
+
+    <record id="action_report_missionorder" model="ir.actions.report">
+        <field name="name">Ordres de mission</field>
+        <field name="model">transport.mission.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">building.report_missionorder</field>
+        <field name="report_file">building.report_missionorder</field>
+        <field name="binding_model_id" ref="building.model_transport_mission_order"/>
+    </record>
+
+    <record id="action_report_trasportschedule" model="ir.actions.report">
+        <field name="name">Planning de transport</field>
+        <field name="model">trasport.schedule</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">building.report_trasportschedule</field>
+        <field name="report_file">building.report_trasportschedule</field>
+        <!-- <field name="binding_model_id" ref="building.model_trasport_schedule"/> -->
+    </record>
+
+    <record id="action_report_materials_worked_hours" model="ir.actions.report">
+        <field name="name">Pointages Matériels</field>
+        <field name="model">materials.worked.hours</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">building.report_materials_worked_hours</field>
+        <field name="report_file">building.report_materials_worked_hours</field>
+        <!-- <field name="binding_model_id" ref="building.model_trasport_schedule"/> -->
+    </record>
+
+    <record id="action_report_diagnosticsheet" model="ir.actions.report">
+        <field name="name">Fiche de Diagnostic</field>
+        <field name="model">maintenance.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">building.report_diagnosticsheet</field>
+        <field name="report_file">building.report_diagnosticsheet</field>
+        <field name="binding_model_id" ref="maintenance.model_maintenance_request"/>
+    </record>
+
+    <record id="action_report_intervention" model="ir.actions.report">
+        <field name="name">Rapport d'intervention</field>
+        <field name="model">maintenance.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">building.report_intervention</field>
+        <field name="report_file">building.report_intervention</field>
+        <field name="binding_model_id" ref="maintenance.model_maintenance_request"/>
+    </record>
+
+    </data>
+</openerp>

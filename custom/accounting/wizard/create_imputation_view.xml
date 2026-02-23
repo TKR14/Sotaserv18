@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_create_imputation_form" model="ir.ui.view">
+        <field name="name">create.imputation.wizard.form</field>
+        <field name="model">create.imputation.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create New Imputation">
+                <group>
+                    <field name="date_from" />
+                    <field name="date_to" />
+                </group>
+                <footer>
+                    <button name="print_imputation" type="object" string="Imprimer" class="btn-primary" />
+                    <button string="Annuler" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_create_imputation" model="ir.actions.act_window">
+        <field name="name">Journal Imputation Comptable</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">create.imputation.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_create_imputation_form" />
+        <field name="target">new</field>
+    </record>
+
+
+    <menuitem id="menu_imputation_report" name="IGASER - Journal Imputation Comptable" sequence="10" parent="account.menu_finance_reports" action="action_create_imputation" />
+
+
+</odoo>

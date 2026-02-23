@@ -1,0 +1,270 @@
+<odoo>
+    <record id="stock_picking_transfer_report" model="ir.actions.report">
+        <field name="name">Bon de Transfert</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">stock_plus.stock_picking_transfer_template</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="print_report_name">'Bon de Transfert'</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="stock_picking_transfer_template">
+        <t t-call="web.html_container">
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&amp;display=swap');
+
+                    .page {
+                        position: relative;
+                        height: 360mm;
+                        font-family: "Lato";
+                    }
+
+                    .page &gt; *:not(:last-child) {
+                        margin-bottom: 40px;
+                    }
+
+                    .container {
+                        width: 100%; 
+                        margin: 0 auto; 
+                        border: 0px solid #000; 
+                        padding: 20px; 
+                        box-sizing: border-box;
+                        justify-content: space-between;
+                    }
+
+                    .logo{
+                        text-align: right; 
+                        display: flex; 
+                        margin-bottom: 20px;
+                    }
+
+                    .company-details {
+                        text-align: right;
+                        color: #FF6600; 
+                        font-size: 12px;
+                        line-height: 1.5;
+                        margin-top: -70px;
+                    }
+
+                    .title{
+                        display: flex; 
+                        justify-content: center; 
+                        align-items: center; 
+                        border: 2px solid #000; 
+                        padding: 1px; 
+                        margin-bottom: 5px; 
+                        margin-top: 25px;
+                    }
+
+                    .tit{
+                        font-weight: bold; 
+                        font-size: 24px; 
+                        text-align: center;
+
+                    }
+
+                    .details{
+                        display: flex; 
+                        justify-content: space-between; 
+                        font-size: 14px; 
+                        margin-top: -20px; 
+                        font-weight: bold;
+                    }
+
+                    .details span {
+                        font-weight: normal;
+                    }
+
+                    .left-details{
+                        display: inline-block; 
+                        width: 48%; 
+                        margin-top: 2px;
+                    }
+
+                    .right-details{
+                        display: inline-block; 
+                        width: 48%;
+                    }
+
+                    p{
+                        margin-bottom: -10px;
+                    }
+
+                    .table{
+                        margin-top: 20px; 
+                        width: 100%; 
+                        border-collapse: collapse;
+                    }
+
+                    th{
+                        border: 2px solid #000; 
+                        padding: 8px; 
+                        background-color: #f2f2f2; 
+                        font-size: 14px;
+                    }
+
+                    td {
+                        border: 2px solid #000; 
+                        padding: 8px; 
+                        border-right: none; 
+                        font-size: 14px;
+                    }
+
+                    .pied{
+                        color: grey; 
+                        font-weight: bold; 
+                        font-size: 17px;
+                        margin-top: 20px; 
+                        text-align: center; 
+                        font-size: 14px; 
+                        font-weight: bold;
+
+                    }
+
+                    .text{
+                        padding-top: 10px; 
+                        text-align: center; 
+                        margin-top: 40px; 
+                        font-size: 12px;
+                    }
+
+                    .signatures{
+                        display: flex; 
+                        flex-direction: column; 
+                        align-items: center; 
+                        margin-top: 20px;
+                    }
+
+                    .signature-row{
+                        display: flex; 
+                        justify-content: space-between; 
+                        width: 100%; 
+                        max-width: 800px;
+                    }
+
+                    .signature-box{
+                        text-align: center; 
+                        border: 2px solid #4088a6; 
+                        width: 306px; 
+                        height: 80px; 
+                        display: flex; 
+                        align-items: flex-start; 
+                        padding-top: 10px; 
+                        justify-content: center; 
+                        margin: 14px 0; 
+                        font-weight: bold;
+                        margin: 1px 5px;
+                        font-size: 13px; 
+                        padding-top: 10px;
+                    }
+                    
+                    .foot {
+                        position: absolute;
+                        bottom: 0;
+                        width: 100%;
+                        color: #0070c0;
+                        padding-top: 40px;
+                        border-top: 1px solid #000;
+                        font-size: 14px;
+                    }
+
+                    .fixed-signatures {
+                        position: absolute;
+                        bottom: 150px;
+                        width: 96%;
+                        text-align: center;
+                    }
+                    
+                    .ltfoot-container {
+                        width: 96%;
+                        padding-top: 20px;
+                        border-top: 1px solid #000;
+                        position: absolute;
+                        text-align: center;
+                        bottom: 0;
+                        color: rgb(0, 102, 0);
+                        font-size: 12px;
+                    }
+
+                    .sous_titre {
+                        padding-top: 20px;
+                    }
+                </style>
+
+                <div class="page" >
+                    <div class="container">
+
+                        <div class="logo">
+                            <img t-att-src="image_data_uri(request.env['res.company'].search([])[0].logo)" alt="Logo" style="max-width: 200px; height: auto;"/>
+                        </div>
+
+                        <div class="title" style="margin-top: 50px;">
+                            <h1 class="tit">Bon de Transfert</h1>
+                        </div>
+
+                        <div class="sous_titre">
+                            <h3 class="detail" style="text-decoration: underline;">Informations générales:</h3>
+                        </div>
+
+                        <div class="details">
+                            <div class="left-details">
+                                <p>Affaire: <span t-esc="site"/></p>
+                            </div>
+                            <div class="right-details">
+                                <p>Référence: <span t-esc="reference"/></p>
+                            </div>
+                        </div>
+
+                        <div class="sous_titre">
+                            <h3 class="detail" style="text-decoration: underline;">Détails des articles transférés:</h3>
+                        </div>
+
+                        <table class="table">
+                            <thead class="table-header">
+                                <tr>
+                                    <th>Article</th>
+                                    <th width="100px">Quantité</th>
+                                    <th width="100px">UDM</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="lines" t-as="line">
+                                    <tr>
+                                        <td style="border-right: none;">
+                                            <t t-esc="line['name']" />
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <t t-esc="line['quantity']"/>
+                                        </td>                                        
+                                        <td style="border: 2px solid #000; padding: 8px; text-align: center; font-size: 14px;">
+                                            <t t-esc="line['uom']" />
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        
+                        <div class="pied">
+                            <div class="text">TOUT BON DE TRANSFERT DOIT ETRE EDITER LE MEME JOUR QUE LA SORTIE FOURNITURE<br/>TOUT BON DE TRANSFERT DOIT ETRE SIGNER ET CACHETER</div>
+                        </div>
+
+                        <div class="signatures fixed-signatures">
+                            <div class="signature-row">
+                                <div class="signature-box"> <span class="signature-text">Magasinier</span> </div>
+                                <div class="signature-box"> <span class="signature-text">Chef chantier</span> </div>
+                                <div class="signature-box"> <span class="signature-text">Demandeur</span></div>
+                            </div>
+                        </div>
+
+                        <div class="ltfoot-container">
+                            <p>SARL au Capital de 100 000 000 FCFA, RCCM : CI-ABJ-03-2024-B12-01326, CC : 1637553T NIU N° : CI-2024-0073078 D, CNPS : 291705</p>
+                            <p>Angle Avenue Boga Doudou et Rue des Jardins. Im.LG. 3 ème Etage II Plateaux Vallon. BP. 2450 Abidjan 08 - Côte d'Ivoire</p>
+                            <p>Tél : +225 27 22 23 87 18, Mobile : +225 01 50 23 63 02, Email : sotaserv-ci@sotaserv.com</p>
+                            <p>www.sotaserv.ma</p>
+                        </div>
+                    </div>
+                </div>
+        </t>
+    </template>
+</odoo>

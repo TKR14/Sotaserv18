@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <!-- Sequences for building.price.calculation -->
+        <!-- <record id="seq_type_building_price_calculation" model="ir.sequence.type">
+            <field name="name">Price Calculation</field>
+            <field name="code">building.price.calculation</field>
+        </record> -->
+
+        <record id="seq_building_price_calculation" model="ir.sequence">
+            <field name="name">Price Calculation</field>
+            <field name="code">building.price.calculation</field>
+            <field name="prefix">PC</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequences for building.order -->
+        <!-- <record id="seq_type_building_order" model="ir.sequence.type">
+            <field name="name">buildings Order</field>
+            <field name="code">building.order</field>
+        </record> -->
+
+        <record id="seq_building_order" model="ir.sequence">
+            <field name="name">buildings Order</field>
+            <field name="code">building.order</field>
+            <field name="prefix">BO</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequences for building.site -->
+        <!-- <record id="seq_type_building_site" model="ir.sequence.type">
+            <field name="name">Site</field>
+            <field name="code">building.site</field>
+        </record> -->
+
+        <record id="seq_building_site" model="ir.sequence">
+            <field name="name">Site</field>
+            <field name="code">building.site</field>
+            <field name="prefix">BPRO-</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequences for building.attachement -->
+        <!-- <record id="seq_type_building_attachment" model="ir.sequence.type">
+            <field name="name">Building Attachment</field>
+            <field name="code">building.attachment</field>
+        </record> -->
+
+        <record id="seq_building_attachment" model="ir.sequence">
+            <field name="name">Building Attachment</field>
+            <field name="code">building.attachment</field>
+            <field name="prefix">%(month)s/%(year)s/</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequences for building.attachement.supplier -->
+        <!-- <record id="seq_type_building_attachment_supplier" model="ir.sequence.type">
+            <field name="name">Building Attachment Supplier</field>
+            <field name="code">building.attachment.supplier</field>
+        </record> -->
+
+        <record id="seq_building_attachment_supplier" model="ir.sequence">
+            <field name="name">Building Attachment Supplier</field>
+            <field name="code">building.attachment.supplier</field>
+            <field name="prefix">%(month)s/%(year)s/</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequences for building.subcontracting -->
+        <!-- <record id="seq_type_building_subcontracting" model="ir.sequence.type">
+            <field name="name">buildings Subcontracting</field>
+            <field name="code">building.subcontracting</field>
+        </record> -->
+
+        <record id="seq_building_subcontracting" model="ir.sequence">
+            <field name="name">buildings Subcontracting</field>
+            <field name="code">building.subcontracting</field>
+            <field name="prefix">BS</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_building_purchase_need" model="ir.sequence">
+            <field name="name">Building Purchase Need</field>
+            <field name="code">building.purchase.need</field>
+            <field name="prefix">%(month)s/%(year)s/</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_building_executed" model="ir.sequence">
+            <field name="name">Building Excution</field>
+            <field name="code">building.executed</field>
+            <field name="prefix">%(month)s/%(year)s/</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_building_assignment" model="ir.sequence">
+            <field name="name">building Assignment</field>
+            <field name="code">building.assignment</field>
+            <!-- <field name="suffix">'Aff/'</field> -->
+            <field name="prefix">%(month)s/%(year)s/</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</openerp>

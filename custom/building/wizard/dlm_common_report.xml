@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="dlm_common_report_view" model="ir.ui.view">
+        <field name="name">DLM Report</field>
+        <field name="model">dlm.common.report</field>
+        <field name="arch" type="xml">
+        <form string="Report Options">
+            <group col="4">
+                <field name="report_name" />
+            </group>
+            <group col="4">
+                <field name="site_id" invisible="report_name == 'dlm_trasport_schedule'"/>
+            </group>
+            <group col="4">
+                <field name="date_from" required="report_name == 'dlm_materials_worked_hours'"/>
+                <field name="date_to" required="report_name == 'dlm_materials_worked_hours'"/>
+            </group>
+
+            <footer>
+                <button name="check_report" string="Imprimer" type="object" default_focus="1" class="oe_highlight"/>
+                <button string="Annuler" class="btn-secondary" special="cancel" />
+            </footer>
+        </form>
+        </field>
+    </record>
+
+    <record id="action_dlm_common_report_menu" model="ir.actions.act_window">
+        <field name="name">Rapports DLM</field>
+        <field name="res_model">dlm.common.report</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="dlm_common_report_view"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem
+        id="menu_building_common_report"
+        name="Rapports DLM"
+        sequence="10"
+        parent="fleet.menu_root"
+        action="action_dlm_common_report_menu"
+        groups="fleet.fleet_group_manager,fleet.fleet_group_user"
+       />
+
+</odoo>

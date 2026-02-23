@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="purchase_price_comparison_inherited_tree_view" model="ir.ui.view">
+            <field name="name">Button créer comparaison des offres</field>
+            <field name="model">purchase.price.comparison</field>
+            <field name="inherit_id" ref="purchase_igaser.purchase_price_comparison_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//list" position="attributes">
+                    <attribute name="js_class">generate_purchase_price_comparison</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

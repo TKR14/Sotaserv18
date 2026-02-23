@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        
+        <record id="building_advance_inv_form" model="ir.ui.view">
+            <field name="name">building.advance.inv.form</field>
+            <field name="model">building.advance.inv</field>
+            <field name="arch" type="xml">
+                <form string="Accompte">
+                    <p class="oe_grey">
+						Choisissez comment voulez-vous Créer un Accompte. Une facture brouillon sera générée et pourra être modifiée avant validation.                     
+                    </p>
+                    <group>
+                        <field name="advance_payment_method" class="oe_inline"/>
+                        <field name="qtty" invisible="1"/>
+                        <field name="site_id" invisible="1"/>
+                        <label for="amount" invisible="advance_payment_method not in ('fixed', 'percentage')"/>
+                        <div invisible="advance_payment_method not in ('fixed', 'percentage')">
+                            <field name="amount"
+                                required="advance_payment_method in ('fixed', 'percentage')" class="oe_inline"/>
+                            <label for="amount" string="Exemple:0.1,0.25"
+                                invisible="advance_payment_method != 'percentage'" class="oe_inline"/>
+                        </div>
+                        <field name="tax_id" invisible="1"/>
+                    </group>
+                    <footer>
+                        <button name="create_invoices" string="Créer un Accompte" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Annuler" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="building_advance_inv_action" model="ir.actions.act_window">
+            <field name="name">Facture Acompte</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">building.advance.inv</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <!-- <act_window id="action_account_invoice_customer_advance_create"
+            multi="True"
+            key2="client_action_multi" name="Créer un Acompte client"
+            res_model="building.advance.inv" src_model="building.site"
+            view_mode="form" target="new" view_type="form" /> -->
+
+
+
+        <record id="building_advance_inv_supplier_form" model="ir.ui.view">
+            <field name="name">building.advance.inv.supplier.form</field>
+            <field name="model">building.advance.inv.supplier</field>
+            <field name="arch" type="xml">
+                <form string="Accompte">
+                    <group>
+                        <field name="amount"/>
+                        <label for="amount" string="Exemple:0.1,0.25"/>
+                    </group>
+                    <footer>
+                        <button name="create_invoices" string="Créer un Accompte" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Annuler" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="building_advance_inv_supplier_action" model="ir.actions.act_window">
+            <field name="name">Facture Acompte</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">building.advance.inv.supplier</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+</odoo>

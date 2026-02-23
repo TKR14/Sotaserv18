@@ -1,0 +1,73 @@
+<odoo>
+    <record id="purchase_order_form_readonly" model="ir.ui.view">
+        <field name="name">purchase.order.form.readonly</field>
+        <field name="model">purchase.order</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="edit">false</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_ref']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='contact_id']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='commercial_id']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='site_id']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//notebook/page[@name='purchase_delivery_invoice']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- <xpath expr="//form/div[@class='oe_chatter']" position="replace"/> -->
+            <!-- Adding the is_done field -->
+            <xpath expr="//sheet" position="inside">
+                <group>
+                    <field name="is_done" widget="boolean_toggle" invisible="1"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- <record id="purchase_order_form_readonly_cg" model="ir.ui.view">
+        <field name="name">purchase.order.form.readonly.cg</field>
+        <field name="model">purchase.order</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="account_plus.purchase_order_form_readonly"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_create_invoice"
+                    type="object"
+                    string="Générer la Facture"
+                    class="btn-primary"
+                    attrs="{'invisible': ['|', '|', ('state', 'not in', ('purchase', 'done', 'full')), ('invoice_status', 'in', ('no', 'invoiced')), ('is_attachment', '=', True)]}"
+                    groups="account_plus.acount_move_group_cg"
+                />
+            </xpath>
+        </field>
+    </record> -->
+
+    <!-- <record id="purchase_order_attachment_form_readonly" model="ir.ui.view">
+        <field name="name">purchase.order.attachment.form.readonly</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase_plus.purchase_order_line_attachment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header//button[@name='open_cancellation_reason_wizard']" position="replace"/>
+        </field>
+    </record>  -->
+
+</odoo>

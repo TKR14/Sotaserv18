@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="attachement_action" model="ir.actions.report">
+        <field name="name">Attachement</field>
+        <field name="model">purchase.entry</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">purchase_plus.attachement_template</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="print_report_name">'Attachement'</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="attachement_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&amp;display=swap');
+
+                    .page {
+                        position: relative;
+                        height: 360mm;
+
+                    }
+
+                    .page &gt; *:not(:last-child) {
+                        margin-bottom: 40px;
+                    }
+
+                    .container {
+                        width: 100%; 
+                        margin: 0 auto; 
+                        border: 0px solid #000; 
+                        padding: 20px; 
+                        box-sizing: border-box;
+                    }
+
+                    .logo{
+                        text-align: right; 
+                        display: flex; 
+                        margin-bottom: 20px;
+                    }
+
+                    .title{
+                        display: flex; 
+                        justify-content: center; 
+                        align-items: center; 
+                        border: 2px solid #000; 
+                        padding: 1px; 
+                        margin-bottom: 5px; 
+                        margin-top: 25px;
+                    }
+
+                    .tit{
+                        font-weight: bold; 
+                        font-size: 24px; 
+                        text-align: center;
+
+                    }
+
+                    .details{
+                        display: flex; 
+                        justify-content: space-between; 
+                        font-size: 14px; 
+                        margin-top: -5px; 
+                        font-weight: bold;
+                    }
+
+                    .left-details{
+                        display: inline-block; 
+                        width: 48%; 
+                        margin-top: 2px;
+                    }
+
+                    .right-details{
+                        display: inline-block; 
+                        width: 48%;
+                    }
+
+                    p{
+                        margin-bottom: -10px;
+                    }
+
+                    .table{
+                        margin-top: 20px; 
+                        width: 100%; 
+                        border-collapse: collapse;
+                    }
+
+                    th{
+                        border: 2px solid #000; 
+                        padding: 8px; 
+                        background-color: #f2f2f2; 
+                        font-size: 14px;
+                    }
+
+                    td {
+                        border: 2px solid #000; 
+                        padding: 8px; 
+                        border-right: none; 
+                        font-size: 14px;
+                    }
+
+                    .pied{
+                        color: grey; 
+                        font-weight: bold; 
+                        font-size: 17px; 
+                        font-family: 'Courier New', Courier, monospace; 
+                        margin-top: 20px; 
+                        text-align: center; 
+                        font-size: 14px; 
+                        font-weight: bold;
+
+                    }
+
+                    .text{
+                        padding-top: 10px; 
+                        text-align: center; 
+                        margin-top: 40px; 
+                        font-size: 12px;
+                    }
+
+                    .signatures{
+                        display: flex; 
+                        flex-direction: column; 
+                        align-items: center; 
+                        margin-top: 20px;
+                    }
+
+                    .signature-row{
+                        display: flex; 
+                        justify-content: space-between; 
+                        width: 100%; 
+                        max-width: 800px;
+                    }
+
+                    .signature-box{
+                        text-align: center; 
+                        border: 2px solid #4088a6; 
+                        width: 306px; 
+                        height: 80px; 
+                        display: flex; 
+                        align-items: flex-start; 
+                        padding-top: 10px; 
+                        justify-content: center; 
+                        margin: 14px 0; 
+                        font-weight: bold;
+                        margin: 1px 5px;
+                        font-size: 13px; 
+                        padding-top: 10px;
+                    }
+                    
+                    .foot {
+                        position: absolute;
+                        bottom: 0;
+                        width: 100%;
+                        color: #0070c0;
+                        padding-top: 40px;
+                        border-top: 1px solid #000;
+                        font-size: 14px;
+                    }
+                    
+                    .ltfoot-container {
+                        width: 100%;
+                        padding-top: 20px;
+                        border-top: 1px solid #000;
+                        position: absolute;
+                        text-align: center;
+                        bottom: 0;
+                        color: rgb(0, 102, 0);
+                        font-size: 12px;
+                    }
+                </style>
+
+                <t t-set="per_page" t-value="16" />
+                <t t-set="lines" t-value="doc.line_ids.mapped('detail_id')" />
+                <t t-set="lines_count" t-value="len(lines) + len(doc.line_ids)" />
+                <t t-set="pages" t-value="ceil(lines_count / per_page)" />
+                <t t-set="previous_section" t-value=""/>
+                <t t-set="current_section"  t-value=""/>
+                <t t-set="start" t-value="0"/>
+                <t t-set="end"   t-value="per_page"/>
+                <t t-set="remaining_rows" t-value="lines_count - start" />
+                <t t-set="sections_count" t-value="0"/>
+
+                <t t-foreach="range(pages)" t-as="page">
+                    <div class="page" >
+                        <div class="container">
+                            <div class="logo">
+                                <img t-att-src="image_data_uri(request.env['res.company'].search([])[0].logo)" alt="Logo" style="max-width: 200px; height: auto;"/>
+                            </div>
+
+                            <div class="title">
+                                <h1 class="tit">ATTACHEMENT</h1>
+                            </div>
+
+                            <div class="details">
+                                <div class="left-details">
+                                    <p>Affaire: <span t-esc="docs.site_id.name"/></p>
+                                    <p>Fournisseur: <span t-esc="doc.supplier_id.name"/></p>
+                                    <p>N° Attachement: <span t-esc="doc.number"/></p>
+                                    <p>Avancement global: <span t-esc="'{:,.2f}'.format(doc.executed).replace(',', ' ').replace('.', ',')"/> %</p>
+                                </div>
+                                <div class="right-details">
+                                    <!-- <p>RG:  <span t-esc="'{:,.2f}'.format(doc.return_of_guarantee).replace(',', ' ').replace('.', ',')"/> FCFA</p> -->
+                                    <p>N° BC: <span t-esc="docs.purchase_id.name"/></p>
+                                    <p>Représentant: <span t-esc="doc.represent"/> </p>
+                                    <p>Situation Du: <span t-esc="doc.start_date" t-options='{"widget": "date", "format": "dd/MM/yyyy"}'/> 
+                                        Au: <span t-esc="doc.end_date" t-options='{"widget": "date", "format": "dd/MM/yyyy"}'/>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <table class="table">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th>Description</th>
+                                        <th style="text-align: center; width: 5px;">UDM</th>
+                                        <th style="text-align: center; width: 10px;">Type</th>
+                                        <th style="width: 50px;"> Commandée</th>
+                                        <th style="width: 50px;"> Cumul précédent</th>
+                                        <th style="width: 134px;">Cumul Actuel</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- len(doc.line_ids.mapped('detail_id')[start:end]) -->
+                                    <t t-set="sections_count" t-value="doc.line_ids.mapped('detail_id')[start:end].mapped('entry_line_id')"/>
+                                    <t t-foreach="doc.line_ids.mapped('detail_id')[start:end - len(sections_count)]" t-as="line">
+                                        <tr t-if="line.entry_line_id.name != current_section">
+                                            <t t-set="previous_section" t-value="current_section"/>
+                                            <td colspan="6" style="background-color: #d9d9d9; font-weight: bold; border: 2px solid #000;">
+                                                <t t-esc="line.entry_line_id.name" />
+                                            </td>
+                                            <t t-set="current_section" t-value="line.entry_line_id.name"/>
+                                        </tr>
+                                        <tr>
+                                            <td style="border-right: none;">
+                                                <t t-esc="line.name" />
+                                            </td>
+                                            <td style="text-align: center; width: 5px;">
+                                                <t t-esc="line.unit_measurement.name" />
+                                            </td>
+                                            <td style="text-align: center; width: 10px;">
+                                                <t t-esc="'%' if line.quantity_type == 'percentage' else 'Q' if line.quantity_type == 'quantity' else line.quantity_type" />
+                                            </td>
+                                            <td style="text-align: right; width: 50px; ">
+                                                <t t-esc="'{:,.2f}'.format(line.quantity_pr).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                            <td style="text-align: right; width: 50px;">
+                                                <t t-esc="'{:,.2f}'.format(line.quantity_president).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                            <td style="border: 2px solid #000; padding: 8px; text-align: right; width: 134px; font-size: 14px;">
+                                                <t t-esc="'{:,.2f}'.format(line.cumulative_quantity).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                            
+                            <div class="pied">
+                                <div class="text"> CHAQUE ATTACHEMENT OU FACTURE <br/> DOIT ETRE ACCOMPAGNE D'UNE COPIE SIGNEE ET CACHETEE DU BON COMMANDE  </div>
+                            </div>
+
+                            <t t-if="pages > 0 and start + per_page >= lines_count">
+                                <div class="signatures">
+                                    <div class="signature-row">
+                                        <div class="signature-box"> <span class="signature-text">CHEF CHANTIER</span> </div>
+                                        <div class="signature-box"> <span class="signature-text">CT/CP</span> </div>
+                                        <div class="signature-box"> <span class="signature-text">FOURNISSEUR/REPRESENTANT</span></div>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <div class="ltfoot-container">
+                                <p>SARL au Capital de 100 000 000 FCFA, RCCM : CI-ABJ-03-2024-B12-01326, CC : 1637553T NIU N° : CI-2024-0073078 D, CNPS : 291705</p>
+                                <p>Angle Avenue Boga Doudou et Rue des Jardins. Im.LG. 3 ème Etage II Plateaux Vallon. BP. 2450 Abidjan 08 - Côte d'Ivoire</p>
+                                <p>Tél : +225 27 22 23 87 18, Mobile : +225 01 50 23 63 02, Email : sotaserv-ci@sotaserv.com</p>
+                                <p>www.sotaserv.ma</p>
+                            </div>
+                        </div>
+                        <t t-set="current_section"  t-value=""/>
+                        <t t-set="start" t-value="end - len(sections_count)"/>
+                        <t t-set="end" t-value="start + per_page"/>
+                        <t t-set="sections_count" t-value="0"/>
+                    </div>
+                    <p style="page-break-before: always;"/>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

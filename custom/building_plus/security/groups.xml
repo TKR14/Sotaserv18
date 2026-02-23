@@ -1,0 +1,117 @@
+<odoo>
+    <record id="sotaserv_aide_magasinier" model="res.groups">
+        <field name="name">SOTASERV_AIDE_MAGASINIER</field>
+        <field name="type">profile</field>
+    </record>
+
+    <record id="sotaserv_assistant_tech" model="res.groups">
+        <field name="name">SOTASERV_ASSISTANT_TECH</field>
+        <field name="type">profile</field>
+    </record>
+
+    <record id="sotaserv_chef_projet" model="res.groups">
+        <field name="name">SOTASERV_CHEF_PROJET</field>
+        <field name="type">profile</field>
+    </record>
+
+    <record id="sotaserv_conduct_trv" model="res.groups">
+        <field name="name">SOTASERV_CONDUCT_TRV</field>
+        <field name="type">profile</field>
+    </record>
+
+    <record id="sotaserv_magasinier" model="res.groups">
+        <field name="name">SOTASERV_MAGASINIER</field>
+        <field name="type">profile</field>
+    </record>
+
+    <record id="sotaserv_resp_zone" model="res.groups">
+        <field name="name">SOTASERV_RESP_ZONE</field>
+        <field name="type">profile</field>
+    </record>
+
+    <record id="sotaserv_technicien" model="res.groups">
+        <field name="name">SOTASERV_TECHNICIEN</field>
+        <field name="type">profile</field>
+    </record>
+
+    <record id="sotaserv_directeur_zone" model="res.groups">
+        <field name="name">SOTASERV_DIRECTEUR_ZONE</field>
+        <field name="type">profile</field>
+    </record>
+
+    <record id="sotaserv_superviseur_site" model="res.groups">
+        <field name="name">SOTASERV_SUPERVISEUR_SITE</field>
+        <field name="type">profile</field>
+    </record>
+
+    <record id="sotaserv_rh" model="res.groups">
+        <field name="name">SOTASERV_RH</field>
+        <field name="type">profile</field>
+    </record>
+
+    <record id="sotaserv_dg" model="res.groups">
+        <field name="name">SOTASERV_DG</field>
+        <field name="type">profile</field>
+    </record>
+
+    <record id="sotaserv_magasinier_chantier" model="res.groups">
+        <field name="name">SOTASERV_MAGASINIER_CHANTIER</field>
+        <field name="type">profile</field>
+    </record>
+
+    <record id="sotaserv_pointage_rh" model="res.groups">
+        <field name="name">SOTASERV_POINTAGE_RH</field>
+    </record>
+
+    <record id="sotaserv_lbd_ro" model="res.groups">
+        <field name="name">SOTASERV_LBD_RO</field>
+    </record>
+
+    <record id="sotaserv_directrice_technique" model="res.groups">
+        <field name="name">SOTASERV_DIRECTRICE_TECHNIQUE</field>
+        <field name="type">profile</field>
+    </record>
+
+    <record id="sotaserv_responsable_technique" model="res.groups">
+        <field name="name">SOTASERV_RESPONSABLE_TECHNIQUE</field>
+        <field name="type">profile</field>
+    </record>
+
+    <record id="sotaserv_daf" model="res.groups">
+        <field name="name">SOTASERV_DAF</field>
+    </record>
+
+    <record id="sotaserv_business_manager" model="res.groups">
+        <field name="name">SOTASERV_CHARGÉ_D'AFFAIRES</field>
+    </record>
+
+    <record id="sotaserv_tresorier" model="res.groups">
+        <field name="name">SOTASERV_TRESORIER</field>
+    </record>
+
+    <record id="sotaserv_situation" model="res.groups">
+        <field name="name">SOTASERV_SITUATION</field>
+    </record>
+
+    <record id="sotaserv_crm_abandoned" model="res.groups">
+        <field name="name">CRM_Abandonner</field>
+    </record>
+
+    <record id="valider_bp" model="res.groups">
+        <field name="name">VALIDER_BP</field>
+    </record>
+
+    <record id="reset_statement_dg" model="res.groups">
+        <field name="name">Remettre à nouveau / Relevé</field>
+    </record>
+
+    <record id="group_hr_view" model="res.groups">
+        <field name="name">RH_VISUALISATION</field>
+        <field name="type">profile</field>
+    </record>
+
+    <record id="group_opc" model="res.groups">
+        <field name="name">SOTASERV_OPC</field>
+        <field name="type">profile</field>
+    </record>
+</odoo>

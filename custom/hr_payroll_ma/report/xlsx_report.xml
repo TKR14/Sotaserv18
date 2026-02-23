@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="report_payslip_xlsx" model="ir.actions.report">
+        <field name="name">Livre de Paie Mensuel</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">hr_payroll_ma.report_payslip_excel</field>
+        <field name="print_report_name">'Livre de Paie Mensuel' + '_' + object.create_date.strftime('%Y-%m-%d') </field>
+        <field name="binding_model_id" ref="om_hr_payroll.model_hr_payslip_run"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="report_payslip_edi_xlsx" model="ir.actions.report">
+        <field name="name">EDI Mensuel</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">hr_payroll_ma.report_payslip_edi_excel</field>
+        <field name="print_report_name">'EDI_Mensuel' + '_' + object.create_date.strftime('%Y-%m-%d') </field>
+        <field name="binding_model_id" ref="om_hr_payroll.model_hr_payslip_run"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="report_payslip_edisa_xlsx" model="ir.actions.report">
+        <field name="name">E DISA</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">hr_payroll_ma.report_payslip_edisa_excel</field>
+        <field name="print_report_name">'E DISA_' + '_' + object.create_date.strftime('%Y-%m-%d') </field>
+        <field name="binding_model_id" ref="om_hr_payroll.model_hr_payslip_run"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="report_payslip_ecnps_xlsx" model="ir.actions.report">
+        <field name="name">E CNPS</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">hr_payroll_ma.report_payslip_ecnps_excel</field>
+        <field name="print_report_name">'E CNPS' + '_' + object.create_date.strftime('%Y-%m-%d') </field>
+        <field name="binding_model_id" ref="om_hr_payroll.model_hr_payslip_run"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="report_payslip_etat301_xlsx" model="ir.actions.report">
+        <field name="name">Etat 301</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">hr_payroll_ma.report_payslip_etat301_excel</field>
+        <field name="print_report_name">'Etat 301' + '_' + object.create_date.strftime('%Y-%m-%d') </field>
+        <field name="binding_model_id" ref="om_hr_payroll.model_hr_payslip_run"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

@@ -1,0 +1,53 @@
+<odoo>
+    <record id="purchase_order_group_print" model="res.groups">
+        <field name="name">BC / Imprimer</field>
+    </record>
+
+    <record id="purchase_order_group_sign" model="res.groups">
+        <field name="name">BC / Signer</field>
+        <field name="implied_ids" eval="[(4, ref('purchase_plus.purchase_order_group_print'))]"/>
+    </record>
+
+    <record id="purchase_order_group_submit" model="res.groups">
+        <field name="name">Soumettre</field>
+        <field name="type">button</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+    </record>
+
+    <record id="purchase_order_group_approve" model="res.groups">
+        <field name="name">Approuver</field>
+        <field name="type">button</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+    </record>
+
+    <record id="purchase_entry_internal_validation" model="res.groups">
+        <field name="name">Attachement / Valider en interne</field>
+        <field name="type">button</field>
+    </record>
+
+    <record id="purchase_entry_provider_validation" model="res.groups">
+        <field name="name">Attachement / Valider par client</field>
+        <field name="type">button</field>
+    </record>
+
+    <record id="purchase_entry_done" model="res.groups">
+        <field name="name">Attachement / Terminer</field>
+        <field name="type">button</field>
+    </record>
+
+    <record id="purchase_order_group_create_attachment" model="res.groups">
+        <field name="name">SOTASERV_CRÉER_ATTACHEMENT</field>
+    </record>
+
+    <record id="purchase_order_group_decompt" model="res.groups">
+        <field name="name">SOTASERV_DÉCOMPTE</field>
+    </record>
+
+    <record id="purchase_special_group" model="res.groups">
+        <field name="name">XDEV</field>
+    </record>
+
+    <record id="purchase_budgetary_control_group" model="res.groups">
+        <field name="name">Contrôle budgétaire</field>
+    </record>
+</odoo>

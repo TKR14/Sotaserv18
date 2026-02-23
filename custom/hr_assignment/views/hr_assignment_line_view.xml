@@ -1,0 +1,63 @@
+<odoo>
+    <record id="hr_assignment_line_view_tree" model="ir.ui.view">
+        <field name="name">hr.assignment.line.view.list</field>
+        <field name="model">hr.assignment.line</field>
+        <field name="arch" type="xml">
+            <list class="hr_assignment_line_view_tree"
+                decoration-muted="state in ['done', 'canceled']"
+                decoration-warning="state == 'planned'"
+                decoration-success="state == 'open'"
+                decoration-danger="state == 'rejected'"
+                editable="bottom">
+                <header>
+                    <button name="open_reject_reason_wizard"
+                        string="Rejeter"
+                        type="object"
+                        class="btn-danger ms-2"
+                        groups="building_plus.sotaserv_chef_projet,building_plus.sotaserv_rh"
+                    />
+                </header>
+                <field name="site_id" readonly="1" options="{'no_open': True}"/>
+                <field name="job_id" readonly="1" options="{'no_open': True}"/>
+                <field name="employee_id" readonly="1" options="{'no_open': True}"/>
+                <field name="date_start" readonly="1"/>
+                <field name="date_first_timeclock" readonly="1"/>
+                <field name="date_last_timeclock" readonly="1"/>
+                <field name="date_end"/>
+                <field name="uom_id" readonly="1" options="{'no_open': True}"/>
+                <field name="volume_clocked" readonly="1"/>
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-warning="state == 'planned'"
+                    decoration-success="state == 'open'"
+                    decoration-muted="state in ['done', 'canceled']"
+                    decoration-danger="state == 'rejected'"
+                    readonly="1"
+                />
+                <button name="get_rejection_reason" 
+                        type="object" 
+                        invisible="state != 'rejected'"
+                        class="btn-primary" 
+                        icon="fa-eye"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hr_assignment_line_reject_reason_readonly_form" model="ir.ui.view">
+        <field name="name">hr.assignment.line.reject.reason.readonly.form</field>
+        <field name="model">hr.assignment.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="rejection_reason" readonly="1" nolabel="1" class="text-danger"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

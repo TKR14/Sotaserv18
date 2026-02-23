@@ -1,0 +1,74 @@
+<odoo>
+    <!-- RH -->
+    <menuitem
+        id="menu_rh"
+        name="RH"
+        groups="sotaserv_rh"
+        sequence="0"
+    />
+
+    <!-- <menuitem
+        id="hr_assignment_request_menu_rh"
+        name="Demandes"
+        parent="menu_rh"
+        action="hr_assignment_request_action_rh"
+        sequence="1"
+    /> -->
+    <menuitem
+        id="hr_assignment_request_line_menu_rh"
+        name="Lignes des demandes"
+        parent="menu_rh"
+        action="hr_assignment_request_line_action_rh"
+        sequence="2"
+    />
+    <menuitem
+        id="hr_assignment_menu_rh"
+        name="Affectations et Pointages"
+        parent="menu_rh"
+        sequence="3"
+    />
+    <menuitem
+        id="hr_assignment_menu_rh_assignments"
+        name="Affectations"
+        parent="hr_assignment_menu_rh"
+        action="hr_assignment_action_rh"
+        sequence="10"
+    />
+    <menuitem
+        id="hr_assignment_menu_rh_scores"
+        name="Pointages"
+        parent="hr_assignment_menu_rh"
+        action="hr_assignment_recent_action_rh"
+        sequence="20"
+    />
+    
+    <!-- ajouter le menu dans building plus -->
+    <!-- <menuitem
+        id="building_purchase_need_menu_tabs"
+        name="Liste des besoins"
+        parent="menu_rh"
+        action="building_plus.building_purchase_need_action_sotaserv_rh"
+        sequence="4"
+    /> --> 
+    <!-- <menuitem
+        id="time_machine_menu"
+        name="Time Machine"
+        parent="menu_rh"
+        action="time_machine_action"
+        sequence="4"
+    /> -->
+    <!-- RH -->
+    <menuitem
+        id="menu_temporary"
+        name="Temporaire"
+        groups="group_temporary"
+        sequence="0"
+    />
+    <menuitem
+        id="hr_assignment_menu_temporary"
+        name="Affectations et Pointages"
+        parent="menu_temporary"
+        action="hr_assignment_action_temp"
+        sequence="1"
+    />
+</odoo>

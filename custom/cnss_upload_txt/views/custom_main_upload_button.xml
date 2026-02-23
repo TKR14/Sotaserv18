@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record model="ir.ui.view" id="view_custom_upload_main_button">
+    <field name="name">Custom Upload Main Button</field>
+    <field name="model">hr.payslip.run</field>
+    <field name="inherit_id" ref="om_hr_payroll.hr_payslip_run_tree" />
+    <field name="arch" type="xml">
+      <xpath expr="//list" position="attributes">
+        <header>
+          <attribute name="js_class">import_cnss_txt</attribute>
+        </header>
+      </xpath>
+    </field>
+  </record>
+
+  <menuitem name="CNSS" id="cnss_submenu" parent="om_hr_payroll.menu_hr_payroll_root"
+    action="cnss_bds_igaser.cnss_bds_action" sequence="6" />
+
+</odoo>

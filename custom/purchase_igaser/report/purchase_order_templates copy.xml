@@ -1,0 +1,239 @@
+<!-- EXTERNAL LAYOUT FUNCTIONAL -->
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_purchaseorder_igaser_document">
+        <t t-call="web.external_layout">
+            
+            <h2 style="text-align: center;">BON DE COMMANDE N° <span t-field="o.name"/></h2>
+
+            <div style="display: inline;">
+                <br/><br/>
+                <div style="width:400px;border:1px solid black;float:left;">
+                    <strong><div>Fournisseur</div></strong>
+                    <strong><div t-field="o.partner_id"/></strong>
+                </div>
+            </div>
+            <div style="width:400px;border:1px solid black;float:right;">
+                <strong>ELJADIDA: <span t-field="o.date_order"/></strong>
+                <br/>
+                <strong><span t-field="o.user_id"/></strong>
+            </div>
+
+            <br/><br/><br/>
+            <div style="width:400px;border:1px solid black;float:left;">
+                <strong>Affaire: <span t-field="o.site_id"/></strong>
+            </div>
+            
+            <!-- <div style="clear: both;">
+                <strong t-if="o.vehicle_id">IG: <span t-field="o.vehicle_id"/></strong>
+            </div> -->
+
+            <div t-if="o.vehicle_id" style="width:400px;float:right;">
+                <strong >IG: <span t-field="o.vehicle_id"/></strong>
+            </div>
+
+            <br/><br/><br/>
+            <div class="page">
+                <div class="oe_structure"/>
+
+                <table class="table table-sm o_main_table">
+                    <thead>
+                        <tr>
+                            <th name="th_quantity" class="text-right"><strong>QTE</strong></th>
+                            <th name="th_unit" class="text-right"><strong>UTE</strong></th>
+                            <th name="th_description"><strong>DESIGNATION</strong></th>
+                            <th name="th_price_unit" class="text-right"><strong>P.U H.T</strong></th>
+                            <th name="th_discount" class="text-right"><strong>R%</strong></th>
+                            <th name="th_amount" class="text-right"><strong>MONTANT</strong></th>
+                            <th name="th_description"><strong>DESTINATION</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="current_subtotal" t-value="0"/>
+                        <t t-foreach="o.order_line" t-as="line">
+                            <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                            <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+
+                            <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
+                                <t t-if="not line.display_type">
+                                    <td class="text-right">
+                                        <span t-field="line.product_qty"/>
+                                    </td>
+                                    <td id="group_uom">
+                                        <span t-field="line.product_uom.name" groups="uom.group_uom"/>
+                                    </td>
+                                    <td id="product">
+                                        <span t-field="line.name"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="line.price_unit"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-value="0"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="line.price_subtotal"
+                                            t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                    <td id="product_description_variants">
+                                        <span t-field="line.product_description_variants"/>
+                                    </td>
+                                </t>
+                                <t t-if="line.display_type == 'line_section'">
+                                    <td colspan="99" id="section">
+                                        <span t-field="line.name"/>
+                                    </td>
+                                    <t t-set="current_section" t-value="line"/>
+                                    <t t-set="current_subtotal" t-value="0"/>
+                                </t>
+                                <t t-if="line.display_type == 'line_note'">
+                                    <td colspan="99" id="note">
+                                        <span t-field="line.name"/>
+                                    </td>
+                                </t>
+                            </tr>
+                            <t t-if="current_section and (line_last or o.order_line[line_index+1].display_type == 'line_section')">
+                                <tr class="is-subtotal text-right">
+                                    <td colspan="99" id="subtotal">
+                                        <strong class="mr16">H.T</strong>
+                                        <span
+                                            t-esc="current_subtotal"
+                                            t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                                        />
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                    </tbody>
+                </table>
+
+                <div id="total" class="row justify-content-end">
+                    <div class="col-4" style="display: inline;">
+                        <table class="table table-sm" style="width:400px;border:1px solid black;float:left;">
+                            <!-- <t t-foreach="o.order_line" t-as="line"> -->
+                                <t t-foreach="o.order_line.taxes_id" t-as="taxe">
+                                    <tr class="border-black">
+                                        <td name="td_tva_name"><strong><span t-esc="taxe.name"/></strong></td>
+                                    </tr>
+                                    <tr class="border-black">
+                                        <td class="text-right">
+                                            <span t-esc="o.amount_untaxed*taxe.amount/100"
+                                                t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            <!-- </t> -->
+                        </table>
+
+                        <table class="table table-sm" style="width:400px;border:1px solid black;float:right;">
+                            <tr class="border-black">
+                                <td name="td_subtotal_label"><strong>H.T</strong></td>
+                                <td class="text-right">
+                                    <span t-field="o.amount_untaxed"
+                                        t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_taxes_label">TVA</td>
+                                <td class="text-right">
+                                    <span t-field="o.amount_tax"
+                                        t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr class="border-black o_total">
+                                <td name="td_amount_total_label"><strong>T.T.C</strong></td>
+                                <td class="text-right">
+                                    <span t-field="o.amount_total"
+                                        t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <br/><br/>
+                <table id="sign">
+                    <tr>
+                        <td>
+                            <table style="width:250px;border:1px solid black;text-align:center;">
+                                <tr>
+                                    <td name="td_s1">Service Achats</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <br/><br/><br/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table style="width:250px;border:1px solid black;margin-left: 50px;text-align:center;">
+                                <tr>
+                                    <td name="td_s1">Directeur général Adjoint</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <br/><br/><br/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table style="width:250px;border:1px solid black;margin-left: 50px;text-align:center;">
+                                <tr>
+                                    <td name="td_s1">Directeur Général</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <br/><br/><br/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <table id="sign1">
+                    <tr>
+                        <td>
+                            <table style="width:250px;border:1px solid black;text-align:center;">
+                                <tr>
+                                    <td name="td_s1">Service Comptabilité</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <br/><br/><br/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table style="width:550px;border:1px solid black;margin-left: 50px;text-align:center;">
+                                <tr>
+                                    <td name="td_s1">Remarques</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <br/>
+                                        Prière de fournir votre facture en 3 exemplaire originaux<br/>
+                                        Veuillez mentionner le numéro du bon de commande sur vos bons de livraison.
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+                <p t-field="o.notes"/>
+                <div class="oe_structure"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_purchaseorder_igaser">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="purchase_igaser.report_purchaseorder_igaser_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>

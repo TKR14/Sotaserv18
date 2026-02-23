@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_create_imputation_wizard,access.create.imputation.wizard,model_create_imputation_wizard,,1,1,1,1
+access_bilans_wizard,bilans.wizard,model_bilans_wizard,hr.group_hr_user,1,1,1,1
+access_balance_comptable,balance.comptable,model_balance_comptable,hr.group_hr_user,1,1,1,1
+access_resultat_wizard,resultat.wizard,model_resultat_wizard,hr.group_hr_user,1,1,1,1
+access_esg_wizard,esg.wizard,model_esg_wizard,hr.group_hr_user,1,1,1,1
+
+access_cpc_wizard,cpc.wizard,model_cpc_wizard,hr.group_hr_user,1,1,1,1

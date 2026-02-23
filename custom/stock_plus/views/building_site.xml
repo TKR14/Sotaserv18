@@ -1,0 +1,14 @@
+<odoo>
+    <record id="building_site_view_form_warehouse" model="ir.ui.view">
+        <field name="name">building.site.view.form.warehouse</field>
+        <field name="inherit_id" ref="building.building_site_form_view" />
+        <field name="model">building.site</field>
+        <field name="arch" type="xml">
+            <field name="site_manager_id" position="after">
+                <field name="warehouse_id" readonly="1" options="{'no_open': True}" invisible="1"/>
+            </field>
+            <field name="location_id" position="replace"/>
+            <field name="location_diesel_id" position="replace"/>
+        </field>
+    </record>
+</odoo>

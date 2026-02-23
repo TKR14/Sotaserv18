@@ -1,0 +1,52 @@
+.o_purchase_order .o_list_view .o_list_table thead tr .o_section_cell {
+    width: 580px;
+}
+
+.rg::after {
+    content: '%';
+    margin-left: 10px;
+}
+
+.cfa::after {
+    content: 'CFA';
+    margin-left: 10px;
+}
+
+.cfa_bol::after {
+    content: 'CFA';
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.container .oe_group2 .o_field_widget {
+    width: 700px !important;
+}
+
+.container .o_form_label {
+    width: 250px;
+    text-align: left;
+}
+
+.container .o_field_widget {
+    text-align: right;
+}
+
+.o_field_widget_percent input {
+    text-align: right;
+}
+
+.container {
+    padding: 10px;
+}
+
+.container .group {
+    margin-top: 20px;
+}
+
+.decompte_readonly_form_view .o_notebook {
+    margin-top: -15px !important;
+}
+
+.decompte_readonly_form_view .tab-pane .active {
+    padding: 6px 0 !important;
+}

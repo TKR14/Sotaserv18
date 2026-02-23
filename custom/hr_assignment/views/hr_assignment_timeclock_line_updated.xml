@@ -1,0 +1,48 @@
+<odoo>
+    <record id="view_form_timeclock_updated" model="ir.ui.view">
+        <field name="name">timeclock.updated.form</field>
+        <field name="model">hr.assignment.timeclock.line.updated</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="readonly_hours" invisible="1"/>
+                        <field name="hours" string="Heures travaillées" invisible="readonly_hours"/>
+                    </group>
+                    <field name="state" invisible="1"/>
+                    
+                    <group invisible="state == 'updated'">
+                        <label for="reason" string="Motif d'annulation" />
+                        <field name="reason" nolabel="1" required="state != 'updated'"/>
+                    </group>
+                    
+                    <group invisible="state == 'canceled'">
+                        <label for="reason" string="Motif de modification"/>
+                        <field name="reason" nolabel="1" required="state != 'canceled'"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_confirm" string="Confirmer" type="object" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_form_timeclock_updated_reason" model="ir.ui.view">
+        <field name="name">view.form.timeclock.updated.reason</field>
+        <field name="model">hr.assignment.timeclock.line.updated</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="reason" readonly="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

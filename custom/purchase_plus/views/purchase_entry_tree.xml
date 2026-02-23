@@ -1,0 +1,37 @@
+<odoo>
+    <record id="view_purchase_entry_tree" model="ir.ui.view">
+        <field name="name">purchase.entry.tree</field>
+        <field name="model">purchase.entry</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="site_id" width="200"/>
+                <field name="supplier_id" width="200"/>
+                <field name="purchase_id" width="200"/>
+                <field name="number" width="200"/>
+                <field name="start_date" string="Date début" width="200"/>
+                <field name="end_date" string="Date fin" width="200"/>
+                <field name="state_attachemnet" widget="badge" string="statut" width="200"
+                    decoration-info="state_attachemnet == 'draft'"
+                    decoration-success="state_attachemnet == 'internal_validated'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- <record id="action_purchase_entry" model="ir.actions.act_window">
+        <field name="name">Attachements fournisseur</field>
+        <field name="res_model">purchase.entry</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0), 
+                                      (0, 0, {'view_mode': 'tree', 'view_id': ref('view_purchase_entry_tree')}), 
+                                      (0, 0, {'view_mode': 'form', 'view_id': ref('purchase_entry_view_form')})]"/>
+        <field name="context">{"create": False}</field>
+        <field name="domain">[('user_id', '=', uid)]</field> 
+    </record> -->
+
+    <record id="action_purchase_entry" model="ir.actions.server">
+        <field name="name">Attachements fournisseur</field>
+        <field name="model_id" ref="model_purchase_entry"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_attachments()</field>
+    </record>
+</odoo>

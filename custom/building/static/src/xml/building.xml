@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<odoo>
+
+    <template id="assets_backend" name="building assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/building/static/src/css/building.css"/>
+            <script type="text/javascript" src="/building/static/src/js/building.js"></script>
+            <script type="text/javascript" src="/building/static/src/js/list_renderer.js"></script>
+        </xpath>
+    </template>
+
+</odoo>

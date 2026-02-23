@@ -1,0 +1,16 @@
+"id","name","group_id/id","model_id/id","perm_read","perm_write","perm_create","perm_unlink"
+
+access_hr_assignment_request,hr_assignment_request,,model_hr_assignment_request,1,1,1,1
+access_hr_assignment_request_line,hr_assignment_request_line,,model_hr_assignment_request_line,1,1,1,1
+access_hr_assignment_job_category,hr_assignment_job_category,,model_hr_assignment_job_category,1,1,1,1
+access_hr_assignment,hr_assignment,,model_hr_assignment,1,1,1,1
+access_hr_assignment_line,hr_assignment_line,,model_hr_assignment_line,1,1,1,1
+access_hr_assignment_timeclock,hr_assignment_timeclock,,model_hr_assignment_timeclock,1,1,1,1
+access_hr_assignment_timeclock_line,hr_assignment_timeclock_line,,model_hr_assignment_timeclock_line,1,1,1,1
+'hr.assignment.timeclock.line.updated,hr_assignment_timeclock_line_updated,,model_hr_assignment_timeclock_line_updated,1,1,1,1
+access_hr_assignment_wizard,hr_assignment_wizard,,model_hr_assignment_wizard,1,1,1,1
+access_hr_assignment_wizard_line,hr_assignment_wizard_line,,model_hr_assignment_wizard_line,1,1,1,1
+access_hr_assignment_wizard_month,hr_assignment_wizard_month,,model_hr_assignment_wizard_month,1,1,1,1
+access_hr_assignment_wizard_year,hr_assignment_wizard_year,,model_hr_assignment_wizard_year,1,1,1,1
+access_time_machine,time_machine,,model_time_machine,1,1,1,1
+access_hr_assignment_line_reject_reason_wizard,hr_assignment_line_reject_reason_wizard,,model_hr_assignment_line_reject_reason_wizard,1,1,1,1

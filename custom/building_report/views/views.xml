@@ -1,0 +1,79 @@
+<odoo>
+    <!-- Tree View -->
+    <record id="view_suivi_budgetaire_tree" model="ir.ui.view">
+        <field name="name">suivi.budgetaire.tree</field>
+        <field name="model">suivi.budgetaire</field>
+        <field name="arch" type="xml">
+            <list string="BPN Lines List">
+                <field name="site"/>
+                <field name="need_id" optional="hide"/>
+                <field name="volet" optional="show"/>
+                <field name="section" optional="hide" />
+                <field name="category" optional="hide" />
+                <field name="type" optional="hide" />
+                <field name="rubrique"/>
+                <field name="uom_id" optional="show" />
+                <field name="budget_qty" optional="show" />
+                <field name="budget_pu" optional="show" />
+                <field name="commande_qty" optional="show" />
+                <field name="commande_mnt" optional="show" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_suivi_budgetaire_search" model="ir.ui.view">
+        <field name="name">suivi.budgetaire.search</field>
+        <field name="model">suivi.budgetaire</field>
+        <field name="arch" type="xml">
+          <search>
+            <!-- Search fields -->
+            <field name="site" />
+            <field name="section" />
+            <field name="category" />
+            <field name="type" />
+            <field name="rubrique" />
+            
+            <!-- Filters with values -->
+            <filter name="ressources_humaines_value" string="Ressources Humaines" domain="[('volet', '=', 'Ressources Humaines')]"/>
+            <filter name="fournitures_value" string="Fournitures" domain="[('volet', '=', 'Fournitures')]"/>
+            <filter name="prestations_service_value" string="Prestations de service" domain="[('volet', '=', 'Prestations de service')]"/>
+            <filter name="outillage_value" string="Outillage" domain="[('volet', '=', 'Outillage')]"/>
+            <filter name="petit_materiel_value" string="Petit Matériel" domain="[('volet', '=', 'Petit Matériel')]"/>
+            <filter name="materiel_value" string="Matériel" domain="[('volet', '=', 'Matériel')]"/>
+
+            <!-- Group by fields -->
+            <filter name="site_group_by" string="Affaire"
+              context="{'group_by': 'site'}" />
+            <filter name="volet_by" string="Volet"
+              context="{'group_by': 'volet'}" />
+            <filter name="section_group_by" string="Section"
+              context="{'group_by': 'section'}" />
+            <filter name="category_group_by" string="Catégorie"
+              context="{'group_by': 'category'}" />
+            <filter name="type_group_by" string="Type"
+              context="{'group_by': 'type'}" />
+            <filter name="rubrique_group_by" string="Rubrique"
+              context="{'group_by': 'rubrique'}" />
+          </search>
+        </field>
+      </record>
+
+    <!-- Action -->
+    <record id="action_suivi_budgetaire" model="ir.actions.act_window">
+        <field name="name">Suivi budgétaire</field>
+        <field name="res_model">suivi.budgetaire</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_site_group_by': 1, 'search_default_volet_by': 1}</field>
+        <field name="view_id" ref="view_suivi_budgetaire_tree"/>
+        <field name="search_view_id" ref="view_suivi_budgetaire_search"/>
+    </record>
+
+    <!-- Menu Item (optional, but useful for navigation) -->
+    <menuitem id="menu_suivi_budgetaire"
+      name="Suivi budgétaire"
+      parent="building.menu_site"
+      action="action_suivi_budgetaire"
+      groups="gp_building_report"
+      sequence="50"/>
+
+</odoo>

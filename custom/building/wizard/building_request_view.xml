@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_building_request_purchase" model="ir.ui.view">
+            <field name="name">building.request_purchase.form</field>
+            <field name="model">building.request_purchase</field>
+            <field name="arch" type="xml">
+                <form string="Créer une demande achat">
+                	<group>
+                    	<field name="site_id" invisible="0"/>
+                    	<field name="order_id" invisible="0" string="BP"/>
+                        <field name="partner_id" invisible="1"/>
+                  	</group>
+                    <group >
+                        <field name="request_purchase_ids" nolabel="1" readonly="0">
+                            <list string="Articles" editable="bottom" mode="list,form">
+		              				<field name="product_id" readonly="0" string="Produit"/>
+		             				<field name="product_uom_id" readonly="0"/>
+		             				<field name="quantity" string="Quantité"/>
+                                    <!-- <field name="analytic_id"/> -->
+		             				<field name="price_unit" invisible="1"/>
+                            </list>
+                        </field>
+                    </group>
+                    <footer>
+                    	<button name="create_request_purchase" string="Créer" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Annuler" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+
+        <record id="building_request_purchase_action" model="ir.actions.act_window">
+            <field name="name">Création d'une demande d'Achat</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">building.request_purchase</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="view_building_price_purchase" model="ir.ui.view">
+            <field name="name">building.request_price.form</field>
+            <field name="model">building.request_price</field>
+            <field name="arch" type="xml">
+                <form string="Créer une demande de prix">
+                    <group>
+                        <field name="site_id" invisible="0"/>
+                        <field name="order_id" invisible="0" string="BP"/>
+                        <field name="partner_id" invisible="1"/>
+                    </group>
+                    <group >
+                        <field name="request_price_ids" nolabel="1" readonly="0">
+                            <list string="Articles" editable="bottom" mode="list,form">
+                                    <field name="product_id" readonly="0" string="Produit"/>
+                                    <field name="product_uom_id" readonly="0"/>
+                                    <field name="quantity" string="Quantité"/>
+                                    <!-- <field name="analytic_id"/> -->
+                                    <field name="price_unit" invisible="1"/>
+                            </list>
+                        </field>
+                    </group>
+                    <footer>
+                        <button name="create_request_price" string="Créer" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Annuler" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+
+        <record id="building_request_price_action" model="ir.actions.act_window">
+            <field name="name">Demandes de prix</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">building.request_price</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</openerp>

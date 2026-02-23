@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+         <record id="caution_manager" model="res.groups">
+             <field name="name">Caution/Manager</field>
+         </record>
+         
+         <record id="caution_user" model="res.groups">
+             <field name="name">Caution/User</field>
+         </record>
+
+        <record id="make_invisible" model="res.groups">
+            <field name="name">Show Menu</field>
+        </record>
+
+    </data>
+</openerp>

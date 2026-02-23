@@ -1,0 +1,885 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="detail_action" model="ir.actions.report">
+        <field name="name">detail</field>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">purchase_plus.detail_template</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="print_report_name">'Detail Bon de commande'</field>
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <template id="detail_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&amp;display=swap');
+
+                    * {
+                        margin: 0;
+                        padding: 0;
+                        font-family: 'Lato';
+                        box-sizing: border-box;
+                    }
+
+                    .page {
+                        position: relative;
+                        height: 360mm;
+                        font-size: 13pt;
+                    }
+
+                    .page &gt; *:not(:last-child) {
+                        margin-bottom: 40px;
+                    }
+
+                    .logo-services {
+                        padding-bottom: 35px;
+                        border-bottom: 1px solid #000;
+                    }
+
+                    .logo-subject {
+                        padding-bottom: 35px;
+                        border-bottom: 1px solid #000;
+                    }
+                    
+                    .logo {
+                        height: 60px;
+                    }
+
+                    .pagination {
+                        font-size: 10pt;
+                        text-align: right;
+                        vertical-align: top;
+                    }
+
+                    .orange {
+                        color: rgb(255, 102, 0);
+                        font-size: 12px;
+                        font-weight: bold;
+                    }
+
+                    .services p:not(.orange) {
+                        font-size: 11pt;
+                        color: rgb(0, 0, 255);
+                    }
+
+                    .services .bold {
+                        font-size: 13pt;
+                    }
+
+                    .subheader {
+                        text-align: center;
+                    }
+
+                    .subheader h1 {
+                        line-height: 1;
+                        margin-top: -6px;
+                        padding-bottom: 30px;
+                    }
+
+                    table {
+                        width: 100%;
+                        font-size: 13pt;
+                        border-collapse: collapse;
+                    }
+
+                    table td, table th {
+                        padding: 2px 4px;
+                    }
+                    
+                    .boxes.infos * {
+                        font-size: 11pt;
+                    }
+                    
+                    .boxes.infos td, .boxes.infos th {
+                        vertical-align: top;
+                    }
+
+                    .boxes .left-align {
+                        text-align: left;
+                    }
+
+                    .boxes .separator {
+                        width: 4.5%;
+                    }
+
+                    .boxes.border .box {
+                        border: 1px solid #000;
+                    }
+
+                    .boxes .box-box {
+                        box-sizing: content-box !important;
+                        outline: 1px solid #000;
+                        height: 120px;
+                        outline-offset: -1px;
+                    }
+
+                    .boxes .box {
+                        width: 47%;
+                    }
+
+                    .no-padding {
+                        padding: 0 !important;
+                    }
+
+                    .boxes .padded-bot {
+                        padding-bottom: 7px;
+                    }
+
+                    .main {
+                        font-size: 11pt;
+                    }
+
+                    .main thead {
+                        background: #0070c0;
+                        color: #fff;
+                    }
+
+                    .main th {
+                        padding: 4px;
+                    }
+
+                    .main td {
+                        vertical-align: top;
+                    }
+
+                    .main th, .main td {
+                        border: 1px solid #000;
+                    }
+
+                    .main .borderless-bot:not(:last-child) {
+                        border-bottom: hidden;
+                    }
+
+                    .main tbody td:first-child, .main tbody td:nth-child(3), .main tbody td:nth-child(4) {
+                        text-align: center;
+                    }
+
+                    .main tbody td:nth-last-child(-n+2), .main tfoot td:nth-child(n+2) {
+                        text-align: right;
+                    }
+
+                    .main tfoot td {
+                        padding: 4px;
+                    }
+
+                    .bold {
+                        font-weight: bold;
+                    }
+
+                    .underline {
+                        text-decoration: underline;
+                    }
+
+                    .p {
+                        text-align: center;
+                    }
+
+                    .p p:first-child {
+                        padding-bottom: 7px;
+                    }
+
+                    .p p:nth-child(2) {
+                        padding-bottom: 5px;
+                    }
+
+                    .p:not(.foot) p:not(.bold) {
+                        color: #808080;
+                    }
+
+                    .foot {
+                        position: absolute;
+                        bottom: 0;
+                        width: 100%;
+                        color: #0070c0;
+                        padding-top: 40px;
+                        border-top: 1px solid #000;
+                        font-size: 14px;
+                    }
+                    
+                    .ltfoot-container {
+                        width: 100%;
+                        padding-top: 20px;
+                        border-top: 1px solid #000;
+                        position: absolute;
+                        text-align: center;
+                        bottom: 0;
+                        color: rgb(0, 102, 0);
+                        font-size: 14px;
+                    }
+
+                    .signature {
+                        padding: 10px;
+                        text-align: center;
+                    }
+
+                    .signature img {
+                        height: 100px;
+                        width: auto;
+                    }
+                </style>
+
+                <t t-set="self" t-value="docs.sudo().report_purchase_order()"/>
+                <t t-set="start" t-value="self['first_page']"/>
+                <t t-set="end" t-value="start + self['line_per_page']"/>
+
+                <div class="page" style="page-break-before: always;">
+                    <div class="logo-services">
+                        <table>
+                            <tr>
+                                <td class="logo" rowspan="4">
+                                    <img t-att-src="image_data_uri(request.env['res.company'].search([])[0].logo)" style="width: 220px;"/>
+                                </td>
+                                <t t-if="self['pages']">
+                                    <td class="pagination">
+                                        <p>Page 1/<span t-esc="self['pages'] + 1"/></p>
+                                    </td>
+                                </t>
+                                <t t-if="self['add_second_page']">
+                                    <td class="pagination">
+                                        <p>Page 1/2</p>
+                                    </td>
+                                </t>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="subheader">
+                        <h1 class="underline">Départements des achats</h1>
+                        <h2 class="underline">Commande <t t-esc="self['name']"/> <t t-if="self['date_approve']">Du <span t-esc="self['date_approve']"/></t></h2>
+                    </div>
+        
+                    <table class="boxes infos border">
+                        <tr>
+                            <td class="box no-padding">
+                                <table>
+                                    <tr>
+                                        <th colspan="3" class="bold underline left-align">ADRESSE DE LIVRAISON</th>
+                                        <td/>
+                                    </tr>
+                                    <tr style="height: 20px;">
+                                        <td colspan="3"/>
+                                    </tr>
+                                    <tr>
+                                        <td>CONTACT</td>
+                                        <td>:</td>
+                                        <td><span t-esc="self['contact_name']"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>GSM</td>
+                                        <td>:</td>
+                                        <td><span t-esc="self['contact_work_phone']"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email</td>
+                                        <td>:</td>
+                                        <td><span t-esc="self['contact_work_email']"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Chantier</td>
+                                        <td>:</td>
+                                        <td><t t-esc="self['site_name']"/></td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td class="separator"/>
+                            <td class="box no-padding">
+                                <table>
+                                    <tr>
+                                        <th class="bold underline left-align" style="white-space: nowrap;">NOM FOURNISSEUR</th>
+                                        <td>:</td>
+                                        <td><t t-esc="self['partner_name']"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>COMMERCIAL</td>
+                                        <td>:</td>
+                                        <td><t t-esc="self['commercial_name']"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>ADRESSE</td>
+                                        <td>:</td>
+                                        <td><span t-esc="self['commercial_address']"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>TEL</td>
+                                        <td>:</td>
+                                        <td><t t-esc="self['commercial_phone']"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>E-MAIL</td>
+                                        <td>:</td>
+                                        <td><t t-esc="self['commercial_email']"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>DEVIS N°</td>
+                                        <td>:</td>
+                                        <td><t t-esc="self['partner_ref']"/></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+        
+                    <table class="main">
+                        <thead>
+                            <tr>
+                                <th>Ref</th>
+                                <th>Designation</th>
+                                <th>Description</th>
+                                <th>Unité.</th>
+                                <th>Quantité</th>
+                                <th>Prix Unitaire HT</th>
+                                <th>Montant Total HT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="borderless-bot" style="height: 15px;">
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td/>
+                            </tr>
+                            <t t-foreach="self['lines'][:start]" t-as="line">
+                                <tr class="borderless-bot">
+                                    <td><t t-esc="line['default_code']"/></td>
+                                    <td><t t-esc="line['product']"/></td>
+                                    <td><t t-esc="line['name']"/></td>
+                                    <td><t t-esc="line['uom']"/></td>
+                                    <td><t t-esc="line['quantity']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td><t t-esc="line['price_unit']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td><t t-esc="line['price_subtotal']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                </tr>
+                            </t>
+                            <tr class="borderless-bot" style="height: 15px;">
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td/>
+                            </tr>
+                        </tbody>
+                        <t t-if="not self['add_second_page'] and self['pages'] == 0">
+                            <tfoot>
+                                <tr class="bold">
+                                    <td colspan="3">Commentaire:</td>
+                                    <td colspan="3">PRIX TOTAL EN H.T EN <span t-esc="docs.currency_id.name"/></td>
+                                    <td><t t-esc="self['amount_untaxed']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                </tr>
+                                <tr class="borderless-bot bold">
+                                    <td colspan="3">DATE DE LIVRAISON: <t t-if="self['date_planned']"><span t-esc="self['date_planned']"/></t></td>
+                                    <t t-if="self['amount_tax']">
+                                        <td colspan="3">TVA 18% EN <span t-esc="docs.currency_id.name"/></td>
+                                        <td><t t-if="self['amount_tax']" t-esc="self['amount_tax']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    </t>
+                                    <t t-else="">
+                                        <td colspan="3"/>
+                                        <td/>
+                                    </t>
+                                </tr>
+                                <tr class="borderless-bot bold">
+                                    <td colspan="3">Conditions de paiement: <span t-esc="docs.payment_term_id.name"/></td>
+                                    <td colspan="3">NET A PAYER EN <span t-esc="docs.currency_id.name"/></td>
+                                    <td><t t-esc="self['amount_total']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                </tr>
+                                <t t-if="docs.avance">
+                                    <tr class="borderless-bot bold">
+                                        <td colspan="3">Avance (%): <span t-esc="docs.avance" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                        <td colspan="3"/>
+                                        <td/>
+                                    </tr>
+                                </t>
+                                <t t-if="docs.return_of_guarantee">
+                                    <tr class="bold">
+                                        <td colspan="3">Retenue de garantie (%): <span t-esc="docs.return_of_guarantee" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                        <td colspan="3"/>
+                                        <td/>
+                                    </tr>
+                                </t>
+                            </tfoot>
+                        </t>
+                    </table>
+                    <t t-if="not self['add_second_page'] and self['pages'] == 0">
+                        <div class="p">
+                            <t t-if="self['amount_tax']">
+                                <p/>
+                            </t>
+                            <t t-else="">
+                                <p class="bold underline">CHANTIER EXONERE DE LA TVA</p>
+                            </t>
+                            <p>Aucune Commande non signée ne doit être acceptée</p>
+                            <p>Chaque bon de livraison ou facture doit être accompagné d'une copie de la commande</p>
+                        </div>
+            
+                        <table class="boxes">
+                            <tr>
+                                <td class="box no-padding">
+                                    <table>
+                                        <tr>
+                                            <th class="padded-bot underline">RESPONSABLE ACHAT</th>
+                                        </tr>
+                                        <tr>
+                                            <td class="box-box"/>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td class="separator"/>
+                                <td class="box no-padding">
+                                    <table>
+                                        <tr>
+                                            <th class="padded-bot underline">DIRECTEUR GENERAL</th>
+                                        </tr>
+                                        <tr>
+                                            <td class="box-box signature">
+                                                <img t-if="docs.is_signed" t-att-src="request.env['ir.config_parameter'].search([('key', '=', 'web.base.url')])[0].value + '/purchase_igaser/static/src/img/signature.png'"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+
+
+                        <div class="ltfoot-container">
+                            <p>SARL au Capital de 100 000 000 FCFA, RCCM : CI-ABJ-03-2024-B12-01326, CC : 1637553T NIU N° : CI-2024-0073078 D, CNPS : 291705</p>
+                            <p>Angle Avenue Boga Doudou et Rue des Jardins. Im.LG. 3 ème Etage II Plateaux Vallon. BP. 2450 Abidjan 08 - Côte d'Ivoire</p>
+                            <p>Tél : +225 27 22 23 87 18, Mobile : +225 01 50 23 63 02, Email : sotaserv-ci@sotaserv.com</p>
+                            <p>www.sotaserv.ma</p>
+                        </div>
+                    </t>
+                </div>
+
+                <t t-foreach="self['add_page'] and self['pages'] - 1 or self['pages']" t-as="page">
+                    <div class="page" style="page-break-before: always;">
+                        <div class="logo-subject">
+                            <table>
+                                <tr>
+                                    <td class="logo">
+                                        <img t-att-src="image_data_uri(request.env['res.company'].search([])[0].logo)" style="width: 220px;"/>
+                                    </td>
+                                    <td class="subject">
+                                        <p>Départements des achats</p>
+                                        <p>Commande <t t-esc="self['name']"/> <t t-if="self['date_approve']">Du <span t-esc="self['date_approve']"/></t></p>
+                                    </td>
+                                    <td class="pagination">
+                                        <p>Page <span t-esc="page + 2"/>/<span t-esc="self['pages'] + 1"/></p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+            
+                        <table class="main">
+                            <thead>
+                                <tr>
+                                    <th>Ref</th>
+                                    <th>Designation</th>
+                                    <th>Description</th>
+                                    <th>Unité.</th>
+                                    <th>Quantité</th>
+                                    <th>Prix Unitaire HT</th>
+                                    <th>Montant Total HT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="borderless-bot" style="height: 15px;">
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                </tr>
+                                <t t-foreach="self['lines'][start:end]" t-as="line">
+                                    <tr class="borderless-bot">
+                                        <td><t t-esc="line['default_code']"/></td>
+                                        <td><t t-esc="line['product']"/></td>
+                                        <td><t t-esc="line['name']"/></td>
+                                        <td><t t-esc="line['uom']"/></td>
+                                        <td><t t-esc="line['quantity']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                        <td><t t-esc="line['price_unit']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                        <td><t t-esc="line['price_subtotal']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    </tr>
+                                </t>
+                                <tr class="borderless-bot" style="height: 15px;">
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                </tr>
+                            </tbody>
+                            <t t-if="page + 1 == self['pages'] and not self['add_page']">
+                                <tfoot>
+                                    <tr class="bold">
+                                        <td colspan="3">Commentaire:</td>
+                                        <td colspan="3">PRIX TOTAL EN H.T EN <span t-esc="docs.currency_id.name"/></td>
+                                        <td><t t-esc="self['amount_untaxed']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    </tr>
+                                    <tr class="borderless-bot bold">
+                                        <td colspan="3">DATE DE LIVRAISON: <t t-if="self['date_planned']"><span t-esc="self['date_planned']"/></t></td>
+                                        <t t-if="self['amount_tax']">
+                                            <td colspan="3">TVA 18% EN <span t-esc="docs.currency_id.name"/></td>
+                                            <td><t t-if="self['amount_tax']" t-esc="self['amount_tax']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                        </t>
+                                        <t t-else="">
+                                            <td colspan="3"/>
+                                            <td/>
+                                        </t>
+                                    </tr>
+                                    <tr class="borderless-bot bold">
+                                        <td colspan="3">Conditions de paiement: <span t-esc="docs.payment_term_id.name"/></td>
+                                        <td colspan="3">NET A PAYER EN <span t-esc="docs.currency_id.name"/></td>
+                                        <td><t t-esc="self['amount_total']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    </tr>
+                                    <t t-if="docs.avance">
+                                        <tr class="borderless-bot bold">
+                                            <td colspan="3">Avance (%): <span t-esc="docs.avance" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                            <td colspan="3"/>
+                                            <td/>
+                                        </tr>
+                                    </t>
+                                    <t t-if="docs.return_of_guarantee">
+                                        <tr class="bold">
+                                            <td colspan="3">Retenue de garantie (%): <span t-esc="docs.return_of_guarantee" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                            <td colspan="3"/>
+                                            <td/>
+                                        </tr>
+                                    </t>
+                                </tfoot>
+                            </t>
+                        </table>
+                        <t t-if="page + 1 == self['pages'] and not self['add_page']">
+                            <div class="p">
+                                <t t-if="self['amount_tax']">
+                                    <p/>
+                                </t>
+                                <t t-else="">
+                                    <p class="bold underline">CHANTIER EXONERE DE LA TVA</p>
+                                </t>
+                                <p>Aucune Commande non signée ne doit être acceptée</p>
+                                <p>Chaque bon de livraison ou facture doit être accompagné d'une copie de la commande</p>
+                            </div>
+                
+                            <table class="boxes">
+                                <tr>
+                                    <td class="box no-padding">
+                                        <table>
+                                            <tr>
+                                                <th class="padded-bot underline">RESPONSABLE ACHAT</th>
+                                            </tr>
+                                            <tr>
+                                                <td class="box-box"/>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td class="separator"/>
+                                    <td class="box no-padding">
+                                        <table>
+                                            <tr>
+                                                <th class="padded-bot underline">DIRECTEUR GENERAL</th>
+                                            </tr>
+                                            <tr>
+                                                <td class="box-box signature">
+                                                    <img t-if="docs.is_signed" t-att-src="request.env['ir.config_parameter'].search([('key', '=', 'web.base.url')])[0].value + '/purchase_igaser/static/src/img/signature.png'"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                
+                            <div class="ltfoot-container">
+                                <p>SARL au Capital de 100 000 000 FCFA, RCCM : CI-ABJ-03-2024-B12-01326, CC : 1637553T NIU N° : CI-2024-0073078 D, CNPS : 291705</p>
+                                <p>Angle Avenue Boga Doudou et Rue des Jardins. Im.LG. 3 ème Etage II Plateaux Vallon. BP. 2450 Abidjan 08 - Côte d'Ivoire</p>
+                                <p>Tél : +225 27 22 23 87 18, Mobile : +225 01 50 23 63 02, Email : sotaserv-ci@sotaserv.com</p>
+                                <p>www.sotaserv.ma</p>
+                            </div>
+                        </t>
+                    </div>
+                    <t t-set="start" t-value="end"/>
+                    <t t-set="end" t-value="start + self['line_per_page']"/>
+                </t>
+                
+                <t t-if="self['add_page'] or self['add_second_page']">
+                    <div class="page" style="page-break-before: always;">
+                        <div class="logo-subject">
+                            <table>
+                                <tr>
+                                    <td class="logo">
+                                        <img t-att-src="image_data_uri(request.env['res.company'].search([])[0].logo)" style="width: 220px;"/>
+                                    </td>
+                                    <td class="subject">
+                                        <p>Départements des achats</p>
+                                        <p>Commande <t t-esc="self['name']"/> <t t-if="self['date_approve']">Du <span t-esc="self['date_approve']"/></t></p>
+                                    </td>
+                                    <t t-if="self['add_page']">
+                                        <td class="pagination">
+                                            <p>Page <span t-esc="self['pages'] + 1"/>/<span t-esc="self['pages'] + 1"/></p>
+                                        </td>
+                                    </t>
+                                    <t t-if="self['add_second_page']">
+                                        <td class="pagination">
+                                            <p>Page 2/2</p>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </table>
+                        </div>
+            
+                        <table class="main">
+                            <thead>
+                                <tr>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="borderless-bot" style="height: 30px;">
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="bold">
+                                    <td colspan="3">Commentaire:</td>
+                                    <td colspan="3">PRIX TOTAL EN H.T EN <span t-esc="docs.currency_id.name"/></td>
+                                    <td><t t-esc="self['amount_untaxed']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                </tr>
+                                <tr class="borderless-bot bold">
+                                    <td colspan="3">DATE DE LIVRAISON: <t t-if="self['date_planned']"><span t-esc="self['date_planned']"/></t></td>
+                                    <t t-if="self['amount_tax']">
+                                        <td colspan="3">TVA 18% EN <span t-esc="docs.currency_id.name"/></td>
+                                        <td><t t-if="self['amount_tax']" t-esc="self['amount_tax']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    </t>
+                                    <t t-else="">
+                                        <td colspan="3"/>
+                                        <td/>
+                                    </t>
+                                </tr>
+                                <tr class="borderless-bot bold">
+                                    <td colspan="3">Conditions de paiement: <span t-esc="docs.payment_term_id.name"/></td>
+                                    <td colspan="3">NET A PAYER EN <span t-esc="docs.currency_id.name"/></td>
+                                    <td><t t-esc="self['amount_total']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                </tr>
+                                <t t-if="docs.avance">
+                                    <tr class="borderless-bot bold">
+                                        <td colspan="3">Avance (%): <span t-esc="docs.avance" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                        <td colspan="3"/>
+                                        <td/>
+                                    </tr>
+                                </t>
+                                <t t-if="docs.return_of_guarantee">
+                                    <tr class="bold">
+                                        <td colspan="3">Retenue de garantie (%): <span t-esc="docs.return_of_guarantee" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                        <td colspan="3"/>
+                                        <td/>
+                                    </tr>
+                                </t>
+                            </tfoot>
+                        </table>
+                        <div class="p">
+                            <t t-if="self['amount_tax']">
+                                <p/>
+                            </t>
+                            <t t-else="">
+                                <p class="bold underline">CHANTIER EXONERE DE LA TVA</p>
+                            </t>
+                            <p>Aucune Commande non signée ne doit être acceptée</p>
+                            <p>Chaque bon de livraison ou facture doit être accompagné d'une copie de la commande</p>
+                        </div>
+            
+                        <table class="boxes">
+                            <tr>
+                                <td class="box no-padding">
+                                    <table>
+                                        <tr>
+                                            <th class="padded-bot underline">RESPONSABLE ACHAT</th>
+                                        </tr>
+                                        <tr>
+                                            <td class="box-box"/>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td class="separator"/>
+                                <td class="box no-padding">
+                                    <table>
+                                        <tr>
+                                            <th class="padded-bot underline">DIRECTEUR GENERAL</th>
+                                        </tr>
+                                        <tr>
+                                            <td class="box-box signature">
+                                                <img t-if="docs.is_signed" t-att-src="request.env['ir.config_parameter'].search([('key', '=', 'web.base.url')])[0].value + '/purchase_igaser/static/src/img/signature.png'"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="ltfoot-container">
+                            <p>SARL au Capital de 100 000 000 FCFA, RCCM : CI-ABJ-03-2024-B12-01326, CC : 1637553T NIU N° : CI-2024-0073078 D, CNPS : 291705</p>
+                            <p>Angle Avenue Boga Doudou et Rue des Jardins. Im.LG. 3 ème Etage II Plateaux Vallon. BP. 2450 Abidjan 08 - Côte d'Ivoire</p>
+                            <p>Tél : +225 27 22 23 87 18, Mobile : +225 01 50 23 63 02, Email : sotaserv-ci@sotaserv.com</p>
+                            <p>www.sotaserv.ma</p>
+                        </div>
+                    </div>
+                </t>
+
+                <div class="page" style="page-break-before: always;">
+                    <div class="container">
+                    
+                        <div class="logo" style="height: 60px;">
+                            <img t-att-src="image_data_uri(request.env['res.company'].search([])[0].logo)" style="width: 220px;"/>
+                        </div>
+
+                        <div class="title" style="display: flex; justify-content: center; align-items: center; border: 2px solid #000; padding: 10px; margin-bottom: 20px; margin-top: 25px;">
+                            <p class="tit" style="font-weight: bold; font-size: 24px; text-align: center;">CANEVAS D'ATTACHEMENT (details)</p>
+                        </div>
+
+                        <div class="details" style=" display: flex; justify-content: space-between; font-size: 14px; margin-top: 50px; font-weight: bold;">
+                            <div class="left-details" style=" display: inline-block; width: 48%;">
+                                <p style="margin-bottom: 8px;">Affaire: <span t-esc="docs.site_id.name"/></p>
+                                <p style="margin-bottom: 8px;">Fournisseur: <span t-esc="doc.partner_id.name"/></p>
+                                <p style="margin-bottom: 8px;">N° Bon de Commande: <span t-esc="docs.name"/></p>
+                                <p style="margin-bottom: 8px;">Nom de l'activité (article):  <span t-esc="doc.product_id.name"/></p>
+                                <p style="margin-bottom: 8px;"> Date <span t-esc="doc.effective_date"/></p>
+                            </div>
+                            <div class="right-details" style=" display: inline-block; width: 48%;">
+                                <p style="margin-bottom: 8px;">Montant du marché: <span t-esc="self['amount_total']" t-options="{'widget': 'float', 'precision': 2}"/> <span t-esc="docs.currency_id.name"/></p>
+                                <p style="margin-bottom: 8px;">Représentant: <!--<span t-esc="doc.represent"/> --></p>
+                                <p style="margin-bottom: 8px;">RG:  <span t-esc="'{:,.2f}'.format(doc.return_of_guarantee).replace(',', ' ').replace('.', ',')"/> FCFA</p>
+                                <p style="margin-bottom: 8px;">Avance de démarrage: <span t-esc=" '{:,.2f}'.format(doc.avance).replace(',', ' ').replace('.', ',')"/>%</p>
+                            </div>
+                        </div>
+
+                        <table class="table" style="margin-top: 20px; width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr>
+                                    <th style=" border: 2px solid #000; padding: 8px; text-align: left; background-color: #f2f2f2;">Article</th>
+                                    <th style=" border: 2px solid #000; padding: 8px; text-align: left; background-color: #f2f2f2;">Description</th>
+                                    <th style="border: 2px solid #000; padding: 8px; text-align: center; background-color: #f2f2f2;">UDM</th>
+                                    <th style="border: 2px solid #000; padding: 8px; text-align: center; background-color: #f2f2f2;">Type</th>
+                                    <th style="border: 2px solid #000; padding: 8px; text-align: center; background-color: #f2f2f2;">Quantité</th>
+                                    <th style="border: 2px solid #000; padding: 8px; text-align: center; background-color: #f2f2f2;"> Prix unitaire</th>
+                                    <th style="border: 2px solid #000; padding: 8px; text-align: center; background-color: #f2f2f2;"> Prix total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.order_line" t-as="section">
+                                    <tr>
+                                        <td colspan="7" style="border: 2px solid #000; padding: 8px; background-color: #d9d9d9; font-weight: bold; font-size: 14px;">
+                                            <t t-esc="section.name" />
+                                        </td>
+                                    </tr>
+
+                                    <t t-foreach="section.detail_ids" t-as="line">
+                                        <tr>
+                                            <td style="border: 2px solid #000; padding: 8px; border-right: none; font-size: 14px;">
+                                                <t t-esc="line.purchase_order_line_id.product_id.name" />
+                                            </td>
+                                            <td style="border: 2px solid #000; padding: 8px; border-right: none; font-size: 14px;">
+                                                <t t-esc="line.name" />
+                                            </td>
+                                            <td style="border: 2px solid #000; padding: 8px; text-align: center; width: 5px; font-size: 14px;">
+                                                <t t-esc="line.unit_measurement.name" />
+                                            </td>
+                                            <td style="border: 2px solid #000; padding: 8px; text-align: center; font-size: 14px; width: 10px;">
+                                                <t t-esc="'%' if line.quantity_type == 'percentage' else 'Q' if line.quantity_type == 'quantity' else line.quantity_type" />
+                                            </td>
+                                            <td style="border: 2px solid #000; padding: 8px; text-align: right; width: 50px; font-size: 14px;">
+                                                <t t-esc="'{:,.2f}'.format(line.quantity_pr).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                            <td style="border: 2px solid #000; padding: 8px; text-align: right; width: 50px; font-size: 14px;">
+                                                <t t-esc="'{:,.2f}'.format(line.price_unit).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                            <td style="border: 2px solid #000; padding: 8px; text-align: right; width: 100px; font-size: 14px;">
+                                                <t t-esc="'{:,.2f}'.format(line.subtotal).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+                                    </t>
+
+                                </t>
+                            </tbody>
+                        </table>
+                        <table class="total-table" style="margin-top: 20px; width: 100%; border-collapse: collapse;">
+                            <tbody>
+                                <tr>
+                                    <td style="border: none; width: 70%;"></td> 
+                                    <td style="border: 2px solid #000; padding: 8px; text-align: center; background-color: #f2f2f2; font-weight: bold; width: 15%;">
+                                        Total FCFA
+                                    </td>
+                                    <td style="border: 2px solid #000; padding: 8px; text-align: center; width: 300px;">
+                                        <t t-esc="'{:,.2f}'.format(doc.amount_untaxed).replace(',', ' ').replace('.', ',')" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="pied" style="color: grey; font-weight: bold; font-size: 17px; font-family: 'Courier New', Courier, monospace; margin-top: 20px; text-align: center; font-size: 14px; font-weight: bold;">
+                        <div class="text" style=" padding-top: 10px; text-align: center; margin-top: 40px; font-size: 20px;"> CHAQUE ATTACHEMENT OU FACTURE <br/> 
+                            DOIT ETRE ACCOMPAGNE D'UNE COPIE SIGNEE ET CACHETEE DU BON COMMANDE </div>
+                        </div>
+                        <div style="margin-bottom: 45px;"></div>
+    
+                        <table class="boxes" style="width: 100%; table-layout: fixed; margin-top= 40px;">
+                            <tr>
+                                <td class="box no-padding" style="padding: 0 !important; width: 50%;">
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <th class="padded-bot underline" style="padding-bottom: 7px; text-align: center;">CT/CP/DZ</th>
+                                        </tr>
+                                        <tr>
+                                            <td class="box-box" style="box-sizing: content-box !important; outline: 1px solid #4088a6; height: 120px; outline-offset: -1px;"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td class="separator" style="width: 4.5%;"></td>
+                                <td class="box no-padding" style="padding: 0 !important; width: 50%;">
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <th class="padded-bot underline" style="padding-bottom: 7px; text-align: center;">DT/DG</th>
+                                        </tr>
+                                        <tr>
+                                            <td class="box-box" style="box-sizing: content-box !important; outline: 1px solid #4088a6; height: 120px; outline-offset: -1px;"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="ltfoot-container">
+                            <p>SARL au Capital de 100 000 000 FCFA, RCCM : CI-ABJ-03-2024-B12-01326, CC : 1637553T NIU N° : CI-2024-0073078 D, CNPS : 291705</p>
+                            <p>Angle Avenue Boga Doudou et Rue des Jardins. Im.LG. 3 ème Etage II Plateaux Vallon. BP. 2450 Abidjan 08 - Côte d'Ivoire</p>
+                            <p>Tél : +225 27 22 23 87 18, Mobile : +225 01 50 23 63 02, Email : sotaserv-ci@sotaserv.com</p>
+                            <p>www.sotaserv.ma</p>
+                        </div>
+                    </div>
+                </div>
+
+
+            </t>
+        </t>
+    </template>
+
+
+</odoo>

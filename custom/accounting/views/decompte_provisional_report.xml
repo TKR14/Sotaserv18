@@ -1,0 +1,292 @@
+<odoo>
+    <record id="decompte_provisional_report_action" model="ir.actions.report">
+        <field name="name">Décompte Provisoire</field>
+        <field name="model">building.attachment</field>
+        <field name="report_name">accounting.decompte_provisional_report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="building.model_building_attachment"/>
+        <field name="print_report_name">'Decompte_Provisional_N_%s.pdf' % (object.number)</field>
+    </record>
+
+    <template id="decompte_provisional_report">
+        <t t-call="web.html_container">
+            <meta charset="utf-8"/>
+            <t t-set="docs" t-value="data"/>
+            <style>
+                body {
+                    font-family: "Times New Roman", Times, serif;
+                    line-height: 1.4;
+                    margin: 26px;
+                    color: #000;
+                }
+
+                .page-header {
+                    text-align: center;
+                    font-size: 16px;
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                }
+
+                .page-header-span {
+                    font-weight: bold;
+                    text-decoration: underline;
+                    font-size: 16px; /* Adjust as needed */
+                    text-align: center;
+                    line-height: 1.5;
+                }
+
+                .amount-box {
+                    border: 1px solid black;
+                    padding: 26px;
+                    text-align: center;
+                    font-family: "Times New Roman", Times, serif;
+                    font-size: 12px;
+                    width: fit-content;
+                    margin: 26px auto;
+                    font-weight: bold;
+                }
+
+                .row {
+                    display: flex;
+                    justify-content: space-between;
+                    font-family: "Times New Roman", Times, serif;
+                    font-size: 16px;
+                    padding: 5px 10px;
+                    width: 100%;
+                    box-sizing: border-box;
+                    margin-top: 16%
+                }
+
+                .label {
+                    font-weight: bold;
+                }
+
+                .value {
+                    font-weight: bold;
+                }.invoice_footer {
+                    position: absolute;
+                    bottom: 10px;
+                }
+
+                .company-info {
+                    line-height: 1.2;
+                    color: rgb(0, 102, 0);
+                    font-size: 12px;
+                    position: relative;
+                    left: 53px;
+                    margin-top: 10px;
+                }
+
+                .company-info span {
+                    display: block;
+                    text-align: center;
+                    white-space: nowrap;
+                    font-size: 11px;
+                    margin-top: 3px;
+                }
+
+                .company-info strong {
+                    font-weight: bold;
+                }
+
+                .company-info .underline {
+                    border-bottom: 2px solid rgb(60, 63, 60);
+                    margin-bottom: 5px;
+                    padding-bottom: 5px;
+                    width: 100%;
+                    margin: 20px auto;
+                }
+            </style>
+
+            <div class="logo">
+                <img t-att-src="image_data_uri(request.env['res.company'].search([], limit=1).logo)" 
+                    alt="Logo" style="max-width: 200px; height: auto;" />
+            </div>
+
+            <div class="page-header">
+                <span class="page-header-span">PROJET - <t t-esc="docs[0]['site_id']"/></span><br/>
+                <span class="page-header-span"><t t-esc="docs[0]['opp_id']"/></span><br/>
+                <span class="page-header-span">DECOMPTE PROVISOIRE: <t t-esc="docs[0]['number']"/> au <t t-esc="docs[0]['end_date']"/></span>
+            </div>
+
+            <table width="100%" style="border-collapse: collapse; margin-top: 26px; padding: 10px;">
+                <tr>
+                    <td style="width: 51%; border-left: none; border-right: none; border-top: none; border-bottom: none; padding: 10px; font-size: 13px; text-decoration: underline; font-weight: bold;">MONTANT DU <t t-esc="docs[0]['nature_service']"/> F<t t-esc="docs[0]['currency']"/> <span t-if="docs[0]['tax_group_id'] == 'TVA 0%'">H.T</span><span t-else="">T.T.C</span> :</td>
+                    <td style="width: 6.125%; border-left: none; border-right: none; border-top: none; border-bottom: none; padding: 10px; text-align: center;"></td>
+                    <td style="width: 6.125%; border-left: none; border-right: none; border-top: none; border-bottom: none; padding: 10px;"></td>
+                    <td style="width: 24.75; border-left: none; border-right: none; border-top: none; border-bottom: none; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px; text-align: center; font-weight: bold; font-size: 11px;"><t t-raw="'{:,.2f}'.format(docs[0]['expected_revenue']).replace(',', ' ').replace('.', ',')" /></td>
+                </tr>
+                <tr>
+                    <td style="width: 51%; border-left: none; border-right: none; border-top: none; border-bottom: none; padding: 10px"></td>
+                    <td style="width: 6.125%; border-left: none; border-right: none; border-top: none; border-bottom: none; padding: 10px; text-align: center;"></td>
+                    <td style="width: 6.125%; border-left: none; border-right: none; border-top: none; border-bottom: none; padding: 10px;"></td>
+                    <td style="width: 24.75; border-left: none; border-right: none; border-top: none; border-bottom: none; padding: 10px;"></td>
+                    <td style="width: 24.75; border-left: none; border-right: none; border-top: none; border-bottom: none; padding: 10px;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 51%; border-left: none; border-right: none; border-top: none; border-bottom: 1px solid black; padding: 10px"></td>
+                    <td style="width: 6.125%; border-left: none; border-right: none; border-top: none; border-bottom: none; padding: 10px; text-align: center;"></td>
+                    <td style="width: 6.125%; border-left: none; border-right: none; border-top: none; border-bottom: none; padding: 10px;"></td>
+                    <td style="width: 24.75; border-left: none; border-right: none; border-top: none; border-bottom: none; padding: 10px;"></td>
+                    <td style="width: 24.75;border-left: none; border-right: none; border-top: none; border-bottom: 1px solid black; padding: 10px;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 51%; border: 1px solid black; padding: 10px; font-size: 13px; text-decoration: underline; font-weight: bold;">
+                        MONTANT TOTAL F<t t-esc="docs[0]['currency']"/> 
+                        <span t-if="docs[0]['tax_group_id'] == 'TVA 0%'">H.T</span>
+                        <span t-else="">T.T.C</span> 
+                        DES TRAVAUX REALISES:
+                    </td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px; text-align: center;"></td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px; text-align: center; font-size: 13px; font-weight: bold;"><t t-raw="'{:,.2f}'.format(docs[0]['accumulations_work']).replace(',', ' ').replace('.', ',')" /></td>
+                </tr>
+                <tr>
+                    <td style="width: 51%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 5px;"></td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 51%; border: 1px solid black; padding: 10px; text-decoration: underline; font-weight: bold; font-size: 13px;">DEDUIRE</td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 51%; border: 1px solid black; padding: 10px; font-size: 12px;">Retenue de garantie</td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px; text-align: center; font-size: 12px;"><t t-esc="docs[0]['deductions']['prc_rg']"/>%</td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px; text-align: end; font-size: 12px;"><t t-raw="'{:,.2f}'.format(docs[0]['deductions']['deduction_prc_gr']).replace(',', ' ').replace('.', ',')" /></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 51%; border: 1px solid black; padding: 10px; font-size: 12px;">Amortissement avance</td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px; text-align: center; font-size: 12px; font-size: 12px;"><!-- <t t-esc="docs[0]['deductions']['prc_advance']"/>% --></td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px; text-align: end; font-size: 12px;"><t t-raw="'{:,.2f}'.format(docs[0]['deductions']['deduction_advance']).replace(',', ' ').replace('.', ',')" /></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                </tr>
+                <!-- <tr>
+                    <td style="width: 51%; border: 1px solid black; padding: 10px; font-size: 12px;">Retenue de malfaçons</td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px; text-align: center; font-size: 12px;"><t t-esc="docs[0]['deductions']['prc_deduction_malus_retention']"/>%</td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px; text-align: end; font-size: 12px;"><t t-raw="'{:,.2f}'.format(docs[0]['deductions']['deduction_malus_retention']).replace(',', ' ').replace('.', ',')" /></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                </tr> -->
+                <tr>
+                    <td style="width: 51%; border: 1px solid black; padding: 10px; font-size: 12px;">RC Décennale</td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px; text-align: center; font-size: 12px;"><!-- <t t-esc="docs[0]['deductions']['prc_amount_ten_year_ttc']"/>% --></td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px; text-align: end; font-size: 12px;"><t t-raw="'{:,.2f}'.format(docs[0]['deductions']['deduction_ten_year_ttc']).replace(',', ' ').replace('.', ',')" /></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                </tr>
+                <!-- <tr>
+                    <td style="width: 51%; border: 1px solid black; padding: 10px; font-size: 12px;">Déduction TRC</td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px; text-align: center; font-size: 12px;">Ft</td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px; text-align: end; font-size: 12px;"><t t-raw="'{:,.2f}'.format(docs[0]['deductions']['deduction_ten_year_ttc']).replace(',', ' ').replace('.', ',')" /></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 51%; border: 1px solid black; padding: 10px; font-size: 12px;">DP <t t-esc="docs[0]['number']"/></td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px; text-align: center; font-size: 12px;"></td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px; text-align: end; font-size: 12px;"><t t-raw="'{:,.2f}'.format(docs[0]['deductions']['accumulation_previous_amounts']).replace(',', ' ').replace('.', ',')" /></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                </tr> -->
+                <tr>
+                    <td style="width: 51%; border: 1px solid black; padding: 10px"></td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 51%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 51%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 5%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 5%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 51%; border: 1px solid black; padding: 10px"></td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 51%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 6.125%; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px; text-decoration: underline; font-size: 12px;">Total à déduire.....</td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px; text-align: center; font-size: 12px;"><t t-raw="'{:,.2f}'.format(docs[0]['total_to_deduct']).replace(',', ' ').replace('.', ',')" /></td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="width: 51%; border: 1px solid black; padding: 10px; text-align: end; text-decoration: underline; font-weight: bold; font-size: 13px;">RESTE A PAYER  EN F<t t-esc="docs[0]['currency']"/> <span t-if="docs[0]['tax_group_id'] == 'TVA 0%'">H.T</span><span t-else="">T.T.C</span></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px;"></td>
+                    <td style="width: 24.75; border: 1px solid black; padding: 10px; text-align: center; font-weight: bold; font-size: 12px;"><t t-raw="'{:,.2f}'.format(docs[0]['amount_remaining_fcfa_excl_tax']).replace(',', ' ').replace('.', ',')" /></td>
+                </tr>
+            </table>
+
+            <p>Arrêté le présent décompte provisoire  à la somme de : </p>
+            <p>(*) Paiement en <span t-if="docs[0]['tax_group_id'] == 'TVA 0%'">H.T</span><span t-else="">T.T.C</span> suite à une convention signée avec l'état de Côte d'ivoire</p>
+            <div class="amount-box">
+                <span>
+                    <t t-esc="docs[0]['amount_in_word']"/>
+                </span>
+            </div>
+            <p style="text-align: center; margin-top: 14%; font-weight: bold;">SOTASERV CI</p>
+            <div class="row">
+                <span class="label">ARCHITECTE</span>
+                <span class="value">DOUJA PROMOTION</span>
+            </div>
+            <div class="invoice_footer">
+                <div class="company-info">
+                    <div class="underline"></div>
+                    <span>
+                        SARL au Capital de 
+                        <t t-esc="'{:,.0f}'.format(docs[0]['company_id']['capital']).replace(',', ' ')"/> 
+                        FCFA - RCCM : 
+                        <t t-esc="docs[0]['company_id']['rccm']"/> - NIU N°: 
+                        <t t-esc="docs[0]['company_id']['niu_nemuro']"/> - CNPS : 
+                        <t t-esc="docs[0]['company_id']['cnps']"/>
+                    </span>
+
+                    <span>
+                        Siège Social : 
+                        <t t-esc="docs[0]['company_id']['street']"/> 
+                        <t t-esc="docs[0]['company_id']['street2']"/> 
+                        <t t-esc="docs[0]['company_id']['city']"/> 
+                        <t t-esc="docs[0]['company_id']['country']"/>
+                    </span>
+
+                    <span>
+                        Tél.: <t t-esc="docs[0]['company_id']['phone']"/> / Mobile: 
+                        <t t-esc="docs[0]['company_id']['mobile']"/> 
+                        Email: <t t-esc="docs[0]['company_id']['email']"/> - Site Web: 
+                        <t t-esc="docs[0]['company_id']['website']"/>
+                    </span>
+
+                    <span>
+                        Compte Bancaire NSIA BANQUE N°: 
+                        <t t-esc="docs[0]['company_id']['bank_account']"/>
+                    </span>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

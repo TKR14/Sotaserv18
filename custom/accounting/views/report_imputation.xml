@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="report_imputation">
+
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <style>
+                .container {
+                    margin: auto;
+                    width: 100%;
+                    padding: 10px;
+                }
+
+                table,
+                th,
+                td {
+                    border: 1px solid black;
+                    border-collapse: collapse;
+                }
+
+                table td {
+                    border: none;
+                    padding: 5px;
+                }
+
+                table {
+                    border-bottom: none;
+                    border-right: none;
+                    border-left: none;
+                }
+
+                table th {
+                    padding: 8px;
+                    text-align: center;
+                }
+
+                table.center {
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+
+                .firstP, .secondP {
+                    display: inline;
+                }
+          </style>
+                    <div class="oe_structure" />
+                    <div class="container">
+                        <h3 style="text-decoration: underline;text-align: center;">JOURNAL IMPUTATION COMPTABLE</h3>
+                        <div style="align-items: stretch;display: inline-block;">
+                            <p>IGASER <span t-esc="start_date.strftime('%Y')" /></p>
+                            <!-- <p style="font-weight: bold;font-family: sans-serif;">
+                                REF:
+                                <span t-field="o.ref" />
+                            </p> -->
+                        </div>
+                        <div style="margin-left: 20%;
+                        padding: 10px;display: inline-block;">
+                            <p style="word-spacing: 20px;"></p>
+                            <p class="firstP">
+                                (
+                                <span t-esc="start_date" />
+                                Au
+                                <span t-esc="end_date" />
+                                )
+                            </p>
+                            <!-- <p class="secondP">
+                                (
+                                <span t-esc="start_date.strftime('%m')" />
+                                )
+                            </p> -->
+                        </div>
+                        <br />
+                        <p class="firstP" style="font-weight: bold;font-family: sans-serif;padding-left: 40%;padding-right: 130px;">
+                            Edité le:
+                            <span style="font-weight: normal;" t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')" />
+                        </p>
+
+                    </div>
+                    <br />
+                    <!--table-->
+                    <table class="center" style="width: 100%;font-family:Courier New, Courier, monospace; font-size:90%">
+                        <thead>
+                            <tr>
+                                <th width="8%">CODE</th>
+                                <th width="28%">DESIGNATION</th>
+                                <th width="23%">AFFAIRE</th>
+                                <th width="12%">DEBIT</th>
+                                <th width="12%">CREDIT</th>
+                                <th width="17%">COMPTE</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <t t-set="total_debit" t-value="0" />
+                            <t t-set="total_credit" t-value="0" />
+                            <t t-foreach="lines(start_date, end_date)" t-as="line">
+                                <tr>
+                                    <t t-set="total_debit" t-value="total_debit + line.debit" />
+                                    <t t-set="total_credit" t-value="total_credit + line.credit" />
+                                    <t t-set="salary_rule" t-value="get_paie_values(line.account_id.id, line.name)" />
+                                    <td style="border-right: 1px solid black;text-align: center;border-left: 1px solid;">
+                                        <span t-esc="salary_rule.code" />
+                                    </td>
+                                    <td style="border-right: 1px solid black;text-align: left;padding-left: 8px;">
+                                        <span t-field="salary_rule.name" />
+                                    </td>
+                                    <td style="border-right: 1px solid black;text-align: left;padding-left: 8px;">
+                                        <span t-field="line.site_id.name" />
+                                    </td>
+                                    <td style="border-right: 1px solid black;text-align: right;padding-right: 8px;">
+                                        <span t-field="line.debit" t-options='{"widget": "float", "precision": 2}' />
+                                    </td>
+                                    <td style="border-right: 1px solid black;text-align: right;padding-right: 8px;">
+                                        <span t-field="line.credit" t-options='{"widget": "float", "precision": 2}' />
+                                    </td>
+                                    <td style="border-right: 1px solid black;text-align: right;padding-right: 8px;">
+                                        <span t-field="line.account_id.code" />
+                                    </td>
+                                </tr>
+
+                            </t>
+                            <!--TOTAL-->
+                            <!-- X -->
+                            <tr>
+                                <td colspan="3" style="text-align: right;padding-right: 10px;border-top: 1px solid;font-weight: bold;font-family: sans-serif;">TOTAL----></td>
+                                <td style="text-align: right;padding-right: 8px;border-top: 1px solid;">
+                                    <span t-esc="total_debit" t-options='{"widget": "float", "precision": 2}' />
+                                </td>
+                                <td style="text-align: right;padding-right: 8px;border-top: 1px solid;">
+                                    <span t-esc="total_credit" t-options='{"widget": "float", "precision": 2}' />
+                                </td>
+                                <td style="border-top: 1px solid;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+    
+
+</odoo>

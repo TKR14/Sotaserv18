@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <!-- <menuitem id="menu_list_picking_out_root" name="Stocks" parent="menu_site_root" sequence="5" />
+        <menuitem id="menu_list_picking_in" name="Bons de receptions" parent="menu_list_picking_out_root" sequence="1" action="action_building_incoming_picking" />
+        <menuitem id="menu_building_picking_internal" name="Transferts internes" parent="menu_list_picking_out_root" sequence="2" action="action_building_picking_internal" /> -->
+        <menuitem id="menu_building_stock" name="Stocks par Emplacement" parent="stock.menu_stock_root" sequence="3" action="building_stock_quantsact" groups="base.group_no_one"/>
+
+    </data>
+</openerp>

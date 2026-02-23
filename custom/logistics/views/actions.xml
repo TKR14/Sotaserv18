@@ -1,0 +1,378 @@
+<odoo>
+    <!-- Achats -->
+    <!-- Demandes d'achat -->
+    <record id="purchase_request_action" model="ir.actions.act_window">
+        <field name="name">Demandes d'Achat</field>
+        <field name="res_model">purchase.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('site_id.number', '=', '002')]</field>
+        <field name="context">{"is_logistic": True, "search_default_requested_by": uid}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('purchase_igaser.purchase_request_view_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_logistic_purchase_request_form')})
+            ]"/>
+    </record>
+
+    <!-- Commandes -->
+    <record id="purchase_order_action" model="ir.actions.act_window">
+        <field name="name">Commandes</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'create': False, 'update': False, 'delete': False, 'hide_actions': True}</field>
+        <field name="domain">[('site_id.number', '=', '002')]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('logistics.view_purchase_order_tree_no_multiedit')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('logistics.purchase_order_form_no_edit')})
+            ]"/>
+    </record>
+
+    <!-- Inventaire -->
+    <!-- Aperçu -->
+    <record id="stock_picking_type_action" model="ir.actions.act_window">
+        <field name="name">Aperçu de l'inventaire</field>
+        <field name="res_model">stock.picking.type</field>
+        <field name="view_mode">kanban</field>
+        <field name="domain">[('warehouse_id.site_id.number', '=', '002')]</field>
+        <field name="context">{"search_default_groupby_warehouse_id": True,}</field>
+    </record>
+
+    <!-- Réceptions -->
+    <record id="stock_picking_incoming_action" model="ir.actions.act_window">
+        <field name="name">Réceptions</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('picking_type_code', '=', 'incoming'), ('site_id.number', '=', '002')]</field>
+        <field name="context">{"create": False, "delete": False, "edit": False}</field>
+    </record>
+
+    <!-- Sorties -->
+    <!-- ajouter a stock plus  -->
+    <!-- <record id="stock_picking_outgoing_action" model="ir.actions.act_window">
+        <field name="name">Sortie d'article</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[("picking_type_code", "=", "outgoing"), ("is_outgoing_process", "=", True), ('site_id.number', '=', '002')]</field>
+        <field name="context">{"outgoing_process": True, "default_is_outgoing_process": True, "default_picking_type_code": "outgoing", "is_logistic": True,}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('stock_plus.stock_picking_view_tree_outgoing')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('stock_plus.stock_picking_view_form_outgoing')})
+            ]"/>
+    </record> -->
+
+    <!-- Rebut -->
+    <!-- ajouter a stock plus  -->
+    <!-- <record id="stock_picking_scrap_action" model="ir.actions.act_window">
+        <field name="name">Rebut</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[("picking_type_code", "=", "internal"), ("is_scrap_process", "=", True), ('site_id.number', '=', '002')]</field>
+        <field name="context">{"scrap_process": True, "default_is_scrap_process": True, "default_picking_type_code": "internal", "is_logistic": True,}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('stock_plus.stock_picking_view_tree_scrap')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('stock_plus.stock_picking_view_form_scrap')})
+            ]"/>
+    </record> -->
+
+    <!-- Matériels -->
+    <!-- SOTASERV_CHEF_PROJET -->
+    <record id="maintenance_request_resource_material_cp_action_serevr" model="ir.actions.server">
+        <field name="name">Demandes</field>
+        <field name="model_id" ref="building.model_maintenance_request_resource_material"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_maintenance_request_resource_material_action("SOTASERV_CHEF_PROJET")</field>
+    </record>
+
+    <!-- SOTASERV_CONDUCT_TRV -->
+    <record id="maintenance_request_resource_material_trv_action_serevr" model="ir.actions.server">
+        <field name="name">Demandes</field>
+        <field name="model_id" ref="building.model_maintenance_request_resource_material"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_maintenance_request_resource_material_action("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <!-- SOTASERV_DIRECTEUR_ZONE -->
+    <record id="maintenance_request_resource_material_dz_action_serevr" model="ir.actions.server">
+        <field name="name">Demandes</field>
+        <field name="model_id" ref="building.model_maintenance_request_resource_material"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_maintenance_request_resource_material_action("SOTASERV_DIRECTEUR_ZONE")</field>
+    </record>
+
+    <record id="maintenance_request_resource_material_action" model="ir.actions.act_window">
+        <field name="name">Demandes</field>
+        <field name="res_model">maintenance.request.resource.material</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.maintenance_request_resource_material_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building.maintenance_request_resource_material_form_view')})
+            ]"/>
+        <field name="domain">[('is_equipment', '=', 1)]</field>
+        <field name="context">{'search_default_group_requested_by':1, 'default_is_equipment':1, 'is_equipment': True, 'default_is_equip':0, 'create': False, 'delete': False, 'edit': False}</field>
+    </record>
+
+    <!-- SOTASERV_CHEF_PROJET -->
+    <record id="maintenance_request_resource_material_line_cp_action_serevr" model="ir.actions.server">
+        <field name="name">Lignes de Demandes</field>
+        <field name="model_id" ref="building.model_maintenance_request_resource_material_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_maintenance_request_resource_material_line("SOTASERV_CHEF_PROJET")</field>
+    </record>
+    
+    <!-- SOTASERV_CONDUCT_TRV -->
+    <record id="maintenance_request_resource_material_line_trv_action_serevr" model="ir.actions.server">
+        <field name="name">Lignes de Demandes</field>
+        <field name="model_id" ref="building.model_maintenance_request_resource_material_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_maintenance_request_resource_material_line("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <!-- SOTASERV_DIRECTEUR_ZONE -->
+    <record id="maintenance_request_resource_material_line_dz_action_serevr" model="ir.actions.server">
+        <field name="name">Lignes de Demandes</field>
+        <field name="model_id" ref="building.model_maintenance_request_resource_material_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_maintenance_request_resource_material_line("SOTASERV_DIRECTEUR_ZONE")</field>
+    </record>
+    
+    <record id="maintenance_request_resource_material_line_action" model="ir.actions.act_window">
+        <field name="name">Lignes de Demandes</field>
+        <field name="res_model">maintenance.request.resource.material.line</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('state', 'in', ['approved', 'in_affectation', 'affected']), ('maintenance_request_id.is_equipment','=',1)]</field>
+        <field name="context">{'create': 0, 'edit': 0, 'delete': 0,}</field>
+        <field name="view_id" ref="building.maintenance_request_resource_material_line_tree_view"/>
+        <field name="search_view_id" ref="building.maintenance_request_resource_material_line_search_view"/>
+    </record>
+
+    <!-- SOTASERV_CHEF_PROJET -->
+    <record id="building_assignment_line_cp_action_serevr" model="ir.actions.server">
+        <field name="name">Affectations</field>
+        <field name="model_id" ref="building.model_building_assignment_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_building_assignment_line("SOTASERV_CHEF_PROJET")</field>
+    </record>
+    
+    <!-- SOTASERV_CONDUCT_TRV -->
+    <record id="building_assignment_line_trv_action_serevr" model="ir.actions.server">
+        <field name="name">Affectations</field>
+        <field name="model_id" ref="building.model_building_assignment_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_building_assignment_line("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <!-- SOTASERV_DIRECTEUR_ZONE -->
+    <record id="building_assignment_line_dz_action_serevr" model="ir.actions.server">
+        <field name="name">Affectations</field>
+        <field name="model_id" ref="building.model_building_assignment_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_building_assignment_line("SOTASERV_DIRECTEUR_ZONE")</field>
+    </record>
+
+    <record id="building_assignment_line_equipment_action" model="ir.actions.act_window">
+        <field name="name">Affectations</field>
+        <field name="res_model">building.assignment.line</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="building.building_assignment_line_filter" />
+        <field name="context">{'create': 0, 'edit': 0, 'delete': 0,}</field>
+        <field name="domain">[('categ_assignment','=','equipment')]</field>
+        <field name="view_id" ref="building.building_assignment_vehicle_tree" />
+    </record>
+
+    <!-- SOTASERV_CHEF_PROJET -->
+    <record id="materials_worked_hours_cp_action_serevr" model="ir.actions.server">
+        <field name="name">Pointages</field>
+        <field name="model_id" ref="building.model_materials_worked_hours"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_materials_worked_hours("SOTASERV_CHEF_PROJET")</field>
+    </record>
+    
+    <!-- SOTASERV_CONDUCT_TRV -->
+    <record id="materials_worked_hours_trv_action_serevr" model="ir.actions.server">
+        <field name="name">Pointages</field>
+        <field name="model_id" ref="building.model_materials_worked_hours"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_materials_worked_hours("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <record id="materials_worked_hours_action" model="ir.actions.act_window">
+        <field name="name">Pointages</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">materials.worked.hours</field>
+        <field name="context">{'create': False, 'delete': False}</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="building.materials_worked_hours_search_view"/>
+    </record>
+
+    <!-- Incidents Matériels -->
+    <!-- SOTASERV_CHEF_PROJET -->
+    <record id="incident_materiel_cp_action_serevr" model="ir.actions.server">
+        <field name="name">Pointages</field>
+        <field name="model_id" ref="logistics.model_incident_materiel"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_incident_materiel("SOTASERV_CHEF_PROJET")</field>
+    </record>
+    
+    <!-- SOTASERV_CONDUCT_TRV -->
+    <record id="incident_materiel_trv_action_serevr" model="ir.actions.server">
+        <field name="name">Pointages</field>
+        <field name="model_id" ref="logistics.model_incident_materiel"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_incident_materiel("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <record id="incident_materiel_action_logistics" model="ir.actions.act_window">
+        <field name="name">Incidents</field>
+        <field name="res_model">incident.materiel</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '!=', 'draft')]</field>
+        <field name="context">{'create': False, 'delete': False}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('logistics.view_incident_materiel_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('logistics.view_incident_materiel_form')})
+            ]"/>
+    </record>
+
+    <!-- Petit Matériels -->
+    <!-- SOTASERV_CHEF_PROJET -->
+    <record id="maintenance_request_resource_small_material_cp_action_serevr" model="ir.actions.server">
+        <field name="name">Demandes</field>
+        <field name="model_id" ref="building.model_maintenance_request_resource_material"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_maintenance_request_resource_small_material_action("SOTASERV_CHEF_PROJET")</field>
+    </record>
+
+    <!-- SOTASERV_CONDUCT_TRV -->
+    <record id="maintenance_request_resource_small_material_trv_action_serevr" model="ir.actions.server">
+        <field name="name">Demandes</field>
+        <field name="model_id" ref="building.model_maintenance_request_resource_material"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_maintenance_request_resource_small_material_action("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <!-- SOTASERV_DIRECTEUR_ZONE -->
+    <record id="maintenance_request_resource_small_material_dz_action_serevr" model="ir.actions.server">
+        <field name="name">Demandes</field>
+        <field name="model_id" ref="building.model_maintenance_request_resource_material"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_maintenance_request_resource_small_material_action("SOTASERV_DIRECTEUR_ZONE")</field>
+    </record>
+
+    <record id="maintenance_request_resource_small_material_action" model="ir.actions.act_window">
+        <field name="name">Demandes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">maintenance.request.resource.material</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.maintenance_request_resource_material_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building.maintenance_request_resource_small_material_form_view')})
+            ]"/>
+        <field name="domain">[('is_equip', '=', 1)]</field>
+        <field name="context">{'search_default_group_requested_by':1, 'default_is_equip':1, 'is_equip': True, 'default_is_equipment':0, 'create': False, 'delete': False, 'edit': False}</field>
+    </record>
+
+    <!-- SOTASERV_CHEF_PROJET -->
+    <record id="maintenance_request_resource_small_material_line_cp_action_serevr" model="ir.actions.server">
+        <field name="name">Lignes de Demandes</field>
+        <field name="model_id" ref="building.model_maintenance_request_resource_material_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_maintenance_request_resource_small_material_line("SOTASERV_CHEF_PROJET")</field>
+    </record>
+    
+    <!-- SOTASERV_CONDUCT_TRV -->
+    <record id="maintenance_request_resource_small_material_line_trv_action_serevr" model="ir.actions.server">
+        <field name="name">Lignes de Demandes</field>
+        <field name="model_id" ref="building.model_maintenance_request_resource_material_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_maintenance_request_resource_small_material_line("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <!-- SOTASERV_DIRECTEUR_ZONE -->
+    <record id="maintenance_request_resource_small_material_line_dz_action_serevr" model="ir.actions.server">
+        <field name="name">Lignes de Demandes</field>
+        <field name="model_id" ref="building.model_maintenance_request_resource_material_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_maintenance_request_resource_small_material_line("SOTASERV_DIRECTEUR_ZONE")</field>
+    </record>
+    
+    <record id="maintenance_request_resource_small_material_line_action" model="ir.actions.act_window">
+        <field name="name">Lignes de Demandes</field>
+        <field name="res_model">maintenance.request.resource.material.line</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('state', '=', 'approved'), ('maintenance_request_id.is_equip','=',1)]</field>
+        <field name="context">{'create': 0, 'edit': 0, 'delete': 0,}</field>
+        <field name="view_id" ref="building.maintenance_request_resource_small_material_line_tree_view"/>
+        <field name="search_view_id" ref="building.maintenance_request_resource_small_equipment_line_search_view"/>
+    </record>
+
+    <!-- SOTASERV_CHEF_PROJET -->
+    <record id="stock_picking_log_cp_action_serevr" model="ir.actions.server">
+        <field name="name">Affectations</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_stock_picking_log("SOTASERV_CHEF_PROJET")</field>
+    </record>
+    
+    <!-- SOTASERV_CONDUCT_TRV -->
+    <record id="stock_picking_log_trv_action_serevr" model="ir.actions.server">
+        <field name="name">Affectations</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_stock_picking_log("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <!-- SOTASERV_DIRECTEUR_ZONE -->
+    <record id="stock_picking_log_dz_action_serevr" model="ir.actions.server">
+        <field name="name">Affectations</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_user_stock_picking_log("SOTASERV_DIRECTEUR_ZONE")</field>
+    </record>
+
+    <record id="stock_picking_assignment_small_equipment_action" model="ir.actions.act_window">
+        <field name="name">Affectations</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        <field name="context">{'search_default_origin': 1, 'create': False, 'edit': False, 'delete': False}</field>
+        <field name="domain">[('is_logistic', '=', True)]</field>
+    </record>
+
+    <!-- Référentiel -->
+    <!-- Articles -->
+    <record id="product_template_action" model="ir.actions.act_window">
+        <field name="name">Articles</field>
+        <field name="res_model">product.template</field>
+        <field name="context">{"create": False, "delete": False, "edit": False, "is_logistic_product_template": True}</field>
+        <field name="domain">[('categ_id.category_type', 'in', ['equipment', 'small_equipment', 'logistics_consumable'])]</field>
+        <field name="view_mode">kanban,list,form,activity</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('product.product_template_kanban_view')}),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('product.product_template_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_logistic_product_template_form')}),
+                (0, 0, {'view_mode': 'activity', 'view_id': ref('product.product_template_view_activity')})
+            ]"/>
+    </record>
+
+    <!-- Catégories de Matériel -->
+    <record id="maintenance_equipment_category_action" model="ir.actions.act_window">
+        <field name="name">Catégories de Matériel</field>
+        <field name="res_model">maintenance.vehicle.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    
+    <!-- Matériel -->
+    <record id="maintenance_equipment_action" model="ir.actions.act_window">
+        <field name="name">Matériel</field>
+        <field name="res_model">fleet.vehicle</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Modèles Matériel -->
+    <record id="fleet_vehicle_model_action" model="ir.actions.act_window">
+        <field name="name">Modèles Matériel</field>
+        <field name="res_model">fleet.vehicle.model</field>
+        <field name="context">{"search_default_groupby_brand" : True,}</field> 
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

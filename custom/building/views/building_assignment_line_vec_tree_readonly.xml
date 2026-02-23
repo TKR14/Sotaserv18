@@ -1,0 +1,27 @@
+<odoo>
+    <record id="building_assignment_line_vec_tree_readonly" model="ir.ui.view">
+        <field name="name">material.requests.line.view</field>
+        <field name="model">building.assignment.line</field>
+        <field name="arch" type="xml">
+            <list string="Affectation" create="false" edit="false" delete="false">
+                <field name="site_id"/>
+                <field name="vehicle_id"/>
+                <field name="code" string="Code"/>
+                <field name="uom_id"/>
+                <field name="cost"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="assignment_time"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_building_assignment_line_vec_tree_readonly" model="ir.actions.act_window">
+        <field name="name">Affectation Matériels</field>
+        <field name="res_model">building.assignment.line</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="building_assignment_line_vec_tree_readonly"/>
+        <field name="target">current</field>
+    </record>
+</odoo>

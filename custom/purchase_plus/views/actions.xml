@@ -1,0 +1,196 @@
+<odoo>
+    <!-- res.partner readonly -->
+    <record id="res_partner_action_readonly" model="ir.actions.act_window">
+        <field name="name">Fournisseurs</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">
+            {
+                "search_default_supplier": 1,
+                "res_partner_search_mode": "supplier",
+                "default_is_company": True,
+                "default_supplier_rank": 1,
+                "edit": True,
+                "create": True,
+                "delete": True
+            }
+        </field>
+    </record>
+
+    <record id="purchase_request_line_action_server" model="ir.actions.server">
+        <field name="name">Lignes de Demande d'Achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_buyer_purchase_request_lines()</field>
+    </record>
+
+    <!-- ALL price requests -->
+    <record id="price_request_action_all" model="ir.actions.act_window">
+        <field name="name">Toutes les Demandes de Prix</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="purchase_plus.purchase_order_view_search"/>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('purchase.purchase_order_kpis_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('purchase.purchase_order_form')})
+        ]"/>
+        <field name="domain">
+            [
+                "&amp;",
+                ("state", "in", ["draft", "compare_offers", "validated_1", "validation", "validated_2", "cancel"]),
+                "|",
+                ("create_uid", "=", uid),
+                ("order_line.product_id.categ_id.supervisor_ids", "=", uid)
+            ]
+        </field>
+        <field name="context">
+            {
+                "hide_header_buttons": True,
+                "search_default_group_by_state": True,
+                "create": False,
+                "delete": False,
+                "edit": False,
+            }
+        </field>
+    </record>
+
+    <!-- PR in Validation -->
+    <record id="price_request_action_in_validation" model="ir.actions.act_window">
+        <field name="name">Validation des Demandes de Prix</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="purchase_plus.purchase_order_view_search"/>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('purchase.purchase_order_kpis_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('purchase.purchase_order_form')})
+        ]"/>
+        <field name="context">
+            {
+                "quotation_only": True,
+                "hide_field": "state_2",
+                "search_default_group_by_state": True,
+                "create": False,
+                "delete": False,
+                "hide_search_field_purchase_order_code": True,
+            }
+        </field>
+        <field name="domain">
+            [
+                "&amp;",
+                ("state", "in", ["draft", "validated_1", "validation", "validated_2"]),
+                "|",
+                ("create_uid", "=", uid),
+                ("order_line.product_id.categ_id.supervisor_ids", "=", uid)
+            ]
+        </field>
+    </record>
+
+    <!-- PR in Comparison -->
+    <record id="price_request_action_in_comparison" model="ir.actions.act_window">
+        <field name="name">Comparaison des Demandes de Prix</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="purchase_plus.purchase_order_view_search"/>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('purchase.purchase_order_kpis_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('purchase.purchase_order_form')})
+        ]"/>
+        <field name="context">
+            {
+                "hide_header_buttons": True,
+                "quotation_only": True,
+                "hide_field": "state_2",
+                "search_default_group_by_purchase_order_code": 1,
+                "create": False,
+                "delete": False,
+                "edit": False,
+            }
+        </field>
+        <field name="domain">
+            [
+                "&amp;",
+                "&amp;",
+                ("purchase_order_code", "!=", False),
+                ("state", "in", ["draft", "compare_offers"]),
+                "|",
+                ("create_uid", "=", uid),
+                ("order_line.product_id.categ_id.supervisor_ids", "=", uid)
+            ]
+        </field>
+    </record>
+
+    <!-- PR Comparison -->
+    <!-- purchase_igaser.purchase_price_comparison_action -->
+
+    <!-- PO not is_attachment -->
+    <record id="purchase_order_action_no_attachment" model="ir.actions.act_window">
+        <field name="name">Bons de Commande sans Attachement</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="purchase_plus.purchase_order_view_search"/>
+        <field name="view_ids" eval="[
+            (5, 0, 0), 
+            (0, 0, {'view_mode': 'list', 'view_id': ref('purchase.purchase_order_view_tree')}), 
+            (0, 0, {'view_mode': 'form', 'view_id': ref('purchase.purchase_order_form')})
+        ]"/>
+        <field name="context">
+            {
+                "delete": False,
+                "create": False,
+                "edit": True,
+                "hide_actions": True,
+                "hide_field": "state_2",
+                "search_default_group_by_state": True,
+            }
+        </field>
+        <field name="domain">
+            [
+                "&amp;",
+                "&amp;",
+                ("is_attachment", "=", False),
+                ("state", "in", ["purchase", "done", "partial", "full", "po_canceled"]),
+                "|",
+                ("create_uid", "=", uid),
+                ("order_line.product_id.categ_id.supervisor_ids", "=", uid),
+            ]
+        </field>
+    </record>
+
+    <!-- PO is_attachment -->
+    <record id="purchase_order_action_attachment" model="ir.actions.act_window">
+        <field name="name">Bons de Commande avec Attachement</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="purchase_plus.purchase_order_view_search"/>
+        <field name="view_ids" eval="[
+            (5, 0, 0), 
+            (0, 0, {'view_mode': 'list', 'view_id': ref('purchase_order_tree')}), 
+            (0, 0, {'view_mode': 'form', 'view_id': ref('purchase_order_line_attachment_form')})
+        ]"/>
+        <field name="context">
+            {
+                "delete": False,
+                "create": False,
+                "edit": True,
+                "hide_actions":True,
+                "hide_field": "state",
+                "show_search_filter_state_2": True,
+                "search_default_group_by_state_2": True,
+            }
+        </field>
+        <field name="domain">
+            [
+                "&amp;",
+                "&amp;",
+                ("is_attachment", "=", True),
+                ("state", "in", ["purchase", "done", "full", "po_canceled", "partial"]),
+                "|",
+                ("create_uid", "=", uid),
+                ("order_line.product_id.categ_id.supervisor_ids", "=", uid),
+            ]
+        </field>       
+    </record>
+</odoo>

@@ -1,0 +1,1139 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record model="ir.ui.view" id="purchase_order_form_inherit1">
+        <field name="name">purchase.order.form.inherit1</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_ref']" position="after">
+                <field name="site_id" domain="[('state', '=', 'open')]" />
+                <field name="vehicle_id" />
+                <!-- <field name="dqe_id" domain="[('site_id', '=', site_id)]"/>
+                    <field name="purchase_type" attrs="{'invisible': [('site_id', '=', False)]}"/> -->
+            </xpath>
+        </field>
+    </record>
+
+    <record id="building_purchase_line_tree" model="ir.ui.view">
+        <field name="name">building.purchase.order.line.tree</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <list string="Récaputulation des Achats" editable="bottom" edit="1" create="0">
+                <field name="product_id" />
+                <field name="partner_id" />
+                <field name="price_unit" />
+                <field name="date_planned" />
+                <field name="name" string="Commentaire" />
+                <field name="product_qty" />
+            </list>
+        </field>
+    </record>
+
+    <record id="building_purchase_line_filter" model="ir.ui.view">
+        <field name="name">purchase.order.line.select</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <search string="Search building purchase line">
+                <field name="partner_id" operator="child_of" />
+                <field name="product_id" />
+                <separator />
+                <group expand="0" string="Group By">
+                    <filter name="partner_filt" string="Fournisseur" domain="[]"
+                        context="{'group_by':'partner_id'}" />
+                    <filter name="product_filt" string="Produit" domain="[]"
+                        context="{'group_by':'product_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="building_purchase_line_action" model="ir.actions.act_window">
+        <field name="name">Récapitulation des Achats</field>
+        <field name="res_model">purchase.order.line</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('state','=','draft')]</field>
+        <field name="search_view_id" ref="building_purchase_line_filter" />
+    </record>
+
+    <record id="building_purchase_need_form" model="ir.ui.view">
+        <field name="name">building.purchase.need.form</field>
+        <field name="model">building.purchase.need</field>
+        <field name="arch" type="xml">
+            <form string="Needs" class="building_purchase_need_form" duplicate="0">
+                <header>
+                    <button name="action_validated" type="object" invisible="state != 'draft'" string="Valider" class="oe_highlight" />
+                    <button name="create_line" type="object" string="Ajouter une Ligne" class="oe_highlight"  invisible="state != 'draft'"/>
+                    <button name="action_approuved" type="object" invisible="state != 'validated'" string="Approuver" class="oe_highlight" groups="building.group_purch_need_valid,purchase_plus.purchase_budgetary_control_group,building_plus.sotaserv_business_manager"/>
+                    <button name="action_open" type="object" invisible="state not in ('validated', 'approuved')" string="Re-ouvrir" class="oe_highlight" groups="building.group_purch_need_appv,purchase_plus.purchase_budgetary_control_group"/>
+                    <button name="export_excel" type="object" string="Exporter Excel" class="btn-success" groups="building_plus.sotaserv_dg,building_plus.sotaserv_directrice_technique,purchase_plus.purchase_budgetary_control_group"/>
+                    <button name="action_update_besoin_lines" type="object" string="Mettre à jour équipements" class="btn-primary" invisible="is_besoin_updated"/>
+                    <field name="is_besoin_updated" invisible="1"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box" invisible="context.get('hide_get_lines')">
+                        <div class="dropdown">
+                            <button class="oe_stat_button" icon="fa-bars">
+                                <div class="o_stat_info o_stat_info_details">
+                                    <span>Détails</span>
+                                </div>
+                            </button>
+                            <div class="dropdown_list">
+                                <button name="get_lines" context="{'number': 1}" type="object" string="Ressources Humaines"/>
+                                <button name="get_lines" context="{'number': 2}" type="object" string="Fournitures"/>
+                                <button name="get_lines" context="{'number': 3}" type="object" string="Prestation de service"/>
+                                <button name="get_lines" context="{'number': 4}" type="object" string="Outillages"/>
+                                <button name="get_lines" context="{'number': 5}" type="object" string="Matériels"/>
+                                <button name="get_lines" context="{'number': 6}" type="object" string="Petit Matériels"/>
+                                <button name="get_lines" context="{'number': 7}" type="object" string="Carburant"/>
+                            </div>
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="site_ids_domain" invisible="1" />
+
+                            <field name="name" readonly="1" />
+                            <field name="site_id" domain="[('id', 'in', site_ids_domain), ('number', '!=', '000')]" required="1"/>
+                        </group>
+                        <group>
+                            <field name="opp_id" />
+                            <field name="categ_marche_id" />
+                        </group>
+                        <group>
+                            <field name="categ_equipment_ids" invisible="1" />
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Ressources Humaines" name="need_rh_tab" invisible="context.get('hide_ressource_humain_ids')">
+                            <field class="oe_edit_only" name="ressource_humain_ids" widget="section_and_note_one2many" readonly="state != 'draft'">
+                                <list string="Lignes BP" editable="bottom" create="0"
+                                    default_order="sequence_number_parent,line_number_parent"
+                                    class="need_rh_tab">
+                                    <control>
+                                        <create name="add_rh_control" string="Ajouter une ressource" />
+                                        <create name="add_section_control"
+                                            string="Ajouter une Section"
+                                            context="{'default_display_type': 'line_section'}" />
+                                        <!-- <create name="add_note_control" string="Ajouter une
+                                        Description" context="{'default_display_type':
+                                        'line_note'}"/> -->
+                                    </control>
+                                    <field name="sequence_number_parent" invisible="1" />
+                                    <field name="line_number_parent" invisible="1" />
+                                    <field name="template_line_id" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="profile_id_integer" invisible="1" />
+                                    <field name="type_resource" string="Catégorie" readonly="1"
+                                        force_save="1" />
+                                    <field name="profile_id"
+                                        domain="[('categ_job', '=', type_resource)]"
+                                        options="{'no_quick_create':True,'no_create_edit':True}"
+                                        readonly="1" force_save="1" />
+                                    <field name="job_id"
+                                        domain="[('categ_job', '=', type_resource), ('profile_id', '=', profile_id_integer)]"
+                                        options="{'no_quick_create':True,'no_create_edit':True}"
+                                        string="Poste" readonly="1" force_save="1" />
+                                    <field name="quantity" string="Nombre" />
+                                    <field name="quantity_ordered" invisible="1" />
+                                    <field name="quantity_remaining" invisible="1" />
+                                    <field name="quantity_requested" invisible="1" />
+                                    <field name="duree_j" string="Volume" />
+                                    <!-- <field name="duree_h"/> -->
+                                    <field name="uom_id" readonly="1" force_save="1" />
+                                    <field name="price_unit" string="Px Unit." />
+                                    <field name="price_subtotal" />
+                                    <field name="name" widget="section_and_note_text" readonly="1"
+                                        force_save="1" />
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="type_resource" />
+                                        <field name="profile_id" options="{'no_open': True}" />
+                                        <field name="job_id" options="{'no_open': True}" />
+                                        <field name="quantity" />
+                                        <field name="duree_j" />
+                                        <field name="uom_id" options="{'no_open': True}" />
+                                        <field name="price_unit" />
+                                        <field name="price_subtotal" />
+                                    </group>
+                                </form>
+                            </field>
+                            <field class="oe_read_only" name="ro_ressource_humain_ids" widget="section_and_note_one2many" readonly="state in ('approuved')">
+                                <list string="Lignes BP" editable="bottom" create="0"
+                                    default_order="sequence_number_parent,line_number_parent"
+                                    class="need_rh_tab">
+                                    <control>
+                                        <create name="add_rh_control" string="Ajouter une ressource" />
+                                        <create name="add_section_control"
+                                            string="Ajouter une Section"
+                                            context="{'default_display_type': 'line_section'}" />
+                                        <!-- <create name="add_note_control" string="Ajouter une
+                                        Description" context="{'default_display_type':
+                                        'line_note'}"/> -->
+                                    </control>
+                                    <field name="sequence_number_parent" invisible="1" />
+                                    <field name="line_number_parent" invisible="1" />
+                                    <field name="template_line_id" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="profile_id_integer" invisible="1" />
+                                    <field name="type_resource" string="Catégorie" readonly="1"
+                                        force_save="1" />
+                                    <field name="profile_id"
+                                        domain="[('categ_job', '=', type_resource)]"
+                                        options="{'no_quick_create':True,'no_create_edit':True}"
+                                        readonly="1" force_save="1" />
+                                    <field name="job_id"
+                                        domain="[('categ_job', '=', type_resource), ('profile_id', '=', profile_id_integer)]"
+                                        options="{'no_quick_create':True,'no_create_edit':True}"
+                                        string="Poste" readonly="1" force_save="1" />
+                                    <field name="quantity" string="Nombre" />
+                                    <field name="quantity_ordered" invisible="1" />
+                                    <field name="quantity_remaining" invisible="1" />
+                                    <field name="quantity_requested" invisible="1" />
+                                    <field name="duree_j" string="Volume" />
+                                    <!-- <field name="duree_h"/> -->
+                                    <field name="uom_id" readonly="1" force_save="1" />
+                                    <field name="price_unit" string="Px Unit." />
+                                    <field name="price_subtotal" />
+                                    <field name="name" widget="section_and_note_text" readonly="1"
+                                        force_save="1" />
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="type_resource" />
+                                        <field name="profile_id" options="{'no_open': True}" />
+                                        <field name="job_id" options="{'no_open': True}" />
+                                        <field name="quantity" />
+                                        <field name="duree_j" />
+                                        <field name="uom_id" options="{'no_open': True}" />
+                                        <field name="price_unit" />
+                                        <field name="price_subtotal" />
+                                    </group>
+                                </form>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right page_subtotal" style="width: 100% !important;" colspan="2">
+                                <field name="total_ressource_humains"/>
+                            </group>
+                        </page>
+                        <page string="Fournitures" name="need_product_tab" invisible="context.get('hide_line_ids')">
+                            <field class="oe_edit_only" name="line_ids" widget="section_and_note_one2many"
+                                readonly="state != 'draft'">
+                                <list string="Lignes BP" editable="bottom" create="0"
+                                    default_order="sequence_number_parent,line_number_parent"
+                                    class="need_product_tab">
+                                    <control>
+                                        <create name="add_product_control"
+                                            string="Ajouter un Article" />
+                                        <create name="add_section_control"
+                                            string="Ajouter une Section"
+                                            context="{'default_display_type': 'line_section'}" />
+                                        <!-- <create name="add_note_control" string="Ajouter une
+                                        Description" context="{'default_display_type':
+                                        'line_note'}"/> -->
+                                    </control>
+                                    <field name="sequence_number_parent" invisible="1" />
+                                    <field name="line_number_parent" invisible="1" />
+                                    <field name="template_line_id" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="type_produit" readonly="1" force_save="1" />
+                                    <field name="type_produit_selected" invisible="1" />
+                                    <!-- <field name="product_id" domain="[('type', '=',
+                                    type_produit_selected)]"/> -->
+                                    <field name="product_id" readonly="1" force_save="1" />
+                                    <field name="name" widget="section_and_note_text"                                        force_save="1" />
+                                    <field name="quantity" />
+                                    <!-- <field name="quantity_ordered" invisible="1" />
+                                    <field name="quantity_remaining" invisible="1" />
+                                    <field name="quantity_receved" invisible="1" />
+                                    <field name="quantity_to_receve" invisible="1" /> -->
+                                    <field name="uom_id" readonly="1" force_save="1" />
+                                    <field name="price_unit" string="Prix unitaire" />
+                                    <field name="price_subtotal" />
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="type_produit" />
+                                        <field name="product_id" options="{'no_open': True}" />
+                                        <field name="name" />
+                                        <field name="quantity" />
+                                        <field name="uom_id" options="{'no_open': True}" />
+                                        <field name="price_unit" />
+                                        <field name="price_subtotal" />
+                                    </group>
+                                </form>
+                            </field>
+                            <field class="oe_read_only" name="ro_line_ids" widget="section_and_note_one2many"
+                                readonly="state in ('approuved')">
+                                <list string="Lignes BP" editable="bottom" create="0"
+                                    default_order="sequence_number_parent,line_number_parent"
+                                    class="need_product_tab">
+                                    <control>
+                                        <create name="add_product_control"
+                                            string="Ajouter un Article" />
+                                        <create name="add_section_control"
+                                            string="Ajouter une Section"
+                                            context="{'default_display_type': 'line_section'}" />
+                                        <!-- <create name="add_note_control" string="Ajouter une
+                                        Description" context="{'default_display_type':
+                                        'line_note'}"/> -->
+                                    </control>
+                                    <field name="sequence_number_parent" invisible="1" />
+                                    <field name="line_number_parent" invisible="1" />
+                                    <field name="template_line_id" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="type_produit" readonly="1" force_save="1" />
+                                    <field name="type_produit_selected" invisible="1" />
+                                    <!-- <field name="product_id" domain="[('type', '=',
+                                    type_produit_selected)]"/> -->
+                                    <field name="product_id" readonly="1" force_save="1" />
+                                    <field name="name" widget="section_and_note_text"                                        force_save="1" />
+                                    <field name="quantity" />
+                                    <!-- <field name="quantity_ordered" invisible="1" />
+                                    <field name="quantity_remaining" invisible="1" />
+                                    <field name="quantity_receved" invisible="1" />
+                                    <field name="quantity_to_receve" invisible="1" /> -->
+                                    <field name="uom_id" readonly="1" force_save="1" />
+                                    <field name="price_unit" string="Prix unitaire" />
+                                    <field name="price_subtotal" />
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="type_produit" />
+                                        <field name="product_id" options="{'no_open': True}" />
+                                        <field name="name" />
+                                        <field name="quantity" />
+                                        <field name="uom_id" options="{'no_open': True}" />
+                                        <field name="price_unit" />
+                                        <field name="price_subtotal" />
+                                    </group>
+                                </form>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right page_subtotal" style="width: 100% !important;" colspan="2">
+                                <field name="total_lines"/>
+                            </group>
+                        </page>
+                        <page string="Prestation de service" name="need_service_provision_tab" invisible="context.get('hide_service_provision_ids')">
+                            <field class="oe_edit_only" name="service_provision_ids" widget="section_and_note_one2many"
+                                readonly="state != 'draft'">
+                                <list string="Lignes BP" editable="bottom" create="0"
+                                    default_order="sequence_number_parent,line_number_parent"
+                                    class="need_service_provision_tab">
+                                    <control>
+                                        <create name="add_prov_control"
+                                            string="Ajouter une prestation" />
+                                        <create name="add_section_control"
+                                            string="Ajouter une Section"
+                                            context="{'default_display_type': 'line_section'}" />
+                                        <!-- <create name="add_note_control" string="Ajouter une
+                                        Description" context="{'default_display_type':
+                                        'line_note'}"/> -->
+                                    </control>
+                                    <field name="sequence_number_parent" invisible="1" />
+                                    <field name="line_number_parent" invisible="1" />
+                                    <field name="template_line_id" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="product_id" readonly="1" force_save="1" />
+                                    <field name="name" widget="section_and_note_text"                                         force_save="1" />
+                                    <field name="quantity" />
+                                    <field name="uom_id" readonly="1" force_save="1" />
+                                    <field name="price_unit" string="Prix unitaire" />
+                                    <field name="price_subtotal" />
+                                    <field name="price_subtotal_remaining" invisible="1" />
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="product_id" options="{'no_open': True}" />
+                                        <field name="name" />
+                                        <field name="quantity" />
+                                        <field name="uom_id" options="{'no_open': True}" />
+                                        <field name="price_unit" />
+                                        <field name="price_subtotal" />
+                                    </group>
+                                </form>
+                            </field>
+                            <field class="oe_read_only" name="ro_service_provision_ids" widget="section_and_note_one2many"
+                                readonly="state in ('approuved')">
+                                <list string="Lignes BP" editable="bottom" create="0"
+                                    default_order="sequence_number_parent,line_number_parent"
+                                    class="need_service_provision_tab">
+                                    <control>
+                                        <create name="add_prov_control"
+                                            string="Ajouter une prestation" />
+                                        <create name="add_section_control"
+                                            string="Ajouter une Section"
+                                            context="{'default_display_type': 'line_section'}" />
+                                        <!-- <create name="add_note_control" string="Ajouter une
+                                        Description" context="{'default_display_type':
+                                        'line_note'}"/> -->
+                                    </control>
+                                    <field name="sequence_number_parent" invisible="1" />
+                                    <field name="line_number_parent" invisible="1" />
+                                    <field name="template_line_id" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="product_id" readonly="1" force_save="1" />
+                                    <field name="name" widget="section_and_note_text"                                         force_save="1" />
+                                    <field name="quantity" />
+                                    <field name="uom_id" readonly="1" force_save="1" />
+                                    <field name="price_unit" string="Prix unitaire" />
+                                    <field name="price_subtotal" />
+                                    <field name="price_subtotal_remaining" invisible="1" />
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="product_id" options="{'no_open': True}" />
+                                        <field name="name" />
+                                        <field name="quantity" />
+                                        <field name="uom_id" options="{'no_open': True}" />
+                                        <field name="price_unit" />
+                                        <field name="price_subtotal" />
+                                    </group>
+                                </form>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right page_subtotal" style="width: 100% !important;" colspan="2">
+                                <field name="total_service_provisions"/>
+                            </group>
+                        </page>
+                        <page string="Outillages" name="need_mini_equipment_tab" invisible="context.get('hide_mini_equipment_ids')">
+                            <field class="oe_edit_only" name="mini_equipment_ids" widget="section_and_note_one2many"
+                                readonly="state != 'draft'">
+                                <list string="Lignes BP" editable="bottom" create="0" default_order="sequence_number_parent,line_number_parent" class="need_mini_equipment_tab">
+                                    <control>
+                                        <create name="add_mini_equip_control"
+                                            string="Ajouter petit matériel" />
+                                        <create name="add_section_control"
+                                            string="Ajouter une Section"
+                                            context="{'default_display_type': 'line_section'}" />
+                                        <!-- <create name="add_note_control" string="Ajouter une
+                                        Description" context="{'default_display_type':
+                                        'line_note'}"/> -->
+                                    </control>
+                                    <field name="sequence_number_parent" invisible="1" />
+                                    <field name="line_number_parent" invisible="1" />
+                                    <field name="template_line_id" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <!-- <field name="type_resource"/> -->
+                                    <field name="name" widget="section_and_note_text" readonly="1" force_save="1"/>
+                                    <field name="category_id" readonly="1" force_save="1"/>
+                                    <field name="product_id" domain="[('categ_id', '=', category_id)]"/>
+                                    <field name="description" />
+                                    <field name="quantity" />
+                                    <!-- <field name="quantity_ordered" invisible="1" />
+                                    <field name="quantity_remaining" invisible="1" />
+                                    <field name="quantity_requested" invisible="1" /> -->
+                                    <!-- <field name="duree_j" invisible="1" /> -->
+                                    <!-- <field name="duree_h"/> -->
+                                    <field name="uom_id" readonly="1" force_save="1" />
+                                    <field name="price_unit" string="Prix unitaire" />
+                                    <field name="price_subtotal" />
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="category_id" options="{'no_open': True}" />
+                                        <field name="product_id" options="{'no_open': True}" />
+                                        <field name="name" />
+                                        <field name="quantity" />
+                                        <field name="uom_id" options="{'no_open': True}" />
+                                        <field name="price_unit" />
+                                        <field name="price_subtotal" />
+                                    </group>
+                                </form>
+                            </field>
+                            <field class="oe_read_only" name="ro_mini_equipment_ids" widget="section_and_note_one2many"
+                                readonly="state in ('approuved')">
+                                <list string="Lignes BP" editable="bottom" create="0" default_order="sequence_number_parent,line_number_parent" class="need_mini_equipment_tab">
+                                    <control>
+                                        <create name="add_mini_equip_control"
+                                            string="Ajouter petit matériel" />
+                                        <create name="add_section_control"
+                                            string="Ajouter une Section"
+                                            context="{'default_display_type': 'line_section'}" />
+                                        <!-- <create name="add_note_control" string="Ajouter une
+                                        Description" context="{'default_display_type':
+                                        'line_note'}"/> -->
+                                    </control>
+                                    <field name="sequence_number_parent" invisible="1" />
+                                    <field name="line_number_parent" invisible="1" />
+                                    <field name="template_line_id" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <!-- <field name="type_resource"/> -->
+                                    <field name="name" widget="section_and_note_text" readonly="1" invisible="1" force_save="1"/>
+                                    <field name="category_id" readonly="1" force_save="1"/>
+                                    <field name="product_id" domain="[('categ_id', '=', category_id)]"/>
+                                    <field name="description" />
+                                    <field name="quantity" />
+                                    <!-- <field name="quantity_ordered" invisible="1" />
+                                    <field name="quantity_remaining" invisible="1" />
+                                    <field name="quantity_requested" invisible="1" /> -->
+                                    <!-- <field name="duree_j" invisible="1" /> -->
+                                    <!-- <field name="duree_h"/> -->
+                                    <field name="uom_id" readonly="1" force_save="1" />
+                                    <field name="price_unit" string="Prix unitaire" />
+                                    <field name="price_subtotal" />
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="category_id" options="{'no_open': True}" />
+                                        <field name="product_id" options="{'no_open': True}" />
+                                        <field name="name" />
+                                        <field name="quantity" />
+                                        <field name="uom_id" options="{'no_open': True}" />
+                                        <field name="price_unit" />
+                                        <field name="price_subtotal" />
+                                    </group>
+                                </form>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right page_subtotal" style="width: 100% !important;" colspan="2">
+                                <field name="total_mini_equipments"/>
+                            </group>
+                        </page>
+                        <page string="Matériels" name="need_equipment_tab" invisible="context.get('hide_equipment_ids')">
+                            <field class="oe_edit_only" name="equipment_ids" widget="section_and_note_one2many"
+                                readonly="state != 'draft'">
+                                <list string="Lignes BP" editable="bottom" create="0"
+                                    default_order="sequence_number_parent,line_number_parent">
+                                    <control>
+                                        <create name="add_equip_control"
+                                            string="Ajouter un matériel" />
+                                        <create name="add_section_control"
+                                            string="Ajouter une Section"
+                                            context="{'default_display_type': 'line_section'}" />
+                                        <!-- <create name="add_note_control" string="Ajouter une
+                                        Description" context="{'default_display_type':
+                                        'line_note'}"/> -->
+                                    </control>
+                                    <field name="sequence_number_parent" invisible="1" />
+                                    <field name="line_number_parent" invisible="1" />
+                                    <field name="template_line_id" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="equipment_category_id"
+                                        options="{'no_create': True, 'no_open': True}"
+                                        readonly="1" force_save="1" />
+                                    <field name="name" widget="section_and_note_text"
+                                        force_save="1" />
+                                    <field name="quantity" />
+                                    <!-- <field name="quantity_ordered" invisible="1" />
+                                    <field name="quantity_remaining" invisible="1" />
+                                    <field name="quantity_requested" invisible="1" /> -->
+                                    <field name="duree_j" />
+                                    <!-- <field name="duree_h"/> -->
+                                    <field name="uom_id" readonly="1" force_save="1" />
+                                    <field name="price_unit" string="Prix unitaire" />
+                                    <field name="price_subtotal" />
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="equipment_category_id" options="{'no_open': True}" />
+                                        <field name="name" />
+                                        <field name="quantity" />
+                                        <field name="duree_j" />
+                                        <field name="uom_id" options="{'no_open': True}" />
+                                        <field name="price_unit" />
+                                        <field name="price_subtotal" />
+                                    </group>
+                                </form>
+                            </field>
+                            <field class="oe_read_only" name="ro_equipment_ids" widget="section_and_note_one2many"
+                                readonly="state in ('approuved')">
+                                <list string="Lignes BP" editable="bottom" create="0"
+                                    default_order="sequence_number_parent,line_number_parent">
+                                    <control>
+                                        <create name="add_equip_control"
+                                            string="Ajouter un matériel" />
+                                        <create name="add_section_control"
+                                            string="Ajouter une Section"
+                                            context="{'default_display_type': 'line_section'}" />
+                                        <!-- <create name="add_note_control" string="Ajouter une
+                                        Description" context="{'default_display_type':
+                                        'line_note'}"/> -->
+                                    </control>
+                                    <field name="sequence_number_parent" invisible="1" />
+                                    <field name="line_number_parent" invisible="1" />
+                                    <field name="template_line_id" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="equipment_category_id"
+                                        options="{'no_create': True, 'no_open': True}"
+                                        readonly="1" force_save="1" />
+                                    <field name="name" widget="section_and_note_text"
+                                        force_save="1" />
+                                    <field name="quantity" />
+                                    <!-- <field name="quantity_ordered" invisible="1" />
+                                    <field name="quantity_remaining" invisible="1" />
+                                    <field name="quantity_requested" invisible="1" /> -->
+                                    <field name="duree_j" />
+                                    <!-- <field name="duree_h"/> -->
+                                    <field name="uom_id" readonly="1" force_save="1" />
+                                    <field name="price_unit" string="Prix unitaire" />
+                                    <field name="price_subtotal" />
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="equipment_category_id" options="{'no_open': True}" />
+                                        <field name="name" />
+                                        <field name="quantity" />
+                                        <field name="duree_j" />
+                                        <field name="uom_id" options="{'no_open': True}" />
+                                        <field name="price_unit" />
+                                        <field name="price_subtotal" />
+                                    </group>
+                                </form>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right page_subtotal" style="width: 100% !important;" colspan="2">
+                                <field name="total_equipments"/>
+                            </group>
+                        </page>
+                        <page string="Petit Matériels" name="need_small_equipment_tab" invisible="context.get('hide_small_equipment_ids')">
+                            <field class="oe_edit_only" name="small_equipment_ids" widget="section_and_note_one2many" readonly="state != 'draft'">
+                                <list string="Lignes des petit matériels" class="need_small_equipment_tab" editable="bottom" create="0" default_order="sequence_number_parent,line_number_parent">
+                                    <field name="sequence_number_parent" invisible="1" />
+                                    <field name="line_number_parent" invisible="1" />
+                                    <field name="template_line_id" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="equipment_id" readonly="1" force_save="1" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="name" widget="section_and_note_text" force_save="1" />
+                                    <field name="quantity" />
+                                    <field name="duree" />
+                                    <field name="uom_id" readonly="1" force_save="1" />
+                                    <field name="price_unit" string="Prix unitaire" />
+                                    <field name="price_subtotal" readonly="1" />
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="equipment_id" options="{'no_open': True}" />
+                                        <field name="name" />
+                                        <field name="quantity" />
+                                        <field name="duree" />
+                                        <field name="uom_id" options="{'no_open': True}" />
+                                        <field name="price_unit" />
+                                        <field name="price_subtotal" />
+                                    </group>
+                                </form>
+                            </field>
+                            <field class="oe_read_only" name="ro_small_equipment_ids" widget="section_and_note_one2many">
+                                <list string="Lignes des petit matériels" class="need_small_equipment_tab" editable="bottom" create="0" default_order="sequence_number_parent,line_number_parent">
+                                    <field name="sequence_number_parent" invisible="1" />
+                                    <field name="line_number_parent" invisible="1" />
+                                    <field name="template_line_id" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="equipment_id" readonly="1" force_save="1" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="name" widget="section_and_note_text" force_save="1" />
+                                    <field name="quantity" />
+                                    <field name="duree" />
+                                    <field name="uom_id" readonly="1" force_save="1" />
+                                    <field name="price_unit" string="Prix unitaire" />
+                                    <field name="price_subtotal" readonly="1" />
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="equipment_id" options="{'no_open': True}" />
+                                        <field name="name" />
+                                        <field name="quantity" />
+                                        <field name="duree" />
+                                        <field name="uom_id" options="{'no_open': True}" />
+                                        <field name="price_unit" />
+                                        <field name="price_subtotal" />
+                                    </group>
+                                </form>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right page_subtotal" style="width: 100% !important;" colspan="2">
+                                <field name="total_small_equipments"/>
+                            </group>
+                        </page>
+                        <page string="Carburant" name="fuel_tab" invisible="context.get('hide_fuel_ids')">
+                            <field class="oe_edit_only" name="fuel_ids" widget="section_and_note_one2many" readonly="state != 'draft'" options="{'no_open': True}">
+                                <list editable="bottom" create="0" delete="0" default_order="sequence_number_parent,line_number_parent">
+                                    <field name="sequence_number_parent" invisible="1"/>
+                                    <field name="line_number_parent" invisible="1"/>
+                                    <field name="template_line_id" invisible="1"/>
+                                    <field name="display_type" invisible="1"/>
+
+                                    <field name="category_id" readonly="1" force_save="1" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="product_id" readonly="1" force_save="1" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="name" widget="section_and_note_text" force_save="1"/>
+
+                                    <field name="quantity"/>
+                                    <field name="uom_id" force_save="1" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="price_unit"/>
+                                    <field name="price_subtotal"/>
+                                </list>
+                            </field>
+                            <field class="oe_read_only" name="ro_fuel_ids" widget="section_and_note_one2many" readonly="state in ('approuved')" options="{'no_open': True}">
+                                <list editable="bottom" create="0" delete="0" default_order="sequence_number_parent,line_number_parent">
+                                    <field name="sequence_number_parent" invisible="1"/>
+                                    <field name="line_number_parent" invisible="1"/>
+                                    <field name="template_line_id" invisible="1"/>
+                                    <field name="display_type" invisible="1"/>
+
+                                    <field name="category_id" readonly="1" force_save="1" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="product_id" readonly="1" force_save="1" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="name" widget="section_and_note_text" force_save="1"/>
+
+                                    <field name="quantity" readonly="1"/>
+                                    <field name="uom_id" readonly="1" force_save="1" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="price_unit"/>
+                                    <field name="price_subtotal"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right page_subtotal" style="width: 100% !important;" colspan="2">
+                                <field name="total_fuels"/>
+                            </group>
+                        </page>
+                        <page string="Historiques de validation" name="flow_tab" invisible="context.get('hide_flow_ids')">
+                            <field name="flow_ids" readonly="0">
+                                <list string="flow" editable="bottom" delete="false">
+                                    <field name="user_id" />
+                                    <field name="date" />
+                                    <field name="note" />
+                                </list>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="need_id" options="{'no_open': True}" />
+                                            <field name="date" />
+                                        </group>
+                                        <group>
+                                            <field name="user_id" options="{'no_open': True}" />
+                                            <field name="note" />
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                    <group class="oe_subtotal_footer oe_right" colspan="2" name="building_need_total" invisible="context.get('hide_totals')">
+                        <field name="amount_business" readonly="1" force_save="1" widget='monetary' />
+                        <field name="total_amount" widget='monetary' readonly="1" />
+                        <field name="total_amount_margin" widget='monetary' readonly="1" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_purchase_need_form_inherit" model="ir.ui.view">
+        <field name="name">building.purchase.need.form.inherit</field>
+        <field name="model">building.purchase.need</field>
+        <field name="inherit_id" ref="building.building_purchase_need_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='create_line']" position="replace"/>
+            <xpath expr="//button[@name='action_validated']" position="replace"/>
+            <xpath expr="//button[@name='action_update_besoin_lines']" position="replace"/>
+        </field>
+    </record>
+
+    <record id="view_crm_lead_form_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.form.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_validate']" position="replace"/>
+            <xpath expr="//button[@name='action_set_won_rainbowman']" position="replace"/>
+            <!-- <xpath expr="//button[@name='427']" position="replace"/> -->
+            <!-- <xpath expr="//button[@name='428']" position="replace"/> -->
+            <xpath expr="//button[@name='toggle_active']" position="replace"/>
+            <!-- <xpath expr="//button[@name='action_set_lost']" position="replace"/> -->
+        </field>
+    </record>
+
+    <record id="building_purchase_need_form_readonly" model="ir.ui.view">
+        <field name="name">building.purchase.need.form.readonly</field>
+        <field name="model">building.purchase.need</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="building.building_purchase_need_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="create">false</attribute>
+                <attribute name="edit">false</attribute>
+                <attribute name="delete">false</attribute>
+                <attribute name="duplicate">0</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_validated']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_approuved']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_open']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='create_line']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='opp_id']" position="replace">
+                <field name="opp_id" options="{'no_open': True}" />
+            </xpath>
+
+            <xpath expr="//field[@name='site_id']" position="replace">
+                <field name="site_id" options="{'no_open': True}" />
+            </xpath>
+
+            <xpath expr="//field[@name='categ_marche_id']" position="replace">
+                <field name="categ_marche_id" options="{'no_open': True}" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="building_purchase_need_tree" model="ir.ui.view">
+        <field name="name">building.purchase.need.tree</field>
+        <field name="model">building.purchase.need</field>
+        <field name="arch" type="xml">
+            <list string="Needs">
+                <field name="name" optional="show"/>
+                <field name="opp_id" optional="hide"/>
+                <field name="site_id" optional="show"/>
+                <field name="order_id" optional="hide"/>
+                <field name="total_ressource_humains" optional="show" string="Ressources Humaines" invisible="context.get('hide_total_ressource_humains')"/>
+                <field name="total_lines" optional="show" string="Fournitures" invisible="context.get('hide_total_lines')"/>
+                <field name="total_service_provisions" optional="show" string="Prestation de service" invisible="context.get('hide_total_service_provisions')"/>
+                <field name="total_mini_equipments" optional="show" string="Outillages" invisible="context.get('hide_total_mini_equipments')"/>
+                <field name="total_equipments" optional="show" string="Matériels" invisible="context.get('hide_total_equipments')"/>
+                <field name="total_small_equipments" optional="show" string="Petit Matériels" invisible="context.get('hide_total_small_equipments')"/>
+                <field name="total_fuels" optional="show" string="Carburant" invisible="context.get('hide_total_fuels')"/>
+                <field name="total_amount" optional="show" string="Cout de revient" invisible="context.get('hide_totals')"/>
+                <field name="amount_business" optional="show" string="Offre" invisible="context.get('hide_totals')"/>
+                <field name="total_amount_margin" optional="show" string="Marge" invisible="context.get('hide_totals')"/>
+                <field name="state" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ressource_humain_tree" model="ir.ui.view">
+        <field name="name">building.purchase.need.ressource.humain.tree</field>
+        <field name="model">building.purchase.need.ressource.humain</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="job_id" />
+            </list>
+        </field>
+    </record>
+
+    <record id="line_tree" model="ir.ui.view">
+        <field name="name">building.purchase.need.line.tree</field>
+        <field name="model">building.purchase.need.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="product_id" />
+            </list>
+        </field>
+    </record>
+
+    <record id="service_provision_tree" model="ir.ui.view">
+        <field name="name">building.purchase.need.service.provision.tree</field>
+        <field name="model">building.purchase.need.service.provision</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="product_id" />
+            </list>
+        </field>
+    </record>
+
+    <record id="building_purchase_need_filter" model="ir.ui.view">
+        <field name="name">building.purchase.need.select</field>
+        <field name="model">building.purchase.need</field>
+        <field name="arch" type="xml">
+            <search string="Search building need">
+                <field name="opp_id" />
+                <field name="site_id" />
+                <field name="name" />
+                <separator />
+                <group expand="0" string="Group By">
+                    <filter string="AO" name='filt_opp' domain="[]" context="{'group_by':'opp_id'}" />
+                    <filter string="Affaire" name='filt_site' domain="[]"
+                        context="{'group_by':'site_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="building_purchase_need_action" model="ir.actions.act_window">
+        <field name="name">Liste des besoins</field>
+        <field name="res_model">building.purchase.need</field>
+        <field name="domain">[('is_template','!=',True)]</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="building_purchase_need_filter" />
+        <field name="view_ids"
+            eval="[(5, 0, 0),
+                    (0, 0, {'view_mode': 'list', 'view_id': ref('building_purchase_need_tree')}),
+                    (0, 0, {'view_mode': 'form', 'view_id': ref('building_purchase_need_form')})]" />
+    </record>
+
+    <record id="building_purchase_need_template_tree" model="ir.ui.view">
+        <field name="name">building.purchase.need.template.tree</field>
+        <field name="model">building.purchase.need</field>
+        <field name="arch" type="xml">
+            <list string="Needs Template">
+                <field name="name" string="Nom template" />
+            </list>
+        </field>
+    </record>
+
+    <record id="building_purchase_need_template_form" model="ir.ui.view">
+        <field name="name">building.purchase.need.template.form</field>
+        <field name="model">building.purchase.need</field>
+        <field name="arch" type="xml">
+            <form delete="0" create="false" duplicate="false">
+                <header>
+                    <button name="create_section" type="object" string="Ajouter une Section" class="oe_highlight"/>
+                    <button name="create_line" type="object" string="Ajouter une Ligne" class="oe_highlight"/>
+                    <button name="update_section_sequence_number" type="object" string="Modifier une Section" class="oe_highlight"/>
+                    <button name="update_fuel_tab" type="object" string="MàJ Onglet Carburant" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <field name="ressource_humain_ids_job_ids" invisible="1" />
+                    <field name="line_ids_product_ids" invisible="1" />
+                    <field name="service_provision_ids_product_ids" invisible="1" />
+                    <field name="mini_equipment_ids_product_ids" invisible="1" />
+                    <field name="equipment_ids_equipment_ids" invisible="1" />
+                    <group>
+                        <group>
+                            <field name="name" readonly="1" string="Nom template" />
+                        </group>
+                        <group>
+                            <field name="categ_equipment_ids" invisible="1" />
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Installation de chantier" name="need_site_installation_tab"
+                            invisible="1">
+                            <field name="site_installation_ids" widget="section_and_note_one2many">
+                                <list string="Lignes BP" editable="bottom" create="0"
+                                    class="need_site_installation_tab">
+                                    <field name="display_type" invisible="1" />
+                                    <field name="identification_number" force_save="1" invisible="1" />
+                                    <field name="line_number" string="Séq."
+                                        class="template-line-number" />
+                                    <field name="equipment_id" />
+                                    <field name="quantity" />
+                                    <field name="duree" />
+                                    <field name="quantity_ordered" invisible="1" />
+                                    <field name="quantity_remaining" invisible="1" />
+                                    <field name="quantity_requested" invisible="1" />
+                                    <field name="duree_j" invisible="1" />
+                                    <field name="uom_id" />
+                                    <field name="price_unit" />
+                                    <field name="price_subtotal" string="Prix unitaire" />
+                                    <field name="is_activated" widget="boolean_toggle"
+                                        class="template-active-btn" />
+                                    <field name="name" widget="section_and_note_text" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Ressources Humaines" name="need_rh_tab">
+                            <field name="ressource_humain_ids" widget="section_and_note_one2many" options="{'no_open': True}">
+                                <list string="Lignes BP" editable="bottom" create="0" delete="0"
+                                    class="need_rh_tab need_rh_tab_temp">
+                                    <field name="is_from_template" invisible="1"/>
+                                    <field name="identification_number" force_save="1" invisible="1" />
+                                    <field name="profile_id_integer" invisible="1" />
+                                    <field name="line_number" string="Séq."
+                                        class="template-line-number" readonly="is_from_template" options="{'no_open': True}"/>
+                                    <field name="display_type" invisible="1" />
+                                    <field name="type_resource" string="Catégorie" readonly="is_from_template" options="{'no_open': True}"/>
+                                    <field name="profile_id"
+                                        domain="[('categ_job', '=', type_resource)]"
+                                        options="{'no_quick_create':True,'no_create_edit':True}" readonly="is_from_template"/>
+                                    <field name="job_id"
+                                        domain="[('categ_job', '=', type_resource), ('profile_id', '=', profile_id_integer), ('id', 'in', parent.ressource_humain_ids_job_ids)]"
+                                        options="{'no_quick_create':True,'no_create_edit':True}"
+                                        string="Poste" readonly="is_from_template"/>
+                                    <!-- <field name="quantity" string="Nombre" readonly="1" /> -->
+                                    <!-- <field name="quantity_ordered" invisible="1" /> -->
+                                    <!-- <field name="quantity_remaining" invisible="1" /> -->
+                                    <!-- <field name="quantity_requested" invisible="1" /> -->
+                                    <!-- <field name="duree_j" string="Volume" readonly="1" /> -->
+                                    <!-- <field name="duree_h"/> -->
+                                    <field name="uom_id" readonly="is_from_template" options="{'no_open': True}"/>
+                                    <!-- <field name="price_unit" string="Px Unit." readonly="1" /> -->
+                                    <!-- <field name="price_subtotal" readonly="1" /> -->
+                                    <field name="is_activated" widget="boolean_toggle" readonly="not job_id" class="template-active-btn"/>
+                                    <field name="name" widget="section_and_note_text" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Fournitures" name="need_product_tab">
+                            <field name="line_ids" widget="section_and_note_one2many" options="{'no_open': True}">
+                                <list string="Lignes BP" editable="bottom" create="0" delete="0"
+                                    class="need_product_tab need_product_tab_temp">
+                                    <field name="is_from_template" invisible="1"/>
+                                    <field name="identification_number" force_save="1" invisible="1" />
+                                    <field name="line_number" string="Séq."
+                                        class="template-line-number" readonly="is_from_template" options="{'no_open': True}" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="type_produit" readonly="is_from_template" options="{'no_open': True}" />
+                                    <!-- <field name="type_produit_selected" invisible="1" /> -->
+                                    <field name="product_id" domain="[('id', 'in', parent.line_ids_product_ids)]" readonly="is_from_template" options="{'no_open': True}" />
+                                    <field name="name" widget="section_and_note_text" readonly="is_from_template" options="{'no_open': True}"/>
+                                    <!-- <field name="quantity" readonly="1" /> -->
+                                    <!-- <field name="quantity_ordered" invisible="1" /> -->
+                                    <!-- <field name="quantity_remaining" invisible="1" /> -->
+                                    <!-- <field name="quantity_receved" invisible="1" /> -->
+                                    <!-- <field name="quantity_to_receve" invisible="1" /> -->
+                                    <field name="uom_id" readonly="is_from_template" options="{'no_open': True}" />
+                                    <!-- <field name="price_unit" string="Prix unitaire"
+                                    readonly="1" /> -->
+                                    <!-- <field name="price_subtotal" readonly="1" /> -->
+                                    <field name="is_activated" widget="boolean_toggle" readonly="not product_id" class="template-active-btn"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Prestation de service" name="need_service_provision_tab">
+                            <field name="service_provision_ids" widget="section_and_note_one2many" options="{'no_open': True}">
+                                <list string="Lignes BP" editable="bottom" create="0" delete="0"
+                                    class="need_service_provision_tab need_service_provision_tab_temp">
+                                    <field name="is_from_template" invisible="1"/>
+                                    <field name="identification_number" force_save="1" invisible="1" />
+                                    <field name="line_number" string="Séq."
+                                        class="template-line-number" readonly="is_from_template" options="{'no_open': True}"/>
+                                    <field name="display_type" invisible="1" readonly="is_from_template" options="{'no_open': True}" />
+                                    <field name="product_id" domain="[('id', 'in', parent.service_provision_ids_product_ids)]" readonly="is_from_template" options="{'no_open': True}"/>
+                                    <field name="name" widget="section_and_note_text" readonly="is_from_template" options="{'no_open': True}" />
+                                    <!-- <field name="quantity" readonly="1" /> -->
+                                    <field name="uom_id" readonly="is_from_template" options="{'no_open': True}" />
+                                    <!-- <field name="price_unit" string="Prix unitaire"
+                                    readonly="1" /> -->
+                                    <!-- <field name="price_subtotal" readonly="1" /> -->
+                                    <!-- <field name="price_subtotal_ordered"/> -->
+                                    <!-- <field name="price_subtotal_remaining" invisible="1" /> -->
+                                    <field name="is_activated" widget="boolean_toggle" readonly="not product_id" class="template-active-btn" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Outillages" name="need_mini_equipment_tab">
+                            <field name="mini_equipment_ids" widget="section_and_note_one2many" options="{'no_open': True}">
+                                <list string="Lignes BP" editable="bottom" create="0" delete="0" class="need_mini_equipment_tab need_mini_equipment_tab_temp">
+                                    <field name="is_from_template" invisible="1"/>
+                                    <field name="identification_number" force_save="1" invisible="1" />
+                                    <field name="line_number" string="Séq."
+                                        class="template-line-number" readonly="is_from_template" options="{'no_open': True}"/>
+                                    <field name="display_type" invisible="1" />
+                                    <field name="name" widget="section_and_note_text" readonly="is_from_template" options="{'no_open': True}"/>
+                                    <field name="category_id" readonly="is_from_template" options="{'no_open': True}"/>
+                                    <field name="product_id" domain="[('categ_id', '=', category_id), ('id', 'in', parent.mini_equipment_ids_product_ids)]" readonly="is_from_template" options="{'no_open': True}"/>
+                                    <field name="description" readonly="is_from_template" options="{'no_open': True}" />
+                                    <!-- <field name="quantity" readonly="1" /> -->
+                                    <!-- <field name="quantity_ordered" invisible="1" /> -->
+                                    <!-- <field name="quantity_remaining" invisible="1" /> -->
+                                    <!-- <field name="quantity_requested" invisible="1" /> -->
+                                    <!-- <field name="duree_j" invisible="1" /> -->
+                                    <field name="uom_id" readonly="is_from_template" options="{'no_open': True}"/>
+                                    <!-- <field name="price_unit" string="Prix unitaire"
+                                    readonly="1" /> -->
+                                    <!-- <field name="price_subtotal" readonly="1" /> -->
+                                    <field name="is_activated" widget="boolean_toggle" readonly="not product_id" class="template-active-btn" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Coffrages/Echaffaudages" name="need_coffach_tab" invisible="1">
+                            <field name="coffecha_ids" widget="section_and_note_one2many">
+                                <list string="Lignes BP" editable="bottom" create="0">
+                                    <field name="identification_number" force_save="1" invisible="1" />
+                                    <field name="line_number" string="Séq."
+                                        class="template-line-number" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="product_id"
+                                        domain="[('categ_id.is_coffrage', '=', True)]" />
+                                    <field name="name" widget="section_and_note_text" />
+                                    <field name="quantity" />
+                                    <field name="duree" />
+                                    <field name="quantity_ordered" invisible="1" />
+                                    <field name="quantity_remaining" invisible="1" />
+                                    <field name="quantity_requested" invisible="1" />
+                                    <field name="uom_id" />
+                                    <field name="price_unit" string="Prix unitaire" />
+                                    <field name="price_subtotal" />
+                                    <field name="is_activated" widget="boolean_toggle"
+                                        class="template-active-btn" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Matériels" name="need_equipment_tab">
+                            <field name="equipment_ids" widget="section_and_note_one2many" options="{'no_open': True}">
+                                <list string="Lignes BP" editable="bottom" create="0" delete="0"
+                                    class="need_equipment_tab need_equipment_tab_temp">
+                                    <field name="is_from_template" invisible="1"/>
+                                    <field name="identification_number" force_save="1" invisible="1" />
+                                    <field name="line_number" string="Séq."
+                                        class="template-line-number" readonly="is_from_template" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="equipment_category_id" readonly="is_from_template" options="{'no_create': True, 'no_open': True}" domain="[('id', 'in', parent.equipment_ids_equipment_ids)]" />
+                                    <field name="name" widget="section_and_note_text" readonly="is_from_template"/>
+                                    <!-- <field name="quantity" readonly="1" /> -->
+                                    <!-- <field name="quantity_ordered" invisible="1" /> -->
+                                    <!-- <field name="quantity_remaining" invisible="1" /> -->
+                                    <!-- <field name="quantity_requested" invisible="1" /> -->
+                                    <!-- <field name="duree_j" readonly="1" /> -->
+                                    <!-- <field name="duree_h"/> -->
+                                    <field name="uom_id" readonly="is_from_template" force_save="1" />
+                                    <field name="price_unit" string="Prix unitaire" invisible="1" />
+                                    <!-- <field name="price_subtotal" readonly="1" /> -->
+                                    <field name="is_activated" widget="boolean_toggle" readonly="not equipment_category_id" class="template-active-btn" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Petit Matériels" name="need_small_equipment_tab">
+                            <field name="small_equipment_ids" widget="section_and_note_one2many" options="{'no_open': True}">
+                                <list string="Lignes des petit matériels" class="need_small_equipment_tab need_small_equipment_tab_temp" editable="bottom" create="0" delete="0">
+                                    <field name="is_from_template" invisible="1"/>
+                                    <field name="identification_number" force_save="1" invisible="1" />
+                                    <field name="equipment_ids" invisible="1" />
+                                    <field name="display_type" invisible="1" />
+                                    <field name="line_number" string="Séq." class="template-line-number" readonly="is_from_template" />
+                                    <field name="equipment_id" domain="[('id', 'in', equipment_ids)]" readonly="is_from_template" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="name" widget="section_and_note_text" readonly="is_from_template"/>
+                                    <field name="uom_id" readonly="is_from_template" force_save="1"/>
+                                    <field name="price_unit" string="Prix unitaire" invisible="1" />
+                                    <field name="is_activated" widget="boolean_toggle" readonly="not equipment_id" class="template-active-btn" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Carburant" name="fuel_tab">
+                            <field name="fuel_ids" widget="section_and_note_one2many" options="{'no_open': True}">
+                                <list editable="bottom" create="0" delete="0" class="need_diesel_consumption_tab need_diesel_consumption_tab_temp">
+                                    <field name="is_from_template" invisible="1"/>
+                                    <field name="identification_number" force_save="1" invisible="1"/>
+                                    <field name="display_type" invisible="1"/>
+                                    <field name="line_number" string="Séq." class="template-line-number" readonly="is_from_template"/>
+                                    <field name="category_id" options="{'no_open': True, 'no_create': True}" readonly="is_from_template"/>
+                                    <field name="product_ids" invisible="1"/>
+                                    <field name="product_id" domain="[('id', 'in', product_ids)]" options="{'no_open': True, 'no_create': True}" readonly="is_from_template"/>
+                                    <field name="name" widget="section_and_note_text" readonly="is_from_template"/>
+                                    <field name="uom_id" options="{'no_open': True, 'no_create': True}" readonly="is_from_template"/>
+                                    <field name="is_activated" widget="boolean_toggle" readonly="not product_id" class="template-active-btn" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="building_purchase_need_template_action" model="ir.actions.act_window">
+        <field name="name">Template liste des besoins</field>
+        <field name="res_model">building.purchase.need</field>
+        <field name="domain">[('is_template','=',True)]</field>
+        <field name="context">{'is_template': True}</field>
+        <field name="target">main</field>
+        <field name="view_ids"
+            eval="[(5, 0, 0),
+                    (0, 0, {'view_mode': 'form', 'view_id': ref('building_purchase_need_template_form')})]" />
+        <field name="view_mode">form</field>
+    </record>
+
+    <record id="building_purchase_need_template_menuitem_action" model="ir.actions.server">
+        <field name="name">Template liste des besoins</field>
+        <field name="model_id" ref="building.model_building_purchase_need" />
+        <field name="state">code</field>
+        <field name="code">action = model.get_template()</field>
+    </record>
+</odoo>

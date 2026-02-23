@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--         <record id="view_employee_form_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.form.inherit</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='identification_id']" position="after">
+                	<field name="registration_number"/>
+                </xpath>
+            </field>
+        </record>
+
+       	<record id="view_employee_filter_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.search.inherit</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+               		<field name="registration_number" string="Matricule" />
+                </xpath>
+            </field>
+        </record>
+ -->
+    <record id="building_view_attendance_tree" model="ir.ui.view">
+        <field name="name">hr.attendance.building.tree.inherit</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee_id']" position="after">
+                <field name="site_id" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="building_hr_attendance_view_form" model="ir.ui.view">
+        <field name="name">hr.attendance.building.form.inherit</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee_id']" position="after">
+                <field name="site_id" domain="[('state', '=', 'open')]" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_job_form_inherit_1" model="ir.ui.view">
+        <field name="name">hr.job.form.inherit1</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_hr_job_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="update_profiles" string="Actualiser les profils" type="object" />
+            </xpath>
+            <xpath expr="//notebook" position="before">
+                <group>
+                    <field name="categ_job" widget="radio" />
+                    <field name="profile" />
+                    <field name="uom_id" />
+                    <field name="cost" />
+                    <field name="job_code" readonly="1" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_job_tree_inherit_1" model="ir.ui.view">
+        <field name="name">hr.job.tree.inherit</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_hr_job_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="replace">
+                <list string="Postes">
+                    <field name="name" />
+                    <field name="department_id" />
+                    <field name="categ_job" />
+                    <field name="profile" />
+                    <field name="job_code"/>                    
+                </list>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- code d'emploi -->
+    <record id="view_hr_job_code_form" model="ir.ui.view">
+        <field name="name">hr.job.code.form</field>
+        <field name="model">hr.job.code</field>
+        <field name="arch" type="xml">
+            <form string="Code d'emploi">
+                <sheet>
+                    <group>
+                        <field name="code"/>
+                        <field name="profile_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hr_job_code" model="ir.actions.act_window">
+        <field name="name">Codes d'emploi</field>
+        <field name="res_model">hr.job.code</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_hr_job_code"
+              name="Codes d'emploi"
+              parent="hr.menu_human_resources_configuration"
+              action="action_hr_job_code"
+              sequence= "3"/>
+
+    <record id="view_hr_job_code_tree" model="ir.ui.view">
+        <field name="name">hr.job.code.tree</field>
+        <field name="model">hr.job.code</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+            </list>
+        </field>
+    </record>
+    <!-- code d'emploi -->
+
+    <record id="hr_equipment_category_view_form_inherit_1" model="ir.ui.view">
+        <field name="name">equipment.category.form.inherit1</field>
+        <field name="model">maintenance.equipment.category</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_category_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="////field[@name='company_id']" position="after">
+                <field name="nature_equip" widget="radio" />
+                <field name="uom_id" />
+                <field name="cost" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_equipment_view_form_inherit_1" model="ir.ui.view">
+        <field name="name">maintenance.equipment.form.inherit1</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="nature_equip" force_save="1" />
+            </xpath>
+
+            <xpath expr="//field[@name='technician_user_id']" position="after">
+                <field name="code" />
+            </xpath>
+            <!-- <xpath expr="//field[@name='cost']" position="after">
+                    <field name="consumption"/>
+                </xpath> -->
+            <xpath expr="//field[@name='warranty_date']" position="after">
+                <field name="state" />
+            </xpath>
+            <xpath expr="//field[@name='cost']" position="attributes">
+                <attribute name="string">Coût de location</attribute>
+            </xpath>
+            <xpath expr="//field[@name='serial_no']" position="after">
+                <field name="code_immo" />
+            </xpath>
+        </field>
+    </record>
+
+
+    <!--         <record id="hr_timesheet_line_tree_inherit" model="ir.ui.view">
+            <field name="name">hr.analytic.timesheet.tree.inherit</field>
+            <field name="model">hr.analytic.timesheet</field>
+            <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_tree"/>
+            <field name="priorite">15</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="before">
+                	<field name="site_id" required="1"/>
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="after">
+                	<field name="emp_id" on_change="on_change_emp_id(emp_id)" required="1"/>
+                    <field name="unit_cost" on_change="on_change_unit_amount(unit_amount,unit_cost)" required="1"/>
+                </xpath>
+                <xpath expr="//field[@name='unit_amount']" position="replace">
+                    <field name="unit_amount" string="Durée" on_change="on_change_unit_amount(unit_amount,unit_cost)"
+    sum="Total time" widget="float_time" required="1"/>
+                </xpath>
+                <xpath expr="//field[@name='account_id']" position="replace">
+                    <field
+    domain="[('type','=','normal'),('account_analytic_type','=','workforce'),('site_id','=',site_id)]"
+    name="account_id" select="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="hr_timesheet_line_form_inherit" model="ir.ui.view">
+            <field name="name">hr.analytic.timesheet.form.inherit</field>
+            <field name="model">hr.analytic.timesheet</field>
+            <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_form"/>
+            <field name="priorite">15</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="after">
+                	<field name="emp_id" on_change="on_change_emp_id(emp_id)" required="1"/>
+                    <field name="unit_cost" on_change="on_change_unit_amount(unit_amount,unit_cost)" required="1"/>
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="after">
+                	<field name="site_id" required="1"/>
+                </xpath>
+                <xpath expr="//field[@name='product_id']" position="replace">
+                	<field name="product_id"/>
+                </xpath>
+                <xpath expr="//field[@name='unit_amount']" position="replace">
+                    <field name="unit_amount" on_change="on_change_unit_amount(unit_amount,unit_cost)"
+    class="oe_inline" required="1"/>
+                </xpath>
+                <xpath expr="//field[@name='product_uom_id']" position="replace">
+                    <field name="product_uom_id"/>
+                </xpath>
+                <xpath expr="//field[@name='account_id']" position="replace">
+                    <field
+    domain="[('type','=','normal'),('account_analytic_type','=','workforce'),('site_id','=',site_id)]"
+    name="account_id" select="1"/>
+                </xpath>
+            </field>
+        </record>
+ -->
+
+    <record id="hr_contract_view_form_inherit_1" model="ir.ui.view">
+        <field name="name"> hr.contract.form.inherit1</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='resource_calendar_id']" position="before">
+                <field name="site_id" required="contract_type == 'cdc'"
+                    domain="[('state', '=', 'open')]" />
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- <record id="hr_time_payroll_form_inherit_1" model="ir.ui.view">
+        <field name="name">hr.time.payroll.form.inherit1</field>
+        <field name="model">hr.time.payroll</field>
+        <field name="inherit_id" ref="hr_payroll_ma.hr_time_payroll_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='emp_id']" position="before">
+                <field name="site_id" readonly="1" />
+            </xpath>
+        </field>
+    </record> -->
+
+    <!-- <record id="hr_time_payroll_tree_inherit_1" model="ir.ui.view">
+        <field name="name">hr.time.payroll.tree.inherit1</field>
+        <field name="model">hr.time.payroll</field>
+        <field name="inherit_id" ref="hr_payroll_ma.hr_time_payroll_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='emp_id']" position="before">
+                <field name="site_id" readonly="1" />
+            </xpath>
+        </field>
+    </record> -->
+</odoo>

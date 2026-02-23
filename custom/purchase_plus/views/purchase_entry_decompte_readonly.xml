@@ -1,0 +1,141 @@
+<odoo>
+    <record id="purchase_entry_decompt_readonly_form" model="ir.ui.view">
+        <field name="name">purchase.entry.decompt.readonly.form</field>
+        <field name="model">purchase.entry</field>
+        <field name="arch" type="xml">
+            <form string="Attachement" class="o_purchase_order" create="false" delete="false" edit="false">
+                <header modifiers="{}">
+                    <button name="print_decompt" string="Imprimer" class="btn-primary" type="object"/>
+                    <field name="state_decompte" widget="statusbar" 
+                        statusbar_visible="draft,validated_dz,provider_validated,done,bill"
+                        invisible="not is_done"/>
+                    <field name="state_decompte_not_done" widget="statusbar" 
+                        statusbar_visible="draft,validated_dz,done,bill"
+                        invisible="is_done"/>
+                </header>
+                <sheet>
+                    <group colspan="4" class="container">
+                        <group string="Informations BC" colspan="1">
+                            <field name="is_automatically_done" invisible="1"/>
+                            <field name="site_id" id="site_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="supplier_id" id="supplier_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="purchase_id" id="purchase_id" readonly="1" options="{'no_open': True}"/>
+                            <label for="amount_commande"/>
+                            <div class="o_row">
+                                <field name="amount_commande" readonly="1"/>
+                                <field name="currency_id" widget="many2one" readonly="1" options="{'no_open': True}"/>
+                            </div>
+                            <field name="number" readonly="1" options="{'no_open': True}"/>
+                            <field name="start_date" id="start_date" readonly="1"/>
+                            <field name="end_date" id="end_date" readonly="1"/>
+                            <field name="is_done" widget="boolean_toggle" string="Décompte final" readonly="1"/>
+                        </group>
+                        <group colspan="1" string="Situation Globale" class="oe_group2">
+                            <field name="accumulations_work" style="width: 150px !important;"/>
+                            <field name="accumulation_previous_amounts" style="width: 150px !important;"/>
+                            <field name="amount_invoiced" style="width: 150px !important;"/>
+                            <field name="penalty_red" style="width: 150px !important;"/>
+                            <field name="gross_amount_ht" style="width: 150px !important;"/>
+                            <field name="amount_invoiced_ttc" style="width: 150px !important;"/>
+                            <field name="avance_red" style="width: 150px !important;"/>
+                            <field name="rg_red" style="width: 150px !important;"/>
+                            <field name="net_amount_to_be_invoiced" style="width: 150px !important;"/>
+                            <field name="executed" class="rg" style="width: 150px !important;"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lignes décompte">
+                            <field name="line_ids" widget="section_and_note_one2many" mode="list" options="{'no_open': True}">
+                                <list editable="bottom" delete="false" create="false">
+                                    <field name="name" readonly="1" options="{'no_open': True}" style="width: 1000px !important;"/>
+                                    <field name="ordered_ht" readonly="1" options="{'no_open': True}" style="width: 1000px !important;"/>
+                                    <field name="cumulative_ht" readonly="1" options="{'no_open': True}" style="width: 1000px !important;"/>
+                                    <field name="cumulative_tva" readonly="1" options="{'no_open': True}" style="width: 1000px !important;"/>
+                                    <field name="cumulative_ttc" readonly="1" options="{'no_open': True}" style="width: 1000px !important;"/>
+                                    <!-- <field name="detail_id" /> -->
+                                    <button name="show_detail_decompte" type="object" string="Détail" class="btn-primary" icon="fa-info-circle"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="À facturer">
+                            <field name="line_idss" widget="section_and_note_one2many" mode="list" options="{'no_open': True}">
+                                <list editable="bottom" delete="false" create="false">
+                                    <!-- <field name="display_type" invisible="1"/> -->
+                                    <field name="name" readonly="1" options="{'no_open': True}" />
+                                    <field name="product_uom" invisible="1" readonly="1" options="{'no_open': True}" />
+                                    <field name="product_qty" invisible="1" readonly="1" options="{'no_open': True}" />
+                                    <field name="price_unit" invisible="1" readonly="1" options="{'no_open': True}" />
+                                    <field name="amount_ht_invoiced" readonly="1" style="width: 300px;"/>
+                                    <field name="amount_invoiced_tva" invisible="1"/>
+                                    <button name="show_to_be_invoiced_detail" type="object" string="Détail" class="btn-primary" icon="fa-info-circle"/>
+                                </list>
+                            </field>
+			            </page>
+                        <page string="Déductions">
+                            <group colspan="2">
+                                <group colspan="1" string="Déductions">
+                                    <field name="is_avance_readonly" invisible="1"/>
+                                    <field name="avance"  readonly="is_avance_readonly or state_decompte != 'draft'" force_save="1"/>
+                                    <field name="return_of_guarantee" readonly="1"/>
+                                    <field name="penalty" readonly="1"/>
+					            </group>
+                                <group colspan="1" string="Cumul déductions">
+                                    <field name="remaining_advance" style="width: 150px !important;"/>
+                                    <field name="remaining_rg" style="width: 150px !important;"/>
+                                    <field name="remaining_penalty" style="width: 150px !important;"/>
+                                </group>
+				            </group>
+			            </page>
+                        <page string="Inf.BC">
+                            <group>
+                                <group>
+                                    <field name="represent" readonly="1"/>
+                                    <label for="amount_avance" style="white-space: nowrap;" readonly="1"/>
+                                    <field name="amount_avance" class="oe_right" readonly="1" nolabel="1"/>
+                                    <field name="percentage_rg" class="oe_right" readonly="1"/>
+					            </group>
+				            </group>
+			            </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_purchase_entry_decompt_readonly_tree" model="ir.ui.view">
+        <field name="name">purchase.entry.decompt.readonly.tree</field>
+        <field name="model">purchase.entry</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="site_id" width="200"/>
+                <field name="supplier_id" width="200"/>
+                <field name="purchase_id" width="200"/>
+                <field name="start_date" string="Date début" width="200"/>
+                <field name="end_date" string="Date fin" width="200"/>
+                <field name="state_decompte" widget="badge" string="statut" width="200"
+                    decoration-info="state_decompte == 'draft'"
+                    decoration-warning="state_decompte == 'validated_dz'"
+                    decoration-success="state_decompte == 'provider_validated'"
+                    decoration-danger="state_decompte == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_purchase_entry_decompt_readonly" model="ir.actions.act_window">
+        <field name="name">Décompte fournisseurs</field>
+        <field name="res_model">purchase.entry</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[("state_attachemnet", "!=", "draft")]</field>
+        <field name="view_ids" eval="[(5, 0, 0), 
+                                      (0, 0, {'view_mode': 'list', 'view_id': ref('view_purchase_entry_decompt_readonly_tree')}), 
+                                      (0, 0, {'view_mode': 'form', 'view_id': ref('purchase_entry_decompt_readonly_form')})]"/>
+        <field name="context">{"create": False, "edit": False, "delete": False, 'group_by': ['site_id']}</field>
+    </record>
+
+    <record id="action_purchase_entry_decompt_readonly2" model="ir.actions.server">
+        <field name="name">Décompte fournisseurs</field>
+        <field name="model_id" ref="model_purchase_entry"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_decompte_situation()</field>
+    </record>
+</odoo>

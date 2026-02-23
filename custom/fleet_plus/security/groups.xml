@@ -1,0 +1,5 @@
+<odoo>
+    <record id="fleet_plus_group" model="res.groups">
+        <field name="name">Fleet +</field>
+    </record>
+</odoo>

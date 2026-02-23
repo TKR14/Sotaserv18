@@ -1,0 +1,72 @@
+<odoo>
+    <record id="view_purchase_entry_line_detail_form" model="ir.ui.view">
+        <field name="name">purchase.entry.line.detail.form</field>
+        <field name="model">purchase.entry.line</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <notebook>
+                    <page string="Détails">
+                        <field name="detail_id" options="{'no_create': True}">
+                            <list editable="bottom" delete="false" create="false">
+                                <field name="is_validated" invisible="1"/>
+                                <field name="is_quantity_exceeded" invisible="1" force_save="1" />
+                                <field name="name" readonly="1" style="width: 200px !important;"/>
+                                <field name="unit_measurement" string="UDM" readonly="1" options="{'no_open': True}"/>
+                                <field name="quantity_type" string="Type" readonly="1" options="{'no_open': True'}"/>
+                                <field name="quantity_pr" string="Commandé" readonly="1" options="{'no_open': True'}"/>
+                                <field name="quantity_president" readonly="1" options="{'no_open': True'}"/>
+                                <field name="cumulative_quantity" required="1" readonly="is_quantity_exceeded or is_validated"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_purchase_entry_line_detail_decompte_form" model="ir.ui.view">
+        <field name="name">purchase.entry.line.detail.form</field>
+        <field name="model">purchase.entry.line</field>
+        <field name="arch" type="xml">
+            <form create="false" class="decompte_readonly_form_view">
+                <notebook>
+                    <page string="Détails">
+                        <field name="detail_id" options="{'no_create': True, 'no_open': True}">
+                            <list editable="bottom" delete="false" create="false">
+                                <field name="name" readonly="1"/>
+                                <field name="unit_measurement" string="UDM" readonly="1" options="{'no_open': True}"/>
+                                <field name="quantity_type" string="Type" readonly="1" options="{'no_open': True'}"/>
+                                <field name="cumulative_quantity" required="1" readonly="1"/>
+                                <field name="price_unit" readonly="1"/>
+                                <field name="cumulative_amount_ht"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_purchase_entry_line_detail_to_be_invoiced_detail_form" model="ir.ui.view">
+        <field name="name">purchase.entry.line.to.be.invoice.ddetail.form</field>
+        <field name="model">purchase.entry.line</field>
+        <field name="arch" type="xml">
+            <form create="false" class="decompte_readonly_form_view">
+                <notebook>
+                    <page string="Détails">
+                        <field name="detail_id" options="{'no_create': True, 'no_open': True}">
+                            <list editable="bottom" delete="false" create="false">
+                                <field name="name" readonly="1"/>
+                                <field name="unit_measurement" string="UDM" readonly="1" options="{'no_open': True}"/>
+                                <field name="quantity_type" string="Type" readonly="1" options="{'no_open': True'}"/>
+                                <field name="cumulative_quantity_invoiced" string="Quantité" required="1"/>
+                                <field name="price_unit" readonly="1"/>
+                                <field name="amount_ht_invoiced" string="Montant HT"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </form>
+        </field>
+    </record>
+</odoo>

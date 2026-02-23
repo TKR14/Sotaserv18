@@ -1,0 +1,27 @@
+<odoo>
+    <!-- View Definition -->
+    <record id="view_cancellation_reason_form" model="ir.ui.view">
+        <field name="name">assistant.annulation.form</field>
+        <field name="model">cancellation.reason</field>
+        <field name="arch" type="xml">
+            <form string="Assistant d'Annulation">
+                <group>
+                    <field name="reason"/>
+                </group>
+                <footer>
+                    <button string="Confirmer" type="object" name="confirm_cancellation" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action Definition -->
+    <record id="action_cancellation_reason" model="ir.actions.act_window">
+        <field name="name">Assistant d'Annulation</field>
+        <field name="res_model">cancellation.reason</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_cancellation_reason_form"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

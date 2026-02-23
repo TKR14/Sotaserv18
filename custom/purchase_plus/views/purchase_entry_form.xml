@@ -1,0 +1,52 @@
+<odoo>
+    <record id="purchase_entry_view_form" model="ir.ui.view">
+        <field name="name">purchase.entry.view.form</field>
+        <field name="model">purchase.entry</field>
+        <field name="arch" type="xml">
+            <form string="Attachement" class="o_purchase_order" create="false" delete="false">
+                <header>
+                    <button name="internal_validation_action" string="Valider" type="object" class="btn-primary" invisible="state_attachemnet != 'draft'" groups="building_plus.sotaserv_chef_projet,building_plus.sotaserv_conduct_trv,building_plus.sotaserv_directrice_technique"/>
+                    <!-- <button name="provider_validation_action" string="Valider" type="object" class="btn-primary" attrs="{'invisible': [('state_attachemnet', '!=', 'internal_validated')]}" groups="purchase_plus.purchase_entry_provider_validation"/>
+                    <button name="action_done" string="Valider" type="object" class="btn-primary" attrs="{'invisible': [('state_decompte', '!=', 'provider_validated')]}" groups="purchase_plus.purchase_entry_done"/> -->
+                    <button name="print_attachment" string="Imprimer Attachement" class="btn-primary" type="object"/>
+                    <field name="state_attachemnet" widget="statusbar" statusbar_visible="draft,internal_validated"/>
+                    <field name="state_decompte" widget="statusbar" invisible="1"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Informations générales">
+                            <field name="is_automatically_done" invisible="1" />
+                            <field name="purchase_id" id="purchase_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="number" string='Numéro' readonly="1" options="{'no_open': True}"/>
+                            <field name="site_id" id="site_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="supplier_id" id="supplier_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="represent" readonly="state_attachemnet != 'draft'"/>
+                            <field name="executed" readonly="1" class="rg"/>
+                            <!-- <field name="is_done" widget="boolean_toggle" string="Décompte final" groups="building_plus.sotaserv_directeur_zone,building_plus.sotaserv_chef_projet,building_plus.sotaserv_conduct_trv" force_save="1" attrs="{'readonly': ['|', ('state_attachemnet', '!=', 'draft'), ('is_automatically_done', '!=', False)]}"/> -->
+                        </group>
+                        <group string="Période de l'attachement">
+                            <field name="start_date" readonly="state_attachemnet != 'draft'"/>
+                            <field name="end_date" readonly="state_attachemnet != 'draft'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lignes de l'attachement" name="products">
+                            <field name="line_ids" mode="list" context="{'attachment_view': True}" options="{'no_open': True}">
+                                <list editable="bottom" delete="false" create="false">
+                                    <field name="name" readonly="1" style="width: 999px !important;"/>
+                                    <!-- <field name="detail_id" /> -->
+                                    <button name="show_detail" type="object" string="Détail" class="btn-primary" icon="fa-info-circle"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter" modifiers="{}">
+                    <field name="message_follower_ids" modifiers="{'readonly':[['state','!=','draft']]}" id="message_follower_ids"/>
+                    <field name="activity_ids" modifiers="{'readonly':[['state','!=','draft']]}" id="activity_ids"/>
+                    <field name="message_ids" modifiers="{'readonly':[['state','!=','draft']]}" id="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>

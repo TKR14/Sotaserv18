@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="report_trasportschedule">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <style>
+                        table,
+                        th,
+                        td {
+                            border: 1px solid black;
+                            border-collapse: collapse;
+                        }
+
+                        table.center {
+                            margin-left: auto;
+                            margin-right: auto;
+                        }
+
+                        .mytable td {
+                            padding: 5px;
+                            text-align: center;
+                        }
+
+                        .mytable th {
+                            padding: 3px;
+                            text-align: center;
+                        }
+                        .lastTable th {
+                            padding: 15px;
+                        }
+                    </style>
+
+                    <div class="oe_structure" />
+                    <table class="center" style="width: 100%; font-size:80%">
+                        <tr>
+                            <th rowspan="2" style="font-size: 20px; padding: 10px;">PLANNING DE TRANSPORT LIGISTIQUE</th>
+                            <td style="padding: 10px;">Ref:</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;">Version: </td>
+                        </tr>
+                    </table>
+                    <br/>
+                    <p>Date : <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')" /></p>
+                    <table class="center mytable" style="width: 100%; font-size:80%">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">CODE</th>
+                                <th rowspan="2">DESIGNATION</th>
+                                <th rowspan="2">Date de départ</th>
+                                <th rowspan="2">Date de d’arrivée</th>
+                                <th colspan="2">TRANSFERT</th>
+                                <th rowspan="2">MARCHANDISES</th>
+                                <th rowspan="2">QUANTITE</th>
+                            </tr>
+                            <tr>
+                                <th>DU</th>
+                                <th>AU</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="lines" t-as="line">
+                                <tr>
+                                    <td><span t-field="line.code"/></td>
+                                    <td><span t-field="line.vehicle_id.name2"/></td>
+                                    <td><span t-field="line.start_date"/></td>
+                                    <td><span t-field="line.end_date"/></td>
+                                    <td><span t-field="line.site_src_id.name"/></td>
+                                    <td><span t-field="line.site_dest_id.name"/></td>
+                                    <td><span t-field="line.merchandise"/></td>
+                                    <td><span t-field="line.qty"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <table class="lastTable" style="width: 50%; font-size:80%;margin-left: 40%;">
+                        <tr>
+                            <th>VISA RESPONSABLE R.M.L</th>
+                        </tr>
+                        <tr>
+                            <td style="padding-left:5px;">
+                                <div style="height: 110px; overflow:hidden;">
+
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

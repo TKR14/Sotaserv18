@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="ir_attachment_type_osdt" model="ir.attachment.type">
+        	<field name="document_type">osdt</field>
+            <field name="code">osdt</field>
+            <field name="name">Ordre de service début des travaux</field>
+        </record>
+       	<record id="ir_attachment_type_osrt" model="ir.attachment.type">
+       		<field name="document_type">osrt</field>
+            <field name="code">osrt</field>
+            <field name="name">Ordre de service reprise des travaux</field>
+        </record>
+       	<record id="ir_attachment_type_osat" model="ir.attachment.type">
+       		<field name="document_type">osat</field>
+            <field name="code">osat</field>
+            <field name="name">Ordre de service d’arrêt des travaux</field>
+        </record>
+       	<record id="ir_attachment_type_pp" model="ir.attachment.type">
+       		<field name="document_type">pp</field>
+            <field name="code">pp</field>
+            <field name="name">PV provisoire</field>
+        </record>
+       	<record id="ir_attachment_type_pd" model="ir.attachment.type">
+       		<field name="document_type">pd</field>
+            <field name="code">pd</field>
+            <field name="name">PV définitif</field>
+        </record>
+    </data>
+</openerp>

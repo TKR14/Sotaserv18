@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bds_wizard" model="ir.ui.view">
+        <field name="name">bds.wizard</field>
+        <!-- <field name="model">bds.wizard</field> -->
+        <field name="model">bds.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="annee" />
+                        <field name="mois" />
+                    </group>
+                    <group>
+                        <field name="id_trans" />
+                        <field name="sent_date" />
+                    </group>
+                </group>
+                <footer>
+                    <button string="Imprimer" class="btn-primary" name="print_data" type="object" />
+                    <button string="Annuler" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_bds_wizard" model="ir.actions.act_window">
+        <field name="name">
+            BDS</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">bds.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_bds_wizard" />
+        <field name="target">new</field>
+    </record>
+    <menuitem name="Generation BDS" id="menu_bds_wizard" parent="cnss_ddd_menu" sequence="0"
+        action="action_bds_wizard" />
+    <!-- <menuitem name="CNSS BDS" id="cnss_bds_menu" parent="cnss_base_menu"
+    action="cnss_bds_action" /> -->
+    <!-- <record id="report_esg_wizard" model="ir.actions.report">
+        <field name="name">
+    ESG</field>
+        <field name="model">bds.wizard</field>
+        <field
+    name="report_type">qweb-pdf</field>
+        <field
+    name="report_name">accounting.esg_wizard</field>
+    </record> -->
+
+</odoo>

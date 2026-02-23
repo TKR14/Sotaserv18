@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+     
+		<record model="ir.ui.view" id="building_caution_craete_form">
+	        <field name="name">building.caution.create.form</field>
+	        <field name="model">building.caution.create</field>
+	        <field name="type">form</field>
+	        <field name="arch" type="xml">
+	        	<form string="Caution">
+	        		<group>
+			            <field name="name" required="1"/>
+			            <field name="start_date"  required="1"/>
+			            <field name="file" />
+		                <field name="amount_caution" />
+						<field name="tax_id" invisible="1"/>
+                    </group>
+	              	<footer>
+	                	<button name="create_document" string="Valider" type="object" class="oe_highlight"/>
+	                	or
+	                	<button string="Annuler" class="oe_link" special="cancel" />
+	           		</footer>
+	            </form>
+	        </field>
+		</record>
+            
+		<record model="ir.actions.act_window" id="action_create_caution">
+		    <field name="name">Créer une caution</field>
+		    <field name="res_model">building.caution.create</field>
+		    <field name="view_type">form</field>
+		    <field name="view_mode">form</field>
+		    <field name="target">new</field>
+		</record>
+            
+    </data>
+</openerp>

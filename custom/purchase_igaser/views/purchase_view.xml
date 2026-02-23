@@ -1,0 +1,873 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record model="ir.ui.view" id="purchase_order_form_inherit2">
+        <field name="name">purchase.order.form.inherit2</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_order']" position="before">
+                <field name="offer_validity"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_ref']" position="replace">
+                <field name="partner_ref" string="Devis N°"/>
+            </xpath>
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="payment_method_id" domain="[('payment_type', '=', 'outbound')]"/>
+                <field name="delivery_method"/>
+                <field name="guaranty_str"/>
+                <field name="delivery_time"/>
+                <field name="available_str"/>
+                <field name="price_comparison_id"/>
+            </xpath>
+            <xpath
+                expr="//field[@name='order_line']/list/field[@name='name']"
+                position="after">
+                <field name="note" optional="hide"/>
+            </xpath>
+            <xpath
+                expr="//field[@name='order_line']/list/field[@name='price_subtotal']"
+                position="after">
+                <field name="product_description_variants" string="Destination"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_ref']" position="after">
+                <field name="contact_id"/>
+                <field name="commercial_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_line_comparison_tree" model="ir.ui.view">
+        <field name="name">purchase.order.line.comparison.tree</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <list string="Comparaison des lignes" editable="bottom" edit="1" create="0">
+                <field name="product_id"/>
+                <field name="partner_id"/>
+                <field name="price_unit"/>
+                <field name="date_planned"/>
+                <field name="name" string="Commentaire"/>
+                <field name="product_qty"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="purchase_line_comparison_filter" model="ir.ui.view">
+        <field name="name">purchase.order.line.comparison.select</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <search string="Search building purchase line">
+                <field name="partner_id" operator="child_of"/>
+                <field name="product_id"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="partner_filt" string="Fournisseur" domain="[]"
+                        context="{'group_by':'partner_id'}"/>
+                    <filter name="product_filt" string="Produit" domain="[]"
+                        context="{'group_by':'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="purchase_line_comparison_action" model="ir.actions.act_window">
+        <field name="name">Comparaison des lignes des offres</field>
+        <field name="res_model">purchase.order.line</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('state','=','draft')]</field>
+        <field name="search_view_id" ref="purchase_line_comparison_filter"/>
+    </record>
+
+    <record id="purchase_price_comparison_form" model="ir.ui.view">
+        <field name="name">purchase.price.comparison.form</field>
+        <field name="model">purchase.price.comparison</field>
+        <field name="arch" type="xml">
+            <form string="comparison" create="0" delete="false">
+                <field name="action_buyer_validated_visible" invisible="1"/>
+                <field name="dg_validated" invisible="1"/>
+                <header>
+                    <button name="action_purchase_validated" type="object" string="Valider"
+                        class="oe_highlight"
+                        invisible="not action_buyer_validated_visible"/>
+                    <button name="action_purchase_cancel" type="object" string="Annuler"
+                        class="btn-secondary"
+                        invisible="not action_buyer_validated_visible or dg_validated"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,purchase_validation"/>
+                </header>
+                <sheet>
+                    <group colspan="4">
+                        <group col="2">
+                            <field name="name"
+                                readonly="state in ['dg_validation', 'purchase_validation']"/>
+                            <field name="date_comparison"
+                                readonly="state in ['dg_validation', 'purchase_validation']"/>
+                            <field name="date_decision"
+                                readonly="state in ['dg_validation', 'purchase_validation']"/>
+                        </group>
+                        <group col="2">
+                            <field name="order_id" domain="[('id', 'in', po_ids)]" readonly="state in ['dg_validation', 'purchase_validation']"/>
+                            <field name="partners" invisible="1"/>
+                            <field name="purchase_order_code" readonly="1"/>
+                            <field name="reason" readonly="1" invisible="state != 'po_canceled'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Offres" ame="offer_tab">
+                            <field name="po_ids" readonly="state in ['dg_validation', 'purchase_validation']" options="{'no_create': True, 'no_open': True}">
+                                <list string="Offres" editable="bottom" create="0">
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="name" readonly="1" force_save="1"/>
+                                    <field name="partner_id"
+                                        options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="payment_method_id"
+                                        domain="[('payment_type', '=', 'outbound')]"/>
+                                    <field name="payment_term_id"/>
+                                    <field name="delivery_method"/>
+                                    <field name="guaranty_str"/>
+                                    <field name="delivery_time"/>
+                                    <field name="available_str"/>
+                                    <field name="offer_validity"/>
+                                    <field name="amount_untaxed"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Lignes des offres" ame="offer_lines_tab">
+                            <field name="po_lines" readonly="state in ['dg_validation', 'purchase_validation']" options="{'no_create': True, 'no_open': True}">
+                                <list string="Lignes" editable="bottom" create="0">
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="product_id" readonly="1" force_save="1"/>
+                                    <field name="partner_id"/>
+                                    <field name="product_qty" readonly="1" force_save="1"/>
+                                    <field name="price_unit"/>
+                                    <field name="taxes_id" widget="many2many_tags"/>
+                                    <field name="date_planned" invisible="1"/>
+                                    <field name="is_available"/>
+                                    <field name="with_technical_sheet"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Recommandations" ame="offer_reccomendation_tab">
+                            <field name="recommendations"
+                                readonly="state in ['dg_validation', 'purchase_validation']">
+                                <list string="Recommandations" editable="bottom">
+                                    <field name="name"/>
+                                    <field name="partner_id"
+                                        domain="[('id', 'in', parent.partners)]"/>
+                                    <field name="description"/>
+                                </list>
+                            </field>
+                        </page>
+
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="purchase_price_comparison_form_readonly" model="ir.ui.view">
+        <field name="name">purchase.price.comparison.form.readonly</field>
+        <field name="model">purchase.price.comparison</field>
+        <field name="arch" type="xml">
+            <form string="comparison" create="0" delete="false" class="no_open_form">
+                <field name="action_buyer_validated_visible" invisible="1"/>
+                <field name="dg_validated" invisible="1"/>
+                <header>
+                    <button name="action_purchase_validated" type="object" string="Valider"
+                        class="oe_highlight"
+                        invisible="not action_buyer_validated_visible"/>
+                    <button name="action_purchase_cancel" type="object" string="Annuler"
+                        class="btn-secondary"
+                        invisible="not action_buyer_validated_visible or dg_validated"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,purchase_validation"/>
+                </header>
+                <sheet>
+                    <group colspan="4">
+                        <group col="2">
+                            <field name="name"
+                                readonly="state in ['dg_validation', 'purchase_validation']"/>
+                            <field name="date_comparison"
+                                readonly="state in ['dg_validation', 'purchase_validation']"/>
+                            <field name="date_decision"
+                                readonly="state in ['dg_validation', 'purchase_validation']"/>
+                        </group>
+                        <group col="2">
+                            <field name="order_id" domain="[('id', 'in', po_ids)]" readonly="state in ['dg_validation', 'purchase_validation']" options="{'no_open': True}"/>
+                            <field name="partners" invisible="1"/>
+                            <field name="purchase_order_code" readonly="1"/>
+                            <field name="reason" readonly="1" invisible="state != 'po_canceled'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Offres" name="offer_tab">
+                            <field name="po_ids" class="no_open" readonly="state in ['dg_validation', 'purchase_validation']" options="{'no_create': True, 'no_open': True}">
+                                <list string="Offres" editable="bottom" create="0">
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="name" readonly="1" force_save="1" options="{'no_open': True}"/>
+                                    <field name="partner_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="payment_method_id" domain="[('payment_type', '=', 'outbound')]"/>
+                                    <field name="payment_term_id"/>
+                                    <field name="delivery_method"/>
+                                    <field name="guaranty_str"/>
+                                    <field name="delivery_time"/>
+                                    <field name="available_str"/>
+                                    <field name="offer_validity"/>
+                                    <field name="amount_untaxed"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Lignes des offres" name="offer_lines_tab">
+                            <field name="po_lines" readonly="state in ['dg_validation', 'purchase_validation']" options="{'no_create': True, 'no_open': True}">
+                                <list string="Lignes" editable="bottom" create="0">
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="product_id" readonly="1" force_save="1" options="{'no_open': True}"/>
+                                    <field name="partner_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="product_qty" readonly="1" force_save="1"/>
+                                    <field name="price_unit" options="{'no_open': True}"/>
+                                    <field name="date_planned" invisible="1"/>
+                                    <field name="is_available" options="{'no_open': True}"/>
+                                    <field name="with_technical_sheet" options="{'no_open': True}"/>
+                                    <field name="note" options="{'no_open': True}"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Recommandations" name="offer_reccomendation_tab">
+                            <field name="recommendations"
+                                readonly="state in ['dg_validation', 'purchase_validation']">
+                                <list string="Recommandations" editable="bottom">
+                                    <field name="name"/>
+                                    <field name="partner_id"
+                                        domain="[('id', 'in', parent.partners)]"/>
+                                    <field name="description"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="purchase_order_view_tree_readonly" model="ir.ui.view">
+        <field name="name">purchase.order.view.tree.readonly</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_view_tree"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <header position="replace"/>
+        </field>
+    </record>
+
+    <record id="purchase_price_comparison_tree" model="ir.ui.view">
+        <field name="name">purchase.price.comparison.tree</field>
+        <field name="model">purchase.price.comparison</field>
+        <field name="arch" type="xml">
+            <list string="comparison" default_order="id desc" delete="false">
+                <field name="purchase_order_code"/>
+                <field name="name"/>
+                <field name="date_comparison"/>
+                <field name="date_decision"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="purchase_price_comparison_filter" model="ir.ui.view">
+        <field name="name">purchase.price.comparison.select</field>
+        <field name="model">purchase.price.comparison</field>
+        <field name="arch" type="xml">
+            <search string="Search comparson">
+                <field name="date_comparison"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Statut" name='filt_state' domain="[]"
+                        context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="purchase_price_comparison_action" model="ir.actions.act_window">
+        <field name="name">Comparaison des Offres</field>
+        <field name="res_model">purchase.price.comparison</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="purchase_price_comparison_filter"/>
+        <field name="context">{"search_default_filt_state": True}</field>
+        <field name="domain">
+            [
+                "|",
+                ("create_uid", "=", uid),
+                ("po_lines.product_id.categ_id.supervisor_ids", "=", uid)
+            ]
+        </field>
+    </record>
+
+    <record id="purchase.purchase_form_action" model="ir.actions.act_window">
+        <field name="domain">
+            [
+                '&amp;',
+                ("state", "in", ("purchase", "done")),
+                '|',
+                ('create_uid', '=', uid),
+                ('order_line.product_id.categ_id.supervisor_ids', '=', uid),
+                ("is_attachment", "=", False)
+            ]
+        </field>
+        <field name="context">
+            {
+                'hide_field': 'state_2'
+            }
+        </field>
+    </record>
+
+    <record id="purchase_form_action_cg" model="ir.actions.act_window">
+        <field name="name">Bons de Commande</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">
+            [
+                ("is_service", "=", True),
+                ("is_attachment", "=", False),
+                ("state", "in", ("purchase", "done", "full", "partial"))
+            ]
+        </field>
+        <field name="context">
+            {   'edit': True,
+                'hide_field': 'state_2'
+            }
+        </field>
+    </record>
+
+
+    <!-- <record id="action_report_request_price_comparison" model="ir.actions.report">
+            <field name="name">Comparaison des offres</field>
+            <field name="model">purchase.price.comparison</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">purchase_igaser.report_request_price_comparison</field>
+            <field name="report_file">purchase_igaser.report_request_price_comparison</field>
+            <field name="print_report_name">'TCO N° %s' % object.name</field>
+            <field name="binding_model_id" ref="model_purchase_price_comparison"/>
+            <field name="binding_type">report</field>
+        </record> -->
+
+    <delete id="purchase.action_report_purchase_order" model="ir.actions.report"/>
+    <!-- <record id="action_report_purchase_quotation_igaser" model="ir.actions.report">
+            <field name="name">DEMANDE DE PRIX</field>
+            <field name="model">purchase.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">purchase_igaser.report_purchasequotation</field>
+            <field name="report_file">purchase_igaser.report_purchasequotation</field>
+            <field name="print_report_name">'DEMANDE N° %s' % object.name</field>
+            <field name="binding_model_id" ref="model_purchase_order"/>
+            <field name="binding_type">report</field>
+        </record> -->
+
+    <!-- <record id="action_report_purchase_order_igaser" model="ir.actions.report">
+            <field name="name">BON DE COMMANDE</field>
+            <field name="model">purchase.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">purchase_igaser.report_purchaseorder_igaser</field>
+            <field name="report_file">purchase_igaser.report_purchaseorder_igaser</field>
+            <field name="print_report_name">'BC N° %s' % object.name</field>
+            <field name="binding_model_id" ref="model_purchase_order"/>
+            <field name="binding_type">report</field>
+        </record> -->
+
+    <record model="ir.ui.view" id="view_picking_form_inherit50">
+        <field name="name">stock.picking.form.inherit2</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <!-- <button name="button_scrap" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button> -->
+
+            <!-- <xpath expr="//header/button[@name='action_toggle_is_locked'][1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//header/button[@name='action_toggle_is_locked'][2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="is_compliant" 
+                readonly="state == 'done'"/>
+            </xpath>
+            <xpath
+                expr="//page[@name='operations']/field[@name='move_ids_without_package']/list/field[@name='product_uom']"
+                position="after">
+                <field name="is_compliant" readonly="state == 'done'"/>
+            </xpath>
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="picking_supplier_numer" readonly="state == 'done'"/>
+            </xpath>
+            <button name="action_cancel" position="replace"/>
+        </field>
+    </record>
+
+    <!-- QWeb Reports -->
+    <!-- <record id="account_invoices_igaser" model="ir.actions.report">
+        <field name="name">Facture Igaser</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">purchase_igaser.report_invoice_igaser</field>
+        <field name="report_file">purchase_igaser.report_invoice_igaser</field>
+        <field name="print_report_name">'Facture N° %s' % object.name</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+    </record> -->
+
+    <!-- Demande Achat -->
+    <record id="account_invoices_igaser_paperformat" model="report.paperformat">
+        <field name="name">Demande d'Achat Paperformat</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">10</field>
+    </record>
+
+    <!-- <record id="account_invoices_igaser" model="ir.actions.report">
+            <field name="name">Demande d'Achat</field>
+            <field name="model">purchase.request</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">purchase_igaser.report_requestorder</field>
+            <field name="report_file">purchase_igaser.report_requestorder</field>
+            <field name="print_report_name">'Demande N° %s' % object.name</field>
+            <field name="binding_model_id" ref="purchase_request.model_purchase_request"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="purchase_igaser.account_invoices_igaser_paperformat"/>
+        </record> -->
+
+    <record id="purchase.report_purchase_quotation" model="ir.actions.report">
+        <field name="binding_model_id" eval="False"/>
+    </record>
+
+    <record id="purchase_request_line_view_search_inherit" model="ir.ui.view">
+        <field name="name">purchase.request.line.view.search.inherit</field>
+        <field name="model">purchase.request.line</field>
+        <field name="inherit_id" ref="purchase_request.purchase_request_line_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="replace">
+                <search>
+                    <group expand="0" string="Group By...">
+                        <filter name="product_category_id" string="Catégorie d'article" domain="[]"
+                            context="{'group_by' : 'product_category_id'}"/>
+                        <filter name="site_id" string="Affaire" domain="[]"
+                            context="{'group_by' : 'site_id'}"/>
+                    </group>
+                </search>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- SEARCH -->
+    <!-- purchase.request.line -->
+    <record id="purchase_request_line_view_search" model="ir.ui.view">
+        <field name="name">purchase.request.line.view.search</field>
+        <field name="model">purchase.request.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <!-- Search fields -->
+                <field name="request_id"/>
+                <field name="product_id"/>
+                <field name="name"/>
+                <field name="supplier_id"/>
+                <field name="state"/>
+
+                <!-- Default fields -->
+                <filter name="approved" string="Approuvée" domain="[('state', '=', 'approved')]"/>
+                <filter name="purchase_validated" string="Achat validé"
+                    domain="[('state', '=', 'purchase_validated')]"/>
+                <filter name="transfer_validated" string="Transfert validé"
+                    domain="[('state', '=', 'transfer_validated')]"/>
+                <filter name="price_request_established" string="Demande de prix établie"
+                    domain="[('state', '=', 'price_request_established')]"/>
+                <filter name="order_established" string="Commande établie"
+                    domain="[('state', '=', 'order_established')]"/>
+                <filter name="transfer_established" string="Transfert établi"
+                    domain="[('state', '=', 'transfer_established')]"/>
+                <filter name="receiving" string="Réception en cours"
+                    domain="[('state', '=', 'receiving')]"/>
+                <filter name="received" string="Réception faite"
+                    domain="[('state', '=', 'received')]"/>
+                <filter name="invoiced" string="Facture établie"
+                    domain="[('state', '=', 'invoiced')]"/>
+                <filter name="invoice_paid" string="Facture payée"
+                    domain="[('state', '=', 'invoice_paid')]"/>
+                <filter name="closed" string="Clôturée" domain="[('state', '=', 'closed')]"/>
+                <filter name="rejected" string="Rejetée" domain="[('state', '=', 'rejected')]"/>
+
+                <!-- Grouping fields -->
+                <filter name="group_request_id" string="Demande d'achat" context="{'group_by': 'request_id'}"/>
+                <filter name="group_product_id" string="Article" context="{'group_by': 'product_id'}"/>
+                <filter name="group_name" string="Description" context="{'group_by': 'name'}"/>
+                <filter name="group_supplier_id" string="Fournisseur" context="{'group_by': 'supplier_id'}"/>
+                <filter name="group_state" string="Statut" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+    <!-- FORM -->
+    <!-- purchase.request -->
+    <record id="purchase_request_view_form" model="ir.ui.view">
+        <field name="name">purchase.request.view.form</field>
+        <field name="model">purchase.request</field>
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <form class="purchase_request_view_form">
+                <header>
+                    <field name="to_reject" invisible="1"/>
+
+                    <button
+                        name="button_draft"
+                        type="object"
+                        string="Remettre en brouillon"
+                        class="btn-secondary"
+                        groups="purchase_igaser.purchase_request_group_to_approve"
+                        invisible="state not in ['to_approve', 'rejected'] or note != ''"
+                   />
+                    <button
+                        name="button_note"
+                        type="object"
+                        string="Motif du refus"
+                        class="btn-secondary"
+                        groups="purchase_igaser.purchase_request_group_to_approve"
+                        invisible="state != 'rejected' or note == ''"
+                   />
+                    <button
+                        name="button_to_approve"
+                        type="object"
+                        string="Valider"
+                        invisible="state != 'draft'"
+                        class="btn-primary"
+                        groups="purchase_igaser.purchase_request_group_to_approve"
+                   />
+                    <button
+                        name="button_approved"
+                        type="object"
+                        string="Approuver"
+                        invisible="state != 'to_approve'"
+                        class="btn-primary"
+                        groups="purchase_igaser.purchase_request_group_approved"
+                   />
+                    <button
+                        name="button_reject"
+                        type="object"
+                        string="Rejeter"
+                        invisible="not to_reject"
+                        class="btn-danger"
+                        groups="purchase_igaser.purchase_request_group_approved"
+                   />
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,to_approve,approved"
+                   />
+                </header>
+                <sheet>
+                    <field name="is_siege_pr" invisible="1" />
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_purchase_request_line" type="object"
+                            class="oe_stat_button" invisible="line_count == 0"
+                            icon="fa-list">
+                            <field name="line_count" widget="statinfo" string="Lignes" readonly="1"/>
+                        </button>
+                        <button name="action_view_purchase_order" type="object"
+                            class="oe_stat_button"
+                            invisible="purchase_count == 0"
+                            icon="fa-shopping-cart">
+                            <field name="purchase_count" widget="statinfo" string="Demandes d'achat"
+                                readonly="1"/>
+                        </button>
+                        <button name="action_view_stock_picking" type="object" class="oe_stat_button"
+                            invisible="move_count == 0" icon="fa-truck">
+                            <field name="move_count" widget="statinfo" string="Stock Moves"
+                                readonly="1"/>
+                        </button>
+                    </div>
+                    <div class="oe_edit_only">
+                        <label for="name" class="oe_inline"/>
+                    </div>
+                    <h1>
+                        <field name="name" readonly="1" class="oe_inline"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="note" invisible="1"/>
+                            <field name="requested_by" options="{'no_create': True, 'no_open': True}" readonly="1" force_save="1"/>
+                            <field name="site_id" readonly="state != 'draft'" options="{'no_create': True, 'no_open': True}" />
+                        </group>
+                        <group>
+                            <field name="date_start" readonly="1"/>
+                            <field name="date_approval"/>
+                            <field name="description" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lignes">
+                            <field name="need_product_ids" invisible="1"/>
+                            <field name="line_ids" readonly="state != 'draft' or not site_id">
+                                <list editable="bottom" decoration-muted="state == 'canceled'">
+                                    <field name="product_id" required="1" domain="[('id', 'in', parent.need_product_ids), ('categ_id.category_type', '=', 'other')]" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="name" readonly="not product_id"/>
+                                    <field name="product_qty" required="1" readonly="not product_id"/>
+                                    <field name="available_quantity" readonly="1" force_save="1" invisible="context.get('is_siege')" class="oe_edit_only"/>
+                                    <field name="product_uom_id" readonly="1" force_save="1" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="assigned_to" readonly="1" force_save="1" options="{'no_create': True, 'no_open': True}" string="Acheteur"/>
+                                    <field name="estimated_cost" readonly="1" force_save="1" invisible="context.get('is_siege')"/>
+                                    <field name="cost" column_invisible="not parent.is_siege_pr"/>
+                                    <field name="state" invisible="1"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right" invisible="context.get('is_siege')">
+                                <field name="currency_id" invisible="1" can_create="true" can_write="true" modifiers="{'invisible':true,'readonly':true}"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="estimated_cost" string="Coût total estimé"/>
+                                </div>
+                                <field name="estimated_cost" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}" modifiers="{'readonly':true}" id="estimated_cost"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_ids" widget="mail_thread" id="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <!-- note -->
+    <record id="purchase_request_view_form_note" model="ir.ui.view">
+        <field name="name">purchase.request.view.form.note</field>
+        <field name="model">purchase.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="note" readonly="context.get('draft')" nolabel="1"/>
+                </sheet>
+                <footer>
+                    <button name="button_rejected" type="object" string="Rejeter" class="btn-danger"
+                        invisible="not context.get('rejected')"/>
+                    <button name="button_draft" type="object" string="Remettre en brouillon"
+                        class="btn-primary" invisible="not context.get('draft')"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <!-- res.groups -->
+    <record id="res_groups_view_form_cost_center" model="ir.ui.view">
+        <field name="name">res.groups.view.form.cost.center</field>
+        <field name="model">res.groups</field>
+        <field name="arch" type="xml">
+            <form class="res_groups_view_form_cost_center">
+                <sheet>
+                    <group>
+                        <field name="name" string="Centre de coût"/>
+                    </group>
+                    <notebook>
+                        <page string="Utilisateurs">
+                            <field name="users">
+                                <list editable="bottom" create="0">
+                                    <field name="name" readonly="1"/>
+                                    <field name="login" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- TREE -->
+    <!-- purchase.request -->
+    <record id="purchase_request_view_tree" model="ir.ui.view">
+        <field name="name">purchase.request.view.list</field>
+        <field name="model">purchase.request</field>
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <list string="Demande d'achat" 
+                decoration-info="state == 'draft'" 
+                decoration-danger="state == 'rejected'" 
+                decoration-muted="state == 'canceled'">
+                
+                <field name="message_needaction" column_invisible="True"/>
+                
+                <field name="name"/>
+                <field name="requested_by" widget="many2one_avatar_user"/>
+                <field name="site_id"/>
+                <field name="date_approval"/>
+                
+                <field name="state" 
+                    widget="badge"
+                    decoration-info="state == 'draft'"
+                    decoration-warning="state == 'to_approve'"
+                    decoration-success="state == 'approved'"
+                    decoration-danger="state == 'rejected'"
+                    decoration-muted="state == 'canceled'"
+                />
+            </list>
+        </field>
+    </record>
+    <!-- purchase.request.line -->
+    <record id="purchase_request_line_view_tree" model="ir.ui.view">
+        <field name="name">purchase.request.line.view.tree</field>
+        <field name="model">purchase.request.line</field>
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <list string="Lignes de demande d'achat" class="purchase_request_line_view_tree_class"
+                decoration-info="state == 'draft'"
+                decoration-danger="state == 'rejected'"
+                decoration-muted="state == 'purchase_validated' and has_pr"
+            >
+                <field name="has_pr" invisible="1"/>
+                <field name="date_approval"/>
+                <field name="request_id"/>
+                <field name="product_id"/>
+                <field name="name"/>
+                <field name="supplier_id" string="Fournisseur"/>
+                <field name="product_qty"/>
+                <field name="product_uom_id"/>
+                <field name="estimated_cost" widget="monetary" invisible="context.get('is_siege')"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="requested_by" widget="many2one_avatar_user"/>
+                <field name="assigned_to" widget="many2one_avatar_user" string="Acheteur"/>
+                <field name="write_uid" widget="many2one_avatar_user" string="Mise à jour par"/>
+                <field name="state" widget="badge"
+                    decoration-info="state == 'draft'"
+                    decoration-warning="state == 'validated'"
+                    decoration-success="state == 'approved'"
+                    decoration-danger="state == 'rejected'"
+                />
+            </list>
+        </field>
+    </record>
+    <!-- res.groups -->
+    <record id="res_groups_view_tree" model="ir.ui.view">
+        <field name="name">res.groups.view.tree</field>
+        <field name="model">res.groups</field>
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" string="Nom du groupe"/>
+            </list>
+        </field>
+    </record>
+    <record id="res_groups_view_tree_cost_center" model="ir.ui.view">
+        <field name="name">res.groups.view.tree.cost.center</field>
+        <field name="model">res.groups</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" string="Centre de coût"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="purchase_request_action_buyer" model="ir.actions.act_window">
+        <field name="name">Lignes de demande d'achat</field>
+        <field name="res_model">purchase.request.line</field>
+        <field name="view_mode">list</field>
+        <field name="domain">
+            [
+                '|', '|', 
+                ('chargeby_id', '=', uid),
+                ('product_id.categ_id.supervisor_ids', '=', uid),
+                '&amp;', '|',
+                '&amp;',
+                ('product_id.categ_id.secondary_buyer_ids', '=', uid),
+                ('product_id.categ_id.buyers_count', '=', 0),
+                ('product_id.categ_id.buyer_ids.user_id', '=', uid),
+                ('state', 'not in', ['draft', 'validated'])
+            ]
+        </field>
+        <field name="search_view_id" ref="purchase_request_line_view_search"/>
+        <field name="context">
+            {
+                "search_default_product_category_id": True,
+                "search_default_approved": 1, "search_default_purchase_validated": 1,
+                "search_default_transfer_validated": 1, "search_default_price_request_established": 1,
+                "search_default_order_established": 1, "search_default_transfer_established": 1,
+                "search_default_group_state_id": 1,
+            }
+        </field>
+        <field name="view_ids" eval="
+            [
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('purchase_igaser.purchase_request_line_view_tree')}),
+            ]
+        "/>
+    </record>
+
+    <record id="purchase_request_action_siege_pr" model="ir.actions.act_window">
+        <field name="name">Demandes d'achat</field>
+        <field name="res_model">purchase.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="
+            [
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('purchase_igaser.purchase_request_view_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('purchase_igaser.purchase_request_view_form')})
+            ]
+        "/>
+        <field name="context">
+            {
+                "is_siege": True,
+                "is_siege_pr": True,
+            }
+        </field>
+        <field name="domain">[("site_id.number", "=", "000")]</field>
+    </record>
+
+    <record id="purchase_request_action_siege_fg" model="ir.actions.act_window">
+        <field name="name">Demandes d'achat</field>
+        <field name="res_model">purchase.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="
+            [
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('purchase_igaser.purchase_request_view_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('purchase_igaser.purchase_request_view_form')})
+            ]
+        "/>
+        <field name="context">
+            {
+                "is_siege": True,
+                "is_siege_fg": True,
+            }
+        </field>
+        <field name="domain">[("site_id.number", "=", "001")]</field>
+    </record>
+
+    <record id="purchase_request_action_siege_lg" model="ir.actions.act_window">
+        <field name="name">Demandes d'achat</field>
+        <field name="res_model">purchase.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="
+            [
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('purchase_igaser.purchase_request_view_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('purchase_igaser.purchase_request_view_form')})
+            ]
+        "/>
+        <field name="context">
+            {
+                "is_siege": True,
+                "is_siege_lg": True,
+            }
+        </field>
+        <field name="domain">[("site_id.number", "=", "002")]</field>
+    </record>
+</odoo>

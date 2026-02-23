@@ -1,0 +1,131 @@
+<odoo>
+    <record id="hr_assignment_request_line_view_tree" model="ir.ui.view">
+        <field name="name">hr.assignment.request.line.view.list</field>
+        <field name="model">hr.assignment.request.line</field>
+        <field name="arch" type="xml">
+            <list expand="1" export_xlsx="0" decoration-info="state == 'draft'" decoration-danger="state == 'rejected'" class="hr_assignment_request_line_view_tree">
+                <field name="request_id" optional="show"/>
+                <field name="requested_by" optional="show"/>
+                <field name="requested_on" optional="show"/>
+                <field name="site_id" optional="hide" options="{'no_open': True}"/>
+                <field name="job_category_id" options="{'no_open': True}" optional="hide"/>
+                <field name="job_id" options="{'no_open': True}"/>
+                <field name="uom_id" optional="hide"/>
+                <field name="number_requested"/>
+                <field name="number_assigned"/>
+                <field name="date_requested"/>
+                <field name="state" widget="badge"
+                    decoration-info="state == 'draft'"
+                    decoration-warning="state in ['validated', 'approved', 'in_progress']"
+                    decoration-success="state in ['done', 'closed']"
+                    decoration-danger="state == 'rejected'"
+                />
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_assignment_request_line_view_form" model="ir.ui.view">
+        <field name="name">hr.assignment.request.line.view.form</field>
+        <field name="model">hr.assignment.request.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button 
+                       name="open_cancellation_reason_wizard" 
+                       type="object" 
+                       string="Remettre" 
+                       invisible="state != 'approved'" 
+                       class="btn-secondary" 
+                       context="{'method': 'action_back_to_validated'}"
+                       groups="hr_assignment.hr_assignment_request_group_remettre_drh_line"
+                    />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,validated,approved,in_progress,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group colspan="2">
+                            <field name="site_id" options="{'no_open': True}" readonly="1" class="oe_inline"/>
+                            <field name="request_id" options="{'no_open': True}" readonly="1"/>
+                            <field name="requested_by" options="{'no_open': True}" readonly="1"/>
+                            <field name="requested_on" readonly="1"/>
+                        </group>
+                        <group colspan="2">
+                            <group style="width: 30% !important;">
+                                <field name="job_category_id" options="{'no_open': True}" readonly="1"/>
+                                <field name="job_id" options="{'no_open': True}" readonly="1"/>
+                                <field name="uom_id" options="{'no_open': True}" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="number_requested" string="Demandé" readonly="1"/>
+                                <field name="number_assigned" string="Affecté" readonly="1"/>
+                                <field name="date_requested" readonly="1"/>
+                            </group>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lignes affectées" name="assignment_lines">
+                            <field name="employee_ids" invisible="1"/>
+                            <field name="assignment_line_ids" 
+                                   options="{'no_open': True}" 
+                                   readonly="state not in ['approved', 'in_progress', 'done']">
+                                <list editable="bottom">
+                                    <field name="state" column_invisible="True"/>
+                                    <field name="employee_id" required="1" options="{'no_open': True, 'no_create': True}" domain="[('id', 'in', parent.employee_ids)]"/>
+                                    <field name="date_start" required="1"/>
+                                    <field name="date_end" readonly="1"/>
+                                    <field name="state" widget="badge"
+                                        decoration-warning="state == 'planned'"
+                                        decoration-success="state == 'open'"
+                                        decoration-muted="state == 'done'"
+                                        readonly="1"
+                                    />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_assignment_request_line_view_search" model="ir.ui.view">
+        <field name="name">hr.assignment.request.line.view.search</field>
+        <field name="model">hr.assignment.request.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="request_id"/>
+                <field name="site_id"/>
+                <field name="requested_by"/>
+                <field name="job_category_id"/>
+                <field name="job_id"/>
+
+                <filter string="Mes lignes" name="filter_requested_by_uid" domain="[('requested_by', '=', uid)]"/>
+                <separator/>
+                <filter string="Dû dans 7 jours" name="filter_due_in_7_days" 
+                        domain="[('date_requested', '&lt;=', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Dû dans 4 semaines" name="filter_due_in_4_weeks" 
+                        domain="[('date_requested', '&lt;=', (context_today() + relativedelta(weeks=4)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Brouillon" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Validée" name="filter_validated" domain="[('state', '=', 'validated')]"/>
+                <filter string="À affecter" name="filter_approved" domain="[('state', '=', 'approved')]"/>
+                <filter string="Affectation en cours" name="filter_in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Traitée" name="filter_done" domain="[('state', '=', 'done')]"/>
+                <filter string="Close" name="filter_closed" domain="[('state', '=', 'closed')]"/>
+                <filter string="Rejetée" name="filter_rejected" domain="[('state', '=', 'rejected')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_site_id" string="Chantier" context="{'group_by': 'site_id'}"/>
+                    <filter name="group_by_requested_by" string="Demandé par" context="{'group_by': 'requested_by'}"/>
+                    <filter name="group_by_request_id" string="Demande" context="{'group_by': 'request_id'}"/>
+                    <filter name="group_by_job_id" string="Poste" context="{'group_by': 'job_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

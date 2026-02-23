@@ -1,0 +1,13 @@
+<odoo>
+    <record id="custom_crm_case_list_view_oppor" model="ir.ui.view">
+        <field name="name">crm.lead.list.readonly</field>
+        <field name="model">crm.lead</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="multi_edit">0</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

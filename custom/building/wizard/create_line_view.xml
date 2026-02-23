@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="create_line_wizard_view" model="ir.ui.view">
+        <field name="name">create.line.wizard.view</field>
+        <field name="model">create.line.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="categories" />
+                    <field name="building_purchase_need_site_installation"
+                        invisible="categories != 'building.purchase.need.site.installation'" 
+                        required="categories == 'building.purchase.need.site.installation'" 
+                        options="{'no_create': True, 'no_open': True}"/>
+                    
+                    <field name="building_purchase_need_ressource_humain"
+                        invisible="categories != 'building.purchase.need.ressource.humain'" 
+                        required="categories == 'building.purchase.need.ressource.humain'" 
+                        options="{'no_create': True, 'no_open': True}"/>
+                    
+                    <field name="building_purchase_need_line"
+                        invisible="categories != 'building.purchase.need.line'" 
+                        required="categories == 'building.purchase.need.line'" 
+                        options="{'no_create': True, 'no_open': True}"/>
+                    
+                    <field name="building_purchase_need_service_provision"
+                        invisible="categories != 'building.purchase.need.service.provision'" 
+                        required="categories == 'building.purchase.need.service.provision'" 
+                        options="{'no_create': True, 'no_open': True}"/>
+                    
+                    <field name="building_purchase_need_mini_equipment"
+                        invisible="categories != 'building.purchase.need.mini.equipment'" 
+                        required="categories == 'building.purchase.need.mini.equipment'" 
+                        options="{'no_create': True, 'no_open': True}"/>
+                    
+                    <field name="building_purchase_need_equipment"
+                        invisible="categories != 'building.purchase.need.equipment'" 
+                        required="categories == 'building.purchase.need.equipment'" 
+                        options="{'no_create': True, 'no_open': True}"/>
+                    
+                    <field name="building_purchase_need_small_equipment"
+                        invisible="categories != 'building.purchase.need.small.equipment'" 
+                        required="categories == 'building.purchase.need.small.equipment'" 
+                        options="{'no_create': True, 'no_open': True}"/>
+                    
+                    <field name="building_purchase_need_fuel"
+                        invisible="categories != 'building.purchase.need.fuel'" 
+                        required="categories == 'building.purchase.need.fuel'" 
+                        options="{'no_create': True, 'no_open': True}"/>
+
+                    <field name="line_number" />
+                </group>
+                <footer>
+                    <button string="Ajouter" class="btn-primary" name="create_line" type="object" />
+                    <button string="Annuler" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="create_need_line_wizard_view" model="ir.ui.view">
+        <field name="name">create.need.line.wizard.view</field>
+        <field name="model">create.need.line.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="categories" />
+                    <field name="site_installation"
+                        invisible="categories != 'site.installation'" 
+                        required="categories == 'site.installation'"
+                        options="{'no_create': True}" />
+                    
+                    <field name="ressource_humain"
+                        invisible="categories != 'ressource.humain'" 
+                        required="categories == 'ressource.humain'"
+                        options="{'no_create': True}" />
+                    
+                    <field name="line"
+                        invisible="categories != 'line'" 
+                        required="categories == 'line'"
+                        options="{'no_create': True}" />
+                    
+                    <field name="service_provision"
+                        invisible="categories != 'service.provision'" 
+                        required="categories == 'service.provision'"
+                        options="{'no_create': True}" />
+                    
+                    <field name="mini_equipment"
+                        invisible="categories != 'mini.equipment'" 
+                        required="categories == 'mini.equipment'"
+                        options="{'no_create': True}" />
+                    
+                    <field name="equipment"
+                        invisible="categories != 'equipment'" 
+                        required="categories == 'equipment'"
+                        options="{'no_create': True}" />
+                    
+                    <field name="small_equipment"
+                        invisible="categories != 'small.equipment'" 
+                        required="categories == 'small.equipment'"
+                        options="{'no_create': True}" />
+                    
+                    <field name="fuel"
+                        invisible="categories != 'fuel'" 
+                        required="categories == 'fuel'"
+                        options="{'no_create': True}" />
+                </group>
+                <footer>
+                    <button string="Ajouter" class="btn-primary" name="create_need_line" type="object" />
+                    <button string="Annuler" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="create_line_wizard_action" model="ir.actions.act_window">
+        <field name="name">Ajouter line</field>
+        <field name="res_model">create.line.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="create_need_line_wizard_action" model="ir.actions.act_window">
+        <field name="name">Ajouter line</field>
+        <field name="res_model">create.need.line.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

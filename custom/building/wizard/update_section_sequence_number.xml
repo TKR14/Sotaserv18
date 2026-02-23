@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="update_section_sequence_number_wizard_view" model="ir.ui.view">
+        <field name="name">update.section.sequence.number.wizard.view</field>
+        <field name="model">update.section.sequence.number.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="categories"/>
+                    
+                    <field name="building_purchase_need_site_installation" 
+                           invisible="categories != 'building.purchase.need.site.installation'" 
+                           required="categories == 'building.purchase.need.site.installation'"/>
+                    
+                    <field name="building_purchase_need_ressource_humain" 
+                           invisible="categories != 'building.purchase.need.ressource.humain'" 
+                           required="categories == 'building.purchase.need.ressource.humain'"/>
+                    
+                    <field name="building_purchase_need_line" 
+                           invisible="categories != 'building.purchase.need.line'" 
+                           required="categories == 'building.purchase.need.line'"/>
+                    
+                    <field name="building_purchase_need_service_provision" 
+                           invisible="categories != 'building.purchase.need.service.provision'" 
+                           required="categories == 'building.purchase.need.service.provision'"/>
+                    
+                    <field name="building_purchase_need_mini_equipment" 
+                           invisible="categories != 'building.purchase.need.mini.equipment'" 
+                           required="categories == 'building.purchase.need.mini.equipment'"/>
+                    
+                    <field name="building_purchase_need_equipment" 
+                           invisible="categories != 'building.purchase.need.equipment'" 
+                           required="categories == 'building.purchase.need.equipment'"/>
+                    
+                    <field name="building_purchase_need_diesel_consumption" 
+                           invisible="categories != 'building.purchase.need.diesel.consumption'" 
+                           required="categories == 'building.purchase.need.diesel.consumption'"/>
+                    
+                    <field name="building_purchase_need_small_equipment" 
+                           invisible="categories != 'building.purchase.need.small.equipment'" 
+                           required="categories == 'building.purchase.need.small.equipment'"/>
+
+                    <field name="old_section_sequence_number" force_save="1" readonly="1"/>
+                    <field name="new_section_sequence_number" required="1"/>
+                </group>
+                <footer>
+                    <button string="Modifier" class="btn-primary" name="update_section_sequence_number" type="object" />
+                    <button string="Annuler" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="update_section_sequence_number_wizard_action" model="ir.actions.act_window">
+        <field name="name">Modifier séquence section</field>
+        <field name="res_model">update.section.sequence.number.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

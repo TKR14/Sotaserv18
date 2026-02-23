@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_purchase_request_price_comparison_inherit" model="ir.ui.view">
+        <field name="name">purchase.request.price.comparison.view.form.inherit</field>
+        <field name="model">purchase.request.price.comparison</field>
+        <field name="inherit_id" ref="purchase_igaser.view_purchase_request_price_comparison" />
+        <field name="arch" type="xml">
+            <xpath expr="//footer" position="before">
+                <group>
+                    <field name="purchase_order_codes" required="1" options="{'no_create': True, 'no_open': True}" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

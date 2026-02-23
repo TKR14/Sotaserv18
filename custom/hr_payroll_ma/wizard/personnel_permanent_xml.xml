@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="personnel_permanent_xml_view" model="ir.ui.view">
+        <field name="name">personnel.permanent.xml.view</field>
+        <field name="model">personnel.permanent.xml</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="year" />
+                    </group>
+                    <group>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Imprimer" class="btn-primary" name="generateXML" type="object" />
+                    <button string="Annuler" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="personnel_permanent_xml_action" model="ir.actions.act_window">
+        <field name="name">9421 XML</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">personnel.permanent.xml</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="personnel_permanent_xml_view" />
+        <field name="target">new</field>
+    </record>
+
+    <!-- <menuitem id="personnel_permanent_xml_menu" name="9421 XML" sequence="2" parent="om_hr_payroll.menu_hr_payroll_analyse" action="personnel_permanent_xml_action" /> -->
+
+</odoo>

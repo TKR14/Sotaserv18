@@ -1,0 +1,93 @@
+.stock_dashboard .o_notebook_headers {
+    display: none;
+}
+
+.stock_dashboard .o_notebook {
+    margin-top: -10px;
+}
+
+.o_form_dashboard_stock_wizard .o_group, .stock_dashboard .o_group {
+    margin: 5px 0;
+}
+
+.stock_dashboard th.o_list_button {
+    border-left: 0 !important;
+}
+
+.stock_dashboard th[data-name="stock_in"] {
+    border-right: 0 !important;
+}
+
+.stock_dashboard td.fake_link {
+    font-weight: 600;
+}
+
+
+.stock_inventory_view_form .wider_labels .o_td_label label {
+    width: 200px !important;
+}
+
+
+.modal-content:has(.stock_inventory_wizard_view_form) footer {
+    display: flex;
+    align-items: center;
+}
+
+.modal-content:has(.stock_inventory_wizard_view_form) footer div.o_field_binary_file  {
+    margin-right: 0 !important;
+}
+
+.modal-content:has(.stock_inventory_wizard_view_form) footer div.o_field_binary_file .o_select_file_button {
+    margin-bottom: 0 !important;
+}
+
+.modal-content:has(.stock_inventory_wizard_view_form) footer .btn.btn-secondary.fa.fa-pencil.o_select_file_button {
+    margin-left: 4px;
+    margin-right: 3px !important;
+}
+
+.modal-content:has(.stock_inventory_wizard_view_form) footer div.o_field_binary_file input {
+    height: 30px !important;
+    width: 300px !important;
+}
+
+.modal-content:has(.stock_inventory_wizard_view_form) footer button {
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.stock_inventory_wizard_view_form .o_field_widget[name="message"] {
+    margin-bottom: 0 !important;
+}
+
+.stock_inventory_wizard_view_form .message {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #eee;
+    border: 1px solid #ddd;
+    width: 100%;
+}
+
+.stock_inventory_wizard_view_form .message p {
+    display: inline-block;
+    color: #000;
+    padding: 1px 4px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.stock_inventory_wizard_view_form .message p.red {
+    background: #ffc0c0;
+}
+
+.stock_inventory_wizard_view_form .message p.green {
+    background: #c0ffdb;
+}
+
+.stock_inventory_wizard_view_form .message ul:last-child {
+    margin-bottom: 0 !important;
+}
+
+.stock_inventory_wizard_view_form {
+    background-color: transparent;
+}

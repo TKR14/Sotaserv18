@@ -1,0 +1,74 @@
+<odoo>
+
+    <record id="product_category_view_form_buyers" model="ir.ui.view">
+        <field name="name">product.category.view.form.buyers</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_product_buyer" type="object" class="oe_stat_button buyer_ids" icon="fa-user" style="width: 240px;">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">
+                            <field name="buyers_count"/> acheteurs / <field name="supervisors_count"/> superviseurs
+                        </span>
+                    </div>
+                </button>
+            </xpath>
+
+            <xpath expr="//field[@name='removal_strategy_id']" position="after">
+                <field name="category_type" readonly="is_fuel"/>
+                <field name="is_fuel" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_buyer_view_tree" model="ir.ui.view">
+        <field name="name">product.buyer.view.list</field>
+        <field name="model">product.buyer</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="category_id" invisible="context.get('default_category_id')"/>
+                <field name="user_id" options="{'no_create': True, 'no_open': True}" required="1"/>
+                <field name="is_supervisor" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+    
+    <record id="product_buyer_view_search" model="ir.ui.view">
+        <field name="name">product.buyer.view.search</field>
+        <field name="model">product.buyer</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="category_id"/>
+                <field name="user_id"/>
+                <filter string="Superviseur" name="filter_is_supervisor" domain="[('is_supervisor', '=', True)]"/>
+                <filter string="Non superviseur" name="filter_not_is_supervisor" domain="[('is_supervisor', '=', False)]"/>
+                <group>
+                    <filter name="group_by_category_id" context="{'group_by': 'category_id'}" invisible="context.get('default_category_id')"/>
+                    <filter name="group_by_user_id" context="{'group_by': 'user_id'}" invisible="context.get('default_category_id')"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="product_buyer_action" model="ir.actions.act_window">
+        <field name="name">Acheteurs</field>
+        <field name="res_model">product.buyer</field>
+        <field name="view_mode">list</field>
+        <field name="context">{
+            "search_default_group_by_category_id": True,
+            "search_default_filter_not_is_supervisor": True,
+            "create": False,
+            "delete": False,
+            "edit": False,
+        }</field>
+    </record>
+
+    <menuitem
+        id="product_buyer_menu"
+        parent="stock.menu_product_in_config_stock"
+        action="product_buyer_action"
+        sequence="3"
+    />
+
+</odoo>

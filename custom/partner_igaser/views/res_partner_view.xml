@@ -1,0 +1,203 @@
+<odoo>
+    <record model="ir.ui.view" id="crm_view_partner_form_inherit">
+        <field name="name">crm.res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vat']" position="after">
+                    <field name="taxpayer_account"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.accounting</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <!-- <button name="action_validate_finance" 
+                            string="Valider" 
+                            type="object" 
+                            class="oe_highlight" 
+                            attrs="{'invisible': [('completed_by_finance', '=', True)]}"
+                            groups="account_plus.acount_move_group_invoice"
+                    /> -->
+                    <button name="open_set_to_draft_wizard" string="Remettre" type="object" invisible="state != 'approved'" groups="building_plus.sotaserv_daf" context="{'method': 'action_set_to_draft'}"/>
+                    <button name="action_validate" string="Valider" type="object" class="oe_highlight" invisible="state != 'draft'" groups="building_plus.sotaserv_daf"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+            </xpath>
+            <xpath expr="//field[@name='property_account_payable_id']" position="after">
+                <field name="taux_visible" invisible="1"/>
+                <field name="regime_imposition"/>
+                <field name="taux_imposition" invisible="not taux_visible" required="taux_visible" options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="completed_by_finance" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_company_form_inherit">
+        <field name="name">crm.res.company.form</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="taxpayer_account"/>
+            </xpath>
+            <xpath expr="//field[@name='company_registry']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='phone']" position="after">
+                <field name="mobile"/>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="after">
+                <field name="capital"/>
+                <field name="rccm"/>
+                <field name="niu_nemuro"/>
+                <field name="cnps"/>
+                <field name="bank_account"/>
+                <label for="purchase_tolerance" string="Tolérance Achat"/>
+                <div class="d-flex">
+                    <field name="purchase_tolerance" />
+                    <span class="ml-1">%</span>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="new_res_partner_form_view" model="ir.ui.view">
+        <field name="name">res.partner.form.custom</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title" modifiers="{}">
+                        <field name="is_company" invisible="1" on_change="1" modifiers="{'invisible':true}" id="is_company"/>
+                        <field name="commercial_partner_id" invisible="1" on_change="1" can_create="true" can_write="true" modifiers="{'invisible':true,'readonly':true}" id="commercial_partner_id"/>
+                        <field name="active" invisible="1" on_change="1" modifiers="{'invisible':true}" id="active"/>
+                        <field name="company_type" widget="radio" class="oe_edit_only" options="{'horizontal': true}" on_change="1" modifiers="{}" id="company_type"/>
+                        <h1 modifiers="{}">
+                            <field name="name" default_focus="1" placeholder="Nom" required="type == 'contact'" widget="field_partner_autocomplete" on_change="1" modifiers="{'required':[['type','=','contact']]}" id="name"/>
+                        </h1>
+                        <div class="o_row" modifiers="{}">
+                            <field name="parent_id" widget="res_partner_many2one" placeholder="Société" domain="[('is_company', '=', True)]" context="{'default_is_company': True, 'show_vat': True}" invisible="(is_company and not parent_id) or (company_name != False and company_name != '')" on_change="1" can_create="true" can_write="true" modifiers="{'invisible':['|','&amp;',['is_company','=',true],['parent_id','=',false],['company_name','!=',false],['company_name','!=','']]}" id="parent_id"/>
+                            <field name="company_name" invisible="not company_name or company_name == '' or is_company" on_change="1" modifiers="{'invisible':['|','|',['company_name','=',false],['company_name','=',''],['is_company','=',true]]}" id="company_name"/>
+                            <button name="create_company" icon="fa-plus-square" string="Créer une société" type="object" class="oe_edit_only btn-link" invisible="is_company or company_name == '' or not company_name" modifiers="{'invisible':['|','|',['is_company','=',true],['company_name','=',''],['company_name','=',false]]}" options="{}"/>
+                        </div>
+                    </div>
+                    <group modifiers="{}">
+                        <group modifiers="{}">
+                            <field name="type" on_change="1" invisible="1" modifiers="{'invisible':true}" id="type"/>
+                            <span class="o_form_label o_td_label" name="address_name" modifiers="{}">
+                                <b invisible="not parent_id or type != 'contact'" modifiers="{'invisible':['|',['parent_id','=',false],['type','!=','contact']]}">
+                                    Adresse de la société
+                                </b>
+                                <b invisible="not parent_id or type != 'invoice'" modifiers="{'invisible':['|',['parent_id','=',false],['type','!=','invoice']]}">
+                                    Adresse de facturation
+                                </b>
+                                <b invisible="not parent_id or type != 'delivery'" modifiers="{'invisible':['|',['parent_id','=',false],['type','!=','delivery']]}">
+                                    Adresse de livraison
+                                </b>
+                                <b invisible="not parent_id or type != 'other'" modifiers="{'invisible':['|',['parent_id','=',false],['type','!=','other']]}">
+                                    Autre adresse
+                                </b>
+                                <b invisible="not parent_id or type != 'private'" modifiers="{'invisible':['|',['parent_id','=',false],['type','!=','private']]}">
+                                    Adresse privée
+                                </b>
+                                <b invisible="parent_id and type" modifiers="{'invisible':['&amp;',['parent_id','!=',false],['type','!=',false]]}">
+                                    Adresse
+                                </b>
+                            </span>
+                            <div class="o_address_format" modifiers="{}">
+                                <field name="street" placeholder="Rue..." class="o_address_street" readonly="type == 'contact' and parent_id" modifiers="{'readonly':[['type','=','contact'],['parent_id','!=',false]]}" id="street"/>
+                                <field name="street2" placeholder="Rue 2..." class="o_address_street" readonly="type == 'contact' and parent_id" modifiers="{'readonly':[['type','=','contact'],['parent_id','!=',false]]}" id="street2"/>
+                                <field name="city" placeholder="Ville" class="o_address_city" readonly="type == 'contact' and parent_id" modifiers="{'readonly':[['type','=','contact'],['parent_id','!=',false]]}" id="city"/>
+                                <field name="state_id" class="o_address_state" placeholder="État" options="{'no_open': True, 'no_quick_create': True}" readonly="type == 'contact' and parent_id" context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}" on_change="1" can_create="true" can_write="true" modifiers="{'readonly':[['type','=','contact'],['parent_id','!=',false]]}" id="state_id"/>
+                                <field name="zip" placeholder="Code postal" class="o_address_zip" readonly="type == 'contact' and parent_id" on_change="1" modifiers="{'readonly':[['type','=','contact'],['parent_id','!=',false]]}" id="zip"/>
+                                <field name="country_id" placeholder="Pays" class="o_address_country" options="{'no_open': True, 'no_create': True}" readonly="type == 'contact' and parent_id" on_change="1" can_create="true" can_write="true" modifiers="{'readonly':[['type','=','contact'],['parent_id','!=',false]]}" id="country_id"/>
+                            </div>
+                            <field name="vat" placeholder="e.g. BE0477472701" readonly="parent_id" widget="field_partner_autocomplete" string="TVA" on_change="1" modifiers="{'readonly':[['parent_id','!=',false]]}" id="vat"/>
+                            <field name="taxpayer_account" modifiers="{}" id="taxpayer_account"/>
+                        </group>
+                        <group modifiers="{}">
+                            <field name="function" placeholder="ex : Directeur Commercial" invisible="is_company" modifiers="{'invisible':[['is_company','=',true]]}" id="function"/>
+                            <field name="phone_blacklisted" invisible="1" modifiers="{'invisible':true,'readonly':true}" id="phone_blacklisted"/>
+                            <field name="mobile_blacklisted" invisible="1" modifiers="{'invisible':true,'readonly':true}" id="mobile_blacklisted"/>
+                            <label for="phone" class="oe_inline" modifiers="{}"/>
+                            <div class="o_row o_row_readonly" modifiers="{}">
+                                <button name="phone_action_blacklist_remove" class="fa fa-ban text-danger" title="Ce numéro de téléphone est blacklisté pour le marketing par SMS. Cliquez pour le déblacklister." type="object" context="{'default_phone': phone}" invisible="not phone_blacklisted" modifiers="{'invisible':[['phone_blacklisted','=',false]]}" options="{}"/>
+                                <field name="phone" widget="phone" on_change="1" modifiers="{}" id="phone"/>
+                            </div>
+                            <field name="phone_blacklisted" invisible="1" modifiers="{'invisible':true,'readonly':true}" id="phone_blacklisted__44__"/>
+                            <field name="mobile_blacklisted" invisible="1" modifiers="{'invisible':true,'readonly':true}" id="mobile_blacklisted__45__"/>
+                            <label for="mobile" class="oe_inline" modifiers="{}"/>
+                            <div class="o_row o_row_readonly" modifiers="{}">
+                                <button name="phone_action_blacklist_remove" class="fa fa-ban text-danger" title="Ce numéro de téléphone est blacklisté pour le marketing par SMS. Cliquez pour le déblacklister." type="object" context="{'default_phone': mobile}" invisible="not mobile_blacklisted" modifiers="{'invisible':[['mobile_blacklisted','=',false]]}" options="{}"/>
+                                <field name="mobile" widget="phone" on_change="1" modifiers="{}" id="mobile"/>
+                            </div>
+                            <field name="phone_sanitized" invisible="1" on_change="1" modifiers="{'invisible':true,'readonly':true}" id="phone_sanitized"/>
+                            <field name="user_ids" invisible="1" modifiers="{'invisible':true}" id="user_ids"/>
+                            <field name="is_blacklisted" invisible="1" modifiers="{'invisible':true,'readonly':true}" id="is_blacklisted"/>
+                            <label for="email" class="oe_inline" modifiers="{}"/>
+                            <div class="o_row o_row_readonly" modifiers="{}">
+                                <button name="mail_action_blacklist_remove" class="fa fa-ban text-danger" title="Cette adresse email fait partie de la liste noire. Cliquez pour l'en retirer." type="object" context="{'default_email': email}" invisible="not is_blacklisted" modifiers="{'invisible':[['is_blacklisted','=',false]]}" options="{}"/>
+                                <field name="email" widget="email" context="{'gravatar_image': True}" required="user_ids" on_change="1" modifiers="{'required':[['user_ids','!=',[]]]}" id="email"/>
+                            </div>
+                            <field name="website" widget="url" placeholder="e.x. https://www.odoo.com" modifiers="{}" id="website"/>
+                            <field name="title" options="{'no_open': True}" placeholder="e.g. Monsieur " invisible="is_company" can_create="true" can_write="true" modifiers="{'invisible':[['is_company','=',true]]}" id="title"/>
+                            <field name="active_lang_count" invisible="1" modifiers="{'invisible':true,'readonly':true}" id="active_lang_count"/>
+                            <label for="lang" invisible="active_lang_count &lt;= 1" modifiers="{'invisible':[['active_lang_count','&lt;=',1]]}"/>
+                            <div class="o_row" invisible="active_lang_count &lt;= 1" modifiers="{'invisible':[['active_lang_count','&lt;=',1]]}">
+                                <field name="lang" on_change="1" modifiers="{}" id="lang"/>
+                                <button type="action" name="53" class="btn-sm btn-link mb4 fa fa-globe" aria-label="Plus de langues" title="Plus de langues" modifiers="{}" options="{}"/>
+                            </div>
+                            <field name="category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Étiquettes..." can_create="true" can_write="true" modifiers="{}" id="category_id"/>
+                            <field name="completed_by_finance" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="res_partner_action_partners_creation" model="ir.actions.act_window">
+        <field name="name">Création fournisseurs</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_ids" eval="
+            [
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('base.res_partner_kanban_view')}),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('base.view_partner_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('new_res_partner_form_view')})
+            ]
+        "/>
+        <field name="context">
+            {
+                "search_default_supplier": 1,
+                "res_partner_search_mode": "supplier",
+                "default_is_company": True,
+                "default_supplier_rank": 1,
+                "edit": True,
+                "create": True,
+                "delete": True,
+            }
+        </field>
+    </record>
+
+    <record id="res_partner_group_partners_creation" model="res.groups">
+        <field name="name">Création de fournisseurs</field>
+    </record>
+
+    <menuitem
+        id="res_partner_menu_partners_creation"
+        name="Création fournisseurs"
+        action="res_partner_action_partners_creation"
+        sequence="44"
+        groups="res_partner_group_partners_creation"
+    />
+</odoo>

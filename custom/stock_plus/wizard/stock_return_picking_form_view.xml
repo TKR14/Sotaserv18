@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_stock_plus_stock_return_picking_form_inherited" model="ir.ui.view">
+        <field name="name">stock.plus.stock.return.picking.form.inherited</field>
+        <field name="inherit_id" ref="stock.view_stock_return_picking_form" />
+        <field name="model">stock.return.picking</field>
+        <field name="arch" type="xml">
+            <field name="product_return_moves" position="replace">
+                <field name="product_return_moves" nolabel="1">
+                    <list editable="top" create="0">
+                        <field name="product_id" options="{'no_create': True, 'no_open': True}"
+                            force_save="1" />
+                        <field name="compliant_quantity" string="Quantité conforme" />
+                        <field name="quantity" string="Quantité non conforme" />
+                        <field name="uom_id" readonly="1" groups="uom.group_uom" invisible="1" />
+                        <field name="move_id" invisible="1" />
+                    </list>
+                </field>
+            </field>
+        </field>
+    </record>
+</odoo>

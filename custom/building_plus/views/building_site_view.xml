@@ -1,0 +1,1052 @@
+<odoo>
+    <record id="building_site_form_view_inherit_building" model="ir.ui.view">
+        <field name="name">building.site.view.form.inherit</field>
+        <field name="model">building.site</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="building.building_site_form_view"/>
+        <field name="arch" type="xml">
+
+        <xpath expr="//field[@name='categ_marche_id']" position="replace">
+            <field name="categ_marche_id" options="{'no_open': True}"/>
+        </xpath>
+
+        <xpath expr="//field[@name='opp_id']" position="replace">
+            <field name="opp_id" options="{'no_open': True}"/>
+        </xpath>
+
+        <xpath expr="//field[@name='partner_id']" position="replace">
+            <field name="partner_id" options="{'no_open': True}"/>
+        </xpath>
+
+        <xpath expr="//field[@name='user_id']" position="replace">
+            <field name="user_id" options="{'no_open': True}"/>
+        </xpath>
+
+        <xpath expr="//field[@name='project_manager_id']" position="replace">
+            <field name="project_manager_id" options="{'no_open': True}"/>
+        </xpath>
+
+        <xpath expr="//field[@name='site_manager_id']" position="replace">
+            <field name="site_manager_id" options="{'no_open': True}"/>
+        </xpath>
+
+        <xpath expr="//notebook" position="attributes">
+            <attribute name="invisible">1</attribute>
+        </xpath>
+
+        </field>
+    </record>
+
+    <record id="building_purchase_need_form_inherit_building" model="ir.ui.view">
+        <field name="name">building.purchase.need.view.form.inherit</field>
+        <field name="model">building.purchase.need</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="building.building_purchase_need_form"/>
+        <field name="arch" type="xml">
+
+        <xpath expr="//field[@name='opp_id']" position="attributes">
+            <attribute name="options">{'no_open': True}</attribute>
+        </xpath>
+        
+        <xpath expr="//field[@name='site_id']" position="attributes">
+            <attribute name="options">{'no_open': True}</attribute>
+            <attribute name="readonly">1</attribute>
+            <attribute name="required">1</attribute>
+        </xpath>
+        
+        <xpath expr="//field[@name='categ_marche_id']" position="attributes">
+            <attribute name="options">{'no_open': True}</attribute>
+        </xpath>
+
+        </field>
+    </record>
+
+    <!-- Chef de projet -->
+    <record id="building_site_action_chef_projet" model="ir.actions.server">
+        <field name="name">Affaires</field>
+        <field name="model_id" ref="building.model_building_site"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_sites("SOTASERV_CHEF_PROJET")</field>
+    </record>
+
+    <record id="building_purchase_need_action_chef_projet" model="ir.actions.server">
+        <field name="name">Liste des besoins</field>
+        <field name="model_id" ref="building.model_building_purchase_need"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_needs("SOTASERV_CHEF_PROJET", readonly=True)</field>
+    </record>
+
+    <record id="purchase_request_action_chef_projet" model="ir.actions.server">
+        <field name="name">Demandes d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_requests("SOTASERV_CHEF_PROJET")</field>
+    </record>
+
+    <record id="purchase_request_line_action_chef_projet" model="ir.actions.server">
+        <field name="name">Lignes de demande d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_request_lines("SOTASERV_CHEF_PROJET")</field>
+    </record>
+
+    <record id="hr_assignment_request_action_chef_projet" model="ir.actions.server">
+        <field name="name">Demandes</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment_request"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignment_requests("SOTASERV_CHEF_PROJET")</field>
+    </record>
+
+    <record id="purchase_order_action_chef_projet" model="ir.actions.server">
+        <field name="name">Bons de Commande sans Attachement</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_orders("SOTASERV_CHEF_PROJET")</field>
+    </record>
+
+    <record id="purchase_order_action_attachment_chef_projet" model="ir.actions.server">
+        <field name="name">Bons de Commande avec Attachement</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_orders_attachment("SOTASERV_CHEF_PROJET")</field>
+    </record>
+
+    <record id="hr_assignment_request_line_action_chef_projet" model="ir.actions.server">
+        <field name="name">Lignes des demandes</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignment_request_lines("SOTASERV_CHEF_PROJET")</field>
+    </record>
+
+    <record id="hr_assignment_action_chef_projet" model="ir.actions.server">
+        <field name="name">Affectations et Pointages</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignments("SOTASERV_CHEF_PROJET")</field>
+    </record>
+
+    <!-- Conducteur de travaux -->
+    <record id="building_site_action_conduct_trv" model="ir.actions.server">
+        <field name="name">Affaires</field>
+        <field name="model_id" ref="building.model_building_site"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_sites("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <record id="building_purchase_need_action_conduct_trv" model="ir.actions.server">
+        <field name="name">Liste des besoins</field>
+        <field name="model_id" ref="building.model_building_purchase_need"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_needs("SOTASERV_CONDUCT_TRV", readonly=True)</field>
+    </record>
+
+    <record id="suivi_budgetaire_action_conduct_trv" model="ir.actions.server">
+        <field name="name">Suivi budgétaire</field>
+        <field name="model_id" ref="building_report.model_suivi_budgetaire" />
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_suivi_budgetaire("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <record id="purchase_request_action_conduct_trv" model="ir.actions.server">
+        <field name="name">Demandes d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_requests("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <record id="purchase_request_line_action_conduct_trv" model="ir.actions.server">
+        <field name="name">Lignes de demande d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_request_lines("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <record id="purchase_order_action_conduct_trv" model="ir.actions.server">
+        <field name="name">Bons de Commande sans Attachement</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_orders("SOTASERV_CONDUCT_TRV")</field>       
+    </record>
+
+    <record id="purchase_order_action_attachment_conduct_trv" model="ir.actions.server">
+        <field name="name">Bons de Commande avec Attachement</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_orders_attachment("SOTASERV_CONDUCT_TRV")</field>       
+    </record>
+
+    <record id="hr_assignment_request_action_conduct_trv" model="ir.actions.server">
+        <field name="name">Demandes</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment_request"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignment_requests("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <record id="hr_assignment_request_line_action_conduct_trv" model="ir.actions.server">
+        <field name="name">Lignes des demandes</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignment_request_lines("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <record id="hr_assignment_action_conduct_trv" model="ir.actions.server">
+        <field name="name">Affectations et Pointages</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignments("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <record id="stock_picking_type_action_conduct_trv" model="ir.actions.server">
+        <field name="name">Aperçu de l'inventaire</field>
+        <field name="model_id" ref="stock.model_stock_picking_type"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_picking_type("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <!-- Assistant technique -->
+    <record id="purchase_request_action_assistant_tech" model="ir.actions.server">
+        <field name="name">Demandes d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_requests("SOTASERV_ASSISTANT_TECH")</field>
+    </record>
+
+    <record id="purchase_request_line_action_assistant_tech" model="ir.actions.server">
+        <field name="name">Lignes de demande d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_request_lines("SOTASERV_ASSISTANT_TECH")</field>
+    </record>
+
+    <!-- Technicien -->
+    <record id="purchase_request_action_technicien" model="ir.actions.server">
+        <field name="name">Demandes d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_requests("SOTASERV_TECHNICIEN")</field>
+    </record>
+
+    <record id="purchase_request_line_action_technicien" model="ir.actions.server">
+        <field name="name">Lignes de demande d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_request_lines("SOTASERV_TECHNICIEN")</field>
+    </record>
+
+    <!-- Responsable de zone -->
+    <record id="purchase_request_action_resp_zone" model="ir.actions.server">
+        <field name="name">Demandes d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_requests("SOTASERV_RESP_ZONE")</field>
+    </record>
+
+    <record id="purchase_request_line_action_resp_zone" model="ir.actions.server">
+        <field name="name">Lignes de demande d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_request_lines("SOTASERV_RESP_ZONE")</field>
+    </record>
+
+    <!-- Magasinier -->
+    <record id="purchase_request_line_action_magasinier" model="ir.actions.server">
+        <field name="name">Demande de transfert</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_request_lines("SOTASERV_MAGASINIER")</field>
+    </record>
+    
+    <record id="purchase_request_line_action_magasinier_readonly" model="ir.actions.server">
+        <field name="name">Lignes de demande d'achat (Principal &amp; Logistique)</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_purchase_request_lines_readonly()</field>
+    </record>
+    
+    <record id="stock_picking_incoming_action_magasinier" model="ir.actions.server">
+        <field name="name">Réceptions</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_picking_incoming("SOTASERV_MAGASINIER")</field>
+    </record>
+
+    <record id="purchase_order_action_magasinier" model="ir.actions.server">
+        <field name="name">Bons de Commande</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_orders_service("SOTASERV_MAGASINIER")</field>
+    </record>
+
+    <!-- Inventaire / Réceptions -->
+    <record id="stock_picking_incoming_action_magasinier_1" model="ir.actions.act_window">
+        <field name="name">Réceptions</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[("site_id.number", "=", "000")]</field>
+        <field name="context">{"delete": False, "create": False}</field>
+        <field name="view_ids" eval="
+            [
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('stock.vpicktree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('stock.view_picking_form')})
+            ]
+        "/>
+    </record>
+
+    <!-- Vue global / Réceptions -->
+    <record id="stock_picking_incoming_action_magasinier_2" model="ir.actions.act_window">
+        <field name="name">Réceptions</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{"create": False, "delete": False, "edit": False}</field>
+        <field name="view_ids" eval="
+            [
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building_plus.stock_picking_view_tree_no_buttons')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building_plus.stock_picking_view_form_no_buttons')})
+            ]
+        "/>
+    </record>
+
+    <record id="stock_picking_incoming_action_cg" model="ir.actions.act_window">
+        <field name="name">Réceptions</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('picking_type_code', '=', 'incoming')]</field>
+        <field name="context">{"create": False, "delete": False, "edit": True}</field>
+        <field name="view_ids" eval="
+            [
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building_plus.stock_picking_view_tree_no_buttons')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building_plus.stock_picking_view_form_cg')})
+            ]
+        "/>
+    </record>
+
+    <record id="stock_picking_int_action_magasinier" model="ir.actions.act_window">
+        <field name="name">Transferts</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[("picking_type_id.sequence_code", "=", "INT")]</field>
+        <field name="context">{"create": False, "delete": False, "edit": False}</field>
+        <field name="view_ids" eval="
+            [
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building_plus.stock_picking_view_tree_no_buttons')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building_plus.stock_picking_view_form_int_magasinier')})
+            ]
+        "/>
+    </record>
+
+    <record id="hr_assignment_action_magasinier" model="ir.actions.server">
+        <field name="name">Affectations et Pointages</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignments("SOTASERV_MAGASINIER")</field>
+    </record>
+
+    <!-- Affectations et Pointages -->
+    <record id="hr_assignment_action_magasinier_1" model="ir.actions.act_window">
+        <field name="name">Affectations et Pointages</field>
+        <field name="res_model">hr.assignment.line</field>
+        <field name="view_mode">list</field>
+        <field name="context">{"create": False, "delete": False, "edit": False}</field>
+        <field name="view_ids" eval="
+            [
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('hr_assignment.hr_assignment_line_view_tree')}),
+            ]
+        "/>
+    </record>
+
+    <!-- Aide magasinier -->
+    <record id="blank_action_aide_magasinier" model="ir.actions.server">
+        <field name="name">Blank</field>
+        <field name="model_id" ref="model_blank"/>
+        <field name="state">code</field>
+        <field name="code">action = model.blank("Aide magasinier")</field>
+    </record>
+
+    <!-- Directeur de zone -->
+    <record id="building_site_action_directeur_zone" model="ir.actions.server">
+        <field name="name">Affaires</field>
+        <field name="model_id" ref="building.model_building_site"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_sites("SOTASERV_DIRECTEUR_ZONE")</field>
+    </record>
+
+    <record id="building_purchase_need_action_directeur_zone" model="ir.actions.server">
+        <field name="name">Liste des besoins</field>
+        <field name="model_id" ref="building.model_building_purchase_need"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_needs("SOTASERV_DIRECTEUR_ZONE", readonly=True)</field>
+    </record>
+
+    <record id="purchase_request_action_directeur_zone" model="ir.actions.server">
+        <field name="name">Demandes d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_requests("SOTASERV_DIRECTEUR_ZONE")</field>
+    </record>
+
+    <record id="purchase_request_line_action_directeur_zone" model="ir.actions.server">
+        <field name="name">Lignes de demande d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_request_lines("SOTASERV_DIRECTEUR_ZONE")</field>
+    </record>
+
+    <record id="purchase_order_action_attachment_directeur_zone" model="ir.actions.server">
+        <field name="name">Bons de Commande avec Attachement</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_orders_attachment("SOTASERV_DIRECTEUR_ZONE")</field>       
+    </record>
+
+    <record id="hr_assignment_request_action_directeur_zone" model="ir.actions.server">
+        <field name="name">Demandes</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment_request"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignment_requests("SOTASERV_DIRECTEUR_ZONE")</field>
+    </record>
+
+    <record id="hr_assignment_request_line_action_directeur_zone" model="ir.actions.server">
+        <field name="name">Lignes des demandes</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignment_request_lines("SOTASERV_DIRECTEUR_ZONE")</field>
+    </record>
+
+    <record id="hr_assignment_action_directeur_zone" model="ir.actions.server">
+        <field name="name">Affectations et Pointages</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignments("SOTASERV_DIRECTEUR_ZONE")</field>
+    </record>
+
+    <!-- Superviseur de site -->
+    <record id="building_site_action_superviseur_site" model="ir.actions.server">
+        <field name="name">Affaires</field>
+        <field name="model_id" ref="building.model_building_site"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_sites("SOTASERV_SUPERVISEUR_SITE")</field>
+    </record>
+
+    <record id="building_purchase_need_action_superviseur_site" model="ir.actions.server">
+        <field name="name">Liste des besoins</field>
+        <field name="model_id" ref="building.model_building_purchase_need"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_needs("SOTASERV_SUPERVISEUR_SITE", True)</field>
+    </record>
+
+    <record id="purchase_request_action_superviseur_site" model="ir.actions.server">
+        <field name="name">Demandes d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_requests("SOTASERV_SUPERVISEUR_SITE", True, True)</field>
+    </record>
+
+    <record id="purchase_request_line_action_superviseur_site" model="ir.actions.server">
+        <field name="name">Lignes de demande d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_request_lines("SOTASERV_SUPERVISEUR_SITE")</field>
+    </record>
+
+    <record id="hr_assignment_request_action_superviseur_site" model="ir.actions.server">
+        <field name="name">Demandes</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment_request"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignment_requests("SOTASERV_SUPERVISEUR_SITE")</field>
+    </record>
+
+    <record id="hr_assignment_request_line_action_superviseur_site" model="ir.actions.server">
+        <field name="name">Lignes d'affectation</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignment_request_lines("SOTASERV_SUPERVISEUR_SITE")</field>
+    </record>
+
+    <record id="hr_assignment_action_superviseur_site" model="ir.actions.server">
+        <field name="name">Affectations</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignments("SOTASERV_SUPERVISEUR_SITE")</field>
+    </record>
+
+    <!-- Directeur général -->
+    <record id="hr_assignment_request_action_dg" model="ir.actions.server">
+        <field name="name">Demandes</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment_request"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignment_requests("SOTASERV_DG")</field>
+    </record>
+
+    <record id="hr_assignment_request_line_action_dg" model="ir.actions.server">
+        <field name="name">Lignes des demandes</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignment_request_lines("SOTASERV_DG")</field>
+    </record>
+
+    <record id="hr_assignment_action_dg" model="ir.actions.server">
+        <field name="name">Affectations et Pointages</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignments("SOTASERV_DG")</field>
+    </record>
+
+    <record id="purchase_order_rfq_dg" model="ir.actions.server">
+        <field name="name">Demandes de prix</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="state">code</field>
+        <field name="code"> action = model.action_get_rfq('SOTASERV_DG')</field>
+    </record>
+
+    <record id="price_comparison_action_dg" model="ir.actions.server">
+        <field name="name">Comparaison des Offres</field>
+        <field name="model_id" ref="purchase_igaser.model_purchase_price_comparison"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_price_comparison("SOTASERV_DG")</field>
+    </record>
+
+    <record id="account_move_action_dg" model="ir.actions.act_window">
+        <field name="name">Factures</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[("state", "in", ["draft", "received", "validated", "posted", "approved", "blocked"])]</field>
+        <field name="context">{"delete": False, "create": False, "edit": False, "hide_actions":True, "search_default_status": True}</field>
+    </record>
+
+    <record id="account_payment_action_dg" model="ir.actions.act_window">
+        <field name="name">Paiements</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[("state", "=", "validated")]</field>
+        <field name="context">{"delete": False, "create": False, "edit": False}</field>
+    </record>
+
+    <!-- Bureau d'ordre -->
+    <record id="account_move_action_bo" model="ir.actions.act_window">
+        <field name="name">Factures</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[("move_type", "=", "in_invoice")]</field>
+        <field name="view_ids"
+            eval="[(5, 0, 0),
+                        (0, 0, {'view_mode': 'list', 'view_id': ref('account.view_invoice_tree')}),
+                        (0, 0, {'view_mode': 'form', 'view_id': ref('account_plus.account_move_bo_view_form')})]" />
+        <field name="context">{"delete": False, "create": True, "hide_actions":True, "search_default_status": True, "default_move_type": "in_invoice"}</field>
+    </record>
+    <record id="account_move_out_invoice_action_bo" model="ir.actions.act_window">
+        <field name="name">Factures</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[("move_type", "=", "out_invoice")]</field>
+        <field name="view_ids"
+            eval="[(5, 0, 0),
+                        (0, 0, {'view_mode': 'list', 'view_id': ref('account.view_out_invoice_tree')}),
+                        (0, 0, {'view_mode': 'form', 'view_id': ref('account_plus.account_move_bo_view_form')})]" />
+        <field name="context">{"delete": False, "create": True, "hide_actions":True, "search_default_status": True, "default_move_type": "out_invoice"}</field>
+    </record>
+
+    <record id="account_avoirs_action_bo" model="ir.actions.act_window">
+        <field name="name">Avoirs</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="account.view_in_invoice_tree"/> 
+        <field name="domain">[('move_type', '=', 'in_refund')]</field>
+        <field name="view_ids" eval="[(5, 0, 0), 
+                                    (0, 0, {'view_mode': 'list', 'view_id': ref('account.view_in_invoice_tree')}), 
+                                    (0, 0, {'view_mode': 'form', 'view_id': ref('account_plus.view_move_form_bo')})]"
+        />
+        <field name="context">{'create': False, 'delete': False, 'hide_actions': True, 'search_default_status': True, 'default_move_type': 'in_refund'}</field>
+    </record>
+    <record id="account_avoirs_client_action_bo" model="ir.actions.act_window">
+        <field name="name">Avoirs</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="account.view_in_invoice_tree"/> 
+        <field name="domain">[('move_type', '=', 'out_refund')]</field>
+        <field name="view_ids" eval="[(5, 0, 0), 
+                                    (0, 0, {'view_mode': 'list', 'view_id': ref('account.view_in_invoice_tree')}), 
+                                    (0, 0, {'view_mode': 'form', 'view_id': ref('account_plus.view_move_form_bo')})]"
+        />
+        <field name="context">{'create': False, 'delete': False, 'hide_actions': True, 'search_default_status': True, 'default_move_type': 'out_refund'}</field>
+    </record>
+
+    <record id="view_account_tree_inherit" model="ir.ui.view">
+        <field name="name">account.move.tree.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_in_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="create">false</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_payment_action_bo" model="ir.actions.act_window">
+        <field name="name">Paiements</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[("state", "=", "posted"), ("approval_state", "=", "validated")]</field>
+        <field name="context">{"delete": False, "create": False, "edit": False, "group_by": "approval_state", 'default_partner_type': 'supplier', 'search_default_outbound_filter': 1,}</field>
+    </record>
+    <record id="account_payment_client_action_bo" model="ir.actions.act_window">
+        <field name="name">Paiements</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[("state", "=", "posted"), ("approval_state", "=", "validated")]</field>
+        <field name="context">{"delete": False, "create": False, "edit": False, "group_by": "approval_state", 'default_payment_type': 'inbound', 'default_partner_type': 'customer', 'search_default_inbound_filter': 1,}</field>
+    </record>
+
+    <!-- Magasinier de chantier -->
+    <record id="stock_picking_type_action_magasinier_chantier" model="ir.actions.server">
+        <field name="name">Aperçu de l'inventaire</field>
+        <field name="model_id" ref="stock.model_stock_picking_type"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_picking_type("SOTASERV_MAGASINIER_CHANTIER")</field>
+    </record>
+
+    <record id="stock_quant_action_magasinier_chantier" model="ir.actions.server">
+        <field name="name">Stocks par emplacement</field>
+        <field name="model_id" ref="stock.model_stock_quant"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_quant("SOTASERV_MAGASINIER_CHANTIER")</field>
+    </record>
+
+    <record id="stock_picking_int_action_magasinier_chantier" model="ir.actions.server">
+        <field name="name">Transfert Interne</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_picking_int("SOTASERV_MAGASINIER_CHANTIER")</field>
+    </record>
+
+    <record id="stock_picking_int_logistics_action_magasinier_chantier" model="ir.actions.server">
+        <field name="name">Transfert Logistique</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_picking_int("SOTASERV_MAGASINIER_CHANTIER", is_logistic=True)</field>
+    </record>
+
+    <!-- Transfert intersiège / SOTASERV_MAGASINIER -->
+    <record id="stock_picking_internal_transfer_action" model="ir.actions.server">
+        <field name="name">Transfert intersiège</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_picking_internal_transfer("SOTASERV_MAGASINIER")</field>
+    </record>
+
+    <!-- Transfert intersiège / SOTASERV_MAGASINIER_CHANTIER -->
+    <record id="stock_picking_internal_transfer_action_magasinier_chantier" model="ir.actions.server">
+        <field name="name">Transfert intersiège</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_picking_internal_transfer("SOTASERV_MAGASINIER_CHANTIER")</field>
+    </record>
+
+    <record id="stock_picking_outgoing_action_magasinier_chantier" model="ir.actions.server">
+        <field name="name">Sortie d'article</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_picking_outgoing("SOTASERV_MAGASINIER_CHANTIER")</field>
+    </record>
+
+    <!-- Rebut / SOTASERV_MAGASINIER_CHANTIER -->
+    <record id="stock_picking_scrap_action_magasinier_chantier" model="ir.actions.server">
+        <field name="name">Rebut</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_picking_scrap("SOTASERV_MAGASINIER_CHANTIER")</field>
+    </record>
+
+    <!-- Rebut / SOTASERV_CHEF_PROJET -->
+    <record id="stock_picking_scrap_action_project_manager" model="ir.actions.server">
+        <field name="name">Rebut</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_picking_scrap("SOTASERV_CHEF_PROJET")</field>
+    </record>
+
+    <!-- Rebut / SOTASERV_DIRECTEUR_ZONE -->
+    <record id="stock_picking_scrap_action_directeur_zone" model="ir.actions.server">
+        <field name="name">Rebut</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_picking_scrap("SOTASERV_DIRECTEUR_ZONE")</field>
+    </record>
+
+    <!-- Rebut / SOTASERV_MAGASINIER -->
+    <record id="stock_picking_scrap_action_magasinier" model="ir.actions.server">
+        <field name="name">Rebut</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_picking_scrap("SOTASERV_MAGASINIER")</field>
+    </record>
+
+    <!-- Retour / SOTASERV_MAGASINIER_CHANTIER -->
+    <record id="stock_picking_return_action_magasinier_chantier" model="ir.actions.server">
+        <field name="name">Retour</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_picking_return("SOTASERV_MAGASINIER_CHANTIER")</field>
+    </record>
+
+    <!-- Retour / SOTASERV_MAGASINIER -->
+    <record id="stock_picking_return_action_magasinier" model="ir.actions.server">
+        <field name="name">Retour</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_picking_return("SOTASERV_MAGASINIER")</field>
+    </record>
+
+    <record id="hr_assignment_action_magasinier_chantier" model="ir.actions.server">
+        <field name="name">Affectations et Pointages</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignments("SOTASERV_MAGASINIER_CHANTIER")</field>
+    </record>
+
+    <record id="purchase_order_action_magasinier_chantier" model="ir.actions.server">
+        <field name="name">Bons de Commande</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_orders_service("SOTASERV_MAGASINIER_CHANTIER")</field>
+    </record>
+
+    <!-- Pointage RH -->
+    <record id="hr_assignment_action_pointage_rh" model="ir.actions.server">
+        <field name="name">Pointage RH</field>
+        <field name="model_id" ref="hr_assignment.model_hr_assignment"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignments("SOTASERV_POINTAGE_RH")</field>
+    </record>
+
+    <!-- LBD en Read Only -->
+    <record id="building_site_action_lbd_ro" model="ir.actions.server">
+        <field name="name">Affaires</field>
+        <field name="model_id" ref="building.model_building_site"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_sites("SOTASERV_LBD_RO")</field>
+    </record>
+
+    <record id="building_purchase_need_action_lbd_ro" model="ir.actions.server">
+        <field name="name">Liste des besoins</field>
+        <field name="model_id" ref="building.model_building_purchase_need"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_needs("SOTASERV_LBD_RO")</field>
+    </record>
+
+    <!-- Directrice technique -->
+    <record id="crm_pipeline_action" model="ir.actions.server">
+        <field name="name">Pipeline CRM</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_pipeline("SOTASERV_DIRECTRICE_TECHNIQUE")</field>
+    </record>
+    <record id="building_bp_action_directrice_technique" model="ir.actions.server">
+        <field name="name">Bordereau des Prix</field>
+        <field name="model_id" ref="building.model_building_order"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_bp("SOTASERV_DIRECTRICE_TECHNIQUE")</field>
+    </record>
+
+    <record id="building_site_action_directrice_technique" model="ir.actions.server">
+        <field name="name">Affaires</field>
+        <field name="model_id" ref="building.model_building_site"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_sites("SOTASERV_DIRECTRICE_TECHNIQUE")</field>
+    </record>
+
+    <record id="building_purchase_need_action_directrice_technique" model="ir.actions.server">
+        <field name="name">Liste des besoins</field>
+        <field name="model_id" ref="building.model_building_purchase_need"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_needs("SOTASERV_DIRECTRICE_TECHNIQUE", True)</field>
+    </record>
+
+    <record id="building_purchase_budget_action_directrice_technique" model="ir.actions.server">
+        <field name="name">Suivi budgétaire</field>
+        <field name="model_id" ref="building_report.model_suivi_budgetaire"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_suivi_budgetaire("SOTASERV_DIRECTRICE_TECHNIQUE")</field>
+    </record>
+
+    <record id="purchase_request_action_directrice_technique" model="ir.actions.server">
+        <field name="name">Demandes d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_requests("SOTASERV_DIRECTRICE_TECHNIQUE", True, True)</field>
+    </record>
+
+    <record id="purchase_request_line_action_directrice_technique" model="ir.actions.server">
+        <field name="name">Lignes de demande d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_request_lines("SOTASERV_DIRECTRICE_TECHNIQUE")</field>
+    </record>
+
+    <record id="purchase_order_action_attachment_directrice_technique" model="ir.actions.act_window">
+        <field name="name">Bons de Commande avec Attachement</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="purchase_plus.purchase_order_view_search"/>
+        <field name="view_ids" eval="[
+            (5, 0, 0), 
+            (0, 0, {'view_mode': 'list', 'view_id': ref('purchase_plus.purchase_order_tree')}), 
+            (0, 0, {'view_mode': 'form', 'view_id': ref('purchase_plus.purchase_order_line_attachment_form')})
+        ]"/>
+        <field name="context">
+            {
+                "delete": False,
+                "create": False,
+                "edit": False,
+                "hide_actions":True,
+                "hide_field": "state",
+                "show_search_filter_state_2": True,
+                "search_default_group_by_state_2": True,
+            }
+        </field>
+        <field name="domain">[("is_attachment", "=", True), ("state", "in", ["purchase", "done", "full", "po_canceled"])]</field>       
+    </record>
+
+    <record id="purchase_order_rfq" model="ir.actions.server">
+        <field name="name">Demandes de prix</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="state">code</field>
+        <field name="code"> action = model.action_get_rfq('SOTASERV_DIRECTRICE_TECHNIQUE')</field>
+    </record>
+
+    <record id="price_comparison_action" model="ir.actions.server">
+        <field name="name">Comparaison des Offres</field>
+        <field name="model_id" ref="purchase_igaser.model_purchase_price_comparison"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_price_comparison("SOTASERV_DIRECTRICE_TECHNIQUE")</field>
+    </record>
+
+    <record id="stock_picking_type_action_directrice_technique" model="ir.actions.server">
+        <field name="name">Aperçu de l'inventaire</field>
+        <field name="model_id" ref="stock.model_stock_picking_type"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_picking_type("SOTASERV_DIRECTRICE_TECHNIQUE")</field>
+    </record>
+
+    <record id="supplier_action_directrice_technique" model="ir.actions.server">
+        <field name="name">Fournisseurs</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_suppliers("SOTASERV_DIRECTRICE_TECHNIQUE")</field>
+    </record>
+
+    <record id="product_action_directrice_technique" model="ir.actions.server">
+        <field name="name">Articles</field>
+        <field name="model_id" ref="product.model_product_template"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_products("SOTASERV_DIRECTRICE_TECHNIQUE")</field>
+    </record>
+
+    <record id="clients_action_directrice_technique" model="ir.actions.server">
+        <field name="name">Clients</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_clients("SOTASERV_DIRECTRICE_TECHNIQUE")</field>
+    </record>
+
+    <!-- Auditeur -->
+    <record id="crm_pipeline_action" model="ir.actions.server">
+        <field name="name">Pipeline CRM</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_pipeline("SOTASERV_AUDITEUR")</field>
+    </record>
+
+    <record id="business_manager_crm_pipeline_action" model="ir.actions.act_window">
+        <field name="name">Pipeline CRM</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'create': True, 'edit': True, 'delete': True}</field>
+        <field name="domain">[]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('crm.crm_case_kanban_view_leads')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('crm_igaser.custom_crm_case_list_view_oppor')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('crm.crm_lead_view_form')}),
+            (0, 0, {'view_mode': 'calendar', 'view_id': ref('crm.crm_case_calendar_view_leads')}),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('crm.crm_lead_view_pivot')}),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('crm.crm_lead_view_graph')}),
+            (0, 0, {'view_mode': 'activity', 'view_id': ref('crm.crm_lead_view_activity')})
+        ]"/>
+    </record>
+
+    <record id="building_bp_action_auditeur" model="ir.actions.server">
+        <field name="name">Bordereau des Prix</field>
+        <field name="model_id" ref="building.model_building_order"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_bp("SOTASERV_AUDITEUR")</field>
+    </record>
+
+    <record id="building_site_action_audit" model="ir.actions.server">
+        <field name="name">Affaires</field>
+        <field name="model_id" ref="building.model_building_site"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_sites("SOTASERV_AUDITEUR")</field>
+    </record>
+
+    <record id="building_purchase_need_action_audit" model="ir.actions.server">
+        <field name="name">Liste des besoins</field>
+        <field name="model_id" ref="building.model_building_purchase_need"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_needs("SOTASERV_AUDITEUR", True)</field>
+    </record>
+
+    <record id="building_purchase_budget_action_audit" model="ir.actions.server">
+        <field name="name">Suivi budgétaire</field>
+        <field name="model_id" ref="building_report.model_suivi_budgetaire"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_suivi_budgetaire("SOTASERV_AUDITEUR")</field>
+    </record>
+
+    <record id="purchase_request_action_audit" model="ir.actions.server">
+        <field name="name">Demandes d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_requests("SOTASERV_AUDITEUR", True, True)</field>
+    </record>
+
+    <record id="purchase_request_line_action_audit" model="ir.actions.server">
+        <field name="name">Lignes de demande d'achat</field>
+        <field name="model_id" ref="purchase_request.model_purchase_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_request_lines("SOTASERV_AUDITEUR")</field>
+    </record>
+
+    <record id="price_request_action_all" model="ir.actions.act_window">
+        <field name="name">Demandes de Prix</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="purchase_plus.purchase_order_view_search"/>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('purchase.purchase_order_kpis_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('account_plus.purchase_order_form_readonly')})
+        ]"/>
+        <field name="domain">[("state", "in", ["draft", "compare_offers", "validated_1", "validation", "validated_2", "cancel"])]</field>
+        <field name="context">
+            {
+                "hide_header_buttons": True,
+                "search_default_group_by_state": True,
+                "create": False,
+                "delete": False,
+                "edit": False,
+            }
+        </field>
+    </record>
+
+    <record id="purchase_order_action_no_attachment_audit" model="ir.actions.act_window">
+        <field name="name">Bons de Commande sans Attachement</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="purchase_plus.purchase_order_view_search"/>
+        <field name="view_ids" eval="[
+            (5, 0, 0), 
+            (0, 0, {'view_mode': 'list', 'view_id': ref('purchase.purchase_order_view_tree')}), 
+            (0, 0, {'view_mode': 'form', 'view_id': ref('account_plus.purchase_order_form_readonly')})
+        ]"/>
+        <field name="context">
+            {
+                "delete": False,
+                "create": False,
+                "edit": False,
+                "hide_actions": True,
+                "hide_field": "state_2",
+                "search_default_group_by_state": True,
+            }
+        </field>
+        <field name="domain">[("is_attachment", "=", False), ("state", "in", ["purchase", "done", "partial", "full", "po_canceled"])]</field>
+    </record>
+
+    <record id="purchase_order_rfq" model="ir.actions.server">
+        <field name="name">Demandes de prix</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="state">code</field>
+        <field name="code"> action = model.action_get_rfq('SOTASERV_AUDITEUR')</field>
+    </record>
+
+    <record id="price_comparison_action" model="ir.actions.server">
+        <field name="name">Comparaison des Offres</field>
+        <field name="model_id" ref="purchase_igaser.model_purchase_price_comparison"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_price_comparison("SOTASERV_AUDITEUR")</field>
+    </record>
+
+    <record id="stock_picking_type_action_audit" model="ir.actions.server">
+        <field name="name">Aperçu de l'inventaire</field>
+        <field name="model_id" ref="stock.model_stock_picking_type"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_picking_type("SOTASERV_AUDITEUR")</field>
+    </record>
+
+    <record id="supplier_action_audit" model="ir.actions.server">
+        <field name="name">Fournisseurs</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_suppliers("SOTASERV_AUDITEUR")</field>
+    </record>
+
+    <record id="product_action_audit" model="ir.actions.server">
+        <field name="name">Articles</field>
+        <field name="model_id" ref="product.model_product_template"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_products("SOTASERV_AUDITEUR")</field>
+    </record>
+
+    <record id="clients_action_audit" model="ir.actions.server">
+        <field name="name">Clients</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_clients("SOTASERV_AUDITEUR")</field>
+    </record>
+
+    <record id="building_site_without_need_form_view" model="ir.ui.view">
+        <field name="name">building.site.without.need.form.view</field>
+        <field name="model">building.site</field> 
+        <field name="type">form</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="building.building_site_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='oe_button_box']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='categ_marche_id']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='opp_id']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+
+            <!-- <xpath expr="//field[@name='warehouse_id']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath> -->
+        </field>
+    </record>
+
+    <record id="action_acount_move_group_invoice_sites" model="ir.actions.act_window">
+        <field name="name">Affaires</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">building.site</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_with_purchase_need', '=', 1)]</field>
+        <field name="search_view_id" ref="building.building_site_filter" />
+        <field name="view_id" ref="" />
+         <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.building_site_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building_plus.building_site_without_need_form_view')})]"/>
+    </record>
+
+</odoo>

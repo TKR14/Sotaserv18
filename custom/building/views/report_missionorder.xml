@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="report_missionorder">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <style>
+                            table,
+                            th,
+                            td {
+                                border: 1px solid black;
+                                border-collapse: collapse;
+                            }
+
+                            table.center {
+                                margin-left: auto;
+                                margin-right: auto;
+                            }
+
+                            table th {
+                                padding: 15px;
+                            }
+                        </style>
+                        <div class="oe_structure" />
+                        <table class="center" style="width: 100%; font-size:80%">
+                            <tr>
+                                <th rowspan="2" style="font-size: 20px; padding: 10px;">Ordre de mission de transport</th>
+                                <td style="padding: 10px;">Ref:</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;">Version: </td>
+                            </tr>
+                        </table>
+                        <br/><br/>
+                        <div>
+                            <h4>Nom Chauffeur : <span t-field="o.emp_id.name"/></h4>
+                            <h4>Code : <span t-field="o.code"/></h4>
+                            <h4>Matricule : <span t-field="o.registration_number"/></h4>
+                            <h4>Date : <span t-field="o.date"/></h4>
+                        </div>
+                        <br/>
+                        <table class="center" style="width: 100%; font-size:80%">
+                            <tr>
+                                <th>Lieu de chargement</th>
+                                <th>Destination (Lieu de déchargement)</th>
+                                <th>Désignation Matière transportée</th>
+                                <th>Date départ</th>
+                                <th>Date d’arrivée</th>
+                                <th>Quantité</th>
+                                <th>Observations</th>
+                            </tr>
+                            
+                            <t t-foreach="o.trasport_schedule_ids" t-as="line">
+                                <tr>
+                                    <td style="padding-left:5px;">
+                                        <div style="height: 50px; overflow:hidden;"><span t-field="line.site_src_id.name"/>
+                                        </div>
+                                    </td>
+                                    <td style="padding-left:5px;">
+                                        <div style="height: 50px; overflow:hidden;"><span t-field="line.site_dest_id.name"/>
+                                        </div>
+                                    </td>
+                                    <td style="padding-left:5px;">
+                                        <div style="height: 50px; overflow:hidden;"><span t-field="line.merchandise"/>
+                                        </div>
+                                    </td>
+                                    <td style="padding-left:5px;">
+                                        <div style="height: 50px; overflow:hidden;"><span t-field="line.start_date"/>
+                                        </div>
+                                    </td>
+                                    <td style="padding-left:5px;">
+                                        <div style="height: 50px; overflow:hidden;"><span t-field="line.end_date"/>
+                                        </div>
+                                    </td>
+                                    <td style="padding-left:5px;">
+                                        <div style="height: 50px; overflow:hidden;"><span t-field="line.qty"/>
+                                        </div>
+                                    </td>
+                                    <td style="padding-left:5px;">
+                                        <div style="height: 50px; overflow:hidden;"><span t-field="line.note"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+                        <br/><br/><br/>
+                        <table class="center" style="width: 100%; font-size:80%">
+                            <tr>
+                                <th>
+                                    <div style="height: 40px; overflow:hidden;padding-top: 20px;">
+                                        Km Départ : <span t-field="o.start_km"/>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div style="height: 40px; overflow:hidden;padding-top: 20px;">
+                                        Km fin mission : <span t-field="o.end_km"/>
+                                    </div>
+                                </th>
+                            </tr>
+                        </table>
+                        <br/><br/><br/>
+                        <table class="center" style="width: 100%; font-size:80%">
+                            <tr>
+                                <th width="50%">Nom &amp;Visa Chauffeur</th>
+                                <th width="50%">Nom &amp;Visa Responsable Maintenance &amp; Logistique</th>
+                            </tr>
+                            <tr>
+                                <td style="padding-left:5px;">
+                                    <div style="height: 90px; overflow:hidden;">
+
+                                    </div>
+                                </td>
+                                <td style="padding-left:5px;">
+                                    <div style="height: 90px; overflow:hidden;">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

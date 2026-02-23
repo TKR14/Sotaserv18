@@ -1,0 +1,27 @@
+<odoo>
+    <record id="group_cleaning" model="res.groups">
+        <field name="name">Cleaning Group</field>
+    </record>
+
+    <record id="purcahse_request_line_cleaning_inherit" model="ir.ui.view">
+        <field name="name">purcahse.request.line.cleaning.inherit</field>
+        <field name="model">purchase.request.line</field>
+        <field name="inherit_id" ref="purchase_igaser.purchase_request_line_view_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="clean_purchase_request_line" string="CLEAN" class="btn-success ml-1" type="object" groups="purchase_plus.group_cleaning" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_move_clean_purchase_vendor_bill_id_view" model="ir.ui.view">
+        <field name="name">account.move.clean.purchase.vendor.bill.id.view</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="purchase.view_move_form_inherit_purchase"/>
+        <field name="arch" type="xml">
+            <xpath expr="//label[@for='purchase_vendor_bill_id']" position="replace"/>
+            <xpath expr="//field[@name='purchase_vendor_bill_id']" position="replace"/>
+        </field>
+    </record>
+
+</odoo>

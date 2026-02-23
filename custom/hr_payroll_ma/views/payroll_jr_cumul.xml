@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="payroll_jr_cumul">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <style>
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                        }
+                     
+                        .firstP, .secondP, .thirdP {
+                            display: inline;
+                        }
+                          
+                
+                        .myTable,
+                        th,
+                        td {
+                            border: 1px solid black;
+                            border-collapse: collapse;
+                            margin-left: auto;
+                            margin-right: auto;
+                            
+                        }
+                        .myTable td {
+                            border: none;
+                            border-right: 1px solid;
+                        }
+                        .myTable th {
+                            padding: 8px;
+                        }
+                    </style>
+                        <div class="oe_structure" />
+                        <header>
+                            <div>
+                                <p class="firstP" style="font-weight: bold;padding-left: 8%;">IGASER</p>
+                                <p class="secondP" style="font-weight: bold;font-size: larger;padding-left: 10%;">Cumul Global des rubriques</p>
+                                <p class="thirdP" style="padding-left: 5%;">
+                                    Date d'édition:
+                                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')" />
+                                </p>
+                            </div>
+                            <br />
+                            <div>
+                                <p style="text-align: center;">
+                                    Période du
+                                    <span t-field="o.date_start" />
+                                    au
+                                    <span t-field="o.date_end" />
+                                </p>
+                            </div>
+                        </header>
+                        <br />
+
+                        <!--table starts here!-->
+                        <table style="width: 85%;height: 80px;" class="myTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">Code</th>
+                                    <th width="50%">Libellé</th>
+                                    <th width="15%">Base</th>
+                                    <th width="15%">Montant</th>
+                                    <th width="10%">Nombre</th>
+                                </tr>
+                            </thead>
+
+                            <t t-set="lines" t-value="o.get_cumul_by_rubrique()" />
+                            <tbody>
+                                <t t-foreach="lines" t-as="line">
+                                    <tr>
+                                        <!--filling data-->
+                                        <td style="text-align: center;padding-top: 5px;">
+                                            <span t-esc="line['code']" />
+                                        </td>
+                                        <td style="text-align: left; padding-left: 8px;padding-top: 5px;">
+                                            <span t-esc="line['libelle']" />
+                                        </td>
+                                        <td style="text-align: right; padding-right: 8px;padding-top: 5px;">
+                                            <span t-esc="line['sum_base_amount']" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td style="text-align: right; padding-right: 8px;padding-top: 5px;">
+                                            <span t-esc="line['sum_total']" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td style="text-align: right; padding-right: 8px;padding-top: 5px;">
+                                            <span t-esc="line['count_lines']" />
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        <div style="page-break-after: always;" />
+                        <!--table ends here!-->
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

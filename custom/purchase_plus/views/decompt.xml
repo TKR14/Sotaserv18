@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="decompt_action" model="ir.actions.report">
+        <field name="name">Decompte</field>
+        <field name="model">purchase.entry</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">purchase_plus.decompt_template</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="print_report_name">'Decompte'</field>
+        <field name="binding_type">report</field>
+        <!-- <field name="paperformat_id" ref="attachement_paperformat" /> -->
+    </record>
+
+
+    <template id="decompt_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&amp;display=swap');
+
+                    .page {
+                        position: relative;
+                        height: 365mm;
+
+                    }
+
+                    .page &gt; *:not(:last-child) {
+                        margin-bottom: 40px;
+                    }
+
+                    .container {
+                        width: 100%; 
+                        margin: 0 auto; 
+                        border: 0px solid #000; 
+                        padding: 20px; 
+                        box-sizing: border-box;
+                    }
+
+                    .logo{
+                        text-align: right; 
+                        display: flex; 
+                        margin-bottom: 20px;
+                    }
+
+                    .title{
+                        display: flex; 
+                        justify-content: center; 
+                        align-items: center;
+                    }
+
+                    .tit{
+                        font-weight: bold; 
+                        font-size: 23px; 
+                        text-align: center;
+                    }
+
+                    hr{
+                        border: 1px solid #000; 
+                        width: 80%; 
+                        margin: 10px auto;
+                    }
+
+                    .details{
+                        display: flex; 
+                        justify-content: space-between; 
+                        font-size: 14px; 
+                        margin-top: -15px; 
+                        font-weight: bold;
+                    }
+
+                    .left-details{
+                        display: inline-block; 
+                        width: 48%; 
+                        margin-top: 2px;
+                    }
+
+                    .right-details{
+                        display: inline-block; width: 48%;
+                    }
+
+                    p{
+                        margin-bottom: -10px;
+                    }
+
+                    .table{
+                        margin-top: 20px; 
+                        width: 100%; 
+                        border-collapse: collapse;
+                    }
+
+                    th{
+                        border: 2px solid #000; 
+                        padding: 8px; 
+                        background-color: #f2f2f2; 
+                        font-size: 14px;
+                    }
+
+                    td{
+                        padding: 8px; 
+                        font-size: 14px;
+                        border: 2px solid #000;
+                    }
+
+                    .total-table{
+                        margin-top: 20px; 
+                        width: 100%; 
+                        border-collapse: collapse;
+                    }
+
+                    .pied{
+                        color: grey; font-weight: 
+                        bold; font-size: 17px; 
+                        font-family: 'Courier New', Courier, monospace; 
+                        margin-top: 20px; 
+                        text-align: center; 
+                        font-size: 14px; 
+                        font-weight: bold;
+                    }
+
+                    .text{
+                        padding-top: 10px; 
+                        text-align: center; 
+                        margin-top: 25px; 
+                        font-size: 12px;
+                    }
+
+                    .signatures{
+                        display: flex; 
+                        flex-direction: column; 
+                        align-items: center; 
+                        margin-top: 20px;
+                    }
+
+                    .signature-row{
+                        display: flex; 
+                        justify-content: space-between; 
+                        width: 100%; 
+                        max-width: 800px;
+                    }
+                    <!-- .signature-box{
+                        text-align: center; 
+                        border: 2px solid #4088a6; 
+                        width: 306px; 
+                        height: 80px; 
+                        display: flex; 
+                        align-items: flex-start; 
+                        justify-content: center; 
+                        margin: 14px 0; 
+                        font-weight: bold; 
+                        margin: 1px 5px; 
+                        font-size: 13px; 
+                        padding-top: 10px;
+                    } -->
+                    .signature-table {
+                         width: 100%;
+                         max-width: 800px;
+                         text-align: center;
+                         border-collapse: separate;
+                         border-spacing: 10px; 
+                    }
+ 
+                    .signature-box {
+                        border: 1px solid #4088a6;
+                        width: 200px;
+                        height: 80px;
+                        text-align: center;
+                        vertical-align: top;
+                        font-weight: bold;
+                        font-size: 13px;
+                        padding-top: 10px;
+
+                    }
+
+                    .foot {
+                        position: absolute;
+                        bottom: 0;
+                        width: 100%;
+                        color: #0070c0;
+                        padding-top: 40px;
+                        border-top: 1px solid #000;
+                        font-size: 14px;
+                    }
+                    
+                    .ltfoot-container {
+                        width: 100%;
+                        padding-top: 20px;
+                        border-top: 1px solid #000;
+                        position: absolute;
+                        text-align: center;
+                        bottom: 0;
+                        color: rgb(0, 102, 0);
+                        font-size: 12px;
+                    }                
+                </style>
+
+                <t t-set="per_page" t-value="26" />
+                <t t-set="lines" t-value="doc.line_ids.mapped('detail_id')" />
+                <t t-set="lines_count" t-value="len(lines) + len(doc.line_ids)" />
+                <t t-set="last_page_lines_count" t-value="lines_count % per_page" />
+                <t t-set="pages" t-value="ceil(lines_count / per_page)" />
+                <t t-set="previous_section" t-value=""/>
+                <t t-set="current_section"  t-value=""/>
+                <t t-set="start" t-value="0"/>
+                <t t-set="end"   t-value="per_page"/>
+                <t t-set="remaining_rows" t-value="lines_count - start" />
+                <t t-set="sections_count" t-value="0"/>
+
+                <t t-foreach="range(pages)" t-as="page">
+                    <div class="page">
+                        <div class="container">
+                        
+                            <div class="logo">
+                                <img t-att-src="image_data_uri(request.env['res.company'].search([])[0].logo)" alt="Logo" style="max-width: 200px; height: auto;"/>
+                            </div>
+                            <div>
+                                <t t-if="doc.state_decompte_not_done not in ['done', 'bill'] and doc.is_done == False or doc.state_decompte not in ['done', 'bill'] and doc.is_done == True">
+                                    <p style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 65px; color: rgba(255, 0, 0, 0.1); font-weight: bold; text-transform: uppercase; z-index: 1; white-space: nowrap; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);"> 
+                                    copie provisoire</p>
+                                </t>
+                            </div>
+                            <div class="title">
+                                <h1 class="tit">DECOMPTE FOURNISSEUR</h1>
+                            </div>
+                            <hr/>
+
+
+                            <div class="details">
+                                <div class="left-details">
+                                    <p>Affaire: <span t-esc="docs.site_id.name"/></p>
+                                    <p>Fournisseur: <span t-esc="doc.supplier_id.name"/></p>
+                                    <p>Bon de Commande: <span t-esc="docs.purchase_id.name"/></p>
+                                    <p>Montant commande: <span t-esc="'{:,.2f}'.format(doc.amount_commande).replace(',', ' ').replace('.', ',')" />  <span t-esc="docs.currency_id.name"/></p>
+                                </div>
+                                <div class="right-details">
+                                    <p>Pourcentage éxécuté: <span t-esc="'{:,.2f}'.format(doc.executed).replace(',', ' ').replace('.', ',')"/> %</p>
+                                    <p>Représentant: <span t-esc="doc.represent"/> </p>
+                                    <p>Numéro: <span t-esc="doc.number"/></p>
+                                    <p>Période de décompte Du: <span t-esc="doc.start_date" t-options='{"widget": "date", "format": "dd/MM/yyyy"}'/> Au: <span t-esc="doc.end_date" t-options='{"widget": "date", "format": "dd/MM/yyyy"}'/></p>
+                                </div>
+                            </div>
+
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: left;">Description</th>
+                                        <th style="text-align: center; width: 5px;" >UDM</th>
+                                        <th style="text-align: center; width: 10px;">Type</th>
+                                        <th style="width: 50px;">Quantité Cumulée</th>
+                                        <th style="width: 134px;">Prix Unitaire</th>
+                                        <th style="width: 134px;">Montant Cumulée</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="sections_count" t-value="doc.line_ids.mapped('detail_id')[start:end].mapped('entry_line_id')"/>
+                                    <t t-foreach="doc.line_ids.mapped('detail_id')[start:end - len(sections_count)]" t-as="line">
+                                        <tr t-if="line.entry_line_id.name != current_section">
+                                            <t t-set="previous_section" t-value="current_section"/>
+                                            <td colspan="6" style="background-color: #d9d9d9; font-weight: bold; border: 2px solid #000;">
+                                                <t t-esc="line.entry_line_id.name" />
+                                            </td>
+                                            <t t-set="current_section" t-value="line.entry_line_id.name"/>
+                                        </tr>
+                                        <tr>
+                                            <td style="border-right: none;">
+                                                <t t-esc="line.name" />
+                                            </td>
+                                            <td style="text-align: center; width: 5px;">
+                                                <t t-esc="line.unit_measurement.name" />
+                                            </td>
+                                            <td style="text-align: center; width: 10px;">
+                                                <t t-esc="'%' if line.quantity_type == 'percentage' else 'Q' if line.quantity_type == 'quantity' else line.quantity_type" />
+                                            </td>
+                                            <td style="text-align: right; width: 50px;">
+                                                <t t-esc="'{:,.2f}'.format(line.cumulative_quantity).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                            <td style="text-align: right; width: 134px;">
+                                                <t t-esc="'{:,.2f}'.format(line.price_unit).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                            <td style="text-align: right; width: 134px;">
+                                                <t t-esc="'{:,.2f}'.format(line.cumulative_amount_ht).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+                                    </t>
+
+                                    <!-- <t t-foreach="doc.line_ids" t-as="section">
+                                        <tr>
+                                            <td colspan="6" style="background-color: #d9d9d9; font-weight: bold;">
+                                                <t t-esc="section.name" />
+                                            </td>
+                                        </tr>
+
+                                        <t t-foreach="section.detail_id" t-as="line">
+                                            <tr>
+                                                <td style="border-right: none;">
+                                                    <t t-esc="line.name" />
+                                                </td>
+                                                <td style="text-align: center; width: 5px;">
+                                                    <t t-esc="line.unit_measurement.name" />
+                                                </td>
+                                                <td style="text-align: center; width: 10px;">
+                                                    <t t-esc="'%' if line.quantity_type == 'percentage' else 'Q' if line.quantity_type == 'quantity' else line.quantity_type" />
+                                                </td>
+                                                <td style="text-align: right; width: 50px;">
+                                                    <t t-esc="'{:,.2f}'.format(line.cumulative_quantity).replace(',', ' ').replace('.', ',')" />
+                                                </td>
+                                                <td style="text-align: right; width: 134px;">
+                                                    <t t-esc="'{:,.2f}'.format(line.price_unit).replace(',', ' ').replace('.', ',')" />
+                                                </td>
+                                                <td style="text-align: right; width: 134px;">
+                                                    <t t-esc="'{:,.2f}'.format(line.cumulative_amount_ht).replace(',', ' ').replace('.', ',')" />
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t> -->
+                                </tbody>
+                            </table>
+
+                            <t t-if="page + 1 == pages and last_page_lines_count &lt;= 8">
+                                <table class="total-table">
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">Cumul travaux réalisés (HT)</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.accumulations_work).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">Cumul déja facturé (HT)</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.accumulation_previous_amounts).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">Montant Brut de decompte (HT)</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.amount_invoiced).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">TVA</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.amount_invoiced_ttc - doc.amount_invoiced + doc.penalty_red).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">Montant Brut (HT)</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.gross_amount_ht).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">Montant Brut (TTC)</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.amount_invoiced_ttc).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">Remboursement Avance (TTC)</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.avance_red).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">Retenue de garantie (TTC) ( <span t-esc="'{:,.2f}'.format(docs.purchase_id.return_of_guarantee).replace(',', ' ').replace('.', ',')"/> %)</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.rg_red).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+
+                                        <!-- <tr>
+                                            <td style="background-color: #f2f2f2;">Pénalité (TTC)</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.penalty_red).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr> -->
+
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">Montant TTC du decompte FCFA</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.net_amount_to_be_invoiced).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+                                </table>
+
+                                <t t-if="doc.penalty_red != 0">
+                                    <p>Une retenue de <t t-esc="'{:,.2f}'.format(doc.penalty_red).replace(',', ' ').replace('.', ',')" /> a été appliquée sur ce décompte au titre d'une pénalité.</p>
+                                </t>
+
+                                <div class="pied">
+                                    <div class="text"> CHAQUE ATTACHEMENT OU FACTURE <br/> DOIT ETRE ACCOMPAGNE D'UNE COPIE SIGNEE ET CACHETEE DU BON COMMANDE </div>
+                                </div>
+            
+                                <div class="signatures">
+                                    <!-- <div class="signature-row"> 
+                                        <div class="signature-box"><span class="signature-text">CT / CP</span></div>
+                                        <div class="signature-box"><span class="signature-text">DZ</span></div>
+                                        <div class="signature-box"><span class="signature-text">FOURNISSEUR/REPRESENTANT</span></div>
+                                    </div> -->
+                                    <table class="signature-table">
+                                         <tr>
+                                             <td class="signature-box"> <span class="signature-text">CT / CP</span> </td>
+                                             <td class="signature-box"> <span class="signature-text">DZ</span> </td>
+                                             <td class="signature-box"> <span class="signature-text">FOURNISSEUR/REPRESENTANT</span> </td>
+                                         </tr>
+                                     </table>
+                                </div>
+                            </t>
+
+                            <div class="ltfoot-container">
+                                <p>SARL au Capital de 100 000 000 FCFA, RCCM : CI-ABJ-03-2024-B12-01326, CC : 1637553T NIU N° : CI-2024-0073078 D, CNPS : 291705</p>
+                                <p>Angle Avenue Boga Doudou et Rue des Jardins. Im.LG. 3 ème Etage II Plateaux Vallon. BP. 2450 Abidjan 08 - Côte d'Ivoire</p>
+                                <p>Tél : +225 27 22 23 87 18, Mobile : +225 01 50 23 63 02, Email : sotaserv-ci@sotaserv.com</p>
+                                <p>www.sotaserv.ma</p>
+                            </div>
+                        </div>
+                        <t t-set="current_section"  t-value=""/>
+                        <t t-set="start" t-value="end - len(sections_count)"/>
+                        <t t-set="end" t-value="start + per_page"/>
+                        <t t-set="sections_count" t-value="0"/>
+                    </div>
+                    <p style="page-break-before: always;"/>
+                </t>
+                <t t-if="last_page_lines_count &gt; 8">
+                    <div class="page">
+                        <div class="container">
+                            <div class="logo">
+                                <img t-att-src="image_data_uri(request.env['res.company'].search([])[0].logo)" alt="Logo" style="max-width: 200px; height: auto;"/>
+                            </div>
+
+                            <div class="title">
+                                <h1 class="tit">DECOMPTE FOURNISSEUR</h1>
+                            </div>
+                            <hr/>
+
+                            <div class="details">
+                                <div class="left-details">
+                                    <p>Affaire: <span t-esc="docs.site_id.name"/></p>
+                                    <p>Fournisseur: <span t-esc="doc.supplier_id.name"/></p>
+                                    <p>Bon de Commande: <span t-esc="docs.purchase_id.name"/></p>
+                                    <p>Montant commande: <span t-esc="'{:,.2f}'.format(doc.amount_commande).replace(',', ' ').replace('.', ',')" />  <span t-esc="docs.currency_id.name"/></p>
+                                </div>
+                                <div class="right-details">
+                                    <p>Pourcentage éxécuté: <span t-esc="'{:,.2f}'.format(doc.executed).replace(',', ' ').replace('.', ',')"/> %</p>
+                                    <p>Représentant: <span t-esc="doc.represent"/> </p>
+                                    <p>Numéro: <span t-esc="doc.number"/></p>
+                                    <p>Période de décompte Du: <span t-esc="doc.start_date" t-options='{"widget": "date", "format": "dd/MM/yyyy"}'/> Au: <span t-esc="doc.end_date" t-options='{"widget": "date", "format": "dd/MM/yyyy"}'/></p>
+                                </div>
+                            </div>
+
+                            <t t-if="pages > 0 and start + per_page >= lines_count">
+                                <table class="total-table">
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">Cumul travaux réalisés (HT)</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.accumulations_work).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">Cumul déja facturé (HT)</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.accumulation_previous_amounts).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">Montant Brut de decompte (HT)</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.amount_invoiced).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">TVA</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.amount_invoiced_ttc - doc.amount_invoiced + doc.penalty_red).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">Montant Brut (HT)</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.gross_amount_ht).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">Montant Brut (TTC)</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.amount_invoiced_ttc).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">Remboursement Avance (TTC)</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.avance_red).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">Retenue de garantie (TTC) ( <span t-esc="'{:,.2f}'.format(docs.purchase_id.return_of_guarantee).replace(',', ' ').replace('.', ',')"/> %)</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.rg_red).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+
+                                        <!-- <tr>
+                                            <td style="background-color: #f2f2f2;">Pénalité (TTC)</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.penalty_red).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr> -->
+
+                                        <tr>
+                                            <td style="background-color: #f2f2f2;">Montant TTC du decompte FCFA</td>
+                                            <td style="width: 285px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(doc.net_amount_to_be_invoiced).replace(',', ' ').replace('.', ',')" />
+                                            </td>
+                                        </tr>
+                                </table>
+
+                                <t t-if="doc.penalty_red != 0">
+                                    <p>Une retenue de <t t-esc="'{:,.2f}'.format(doc.penalty_red).replace(',', ' ').replace('.', ',')" /> a été appliquée sur ce décompte au titre d'une pénalité.</p>
+                                </t>
+                                
+                                <div class="pied">
+                                    <div class="text"> CHAQUE ATTACHEMENT OU FACTURE <br/> DOIT ETRE ACCOMPAGNE D'UNE COPIE SIGNEE ET CACHETEE DU BON COMMANDE </div>
+                                </div>
+            
+                                <div class="signatures">
+                                    <!-- <div class="signature-row"> 
+                                        <div class="signature-box"><span class="signature-text">CT / CP</span></div>
+                                        <div class="signature-box"><span class="signature-text">DZ</span></div>
+                                        <div class="signature-box"><span class="signature-text">FOURNISSEUR/REPRESENTANT</span></div>
+                                    </div> -->
+                                    <table class="signature-table">
+                                         <tr>
+                                             <td class="signature-box"> <span class="signature-text">CT / CP</span> </td>
+                                             <td class="signature-box"> <span class="signature-text">DZ</span> </td>
+                                             <td class="signature-box"> <span class="signature-text">FOURNISSEUR/REPRESENTANT</span> </td>
+                                         </tr>
+                                     </table>
+                                </div>
+                            </t>
+
+                            <div class="ltfoot-container">
+                                <p>SARL au Capital de 100 000 000 FCFA, RCCM : CI-ABJ-03-2024-B12-01326, CC : 1637553T NIU N° : CI-2024-0073078 D, CNPS : 291705</p>
+                                <p>Angle Avenue Boga Doudou et Rue des Jardins. Im.LG. 3 ème Etage II Plateaux Vallon. BP. 2450 Abidjan 08 - Côte d'Ivoire</p>
+                                <p>Tél : +225 27 22 23 87 18, Mobile : +225 01 50 23 63 02, Email : sotaserv-ci@sotaserv.com</p>
+                                <p>www.sotaserv.ma</p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

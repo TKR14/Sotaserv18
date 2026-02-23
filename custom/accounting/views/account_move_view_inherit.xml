@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="account_move_view_inherit" model="ir.ui.view">
+    <field name="name">account.move.view.inherit</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="account.view_move_form" />
+    <field name="arch" type="xml">
+      <xpath expr="//button[@name='button_cancel']" position="replace">
+        <field name="can_be_returned" invisible="1"/>
+        
+        <button name="return_account_action" 
+                type="object" 
+                string="Retour décompte" 
+                confirm="Êtes-vous sûr de vouloir continuer?" 
+                invisible="not can_be_returned"/>
+
+        <button name="button_cancel" 
+                string="Annuler" 
+                type="object" 
+                groups="account.group_account_invoice" 
+                invisible="id == False or state != 'draft' or can_be_returned == True"/>
+      </xpath>
+    </field>
+  </record>
+
+    <record id="account_payment_method_form" model="ir.ui.view">
+        <field name="name">account.payment.method.form</field>
+        <field name="model">account.payment.method</field>
+        <field name="arch" type="xml">
+            <form string="Payment Method" >
+                <group colspan="4">
+                    <field name="name" />
+                    <field name="code" />
+                    <field name="payment_type" />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="account_payment_method_tree" model="ir.ui.view">
+        <field name="name">account.payment.method.list</field>
+        <field name="model">account.payment.method</field>
+        <field name="arch" type="xml">
+            <list string="Payment Method" >
+                <field name="name" />
+                <field name="code" />
+                <field name="payment_type" />
+            </list>
+        </field>
+    </record>
+
+    <record id="building_account_payment_method_act" model="ir.actions.act_window">
+        <field name="res_model">account.payment.method</field>
+        <field name="name">Moyens de Paiement</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem id="menu_account_payment_method" 
+              name="Moyens de Paiement" 
+              action="building_account_payment_method_act" 
+              parent="account.account_account_menu" 
+              sequence="5"/>
+    
+</odoo>

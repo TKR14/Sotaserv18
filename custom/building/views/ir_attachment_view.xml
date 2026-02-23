@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<odoo>
+
+       <record id="document_type_edit" model="ir.ui.view">
+            <field name="name">ir.attachment.type.form</field>
+            <field name="model">ir.attachment.type</field>
+            <field name="arch" type="xml">
+                <form string="Type Document" >
+                    <group colspan="4">
+                        <field name="document_type"/>
+                        <field name="name" required="1"/>
+                    	<field name="code" invisible="1"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="attachment_type_act" model="ir.actions.act_window">
+            <field name="res_model">ir.attachment.type</field>
+            <field name="name">Types des Documents</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{}</field>
+        </record>
+        
+
+        <record model="ir.ui.view" id="view_attachment_form_inherit">
+            <field name="name">ir.attachment.form.inherit</field>
+            <field name="model">ir.attachment</field>
+            <field name="inherit_id" ref="base.view_attachment_form" />
+            <field name="arch" type="xml">
+            	<field name='type' position="after">
+                    <field name="attachment_type_id"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- <record id="base.action_attachment" model="ir.actions.act_window">
+            <field name="domain">[('attachment_type_id.document_type', '!=', 'other')]</field>
+        </record> -->
+
+</odoo>
+

@@ -1,0 +1,40 @@
+<odoo>
+    <record id="stock_dashboard_view_form" model="ir.ui.view">
+        <field name="name">stock.dashboard.view.form</field>
+        <field name="model">stock.dashboard</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0" class="stock_dashboard">
+                <header>
+                    <button name="download_excel" type="object" string="Exporter Excel" class="btn-success"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="site_id" options="{'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="type"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Articles">
+                            <field name="line_ids" options="{'no_open': True}">
+                                <list>
+                                    <!-- <field name="warehouse_id"/> -->
+                                    <!-- <field name="location_id"/> -->
+                                    <field name="product_id"/>
+                                    <field name="initial"/>
+                                    <field name="stock_in" class="fake_link text-primary"/>
+                                    <button name="action_open_in_moves" type="object" icon="fa-eye"/>
+                                    <field name="stock_out" class="fake_link text-primary"/>
+                                    <button name="action_open_out_moves" type="object" icon="fa-eye"/>
+                                    <field name="current"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

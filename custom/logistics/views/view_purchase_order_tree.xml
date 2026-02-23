@@ -1,0 +1,27 @@
+<odoo>
+    <record id="view_purchase_order_tree_no_multiedit" model="ir.ui.view">
+        <field name="name">purchase.order.tree.no.multiedit</field>
+        <field name="model">purchase.order</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="multi_edit">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_order_form_no_edit" model="ir.ui.view">
+        <field name="name">purchase.order.form.no.edit</field>
+        <field name="model">purchase.order</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//form" position="attributes">
+                <attribute name="edit">false</attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

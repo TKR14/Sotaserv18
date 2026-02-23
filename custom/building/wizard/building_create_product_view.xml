@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+     
+		<record model="ir.ui.view" id="building_product_create_form">
+	        <field name="name">building.product.form</field>
+	        <field name="model">building.product</field>
+	        <field name="type">form</field>
+	        <field name="arch" type="xml">
+	        	<form string="Produits">
+					<notebook>
+						<page string="Matériaux" name="products">
+							<group class="oe_subtotal_footer oe_right" colspan="2" name="building_price_products">
+                            	<field name="amount_products" widget='monetary'/>
+                        	</group>
+							<field name="product_line_ids" nolabel="1">
+								<tree string="Produits" editable="botom">
+									<field name="product_id" />
+									<field name="name" string="Désignation"/>
+									<field name="quantity"/>
+									<field name="product_uom"/>
+									<field name="price_unit"/>
+								</tree>
+							</field>
+						</page>
+						<page string="Matériels" name="materials">
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="building_price_materials">
+                                <field name="amount_meterials" widget='monetary'/>
+                            </group>
+							<field name="resource_material_ids" nolabel="1">
+								<tree string="Matériels" editable="botom">
+									<field name="resource_categ_id" />
+									<field name="resource_id" />
+									<field name="name" />
+									<field name="quantity"/>
+									<field name="product_uom"/>
+									<field name="price_unit"/>
+								</tree>
+							</field>
+						</page>
+						<page string="Consommables" name="expendable">
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="building_price_expendables">
+                                <field name="amount_expendables" widget='monetary'/>
+                            </group>
+							<field name="expendable_ids" nolabel="1">
+								<tree string="Consommables" editable="botom">
+									<field name="product_id" />
+									<field name="name" string="Désignation"/>
+									<field name="quantity"/>
+									<field name="product_uom"/>
+									<field name="price_unit"/>
+								</tree>
+							</field>
+						</page>
+						<page string="Mains d'oeuvre" name="humans">
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="building_price_humans">
+                                <field name="amount_humans" widget='monetary'/>
+                            </group>
+							<field name="resource_human_ids" nolabel="1">
+								<tree string="Mains d'oeuvre" editable="botom">
+									<field name="profile_id" />
+									<field name="resource_id" />
+									<field name="name" />
+									<field name="quantity"/>
+									<field name="product_uom"/>
+									<field name="price_unit"/>
+								</tree>
+							</field>
+						</page>
+					</notebook>
+                    <group class="oe_subtotal_footer oe_right" colspan="2" name="building_ds_total">
+                        <field name="amount_total" widget='monetary'/>
+                        <field name="perc_construction_costs" />
+                        <field name="amount_production_cost" widget='monetary'/>
+                        <field name="perc_special_expenses" />
+                        <field name="amount_direct_cost" widget='monetary'/>
+                        <field name="perc_general_costs" />
+                        <field name="amount_standard_price" widget='monetary'/>
+                        <field name="margin_benefit" />
+                        <field name="sale_price" widget='monetary'/>
+                    </group>
+
+	              	<footer>
+	                	<button name="create_product" string="Créer" type="object" class="oe_highlight"/>
+	                	or
+	                	<button string="Annuler" class="oe_link" special="cancel" />
+	           		</footer>
+	            </form>
+	        </field>
+		</record>
+            
+		<record model="ir.actions.act_window" id="action_create_product">
+		    <field name="name">Produits</field>
+		    <field name="res_model">building.product</field>
+		    <field name="view_type">form</field>
+		    <field name="view_mode">form</field>
+		    <field name="target">new</field>
+		</record>
+            
+    </data>
+</openerp>

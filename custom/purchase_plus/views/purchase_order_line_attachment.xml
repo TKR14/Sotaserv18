@@ -1,0 +1,271 @@
+<odoo>
+
+    <record id="purchase_order_modal_view" model="ir.ui.view">
+        <field name="name">purchase.order.modal.view</field>
+        <field name="model">purchase.order</field>
+        <field name="arch" type="xml">
+            <form class="confirm_like_modal">
+                <sheet>
+                    <group>
+                        <p>Le champ déduction d'avance est égale à 0. Voulez-vous continuer?</p>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_certification_quantity" type="object" class="btn-primary" string="Continuer"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="purchase_order_line_attachment_form" model="ir.ui.view">
+        <field name="name">purchase.order.line.attachment.form</field>
+        <field name="model">purchase.order</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <header position="replace">
+                <header>
+                    <field name="is_service" invisible="1"/>
+                    <field name="button_cancel_visibility" invisible="1"/>
+                    <button
+                        name="button_sign"
+                        type="object"
+                        string="Signer"
+                        class="btn-primary"
+                        invisible="state not in ['purchase', 'done', 'partial', 'full'] or is_signed"
+                        groups="purchase_plus.purchase_order_group_sign"
+                    />
+                    <button
+                        name="button_print"
+                        type="object"
+                        string="Imprimer"
+                        invisible="state not in ['purchase', 'done', 'partial', 'full'] or not is_signed"
+                        class="btn-secondary"
+                        groups="purchase_plus.purchase_order_group_print"
+                    />
+                    <button name="action_validated" string="Soumettre" type="object"
+                                invisible="state_2 != 'draft'" class="btn-primary" groups="purchase_plus.purchase_order_group_submit"/>
+                    <button name="open_back_to_draft_reason_wizard" type="object" string="Remettre" class="oe_highlight"
+                                invisible="state_2 != 'validated'" context="{'method': 'action_back_to_draft'}" groups="purchase_plus.purchase_order_group_approve"/>
+                    <button name="action_approved" string="Approuver" type="object"
+                                invisible="state_2 != 'validated'" context="{'warning_shown': True}" class="btn-primary" groups="purchase_plus.purchase_order_group_approve"/>
+                    <button 
+                        name="create_advance_invoice" string="Générer Facture d'avance" type="object"    
+                        invisible="state_2 != 'approved' or is_advance_invoice_created or not show_create_advance_button or avance == 0.0"
+                        class="btn-primary"/>
+                    <button
+                        name="open_cancellation_reason_wizard"
+                        type="object"
+                        string="Annuler"
+                        class="btn-secondary"
+                        context="{'method': 'button_canceled'}"
+                        invisible="button_cancel_visibility == False"
+                        groups="account_plus.acount_move_group_achat,building_plus.sotaserv_dg"
+                    />
+                    <!-- <button 
+                        name="create_rg_invoice" string="Générer Facture d'RG" type="object"    
+                        attrs="{'invisible': ['|', '|', '|', ('state_2', '!=', 'approved'), ('is_rg_invoice_created', '=', True), ('show_create_rg_invoice_button', '=', True), ('return_of_guarantee', '=', 0.0)]}"
+                        class="btn-primary"/> -->
+                    <field name="is_advance_invoice_created" invisible="1"/>
+                    <field name="is_rg_invoice_created" invisible="1"/>
+                    <field name="show_create_advance_button" invisible="1"/>
+                    <!-- <field name="show_create_rg_invoice_button" invisible="1"/> -->
+                    <field name="return_of_guarantee" invisible="1"/>
+                    <field name="state" invisible="1"/>
+                    <field name="state_2" widget="statusbar" statusbar_visible="draft,validated,approved" readonly="1"/>
+                </header>
+            </header>
+            <div class="oe_title" position="replace">
+                <span class="o_form_label" invisible="state not in ['draft', 'sent']">Request for Quotation</span>
+                <span class="o_form_label" invisible="state in ['draft', 'sent']">Bon de commande</span>
+                <h1>
+                    <field name="priority" widget="priority" class="mr-3"/>
+                    <field name="name" readonly="1"/>
+                </h1>
+            </div>
+            <div position="replace"/>
+            <div position="replace"/>
+            <xpath expr="//sheet/group" position="replace">
+                <group>
+                    <group>
+                        <field name="partner_id" options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                    <group>
+                        <field name="site_id" options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                    <group>
+                        <field name="is_attachment" widget="boolean_toggle" readonly="state_2 != 'draft'" string="Attachement" groups="account_plus.acount_move_group_achat"/>
+                    </group>
+                    <group>
+                        <field name="is_signed" invisible="1"/>
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page[@name='products']/field[@name='order_line']/list/field[@name='price_subtotal']" position="after">
+                <button 
+                    name="show_detail" 
+                    type="object" 
+                    string="Détail"
+                    class="btn-primary"
+                    icon="fa-info-circle"
+                />
+            </xpath>
+            <xpath expr="//field[@name='qty_received']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='qty_invoiced']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page[@name='products']/field[@name='order_line']/list/field[@name='price_subtotal']" position="after">
+                <field name="ventilate"/>
+            </xpath>
+            <!-- <xpath expr="//form/sheet/notebook/page[@name='products']/field[@name='order_line']/list/field[@name='product_description_variants']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+            <xpath expr="//page[@name='purchase_delivery_invoice']/group/group[@name='other_info']/field[@name='incoterm_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- <xpath expr="//page[@name='purchase_delivery_invoice']" position="attributes">
+                <attribute name="groups">!building_plus.sotaserv_chef_projet,!building_plus.sotaserv_conduct_trv</attribute>
+            </xpath> -->
+            <xpath expr="//page[@name='purchase_delivery_invoice']/group/group[@name='other_info']/field[@name='incoterm_id']" position="after">
+                <field name="return_of_guarantee" string="RG (%)" readonly="state_2 != 'draft'" invisible="not is_attachment" force_save="1"/>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page[@name='products']/field[@name='order_line']/list/field[@name='name']" position="attributes">
+                <attribute name="readonly">1</attribute> 
+            </xpath>
+            <xpath expr="//field[@name='price_unit']" position="attributes">
+                <attribute name="readonly">1</attribute> 
+            </xpath>
+            <xpath expr="//field[@name='taxes_id']" position="attributes">
+                <attribute name="readonly">1</attribute> 
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Reclasser les champs -->
+    <record id="view_purchase_order_form_inherited_5" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherited.5</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+                <attribute name="readonly">0</attribute> 
+                <attribute name="readonly">state == 'cancel'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='offer_validity']" position="before">
+                <label for="payment_term_id" style="white-space: nowrap;"/>
+                <field name="payment_term_id" nolabel="1" options="{'no_open': True}" readonly="state != 'draft'"/>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page[@name='products']/field[@name='order_line']/list" position="replace">
+                <list string="Order Lines" editable="bottom" delete="false" create="false">
+                    <field name="regime_imposition" invisible="1"/>
+                    <field name="is_attachment" invisible="1"/>
+                    <field name="is_certified" invisible="1"/>
+                    <field name="can_edit_received_qty" invisible="1"/>
+                    <field name="state" invisible="1"/>
+                    <field name="product_type" invisible="1"/>
+                    <field name="product_id" readonly="1" options="{'no_open': True}"/>
+                    <field name="qty_validated" readonly="1" invisible="1" force_save="1"/>
+                    <field name="qty_certified" readonly="1" invisible="1" force_save="1"/>
+                    <field name="name" readonly="state != 'draft'"/> 
+                    <field name="product_uom" string="UDM" readonly="1" options="{'no_open': True}"/>
+                    <field name="product_qty" readonly="1" options="{'no_open': True}"/>
+                    <field name="price_unit" readonly="state != 'draft'"/>
+                    <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase'), ('tax_group_id.name', '!=', 'Retenue'), ('company_id', '=', parent.company_id)]" readonly="state != 'draft' or regime_imposition not in ['normal', 'simplifie']" options="{'no_create': True}"/>
+                    <field name="price_subtotal" readonly="1"/>
+                    <field name="qty_received" readonly="state not in ['purchase', 'done', 'partial'] or is_attachment or not can_edit_received_qty"/>
+                    <field name="qty_invoiced" readonly="1"/>
+                </list>
+            </xpath>
+            <xpath expr="//field[@name='picking_type_id']" position="after">
+                <field name="is_cg" invisible="1" />
+                <field name="is_service" invisible="1"/>
+                <field name="avance" string="Avance (%)" readonly="state != 'draft'" force_save="1"/>
+                <field name="remaining_advance" invisible="not is_service or is_attachment" />
+                <field name="advance_accumulation" invisible="1" />
+                <field name="amount_advance_deduction" force_save="1" readonly="state == 'full' or not is_cg or remaining_advance == 0" invisible="not is_service or is_attachment"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_purchase_order_form_inherited_magasinier" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherited.6</field>
+        <field name="model">purchase.order</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//form/sheet/notebook/page[@name='products']/group[@class='oe_subtotal_footer oe_right']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+
+            <xpath expr="//form/sheet/notebook/page[@name='products']/field[@name='order_line']/list/field[@name='price_unit']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//form/sheet/notebook/page[@name='products']/field[@name='order_line']/list/field[@name='price_subtotal']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//form/sheet/notebook/page[@name='products']/field[@name='order_line']/list/field[@name='taxes_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_order_tree" model="ir.ui.view">
+        <field name="name">purchase.order.tree</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='activity_ids']" position="replace"/>
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="string">Acheteur</attribute>
+            </xpath>
+            <xpath expr="///header/button[@name='action_create_invoice']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_order_line_action_attachment" model="ir.actions.act_window">
+        <field name="name">Bons de commande avec attachement</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">["&amp;", ("is_attachment", "=", True), '|', ('create_uid', '=', uid), ('order_line.product_id.categ_id.supervisor_ids', '=', uid)]</field>       
+        <field name="view_ids" eval="[(5, 0, 0), 
+                                      (0, 0, {'view_mode': 'list', 'view_id': ref('purchase_order_tree')}), 
+                                      (0, 0, {'view_mode': 'form', 'view_id': ref('purchase_order_line_attachment_form')})]"/>
+        <field name="context">{"delete": False, "create": False, "hide_actions":True, "group_by": ['state_2'], 'hide_field': 'state'}</field>
+    </record>
+
+    <record id="purchase_order_line_action_attachment_cp" model="ir.actions.server">
+        <field name="name">Bons de commande avec attachement</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_project_manager_orders("SOTASERV_CHEF_PROJET")</field>
+    </record>
+    
+    <record id="purchase_order_line_attachemenet_ct" model="ir.actions.server">
+        <field name="name">Bons de commande avec attachement</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_purchase_orders_with_attachments("SOTASERV_CONDUCT_TRV")</field>
+    </record>
+
+    <record id="purchase_order_line_attachemenet_dz" model="ir.actions.server">
+        <field name="name">Bons de commande avec attachement</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_dz_orders("SOTASERV_DIRECTEUR_ZONE")</field>
+    </record>
+
+    <menuitem id="purchase_order_line_menu_attachment"
+              name="Bons de commande avec attachement"
+              sequence="20"
+              parent="purchase.menu_procurement_management"
+              action="purchase_order_line_action_attachment"
+              groups="account_plus.acount_move_group_commandes_service"/>
+</odoo>

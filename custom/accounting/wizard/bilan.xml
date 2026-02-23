@@ -1,0 +1,1006 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bilans_view" model="ir.ui.view">
+        <field name="name">bilans.view</field>
+        <field name="model">bilans.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="to_date" />
+                    </group>
+                    <group>
+                        <field name="state" widget="radio" />
+                    </group>
+                </group>
+                <footer>
+                    <button string="Imprimer" class="btn-primary" name="print_dates" type="object" />
+                    <button string="Annuler" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="bilans_action" model="ir.actions.act_window">
+        <field name="name">Bilans</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">bilans.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="bilans_view" />
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="bilans_menu" name="Bilans" sequence="1" parent="accounting_pdf_reports.menu_finance_legal_statement" action="bilans_action" />
+
+    <record id="bilans_report" model="ir.actions.report">
+        <field name="name">Bilans</field>
+        <field name="model">bilans.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">accounting.bilans_templates</field>
+    </record>
+
+    <template id="bilans_templates">
+        <t t-call="web.html_container">
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&amp;display=swap');
+
+                * {
+                    margin: 0;
+                    padding: 0;
+                    font-size: 10pt;
+                }
+
+                .page {
+                    font-family: 'Lato';
+                }
+
+                .logo-pagination {
+                    margin-bottom: 40px;
+                }
+
+                .border {
+                    border: 1px solid #000;
+                    text-align: center;
+                    vertical-align: middle;
+                    line-height: 1.8;
+                }
+
+                .td-logo {
+                    width: 70%;
+                }
+
+                .header {
+                    margin-bottom: 40px;
+                }
+
+                .header tr td {
+                    padding: 2px 10px 2px 0;
+                    width: 25%;
+                }
+
+                .header tr td:nth-child(2) {
+                    width: 35%;
+                }
+
+                .header tr td:nth-child(3) {
+                    width: 15%;
+                }
+
+                .header td:nth-child(even) {
+                    font-weight: bold;
+                }
+
+                th:not(.bilan th), td {
+                    vertical-align: top;
+                }
+
+                .bilan tr td:first-child, .bilan tr:first-child th:first-child {
+                    width: 0px;
+                }
+
+                .bilan tr :nth-child(3) {
+                    width: 0px;
+                }
+
+                .bilan th, .bilan td {
+                    border: 1px solid #000;
+                    padding: 6px 4px;
+                }
+
+                .bilan .bold {
+                    font-weight: bold;
+                }
+
+                .bilan .bold td:nth-child(2), .bilan .bold td:nth-child(3) {
+                    background: #e8e8e8;
+                }
+
+                .bilan tbody td {
+                    text-align: right;
+                }
+
+                .bilan tbody td:first-child, .bilan tbody td:nth-child(3) {
+                    text-align: center;
+                }
+
+                .bilan tbody td:nth-child(2) {
+                    text-align: left;
+                }
+
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+            </style>
+
+            <t t-if="state == 'posted'">
+                <t t-set="items" t-value="request.env['account.move'].search([('state', '=', 'posted')])" />
+            </t>
+            <t t-else="">
+                <t t-set="items" t-value="request.env['account.move'].search([])" />
+            </t>
+        
+            <div class="page">
+                <table class="logo-pagination">
+                    <tr>
+                        <td class="td-logo" rowspan="4">
+                            <img t-att-src="image_data_uri(request.env['res.company'].search([])[0].logo)" style="width: 200px;"/>
+                        </td>
+                        <td class="border no-border-bot">BILAN SYSTEME NORMAL<br/>Page 1/2</td>
+                    </tr>
+                </table>
+
+                <table class="header">
+                    <tr>
+                        <td>Dénomination sociale de l'entité :</td>
+                        <td colspan="3">SOTASERV - CI</td>
+                    </tr>
+                    <tr>
+                        <td>Adresse :</td>
+                        <td>18 BP 2566 ABIDJAN 18 - ABOBO</td>
+                        <td>Sigle usuel :</td>
+                        <td>SOTASERV-CI</td>
+                    </tr>
+                    <tr>
+                        <td>N° de compte contribuable (NCC) :</td>
+                        <td>16 37553 T</td>
+                        <td>Exercice clos le :</td>
+                        <td><t t-esc="to_f_date"/></td>
+                    </tr>
+                    <tr>
+                        <td>N° de télédéclarant (NTD) :</td>
+                        <td>6161436539232</td>
+                        <td>Durée (en mois) :</td>
+                        <td>12</td>
+                    </tr>
+                </table>
+
+                <table class="bilan">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">REF</th>
+                            <th rowspan="2">ACTIF</th>
+                            <th rowspan="2">NOTE</th>
+                            <th colspan="3">EXERCICE au <t t-esc="from_f_date"/></th>
+                            <th>EXERCICE au <t t-esc="n1_to_date"/></th>
+                        </tr>
+                        <tr>
+                            <th>BRUT</th>
+                            <th>AMORT et DEPREC.</th>
+                            <th>NET</th>
+                            <th>NET</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="c5" t-value="items.calc_bilan(1, to_date, '211')"></t>
+                        <t t-set="c6" t-value="items.calc_bilan(0, to_date, '2811')"></t>
+                        <t t-set="c7" t-value="c5 - c6"></t>
+                        <t t-set="c5n1" t-value="items.calc_bilan(1, n1_to_date, '211')"></t>
+                        <t t-set="c6n1" t-value="items.calc_bilan(0, n1_to_date, '2811')"></t>
+                        <t t-set="c8" t-value="c5n1 - c6n1"></t>
+        
+                        <t t-set="c9" t-value="items.calc_bilan(1, to_date, '212') + items.calc_bilan(1, to_date, '213')"></t>
+                        <t t-set="c10" t-value="items.calc_bilan(0, to_date, '2812') + items.calc_bilan(0, to_date, '2813')"></t>
+                        <t t-set="c11" t-value="c9 - c10"></t>
+                        <t t-set="c9n1" t-value="items.calc_bilan(1, n1_to_date, '212') + items.calc_bilan(1, n1_to_date, '213')"></t>
+                        <t t-set="c10n1" t-value="items.calc_bilan(0, n1_to_date, '2812') + items.calc_bilan(0, n1_to_date, '2813')"></t>
+                        <t t-set="c12" t-value="c9n1 - c10n1"></t>
+        
+                        <t t-set="c13" t-value="items.calc_bilan(1, to_date, '215') + items.calc_bilan(1, to_date, '216')"></t>
+                        <t t-set="c14" t-value="items.calc_bilan(0, to_date, '2815') + items.calc_bilan(0, to_date, '2816')"></t>
+                        <t t-set="c15" t-value="c13 - c14"></t>
+                        <t t-set="c13n1" t-value="items.calc_bilan(1, n1_to_date, '215') + items.calc_bilan(1, n1_to_date, '216')"></t>
+                        <t t-set="c14n1" t-value="items.calc_bilan(0, n1_to_date, '2815') + items.calc_bilan(0, n1_to_date, '2816')"></t>
+                        <t t-set="c16" t-value="c13n1 - c14n1"></t>
+        
+                        <t t-set="c17" t-value="items.calc_bilan(1, to_date, '218')"></t>
+                        <t t-set="c18" t-value="items.calc_bilan(0, to_date, '2818')"></t>
+                        <t t-set="c19" t-value="c17 - c18"></t>
+                        <t t-set="c17n1" t-value="items.calc_bilan(1, n1_to_date, '218')"></t>
+                        <t t-set="c18n1" t-value="items.calc_bilan(0, n1_to_date, '2818')"></t>
+                        <t t-set="c20" t-value="c17n1 - c18n1"></t>
+        
+                        <t t-set="c1" t-value="c5 + c9 + c13 + c17"></t>
+                        <t t-set="c2" t-value="c6 + c10 +c14 +c18"></t>
+
+                        <t t-set="c1n1" t-value="c5n1 + c9n1 + c13n1 + c17n1"></t>
+                        <t t-set="c2n1" t-value="c6n1 + c10n1 +c14n1 +c18n1"></t>
+
+                        <t t-set="c3" t-value="c1 - c2"></t>
+                        <t t-set="c4" t-value="c1n1 + c2n1"></t>
+
+                        <tr class="bold">
+                            <td>AD</td>
+                            <td>IMMOBILISATIONS INCORPORELLES</td>
+                            <td>3</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c1"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c2"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c3"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c4"/></td>
+                        </tr>
+                        <tr>
+                            <td>AE</td>
+                            <td>Frais de développement et de prospection</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c5"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c6"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c7"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c8"/></td>
+                        </tr>
+                        <tr>
+                            <td>AF</td>
+                            <td>Brevets, licences, logiciels, et  droits similaires</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c9"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c10"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c11"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c12"/></td>
+                        </tr>
+                        <tr>
+                            <td>AG</td>
+                            <td>Fonds commercial et droit au bail</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c13"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c14"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c15"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c16"/></td>
+                        </tr>
+                        <tr>
+                            <td>AH</td>
+                            <td>Autres immobilisations incorporelles</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c17"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c18"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c19"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c20"/></td>
+                        </tr>
+                        
+                        <t t-set="c25" t-value="items.calc_bilan(1, to_date, '22')"></t>
+                        <t t-set="c26" t-value="items.calc_bilan(0, to_date, '292')"></t>
+                        <t t-set="c27" t-value="c25 - c26"></t>
+                        <t t-set="c25n1" t-value="items.calc_bilan(1, n1_to_date, '22')"></t>
+                        <t t-set="c26n1" t-value="items.calc_bilan(0, n1_to_date, '292')"></t>
+                        <t t-set="c28" t-value="c25n1 - c26n1"></t>
+        
+                        <t t-set="c29" t-value="items.calc_bilan(1, to_date, '23')"></t>
+                        <t t-set="c30" t-value="items.calc_bilan(0, to_date, '283')"></t>
+                        <t t-set="c31" t-value="c29 - c30"></t>
+                        <t t-set="c29n1" t-value="items.calc_bilan(1, n1_to_date, '23')"></t>
+                        <t t-set="c30n1" t-value="items.calc_bilan(0, n1_to_date, '283')"></t>
+                        <t t-set="c32" t-value="c29n1 - c30n1"></t>
+        
+                        <t t-set="c33" t-value="items.calc_bilan(1, to_date, '247')"></t>
+                        <t t-set="c34" t-value="items.calc_bilan(0, to_date, '2947')"></t>
+                        <t t-set="c35" t-value="c33 - c34"></t>
+                        <t t-set="c33n1" t-value="items.calc_bilan(1, n1_to_date, '247')"></t>
+                        <t t-set="c34n1" t-value="items.calc_bilan(0, n1_to_date, '2947')"></t>
+                        <t t-set="c36" t-value="c33n1 - c34n1"></t>
+        
+                        <t t-set="c37" t-value="items.calc_bilan(3, to_date, '2411') + items.calc_bilan(3, to_date, '2412') + items.calc_bilan(3, to_date, '2442') + items.calc_bilan(3, to_date, '2443') + items.calc_bilan(3, to_date, '2444') + items.calc_bilan(3, to_date, '2447')"></t>
+                        <t t-set="c38" t-value="items.calc_bilan(0, to_date, '2841') + items.calc_bilan(0, to_date, '2843') + items.calc_bilan(0, to_date, '2844') + items.calc_bilan(0, to_date, '2848')"></t>
+                        <t t-set="c39" t-value="c37 - c38"></t>
+                        <t t-set="c37n1" t-value="items.calc_bilan(3, n1_to_date, '2411') + items.calc_bilan(3, n1_to_date, '2412') + items.calc_bilan(3, n1_to_date, '2442') + items.calc_bilan(3, n1_to_date, '2443') + items.calc_bilan(3, n1_to_date, '2444') + items.calc_bilan(3, n1_to_date, '2447')"></t>
+                        <t t-set="c38n1" t-value="items.calc_bilan(0, n1_to_date, '2841') + items.calc_bilan(0, n1_to_date, '2843') + items.calc_bilan(0, n1_to_date, '2844') + items.calc_bilan(0, n1_to_date, '2848')"></t>
+                        <t t-set="c40" t-value="c37n1 - c38n1"></t>
+        
+                        <t t-set="c41" t-value="items.calc_bilan(1, to_date, '245')"></t>
+                        <t t-set="c42" t-value="items.calc_bilan(0, to_date, '2845')"></t>
+                        <t t-set="c43" t-value="c41 - c42"></t>
+                        <t t-set="c41n1" t-value="items.calc_bilan(1, n1_to_date, '245')"></t>
+                        <t t-set="c42n1" t-value="items.calc_bilan(0, n1_to_date, '2845')"></t>
+                        <t t-set="c44" t-value="c41n1 - c42n1"></t>
+        
+                        <t t-set="c45" t-value="items.calc_bilan(1, to_date, '25')"></t>
+                        <t t-set="c46" t-value="items.calc_bilan(0, to_date, '295')"></t>
+                        <t t-set="c47" t-value="c45 - c46"></t>
+                        <t t-set="c45n1" t-value="items.calc_bilan(1, n1_to_date, '25')"></t>
+                        <t t-set="c46n1" t-value="items.calc_bilan(0, n1_to_date, '295')"></t>
+                        <t t-set="c48" t-value="c45n1 - c46n1"></t>
+        
+                        <t t-set="c21" t-value="c25 + c29 + c33 + c37 + c41"></t>
+                        <t t-set="c21n1" t-value="c25n1 + c29n1 + c33n1 + c37n1 + c41n1"></t>
+                        <t t-set="c22" t-value="c26 + c30 + c34 + c38 + c42"></t>
+                        <t t-set="c22n1" t-value="c26n1 + c30n1 + c34n1 + c38n1 + c42n1"></t>
+                        <t t-set="c23" t-value="c27 + c31 + c35 + c39 + c43"></t>
+                        <t t-set="c24" t-value="c28 + c32 + c36 + c40 + c44"></t>
+
+                        <tr class="bold">
+                            <td>AI</td>
+                            <td>IMMOBILISATIONS CORPORELLES</td>
+                            <td>3</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c21"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c22"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c23"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c24"/></td>
+                        </tr>
+                        <tr>
+                            <td>AJ</td>
+                            <td>Terrains (1)dont Placement Net:</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c25"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c26"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c27"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c28"/></td>
+                        </tr>
+                        <tr>
+                            <td>AK</td>
+                            <td>Bâtiments (1)dont Placement Net:</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c33"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c34"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c35"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c36"/></td>
+                        </tr>
+                        <tr>
+                            <td>AL</td>
+                            <td>Aménagements, agencements et installations</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c29"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c30"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c31"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c32"/></td>
+                        </tr>
+                        <tr>
+                            <td>AM</td>
+                            <td>Matériel, mobilier et actifs biologiques</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c37"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c38"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c39"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c40"/></td>
+                        </tr>
+                        <tr>
+                            <td>AN</td>
+                            <td>Matériel de transport</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c41"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c42"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c43"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c44"/></td>
+                        </tr>
+                        <tr class="bold">
+                            <td>AP</td>
+                            <td>AVANCES ET ACOMPTES VERSES SUR IMMOBILISATIONS</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c45"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c46"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c47"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c48"/></td>
+                        </tr>
+
+                        <t t-set="c53" t-value="items.calc_bilan(1, to_date, '26')"></t>
+                        <t t-set="c54" t-value="items.calc_bilan(0, to_date, '292')"></t>
+                        <t t-set="c55" t-value="c53 - c54"></t>
+                        <t t-set="c53n1" t-value="items.calc_bilan(1, n1_to_date, '26')"></t>
+                        <t t-set="c54n1" t-value="items.calc_bilan(0, n1_to_date, '292')"></t>
+                        <t t-set="c56" t-value="c53n1 - c54n1"></t>
+        
+                        <t t-set="c57" t-value="items.calc_bilan(1, to_date, '27')"></t>
+                        <t t-set="c58" t-value="items.calc_bilan(0, to_date, '297')"></t>
+                        <t t-set="c59" t-value="c57 - c58"></t>
+                        <t t-set="c57n1" t-value="items.calc_bilan(1, n1_to_date, '27')"></t>
+                        <t t-set="c58n1" t-value="items.calc_bilan(0, n1_to_date, '297')"></t>
+                        <t t-set="c60" t-value="c57n1 - c58n1"></t>
+
+                        <t t-set="c49" t-value="c53 + c57"></t>
+                        <t t-set="c50" t-value="c54 + c58"></t>
+                        <t t-set="c49n1" t-value="c53n1 + c57n1"></t>
+                        <t t-set="c50n1" t-value="c54n1 + c58n1"></t>
+                        <t t-set="c51" t-value="c55 + c59"></t>
+                        <t t-set="c52" t-value="c56 + c60"></t>
+
+                        <tr class="bold">
+                            <td>AQ</td>
+                            <td>IMMOBILISATIONS FINANCIERES</td>
+                            <td>4</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c49"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c50"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c51"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c52"/></td>
+                        </tr>
+                        <tr>
+                            <td>AR</td>
+                            <td>Titres de participation</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c53"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c54"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c55"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c56"/></td>
+                        </tr>
+                        <tr>
+                            <td>AS</td>
+                            <td>Autres immobilisations financières</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c57"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c58"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c59"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c60"/></td>
+                        </tr>
+
+                        <t t-set="c61" t-value="c1 + c21 + c49"></t>
+                        <t t-set="c62" t-value="c2 + c22 + c50"></t>
+                        <t t-set="c61n1" t-value="c1n1 + c21n1 + c49n1"></t>
+                        <t t-set="c62n1" t-value="c2n1 + c22n1 + c50n1"></t>
+                        <t t-set="c63" t-value="c61 - c62"></t>
+                        <t t-set="c64" t-value="c61n1 - c62n1"></t>
+                        
+                        <t t-set="c65" t-value="items.calc_bilan(1, to_date, '48')"></t>
+                        <t t-set="c66" t-value="items.calc_bilan(0, to_date, '48')"></t>
+                        <t t-set="c67" t-value="c65 - c66"></t>
+                        <t t-set="c65n1" t-value="items.calc_bilan(1, n1_to_date, '48')"></t>
+                        <t t-set="c66n1" t-value="items.calc_bilan(0, n1_to_date, '48')"></t>
+                        <t t-set="c68" t-value="c65n1 - c66n1"></t>
+        
+                        <t t-set="c69" t-value="items.calc_bilan(1, to_date, '331')"></t>
+                        <t t-set="c70" t-value="items.calc_bilan(0, to_date, '39')"></t>
+                        <t t-set="c71" t-value="c69 - c70"></t>
+                        <t t-set="c69n1" t-value="items.calc_bilan(1, n1_to_date, '331')"></t>
+                        <t t-set="c70n1" t-value="items.calc_bilan(0, n1_to_date, '39')"></t>
+                        <t t-set="c72" t-value="c69n1 - c70n1"></t>
+
+                        <tr class="bold">
+                            <td>AZ</td>
+                            <td>TOTAL ACTIF IMMOBILISE</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c61"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c62"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c63"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c64"/></td>
+                        </tr>
+                        <tr class="bold">
+                            <td>BA</td>
+                            <td>ACTIF CIRCULANT HAO</td>
+                            <td>5</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c65"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c66"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c67"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c68"/></td>
+                        </tr>
+                        <tr class="bold">
+                            <td>BB</td>
+                            <td>STOCKS ET ENCOURS</td>
+                            <td>6</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c69"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c70"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c71"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c72"/></td>
+                        </tr>
+                        
+                        <t t-set="c77" t-value="items.calc_bilan(1, to_date, '4091')"></t>
+                        <t t-set="c78" t-value="items.calc_bilan(0, to_date, '490')"></t>
+                        <t t-set="c79" t-value="c77 - c78"></t>
+                        <t t-set="c77n1" t-value="items.calc_bilan(1, n1_to_date, '4091')"></t>
+                        <t t-set="c78n1" t-value="items.calc_bilan(0, n1_to_date, '490')"></t>
+                        <t t-set="c80" t-value="c77n1 - c78n1"></t>
+        
+                        <t t-set="c81" t-value="items.calc_bilan(1, to_date, '411') + items.calc_bilan(1, to_date, '418')"></t>
+                        <t t-set="c82" t-value="items.calc_bilan(0, to_date, '491') + items.calc_bilan(0, to_date, '497')"></t>
+                        <t t-set="c83" t-value="c81 - c82"></t>
+                        <t t-set="c81n1" t-value="items.calc_bilan(1, n1_to_date, '411') + items.calc_bilan(1, n1_to_date, '418')"></t>
+                        <t t-set="c82n1" t-value="items.calc_bilan(0, n1_to_date, '491') + items.calc_bilan(0, n1_to_date, '497')"></t>
+                        <t t-set="c84" t-value="c81n1 - c82n1"></t>
+        
+                        <t t-set="c85" t-value="items.calc_bilan(3, to_date, '44') + items.calc_bilan(3, to_date, '46') + items.calc_bilan(3, to_date, '47')"></t>
+                        <t t-set="c86" t-value="items.calc_bilan(0, to_date, '494') + items.calc_bilan(0, to_date, '496')"></t>
+                        <t t-set="c87" t-value="c85 - c86"></t>
+                        <t t-set="c85n1" t-value="items.calc_bilan(3, n1_to_date, '44') + items.calc_bilan(3, n1_to_date, '46') + items.calc_bilan(3, n1_to_date, '47')"></t>
+                        <t t-set="c86n1" t-value="items.calc_bilan(0, n1_to_date, '494') + items.calc_bilan(0, n1_to_date, '496')"></t>
+                        <t t-set="c88" t-value="c85n1 - c86n1"></t>
+
+                        <t t-set="c73" t-value="c77 + c81 + c85"></t>
+                        <t t-set="c74" t-value="c78 + c82 + c86"></t>
+                        <t t-set="c75" t-value="c79 + c83 + c87"></t>
+                        <t t-set="c76" t-value="c80 + c84 + c88"></t>
+
+                        <t t-set="c89" t-value="c69 + c73"></t>
+                        <t t-set="c90" t-value="c70 + c74"></t>
+                        <t t-set="c91" t-value="c71 + c75"></t>
+                        <t t-set="c92" t-value="c72 + c76"></t>
+
+                        <tr class="bold">
+                            <td>BG</td>
+                            <td>CREANCES ET EMPLOIS ASSIMILES</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c73"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c74"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c75"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c76"/></td>
+                        </tr>
+                        <tr>
+                            <td>BH</td>
+                            <td>Fournisseurs avances versées</td>
+                            <td>17</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c77"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c78"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c79"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c80"/></td>
+                        </tr>
+                        <tr>
+                            <td>BI</td>
+                            <td>Clients</td>
+                            <td>7</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c81"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c82"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c83"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c84"/></td>
+                        </tr>
+                        <tr>
+                            <td>BJ</td>
+                            <td>Autres créances</td>
+                            <td>8</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c85"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c86"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c87"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c88"/></td>
+                        </tr>
+                        <tr class="bold">
+                            <td>BK</td>
+                            <td>TOTAL ACTIF CIRCULANT</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c89"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c90"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c91"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c92"/></td>
+                        </tr>
+
+                        <t t-set="c93" t-value="items.calc_bilan(1, to_date, '50')"></t>
+                        <t t-set="c94" t-value="items.calc_bilan(0, to_date, '590')"></t>
+                        <t t-set="c95" t-value="c93 - c94"></t>
+                        <t t-set="c93n1" t-value="items.calc_bilan(1, n1_to_date, '50')"></t>
+                        <t t-set="c94n1" t-value="items.calc_bilan(0, n1_to_date, '590')"></t>
+                        <t t-set="c96" t-value="c93n1 - c94n1"></t>
+
+                        <t t-set="c97" t-value="items.calc_bilan(1, to_date, '51')"></t>
+                        <t t-set="c98" t-value="items.calc_bilan(0, to_date, '591')"></t>
+                        <t t-set="c99" t-value="c97 - c98"></t>
+                        <t t-set="c97n1" t-value="items.calc_bilan(1, n1_to_date, '51')"></t>
+                        <t t-set="c98n1" t-value="items.calc_bilan(0, n1_to_date, '591')"></t>
+                        <t t-set="c100" t-value="c97n1 - c98n1"></t>
+
+                        <t t-set="c101" t-value="items.calc_bilan(3, to_date, '52') + items.calc_bilan(3, to_date, '56') + items.calc_bilan(3, to_date, '57') + items.calc_bilan(3, to_date, '58')"></t>
+                        <t t-set="c102" t-value="items.calc_bilan(1, to_date, '592') + items.calc_bilan(1, to_date, '596') + items.calc_bilan(1, to_date, '597') + items.calc_bilan(1, to_date, '598')"></t>
+                        <t t-set="c103" t-value="c101 - c102"></t>
+                        <t t-set="c101n1" t-value="items.calc_bilan(3, n1_to_date, '52') + items.calc_bilan(3, n1_to_date, '56') + items.calc_bilan(3, n1_to_date, '57') + items.calc_bilan(3, n1_to_date, '58')"></t>
+                        <t t-set="c102n1" t-value="items.calc_bilan(1, n1_to_date, '592') + items.calc_bilan(1, n1_to_date, '596') + items.calc_bilan(1, n1_to_date, '597') + items.calc_bilan(1, n1_to_date, '598')"></t>
+                        <t t-set="c104" t-value="c101n1 - c102n1"></t>
+
+                        <t t-set="c105" t-value="c93 + c97 + c101"></t>
+                        <t t-set="c106" t-value="c94 + c98 + c102"></t>
+                        <t t-set="c107" t-value="c95 + c99 + c103"></t>
+                        <t t-set="c108" t-value="c96 + c100 + c104"></t>
+
+                        <tr>
+                            <td>BQ</td>
+                            <td>Titres de placement</td>
+                            <td>9</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c93"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c94"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c95"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c96"/></td>
+                        </tr>
+                        <tr>
+                            <td>BR</td>
+                            <td>Valeurs à encaisser</td>
+                            <td>10</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c97"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c98"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c99"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c100"/></td>
+                        </tr>
+                        <tr>
+                            <td>BS</td>
+                            <td>Banques, chèques postaux, caisse et assimilés</td>
+                            <td>11</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c101"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c102"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c103"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c104"/></td>
+                        </tr>
+                        <tr class="bold">
+                            <td>BT</td>
+                            <td>TOTAL TRESORERIE-ACTIF</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c105"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c106"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c107"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c108"/></td>
+                        </tr>
+
+                        <t t-set="c109" t-value="items.calc_bilan(1, to_date, '478')"></t>
+                        <t t-set="c110" t-value="0"></t>
+                        <t t-set="c111" t-value="c109 + c110"></t>
+                        <t t-set="c109n1" t-value="items.calc_bilan(1, n1_to_date, '478')"></t>
+                        <t t-set="c110n1" t-value="0"></t>
+                        <t t-set="c112" t-value="c109n1 + c110n1"></t>
+
+                        <t t-set="c113" t-value="c61 + c89 + c105"></t>
+                        <t t-set="c114" t-value="c62 + c90 + c106"></t>
+                        <t t-set="c115" t-value="c63 + c91 + c107"></t>
+                        <t t-set="c116" t-value="c64 + c92 + c108"></t>
+
+                        <tr>
+                            <td>BU</td>
+                            <td>Ecart de conversion-Actif</td>
+                            <td>12</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c109"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c110"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c111"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c112"/></td>
+                        </tr>
+                        <tr class="bold">
+                            <td>BZ</td>
+                            <td>TOTAL GENERAL</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c113"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c114"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c115"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c116"/></td>
+                        </tr>
+                    </tbody>    
+                </table>
+
+                <p style="page-break-after: always;"></p>
+            </div>
+        
+            <div class="page">
+                <table class="logo-pagination">
+                    <tr>
+                        <td class="td-logo" rowspan="4">
+                            <img t-att-src="image_data_uri(request.env['res.company'].search([])[0].logo)" style="width: 200px;"/>
+                        </td>
+                        <td class="border no-border-bot">BILAN SYSTEME NORMAL<br/>Page 2/2</td>
+                    </tr>
+                </table>
+
+                <table class="header">
+                    <tr>
+                        <td>Dénomination sociale de l'entité :</td>
+                        <td colspan="3">SOTASERV - CI</td>
+                    </tr>
+                    <tr>
+                        <td>Adresse :</td>
+                        <td>18 BP 2566 ABIDJAN 18 - ABOBO</td>
+                        <td>Sigle usuel :</td>
+                        <td>SOTASERV-CI</td>
+                    </tr>
+                    <tr>
+                        <td>N° de compte contribuable (NCC) :</td>
+                        <td>16 37553 T</td>
+                        <td>Exercice clos le :</td>
+                        <td><t t-esc="to_f_date"/></td>
+                    </tr>
+                    <tr>
+                        <td>N° de télédéclarant (NTD) :</td>
+                        <td>6161436539232</td>
+                        <td>Durée (en mois) :</td>
+                        <td></td>
+                    </tr>
+                </table>
+
+                <table class="bilan">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">REF</th>
+                            <th rowspan="2">PASSIF</th>
+                            <th rowspan="2">NOTE</th>
+                            <th>EXERCICE au <t t-esc="from_f_date"/></th>
+                            <th>EXERCICE au <t t-esc="n1_to_date"/></th>
+                        </tr>
+                        <tr>
+                            <th>NET</th>
+                            <th>NET</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="c121" t-value="items.calc_bilan(0, to_date, '10')"></t>
+                        <t t-set="c122" t-value="items.calc_bilan(0, n1_to_date, '10')"></t>
+
+                        <t t-set="c123" t-value="items.calc_bilan(0, to_date, '1011')"></t>
+                        <t t-set="c124" t-value="items.calc_bilan(0, n1_to_date, '1011')"></t>
+                        
+                        <t t-set="c125" t-value="items.calc_bilan(0, to_date, '106')"></t>
+                        <t t-set="c126" t-value="items.calc_bilan(0, n1_to_date, '106')"></t>
+                        
+                        <t t-set="c127" t-value="items.calc_bilan(0, to_date, '105')"></t>
+                        <t t-set="c128" t-value="items.calc_bilan(0, n1_to_date, '105')"></t>
+                        
+                        <t t-set="c129" t-value="items.calc_bilan(0, to_date, '111') + items.calc_bilan(0, to_date, '112') + items.calc_bilan(0, to_date, '113')"></t>
+                        <t t-set="c130" t-value="items.calc_bilan(0, n1_to_date, '111') + items.calc_bilan(0, n1_to_date, '112') + items.calc_bilan(0, n1_to_date, '113')"></t>
+                        
+                        <t t-set="c131" t-value="items.calc_bilan(0, to_date, '118')"></t>
+                        <t t-set="c132" t-value="items.calc_bilan(0, n1_to_date, '118')"></t>
+                        
+                        <t t-set="c133" t-value="items.calc_bilan(0, to_date, '12')"></t>
+                        <t t-set="c134" t-value="items.calc_bilan(0, n1_to_date, '12')"></t>
+                        
+                        <t t-set="c135" t-value="items.calc_bilan(0, to_date, '7') - items.calc_bilan(1, to_date, '6') - items.calc_bilan(1, to_date, '895')"></t>
+                        <t t-set="c136" t-value="items.calc_bilan(0, n1_to_date, '7') - items.calc_bilan(0, n1_to_date, '6') + items.calc_bilan(0, n1_to_date, '895')"></t>
+                        
+                        <t t-set="c137" t-value="items.calc_bilan(0, to_date, '14')"></t>
+                        <t t-set="c138" t-value="items.calc_bilan(0, n1_to_date, '14')"></t>
+                        
+                        <t t-set="c139" t-value="items.calc_bilan(0, to_date, '15')"></t>
+                        <t t-set="c140" t-value="items.calc_bilan(0, n1_to_date, '15')"></t>
+                        
+                        <t t-set="c141" t-value="c121 + c123 + c125 + c127 + c129 + c131 + c133 + c135 + c137 + c139"></t>
+                        <t t-set="c142" t-value="c122 + c124 + c126 + c128 + c130 + c132 + c134 + c136 + c138 + c140"></t>
+
+                        <tr>
+                            <td>CA</td>
+                            <td>Capital</td>
+                            <td>13</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c121"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c122"/></td>
+                        </tr>
+                        <tr>
+                            <td>CB</td>
+                            <td>Apporteurs capital non appelé (-)</td>
+                            <td>13</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c123"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c124"/></td>
+                        </tr>
+                        <tr>
+                            <td>CD</td>
+                            <td>Primes liées au capital social</td>
+                            <td>14</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c125"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c126"/></td>
+                        </tr>
+                        <tr>
+                            <td>CE</td>
+                            <td>Ecarts de réévaluation</td>
+                            <td>3e</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c127"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c128"/></td>
+                        </tr>
+                        <tr>
+                            <td>CF</td>
+                            <td>Réserves indisponibles</td>
+                            <td>14</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c129"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c130"/></td>
+                        </tr>
+                        <tr>
+                            <td>CG</td>
+                            <td>Réserves libres</td>
+                            <td>14</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c131"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c132"/></td>
+                        </tr>
+                        <tr>
+                            <td>CH</td>
+                            <td>Report à nouveau (+ ou -)</td>
+                            <td>14</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c133"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c134"/></td>
+                        </tr>
+                        <tr>
+                            <td>CJ</td>
+                            <td>Résultat net de l'exercice (bénéfice + ou perte -)</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c135"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c136"/></td>
+                        </tr>
+                        <tr>
+                            <td>CL</td>
+                            <td>Subventions d'investissement</td>
+                            <td>15</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c137"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c138"/></td>
+                        </tr>
+                        <tr>
+                            <td>CM</td>
+                            <td>Provisions réglementées</td>
+                            <td>15</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c139"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c140"/></td>
+                        </tr>
+                        <tr class="bold">
+                            <td>CP</td>
+                            <td>TOTAL CAPITAUX PROPRES ET RESSOURCES ASSIMILEES</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c141"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c142"/></td>
+                        </tr>
+
+                        <t t-set="c143" t-value="items.calc_bilan(0, to_date, '16')"></t>
+                        <t t-set="c144" t-value="items.calc_bilan(0, n1_to_date, '16')"></t>
+
+                        <t t-set="c145" t-value="items.calc_bilan(0, to_date, '17')"></t>
+                        <t t-set="c146" t-value="items.calc_bilan(0, n1_to_date, '17')"></t>
+
+                        <t t-set="c147" t-value="items.calc_bilan(0, to_date, '19')"></t>
+                        <t t-set="c148" t-value="items.calc_bilan(0, n1_to_date, '19')"></t>
+
+                        <t t-set="c149" t-value="c143 + c145 + c147"></t>
+                        <t t-set="c150" t-value="c144 + c146 + c148"></t>
+
+                        <t t-set="c151" t-value="c141 + c149"></t>
+                        <t t-set="c152" t-value="c142 + c150"></t>
+
+                        <tr>
+                            <td>DA</td>
+                            <td>Emprunts et dettes financières diverses</td>
+                            <td>16</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c143"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c144"/></td>
+                        </tr>
+                        <tr>
+                            <td>DB</td>
+                            <td>Dettes de location-acquisition</td>
+                            <td>16</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c145"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c146"/></td>
+                        </tr>
+                        <tr>
+                            <td>DC</td>
+                            <td>Provisions pour risques et charges</td>
+                            <td>16</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c147"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c148"/></td>
+                        </tr>
+                        <tr class="bold">
+                            <td>DD</td>
+                            <td>TOTAL DETTES FINANCIERES ET RESSOURCES ASSIMILEES</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c149"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c150"/></td>
+                        </tr>
+                        <tr class="bold">
+                            <td>DF</td>
+                            <td>TOTAL RESSOURCES STABLES</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c151"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c152"/></td>
+                        </tr>
+
+                        <t t-set="c153" t-value="items.calc_bilan(0, to_date, '48')"></t>
+                        <t t-set="c154" t-value="items.calc_bilan(0, n1_to_date, '48')"></t>
+
+                        <t t-set="c155" t-value="items.calc_bilan(0, to_date, '419')"></t>
+                        <t t-set="c156" t-value="items.calc_bilan(0, n1_to_date, '419')"></t>
+
+                        <t t-set="c157" t-value="items.calc_bilan(2, to_date, '4011')"></t>
+                        <t t-set="c158" t-value="items.calc_bilan(0, n1_to_date, '4011')"></t>
+
+                        <t t-set="c159" t-value="items.calc_bilan(2, to_date, '42') + items.calc_bilan(2, to_date, '43') + items.calc_bilan(2, to_date, '44')"></t>
+                        <t t-set="c160" t-value="items.calc_bilan(0, n1_to_date, '17')"></t>
+
+                        <t t-set="c161" t-value="items.calc_bilan(0, to_date, '18')"></t>
+                        <t t-set="c162" t-value="items.calc_bilan(0, n1_to_date, '18')"></t>
+
+                        <t t-set="c163" t-value="items.calc_bilan(0, to_date, '19')"></t>
+                        <t t-set="c164" t-value="items.calc_bilan(0, n1_to_date, '19')"></t>
+
+                        <t t-set="c165" t-value="c153 + c155 + c157 + c159 + c161 + c163"></t>
+                        <t t-set="c166" t-value="c154 + c156 + c158 + c160 + c162 + c164"></t>
+
+                        <tr>
+                            <td>DH</td>
+                            <td>Dettes circulantes HAO</td>
+                            <td>5</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c153"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c154"/></td>
+                        </tr>
+                        <tr>
+                            <td>DI</td>
+                            <td>Clients, avances reçues</td>
+                            <td>7</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c155"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c156"/></td>
+                        </tr>
+                        <tr>
+                            <td>DJ</td>
+                            <td>Fournisseurs d'exploitation</td>
+                            <td>17</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c157"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c158"/></td>
+                        </tr>
+                        <tr>
+                            <td>DK</td>
+                            <td>Dettes fiscales et sociales</td>
+                            <td>18</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c159"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c160"/></td>
+                        </tr>
+                        <tr>
+                            <td>DM</td>
+                            <td>Autres dettes</td>
+                            <td>19</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c161"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c162"/></td>
+                        </tr>
+                        <tr>
+                            <td>DN</td>
+                            <td>Provisions pour risques et charges à court terme</td>
+                            <td>19</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c163"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c164"/></td>
+                        </tr>
+                        <tr class="bold">
+                            <td>DP</td>
+                            <td>TOTAL PASSIF CIRCULANT</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c165"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c166"/></td>
+                        </tr>
+                        
+                        <t t-set="c167" t-value="items.calc_bilan(2, to_date, '51') + items.calc_bilan(2, to_date, '52')"></t>
+                        <t t-set="c168" t-value="items.calc_bilan(0, n1_to_date, '51') + items.calc_bilan(0, n1_to_date, '52')"></t>
+
+                        <t t-set="c169" t-value="items.calc_bilan(0, to_date, '53') + items.calc_bilan(0, to_date, '54') + items.calc_bilan(0, to_date, '56')"></t>
+                        <t t-set="c170" t-value="items.calc_bilan(0, n1_to_date, '53') + items.calc_bilan(0, n1_to_date, '54') + items.calc_bilan(0, n1_to_date, '56')"></t>
+
+                        <t t-set="c171" t-value="c167 + c169"></t>
+                        <t t-set="c172" t-value="c168 + c170"></t>
+
+                        <tr>
+                            <td>DQ</td>
+                            <td>Banques, crédits d'escompte</td>
+                            <td>20</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c167"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c168"/></td>
+                        </tr>
+                        <tr>
+                            <td>DR</td>
+                            <td>Banques, établissements financiers et crédits de trésorerie</td>
+                            <td>20</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c169"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c170"/></td>
+                        </tr>
+                        <tr class="bold">
+                            <td>DT</td>
+                            <td>TOTAL TRESORERIE-PASSIF</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c171"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c172"/></td>
+                        </tr>
+                        
+                        <t t-set="c173" t-value="items.calc_bilan(0, to_date, '479')"></t>
+                        <t t-set="c174" t-value="items.calc_bilan(0, n1_to_date, '479')"></t>
+                        
+                        <t t-set="c175" t-value="c151 + c165 + c171"></t>
+                        <t t-set="c176" t-value="c152 + c166 + c172"></t>
+
+                        <tr>
+                            <td>DV</td>
+                            <td>Ecart de conversion-Passif</td>
+                            <td>12</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c173"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c174"/></td>
+                        </tr>
+                        <tr class="bold">
+                            <td>DZ</td>
+                            <td>TOTAL GENERAL</td>
+                            <td>0</td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c175"/></td>
+                            <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="c176"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+</odoo>

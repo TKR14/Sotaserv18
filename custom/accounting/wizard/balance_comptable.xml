@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <record id="balance_comptable_view" model="ir.ui.view">
+        <field name="name">balance.comptable.view</field>
+        <field name="model">balance.comptable</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="to_date"/>
+                    </group>
+                    <group>   
+                    </group>
+                </group>
+                <footer>
+                    <button string="Imprimer" class="btn-primary" name="get_month" type="object"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- c -->
+
+    <record id="balance_comptable_action" model="ir.actions.act_window">
+        <field name="name">Balance Comptable</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">balance.comptable</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="balance_comptable_view"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="balance_comptable_menu" name="Balance Comptable" sequence="103" parent="account.account_reports_legal_statements_menu" action="balance_comptable_action"/>
+
+    <record id="balance_comptable_report" model="ir.actions.report">
+        <field name="name">Balance Comptable</field>
+        <field name="model">balance.comptable</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">accounting.balance_comptable_template</field>
+    </record>
+
+    <template id="balance_comptable_template">
+        <t t-call="web.basic_layout">
+
+            <t t-set="func" t-value="request.env['account.move'].get_comptes_comptables(to_date)"/>
+
+            <t t-set="page" t-value="ceil(len(func[0])/40)"/>
+            <t t-set="lines" t-value="func[0]"/>
+            <t t-set="totals" t-value="func[1]"/>
+
+            <t t-set="start" t-value="0"/>
+            <t t-set="end" t-value="40"/>
+            <t t-foreach="range(page)" t-as="p">
+                <div class="page">
+                    <style>
+                        * {
+                            padding: 0;
+                            margin: 0;
+                            font-weight: bold;
+                        }
+
+                        .page {
+                            font-family: sans-serif;
+                        }
+
+                        header *, .subheader * {
+                            padding-bottom: 2px;
+                        }
+
+                        header {
+                            position: relative;
+                            text-align: center;
+                            margin-bottom: 40px;
+                        }
+
+                        header h1 {
+                            font-size: 15pt;
+                            font-weight: bold;
+                        }
+
+                        header p {
+                            font-size: 13pt;
+                        }
+                        
+                        header span {
+                            font-size: inherit;
+                        }
+                        
+                        header .page {
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                        }
+
+                        header .page, header .page * {
+                            font-size: 9pt;
+                            font-weight: normal;
+                        }
+
+                        .subheader {
+                            overflow: hidden;
+                            margin-bottom: 30px;
+                            font-size: 12pt;
+                        }
+
+                        .subheader div {
+                            width: 50%;
+                        }
+
+                        .subheader .left {
+                            float: left;
+                        }
+
+                        .subheader .right {
+                            float: right;
+                            text-align: right;
+                        }
+
+                        table {
+                            font-size: 10pt;
+                            clear: both;
+                            border-collapse: collapse;
+                            border: 1px solid #000;
+                            width: 100%;
+                        }
+                        
+                        table thead th, tfoot td {
+                            padding: 2px 4px;
+                            text-align: center;
+                            vertical-align: middle;
+                            border: 1px solid #000;
+                            font-weight: bold;
+                        }
+                        
+                        table tbody td {
+                            padding: 2px 4px 1px;
+                            vertical-align: bottom;
+                            font-weight: normal;
+                            border-left: 1px solid #000;
+                            border-right: 1px solid #000;
+                            border-top: 1px dotted rgba(0, 0, 0, 0.4);
+                            border-bottom: 1px dotted rgba(0, 0, 0, 0.4);
+                        }
+
+                        table tbody td span {
+                            font-weight: normal;
+                        }
+
+                        table tbody td:nth-child(2) {
+                            vertical-align: middle;
+                        }
+
+                        table tbody td:nth-last-child(-n+6) {
+                            text-align: right;
+                        }
+
+                        table tfoot td {
+                            text-align: right;
+                        } 
+
+                        .min-width {
+                            min-width: 60px;
+                        }
+                    </style>
+
+                    <header>
+                        <h1>Balance Comptable</h1>
+                        <p>Au <span t-esc="to_date"></span></p>
+                        <p class="page">Page <span t-esc="p + 1"/>/<span t-esc="page"/></p>
+                    </header>
+
+                    <div class="subheader">
+                        <div class="left">
+                            <p>Devise: <span>MAD</span></p>
+                        </div>
+                        <div class="right">
+                            <p>Edité le <span t-esc="edit_date"></span></p>
+                        </div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th rowspan="2" style="white-space: nowrap;">Numéro<br/>de compte</th>
+                                <th rowspan="2">Intitulé de compte</th>
+                                <th colspan="2" style="white-space: nowrap;">Solde d'ouverture</th>
+                                <th colspan="2">Mouvements</th>
+                                <th colspan="2" style="white-space: nowrap;">Soldes</th>
+                            </tr>
+                            <tr>
+                                <th class="min-width">Débit</th>
+                                <th class="min-width">Crédit</th>
+                                <th class="min-width">Débit</th>
+                                <th class="min-width">Crédit</th>
+                                <th class="min-width">Débit</th>
+                                <th class="min-width">Crédit</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <t t-foreach="lines[start:end]" t-as="l">
+                                <tr>
+                                    <td t-esc="l['compte']"></td>
+                                    <td t-esc="l['intitule']"></td>
+                                    <td>
+                                        <span t-if="l['o_debit'] != 0" t-esc="l['o_debit']" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td>
+                                        <span t-if="l['o_credit'] != 0" t-esc="l['o_credit']" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td>
+                                        <span t-if="l['m_debit'] != 0" t-esc="l['m_debit']" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td>
+                                        <span t-if="l['m_credit'] != 0" t-esc="l['m_credit']" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+
+                                    <t t-if="l['soldes'] == 1">
+                                        <t t-set="total" t-value="(l['o_debit'] - l['o_credit']) + (l['m_debit'] - l['m_credit'])"/>
+                                        <t t-if="total >= 0">
+                                            <td>
+                                                <span t-if="total != 0"
+                                                    t-esc="total" 
+                                                    t-options='{"widget": "float", "precision": 2}'/>
+                                            </td>
+                                            <td></td>
+                                        </t>
+                                        <t t-else="">
+                                            <td></td>
+                                            <td>
+                                                <span t-if="total * -1 != 0"
+                                                    t-esc="total * -1" 
+                                                    t-options='{"widget": "float", "precision": 2}'/>
+                                            </td>
+                                        </t>
+                                    </t>
+                                    
+                                    <t t-else="">
+                                        <t t-set="total" t-value="(l['o_credit'] - l['o_debit']) + (l['m_credit'] - l['m_debit'])"/>
+                                        <t t-if="total >= 0">
+                                            <td></td>
+                                            <td>
+                                                <span t-if="total != 0"
+                                                    t-esc="total" 
+                                                    t-options='{"widget": "float", "precision": 2}'/>
+                                            </td>
+                                        </t>
+                                        <t t-else="">
+                                            <td>
+                                                <span t-if="total * -1 != 0"
+                                                    t-esc="total * -1" 
+                                                    t-options='{"widget": "float", "precision": 2}'/>
+                                            </td>
+                                            <td></td>
+                                        </t>
+                                    </t>
+
+                                </tr>
+                            </t>
+                        </tbody>
+                        <t t-if="p + 1 == page">
+                            <tfoot>
+                                <t t-set="soldes_bilan" t-value="totals[2] - totals[3]"/>
+                                <t t-set="soldes_gestion" t-value="totals[7] - totals[6]"/>
+                                <tr>
+                                    <td colspan="2">Totaux comptes de bilan</td>
+                                    <td>
+                                        <span t-if="totals[0] != 0" t-esc="totals[0]" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td>
+                                        <span t-if="totals[1] != 0" t-esc="totals[1]" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td>
+                                        <span t-if="totals[2] != 0" t-esc="totals[2]" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td>
+                                        <span t-if="totals[3] != 0" t-esc="totals[3]" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+            
+                                    <t t-if="soldes_bilan >= 0">
+                                        <td>
+                                            <span t-if="soldes_bilan != 0" t-esc="soldes_bilan" t-options='{"widget": "float", "precision": 2}'/>
+                                        </td>
+                                        <td></td>
+                                    </t>
+                                    <t t-else="">
+                                        <td></td>
+                                        <td>
+                                            <span t-if="soldes_bilan != 0" t-esc="soldes_bilan * -1" t-options='{"widget": "float", "precision": 2}'/>
+                                        </td>
+                                    </t>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Totaux comptes de gestion</td>
+                                    <td>
+                                        <span t-if="totals[4] != 0" t-esc="totals[4]" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td>
+                                        <span t-if="totals[5] != 0" t-esc="totals[5]" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td>
+                                        <span t-if="totals[6] != 0" t-esc="totals[6]" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td>
+                                        <span t-if="totals[7] != 0" t-esc="totals[7]" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <t t-if="soldes_gestion >= 0">
+                                        <td></td>
+                                        <td>
+                                            <span t-if="soldes_gestion != 0" t-esc="soldes_gestion" t-options='{"widget": "float", "precision": 2}'/>
+                                        </td>
+                                    </t>
+                                    <t t-else="">
+                                        <td>
+                                            <span t-if="soldes_gestion != 0" t-esc="soldes_gestion * -1" t-options='{"widget": "float", "precision": 2}'/>
+                                        </td>
+                                        <td></td>
+                                    </t>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Totaux de la balance</td>
+                                    <td>
+                                        <span t-if="totals[0] + totals[4] != 0" t-esc="totals[0] + totals[4]" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td>
+                                        <span t-if="totals[1] + totals[5] != 0" t-esc="totals[1] + totals[5]" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td>
+                                        <span t-if="totals[2] + totals[6] != 0" t-esc="totals[2] + totals[6]" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td>
+                                        <span t-if="totals[3] + totals[7] != 0" t-esc="totals[3] + totals[7]" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </t>
+
+                    </table>
+
+                    <p class="note" style="page-break-after: always;"></p>
+                </div>
+
+                <t t-set="start" t-value="start + 40"/>
+                <t t-set="end" t-value="end + 40"/>
+            </t>
+
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,542 @@
+<odoo>
+    <!-- Sequence for purchase.order when it's not a purchase yet / For price requests -->
+    <record id="purchase_order_sequence_price_request" model="ir.sequence">
+        <field name="name">Séquençage DP</field>
+        <field name="code">purchase.order.sequence.price.request</field>
+        <field name="prefix">DP/%(y)s/</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+        <field name="implementation">no_gap</field>
+    </record>
+
+    <record id="purchase_order_sequence_order" model="ir.sequence">
+        <field name="name">Séquençage BC</field>
+        <field name="code">purchase.order.sequence.order</field>
+        <field name="prefix">BC/%(year)s/%(month)s/</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+        <field name="implementation">no_gap</field>
+    </record>
+
+    <record id="purchase_order_view_form_inherit_print" model="ir.ui.view">
+        <field name="name">purchase.order.view.form.inherit.print</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="is_signed" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="return_to_mg" readonly="1" invisible="1"/>
+                <field name="is_certified" readonly="1" invisible="state != 'purchase'"/>
+            </xpath>
+            <xpath expr="//header/field[@name='state']" position="before">
+                <button
+                    name="button_sign"
+                    type="object"
+                    string="Signer"
+                    class="btn-primary"
+                    invisible="state not in ['purchase', 'done', 'partial', 'full'] or is_signed"
+                    groups="purchase_plus.purchase_order_group_sign"
+                />
+                <button
+                    name="button_print"
+                    type="object"
+                    string="Imprimer"
+                    invisible="state not in ['purchase', 'done', 'partial', 'full'] and not is_signed"
+                    class="btn-secondary"
+                    groups="purchase_plus.purchase_order_group_print"
+                />
+                <!-- <button 
+                    name="print_detail"
+                    type="object"     
+                    string="Imprimer detail" 
+                    class="btn-primary"
+                />  -->
+                <!-- <button
+                    name="button_certif"
+                    type="object"
+                    string="Certifier"
+                    class="btn-primary"
+                    groups="account_plus.acount_move_group_cg"
+                    attrs="{'invisible': ['|', '|', '|', ('is_certified', '!=', False), ('state', '!=', 'purchase'), ('invoice_status', '!=', 'to invoice'), ('return_to_mg', '=', True)]}"
+                /> -->
+                <!-- <button
+                    name="button_return_to_mg"
+                    type="object"
+                    string="Retour"
+                    class="btn-primary"
+                    groups="account_plus.acount_move_group_cg"
+                    attrs="{'invisible': ['|', '|', '|', ('is_certified', '!=', False), ('state', '!=', 'purchase'), ('invoice_status', '!=', 'to invoice'), ('return_to_mg', '=', True)]}"
+                /> -->
+            </xpath>
+        
+            <xpath expr="//div[@class='oe_button_box']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//header/button[@name='action_view_picking']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//header/field[@name='state']" position="replace">
+                <field name="state" widget="statusbar" statusbar_visible="draft,purchase"
+                    readonly="1" />
+            </xpath>
+
+            <xpath expr="//div[hasclass('oe_button_box')]/button[@name='action_view_picking']"
+                position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <button name="button_done" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+
+            <button name="button_draft" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+
+            <button name="action_rfq_send" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+
+            <xpath expr="//header/button[@name='print_quotation'][1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//header/button[@name='button_cancel']" position="replace">
+                <field name="button_cancel_visibility" invisible="1" />
+                <field name="button_cancel_multi_visibility" invisible="1" />
+                <field name="button_po_canceled_visibility" invisible="1" />
+
+                <button
+                    name="open_cancellation_reason_wizard"
+                    context="{'method': 'button_canceled'}"
+                    invisible="not button_cancel_visibility"
+                    string="Annuler"
+                    type="object"
+                />
+                <button
+                    name="open_cancellation_reason_wizard"
+                    context="{'method': 'button_canceled'}"
+                    confirm="Voulez-vous vraiment continuer? Cette action impactera toutes les demandes de prix associées."
+                    invisible="not button_cancel_multi_visibility"
+                    string="Annuler"
+                    type="object"
+                />
+                <button
+                    name="open_cancellation_reason_wizard"
+                    context="{'method': 'button_po_canceled'}"
+                    confirm="Voulez-vous vraiment continuer?"
+                    invisible="not button_po_canceled_visibility"
+                    string="Annuler"
+                    type="object"
+                />
+            </xpath>
+
+            <field name="site_id" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+
+            <field name="vehicle_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+
+            <xpath expr="//field[@name='order_line']/list" position="attributes">
+                <attribute name="create">0</attribute>
+                <attribute name="delete">0</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/list/field[@name='product_id']"
+                position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/list/field[@name='product_qty']"
+                position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/list/field[@name='product_uom']"
+                position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="partner_ids" invisible="1" />
+            </xpath>
+
+            <field name="partner_id"
+                position="attributes">
+                <attribute name="options">{'no_create': True}</attribute>
+                <attribute name="domain">[('id', 'in', partner_ids)]</attribute>
+            </field>
+
+            <field name="offer_validity" position="before">
+                <field name="is_po_multiple" invisible="1" />
+                <field name="purchase_order_code"
+                    invisible="not is_po_multiple" readonly="1" />
+            </field>
+
+            <xpath expr="//header/button[@name='button_confirm'][2]" position="replace">
+                <field name="button_confirm_visibility" invisible="1" />
+                <button name="button_confirm" type="object" string="Confirmer la commande" invisible="not button_confirm_visibility"/>
+                <button name="button_validate" type="object" string="Valider" class="btn-primary" invisible="state != 'validation'" groups="building_plus.sotaserv_dg"/>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/list/field[@name='note']"
+                position="attributes">
+                <attribute name="readonly">parent.state in ['sent', 'to approve', 'compare_offers', 'purchase', 'done', 'cancel']</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/list/field[@name='date_planned']"
+                position="attributes">
+                <attribute name="readonly">parent.state in ['sent', 'to approve', 'compare_offers', 'purchase', 'done', 'cancel']</attribute>
+            </xpath>
+
+            <!-- <xpath expr="//field[@name='order_line']/list/field[@name='account_analytic_id']"
+                position="attributes">
+                <attribute name="readonly">parent.state in ['sent', 'to approve', 'compare_offers', 'purchase', 'done', 'cancel']</attribute>
+            </xpath> -->
+
+            <!-- <xpath expr="//header" position="replace">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,purchase" readonly="1"/>
+                </header>
+            </xpath> -->
+
+            <xpath expr="//field[@name='order_line']/list/field[@name='price_unit']" position="attributes">
+                <attribute name="readonly">parent.state in ['sent', 'to approve', 'compare_offers', 'purchase', 'done', 'cancel']</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/list/field[@name='taxes_id']"
+                position="attributes">
+                <attribute name="readonly">parent.state in ['sent', 'to approve', 'compare_offers', 'purchase', 'done', 'cancel']</attribute>
+            </xpath>
+
+            <xpath
+                expr="//field[@name='order_line']/list/field[@name='product_description_variants']"
+                position="attributes">
+                <attribute name="readonly">parent.state in ['sent', 'to approve', 'compare_offers', 'purchase', 'done', 'cancel']</attribute>
+            </xpath>
+
+            <xpath expr="//header/button[@name='action_rfq_send'][1]" position="attributes">
+                <attribute name="groups">!account_plus.acount_move_group_cg</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='action_rfq_send'][2]" position="attributes">
+                <attribute name="groups">!account_plus.acount_move_group_cg</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='action_rfq_send'][3]" position="attributes">
+                <attribute name="groups">!account_plus.acount_move_group_cg</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='open_cancellation_reason_wizard'][1]" position="attributes">
+                <attribute name="groups">!account_plus.acount_move_group_cg</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='action_create_invoice']" position="attributes">
+                <attribute name="groups">!account_plus.acount_move_group_cg</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='open_cancellation_reason_wizard'][2]" position="attributes">
+                <attribute name="groups">!account_plus.acount_move_group_cg</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='open_cancellation_reason_wizard'][3]" position="attributes">
+                <attribute name="groups">!account_plus.acount_move_group_cg</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='confirm_reminder_mail']" position="attributes">
+                <attribute name="groups">!account_plus.acount_move_group_cg</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_order_view_form_header" model="ir.ui.view">
+        <field name="name">purchase.order.view.form.header</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <header position="replace">
+                <header invisible="context.get('hide_header_buttons')">
+                    <field name="button_cancel_visibility" invisible="1"/>
+                    <field name="button_po_canceled_visibility" invisible="1"/>
+                    <field name="is_po_multiple" invisible="1"/>
+                    <field name="is_signed" invisible="1"/>
+                    <field name="is_certified" invisible="1"/>
+                    <field name="is_service" invisible="1"/>
+                    <field name="invoice_status" invisible="1"/>
+                    <field name="return_to_mg" invisible="1"/>
+                    <field name="is_attachment" invisible="1"/>
+                    <field name="is_advance_invoice_created" invisible="1"/>
+                    <field name="is_rg_invoice_created" invisible="1"/>
+                    <field name="show_create_advance_button" invisible="1"/>
+                    <!-- <field name="show_create_rg_invoice_button" invisible="1"/> -->
+                    <field name="return_of_guarantee" invisible="1"/>
+                    <field name="all_qty_validated" invisible="1"/>
+                    <field name="all_qty_certified" invisible="1"/>
+
+                    <!-- Valider / Acheteur -->
+                    <button
+                        name="button_validate"
+                        string="Valider"
+                        type="object"
+                        invisible="state != 'draft' or is_po_multiple"
+                        groups="account_plus.acount_move_group_achat"
+                        class="btn-primary"
+                    />
+                    <!-- Valider / DG -->
+                    <button
+                        name="button_validate"
+                        string="Valider"
+                        type="object"
+                        invisible="state != 'validation'"
+                        groups="building_plus.sotaserv_dg"
+                        class="btn-primary"
+                    />
+                    <button
+                        name="button_confirm"
+                        string="Confirmer"
+                        type="object"
+                        invisible="state not in ['validated_1', 'validated_2']"
+                        groups="account_plus.acount_move_group_achat"
+                        class="btn-primary"
+                    />
+
+                    <button
+                        name="action_create_invoice"
+                        type="object"
+                        string="Générer la Facture"
+                        class="btn-primary"
+                        invisible="state not in ['purchase', 'done', 'full', 'partial'] or invoice_status in ['no', 'invoiced'] or not is_service or not all_qty_certified"
+                        groups="account_plus.acount_move_group_cg"
+                    />
+
+                    <button
+                        name="action_validation_quantity"
+                        type="object"
+                        string="Valider les Quantités"
+                        class="btn-primary"
+                        invisible="state not in ['purchase', 'done', 'full', 'partial'] or invoice_status in ['no', 'invoiced'] or not is_service or all_qty_validated"
+                        groups="building_plus.sotaserv_magasinier,building_plus.sotaserv_magasinier_chantier"
+                    />
+
+                    <button
+                        name="action_amount_advance_deduction_verification"
+                        type="object"
+                        string="Certifier les Quantités"
+                        class="btn-primary"
+                        invisible="state not in ['purchase', 'done', 'full', 'partial'] or invoice_status in ['no', 'invoiced'] or not is_service or all_qty_validated or all_qty_certified"
+                        groups="account_plus.acount_move_group_cg"
+                    />
+
+                    <button
+                        name="action_return_quantity"
+                        type="object"
+                        string="Remettre"
+                        confirm="Voulez-vous vraiment continuer?"
+                        class="btn btn-info"
+                        invisible="state not in ['purchase', 'done', 'full'] or invoice_status in ['no', 'invoiced'] or not is_service or not all_qty_certified"
+                        groups="account_plus.acount_move_group_cg"
+                    />
+
+                    <!-- <button
+                        name="button_certif"
+                        type="object"
+                        string="Certifier"
+                        class="btn-primary"
+                        groups="account_plus.acount_move_group_cg"
+                        attrs="{'invisible': ['|', ('is_certified', '!=', False), ('state', '!=', 'purchase')]}"
+                    /> -->
+
+                    <button
+                        name="create_advance_invoice"
+                        string="Générer Facture d'avance"
+                        type="object"
+                        invisible="state not in ['purchase', 'done', 'full'] or is_advance_invoice_created or not show_create_advance_button or avance == 0.0 or is_attachment"
+                        groups="account_plus.acount_move_group_achat"
+                        class="btn-primary"
+                    />
+
+                    <!-- <button
+                        name="create_rg_invoice"
+                        string="Générer Facture d'RG"
+                        type="object"
+                        attrs="{'invisible': ['|', '|', '|', ('state', 'not in', ['purchase', 'done', 'full']), ('is_rg_invoice_created', '=', True), ('show_create_rg_invoice_button', '=', True), ('return_of_guarantee', '=', 0.0)]}"
+                        groups="account_plus.acount_move_group_achat"
+                        class="btn-primary"
+                    /> -->
+
+                    <button
+                        name="button_sign"
+                        type="object"
+                        string="Signer"
+                        class="btn-primary"
+                        invisible="state not in ['purchase', 'done', 'partial', 'full'] or is_signed"
+                        groups="purchase_plus.purchase_order_group_sign"
+                    />
+
+                    <button
+                        name="button_print"
+                        type="object"
+                        string="Imprimer"
+                        class="btn-secondary"
+                        invisible="state not in ['purchase', 'done', 'partial', 'full'] or not is_signed"
+                        groups="purchase_plus.purchase_order_group_print"
+                    />
+
+                    <button
+                        name="open_cancellation_reason_wizard"
+                        type="object"
+                        string="Annuler"
+                        class="btn-secondary"
+                        context="{'method': 'button_canceled'}"
+                        invisible="not button_cancel_visibility"
+                        groups="account_plus.acount_move_group_achat,building_plus.sotaserv_dg"
+                    />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,validated_1,validation,validated_2,purchase,partial,full,done"/>
+                </header>
+                <header invisible="not context.get('hide_header_buttons')">
+                    <field name="state" widget="statusbar" statusbar_visible="draft,validated_1,validation,validated_2,purchase,partial,full,done"/>
+                </header>
+                <div class="alert alert-warning mb-0" role="alert" invisible="state not in ['cancel', 'po_canceled']">
+                    Motif d'annulation: <field name="reason" style="margin-bottom: 0; font-weight: bolder;"/>
+                </div>
+            </header>
+        </field>
+    </record>
+
+    <record id="purchase_order_form_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_create_invoice'][1]" position="attributes">
+                <attribute name="invisible">state not in ['purchase', 'done'] or invoice_status in ['no', 'invoiced'] or is_attachment</attribute>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <field name="is_service" invisible="1"/>
+                <field name="is_certified" invisible="1"/>
+                <field name="is_attachment" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_order_view_filter_inherit_print" model="ir.ui.view">
+        <field name="name">purchase.order.view.filter.inherit.print</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.view_purchase_order_filter" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="purchase_order_code" />
+            </xpath>
+
+            <xpath expr="//group/filter[@name='order_date']" position="after">
+                <filter string="Demande de prix" name="group_by_purchase_order_code"
+                    context="{'group_by': 'purchase_order_code'}" />
+            </xpath>
+
+            <xpath expr="//group/filter[@name='vendor']" position="before">
+                <filter string="Statut" name="group_by_state" context="{'group_by': 'state'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+        <field name="domain">
+            [
+                "&amp;",
+                "&amp;",
+                ("purchase_order_code", "!=", False),
+                ("state", "in", ["draft", "compare_offers", "validated_1", "validation", "validated_2", "cancel"]),
+                "|",
+                ("create_uid", "=", uid),
+                ("order_line.product_id.categ_id.supervisor_ids", "=", uid)
+            ]
+        </field>
+        <field name="context">{"quotation_only": True, "search_default_group_by_purchase_order_code": 1, "hide_field": "state_2"}</field>
+    </record>
+
+    <record id="purchase_order_action_price_request" model="ir.actions.act_window">
+        <field name="name">Validation des demandes de prix</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,kanban,form,pivot,graph,calendar,activity</field>
+        <field name="view_id" ref="purchase.purchase_order_kpis_tree"/>
+        <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+        <field name="context">{"quotation_only": True, "hide_field": "state_2", "validation_process": True}</field>
+        <field name="domain">
+            [
+                "&amp;",
+                "&amp;",
+                ("purchase_order_code", "=", None),
+                ("state", "in", ["draft", "validated_1", "validation", "validated_2", "cancel"]),
+                "|",
+                ("create_uid", "=", uid),
+                ("order_line.product_id.categ_id.supervisor_ids", "=", uid)
+            ]
+        </field>
+    </record>
+
+    <record id="purchase_order_view_tree" model="ir.ui.view">
+        <field name="name">purchase.order.view.tree</field>
+        <field name="model">purchase.order</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="priority" optional="show" widget="priority" nolabel="1"/>
+                <field name="name" string="Référence" readonly="1" decoration-bf="1"/>
+                <field name="partner_id" readonly="1"/>
+                <field name="company_id" readonly="1" options="{'no_create': True}" groups="base.group_multi_company" optional="show"/>
+                <field name="user_id" optional="show" widget="many2one_avatar_user"/>
+                <field name="date_order" widget="remaining_days" optional="show"/>
+                <field name="activity_ids" widget="list_activity" optional="show"/>
+                <field name="origin" optional="show"/>
+                <field name="amount_untaxed" sum="Total Untaxed amount" string="Untaxed" widget="monetary" optional="hide"/>
+                <field name="amount_total" sum="Total amount" widget="monetary" optional="show" decoration-bf="1"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="state" optional="show" widget="badge" decoration-success="state == 'purchase' or state == 'done'" decoration-warning="state == 'to approve'" decoration-info="state == 'draft' or state == 'sent'"/>
+                <field name="invoice_status" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="purchase_order_view_tree_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.view.tree.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_kpis_tree"/>
+        <field name="arch" type="xml">
+            <list position="attributes">
+                <attribute name="js_class"></attribute>
+            </list>
+            <header position="replace"/>
+        </field>
+    </record>
+
+    <menuitem
+        id="purchase_rfq_validation_purchase_order"
+        parent="purchase.menu_procurement_management"
+        action="purchase_order_action_price_request"
+        sequence="3"
+    />
+
+    <record id="purchase_order_view_search" model="ir.ui.view">
+        <field name="name">purchase.order.view.search</field>
+        <field name="model">purchase.order</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Commande" filter_domain="['|', '|', ('name', 'ilike', self), ('partner_ref', 'ilike', self), ('partner_id', 'child_of', self)]"/>
+                <field name="partner_id" operator="child_of"/>
+                <field name="product_id"/>
+                <field name="purchase_order_code" string="Comparaison" invisible="context.get('hide_search_field_purchase_order_code')"/>
+
+                <filter name="my_purchases" string="Mes demandes" domain="[('user_id', '=', uid)]"/>
+                <filter name="starred" string="Favoris" domain="[('priority', '=', '1')]"/>
+
+                <group expand="0">
+                    <filter name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter name="group_by_state_2" context="{'group_by': 'state_2'}" invisible="not context.get('show_search_filter_state_2')"/>
+                    <filter name="group_by_situation" context="{'group_by': 'situation'}" invisible="not context.get('show_search_filter_state_2')"/>
+                    <filter name="group_by_site_id" context="{'group_by': 'site_id'}"/>
+                    <filter name="group_by_partner_id" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_by_date_order" context="{'group_by': 'date_order'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

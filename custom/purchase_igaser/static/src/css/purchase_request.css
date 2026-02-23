@@ -1,0 +1,30 @@
+.purchase_request_view_form .o_form_statusbar > .o_statusbar_status > .o_arrow_button.btn-primary.disabled[data-value="approved"] {
+    color: #FFF;
+    background: #7C7BAD;
+}
+
+.purchase_request_view_form .o_form_statusbar > .o_statusbar_status > .o_arrow_button.btn-primary.disabled[data-value="rejected"] {
+    color: #FFF;
+    background: #DC3545;
+}
+
+.purchase_request_view_form .o_form_statusbar > .o_statusbar_status > .o_arrow_button.btn-primary.disabled[data-value="approved"]::after, .purchase_request_view_form .o_form_statusbar > .o_statusbar_status > .o_arrow_button.btn-primary.disabled[data-value="rejected"]::after {
+    border-left-color: #ced4da;
+}
+
+.o_form_readonly.purchase_request_view_form .o_data_row:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.o_form_readonly.purchase_request_view_form .o_data_row:active {
+    pointer-events: none;
+}
+
+.no_open_form .no_open table.o_list_table tbody {
+    pointer-events: none;
+}
+
+.purchase_request_line_view_tree_class tr.o_data_row.text-muted div.custom-checkbox {
+    visibility: hidden;
+    display: none;
+}

@@ -1,0 +1,8 @@
+<odoo>
+    <template id="assets_backend" name="building assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/purchase_igaser/static/src/css/purchase_request.css"/>
+            <link rel="stylesheet" href="/purchase_igaser/static/src/css/res_groups.css"/>
+        </xpath>
+    </template>
+</odoo>

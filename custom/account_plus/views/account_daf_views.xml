@@ -1,0 +1,92 @@
+<odoo>
+    <record id="account_plus_res_partner_readonly_tree_inherit" model="ir.ui.view">
+        <field name="name">res.partner.readonly.tree.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="multi_edit">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_action_client_readonly" model="ir.actions.act_window">
+        <field name="name">Clients</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{"delete": False, "create": False, "edit": False, "hide_actions":True, 'search_default_customer': 1, 'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}</field>
+        <field name="view_id" ref="account_plus_res_partner_readonly_tree_inherit"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('base.res_partner_kanban_view')}),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('account_plus_res_partner_readonly_tree_inherit')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('base.view_partner_form')})
+            ]"/>
+    </record>
+
+    <record id="account_action_supplier_readonly" model="ir.actions.act_window">
+        <field name="name">Fournisseurs</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{"delete": False, "create": False, "edit": False, "hide_actions":True, 'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('base.res_partner_kanban_view')}),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('account_plus_res_partner_readonly_tree_inherit')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('base.view_partner_form')})
+            ]"/>
+    </record>
+
+    <record id="account_action_employee_readonly" model="ir.actions.act_window">
+        <field name="name">Employés</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">kanban,list,form,activity</field>
+        <field name="context">{'chat_icon': True, "hide_actions": True, "delete": False, "create": False, "edit": False,}</field>
+    </record>
+
+    <record id="account_plus_need_form_inherit" model="ir.ui.view">
+        <field name="name">account.plus.need.form.inherit</field>
+        <field name="model">building.purchase.need</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="building.building_purchase_need_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//header" position="replace">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+            </xpath>
+            <xpath expr="//field[@name='site_id']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='opp_id']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='categ_marche_id']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_action_ldb_readonly" model="ir.actions.act_window">
+        <field name="name">Liste des besoins</field>
+        <field name="res_model">building.purchase.need</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[("is_template", "!=", True)]</field>
+        <field name="context">{"delete": False, "create": False, "edit": False,}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.building_purchase_need_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('account_plus_need_form_inherit')})
+            ]"/>
+    </record>
+
+    <record id="account_action_bp_readonly" model="ir.actions.act_window">
+        <field name="name">BP(Bordereau des prix)</field>
+        <field name="res_model">building.order</field>
+        <field name="view_mode">list,form,calendar,graph</field>
+        <field name="context">{"delete": False, "create": False, "edit": False, "search_default_my_building_orders_filter": 1}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.view_order_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building.view_order_form_readonly')}),
+                (0, 0, {'view_mode': 'graph', 'view_id': ref('building.view_building_order_graph')})
+            ]"/>
+    </record>
+</odoo>

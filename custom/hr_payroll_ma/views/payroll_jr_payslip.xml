@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+  <template id="payroll_jr_payslip">
+    <t t-call="web.html_container">
+      <t t-foreach="docs" t-as="o">
+        <t t-call="web.external_layout">
+          <div class="container">
+            <div>
+              <p class="firstP" style="font-weight: bold;">IGASER</p>
+              <p class="secondP" style="font-weight: bold;padding-left: 35%;">LIVRE DE PAIE</p>
+              <p class="thirdP" style="padding-left: 20%;">
+                Edité le :
+                <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')" />
+              </p>
+            </div>
+            <br />
+            <br />
+            <div>
+
+              <p class="secondP" style="font-weighht: bold;padding-left: 35%;">
+                Période Du
+                <span t-field="o.date_start" />
+                Au
+                <span t-field="o.date_end" />
+              </p>
+              <p class="thirdP" style="padding-left: 10%;"></p>
+
+
+            </div>
+          </div>
+
+
+          <div class="page">
+            <style>
+              <!-- body {
+             width:98%;
+        } -->
+              .container {
+            border: 1px solid black;
+            justify-content: space-between;
+            display: flex;
+            padding: 10px;
+        }
+       
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            
+        }
+
+        table td {
+            border: none;
+        }
+        .firstP, .secondP, .thirdP {
+          display: inline;
+        }
+        
+        table th {
+          padding: 5px;
+        }
+            </style>
+            <div class="oe_structure" />
+            <br />
+            <br />
+            <br />
+            <!--table-->
+            <t t-set="sum_sb" t-value="0" />
+            <t t-set="sum_sbg" t-value="0" />
+            <t t-set="sum_pa" t-value="0" />
+            <t t-set="sum_cnss" t-value="0" />
+            <t t-set="sum_pto" t-value="0" />
+            <t t-set="sum_pp" t-value="0" />
+            <t t-set="sum_id" t-value="0" />
+            <t t-set="sum_ptr" t-value="0" />
+            <t t-set="sum_ir" t-value="0" />
+            <t t-set="sum_il" t-value="0" />
+            <t t-set="sum_amo" t-value="0" />
+            <t t-set="sum_rir" t-value="0" />
+            <t t-set="sum_rp" t-value="0" />
+            <t t-set="sum_rsa" t-value="0" />
+            <t t-set="sum_np" t-value="0" />
+            <t t-set="sum_arr" t-value="0" />
+
+
+            <t t-foreach="o.get_list_sites()" t-as="site">
+              <t t-set="sum_sb_aff" t-value="0" />
+              <t t-set="sum_sbg_aff" t-value="0" />
+              <t t-set="sum_pa_aff" t-value="0" />
+              <t t-set="sum_cnss_aff" t-value="0" />
+              <t t-set="sum_pto_aff" t-value="0" />
+              <t t-set="sum_pp_aff" t-value="0" />
+              <t t-set="sum_id_aff" t-value="0" />
+              <t t-set="sum_ptr_aff" t-value="0" />
+              <t t-set="sum_ir_aff" t-value="0" />
+              <t t-set="sum_il_aff" t-value="0" />
+              <t t-set="sum_amo_aff" t-value="0" />
+              <t t-set="sum_rir_aff" t-value="0" />
+              <t t-set="sum_rp_aff" t-value="0" />
+              <t t-set="sum_rsa_aff" t-value="0" />
+              <t t-set="sum_np_aff" t-value="0" />
+              <t t-set="sum_arr_aff" t-value="0" />
+
+              <table style="width: 100%;font-size: 10px;">
+                <tr>
+                  <td width="100%" style="border-right: 1px solid black;border-bottom: 1px solid black;font-size: 10px;text-align: center;">
+                    <span t-field="site.name" />
+                  </td>
+                </tr>
+              </table>
+
+              <table style="width: 100%;font-size: 10px;">
+                <thead>
+                  <tr>
+                    <th rowspan="2" width="12%">N° CNSS</th>
+                    <th rowspan="2" width="10%">Matricule</th>
+                    <th rowspan="2" width="24%">Nom et Prénom</th>
+                    <th rowspan="2" width="8%">Nbr de jours</th>
+                    <th width="8%">Salaire de Base</th>
+                    <th width="6%">Prime Ancien</th>
+                    <th width="6%">Prime Tournée</th>
+                    <th width="6%">Prime Panier</th>
+                    <th width="6%">Indémni. Déplace.</th>
+                    <th width="6%">Prime Transport</th>
+                    <th width="6%">Indémni. Réprésent.</th>
+                    <th width="6%">Indémni. Logement</th>
+                  </tr>
+
+                  <tr>
+                    <th width="8%">Salaire Brut Glob.</th>
+                    <th width="6">Retenue CNSS</th>
+                    <th width="6%">Retenue AMO</th>
+                    <th width="6%">Retenue IR</th>
+                    <th width="6%">Retenue Prêt</th>
+                    <th width="6%">Retenus S/Avanc</th>
+                    <th width="6%">Net A Payer</th>
+                    <th width="6%">Arrondis</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+
+
+                  <t t-foreach="o.get_payslips(site.id)" t-as="s">
+                    <t t-set="tot_sb" t-value="0" />
+                    <t t-set="tot_sbg" t-value="0" />
+                    <t t-set="tot_pa" t-value="0" />
+                    <t t-set="tot_cnss" t-value="0" />
+                    <t t-set="tot_pto" t-value="0" />
+                    <t t-set="tot_pp" t-value="0" />
+                    <t t-set="tot_id" t-value="0" />
+                    <t t-set="tot_ptr" t-value="0" />
+                    <t t-set="tot_ir" t-value="0" />
+                    <t t-set="tot_il" t-value="0" />
+                    <t t-set="tot_amo" t-value="0" />
+                    <t t-set="tot_rir" t-value="0" />
+                    <t t-set="tot_rp" t-value="0" />
+                    <t t-set="tot_rsa" t-value="0" />
+                    <t t-set="tot_np" t-value="0" />
+                    <t t-set="tot_arr" t-value="0" />
+
+                    <t t-foreach="s.line_ids.filtered(lambda line: line.code)" t-as="line">
+
+                      <t t-if="line.code == '20'" t-set="tot_sb" t-value="tot_sb + line.total" />
+                      <t t-if="line.code == 'SBG'" t-set="tot_sbg" t-value="tot_sbg + line.total" />
+                      <t t-if="line.code == '38'" t-set="tot_pa" t-value="tot_pa + line.total" />
+                      <t t-if="line.code == '68'" t-set="tot_cnss" t-value="tot_cnss + line.total" />
+                      <t t-if="line.code == '46'" t-set="tot_pto" t-value="tot_pto + line.total" />
+                      <t t-if="line.code == '49'" t-set="tot_pp" t-value="tot_pp + line.total" />
+                      <t t-if="line.code == '53'" t-set="tot_id" t-value="tot_id + line.total" />
+                      <t t-if="line.code == '54'" t-set="tot_ptr" t-value="tot_ptr + line.total" />
+                      <t t-if="line.code == '56'" t-set="tot_ir" t-value="tot_ir + line.total" />
+                      <t t-if="line.code == '45'" t-set="tot_il" t-value="tot_il + line.total" />
+                      <t t-if="line.code == '70'" t-set="tot_amo" t-value="tot_amo + line.total" />
+                      <t t-if="line.code == '69'" t-set="tot_rir" t-value="tot_rir + line.total" />
+                      <t t-if="line.code == '90'" t-set="tot_rp" t-value="tot_rp + line.total" />
+                      <t t-if="line.code == '85'" t-set="tot_rsa" t-value="tot_rsa + line.total" />
+                      <t t-if="line.code == 'NETPAY'" t-set="tot_np" t-value="tot_np + line.total" />
+                      <t t-if="line.code == 'ARR'" t-set="tot_arr" t-value="tot_arr + line.total" />
+
+                    </t>
+
+                    <!-- <t t-if="s.worked_days_line_ids.number_of_days != ''"> -->
+                    <tr>
+                      <td width="12%" rowspan="2" style="border-right: 1px solid black;border-bottom: 1px solid black;font-size: 10px;text-align: center;">
+                        <span t-field="s.employee_id.ssnid" />
+                      </td>
+                      <td width="10%" rowspan="2" style="border-right: 1px solid black;border-bottom: 1px solid black;font-size: 10px;text-align: center;">
+                        <span t-field="s.employee_id.registration_number" />
+                      </td>
+                      <td width="28%" rowspan="2" style="border-right: 1px solid black;border-bottom: 1px solid black;font-size: 10px;text-align: center;">
+                        <span t-field="s.employee_id.name" />
+                      </td>
+                      <td width="8%" rowspan="2" style="border-right: 1px solid black;border-bottom: 1px solid black;font-size: 10px;text-align: center;">
+                        <span t-field="s.worked_days_line_ids.number_of_days" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                      <td style="border-right: 1px solid black;border-left: 1px solid black;border-bottom: 1px solid black;text-align: right;font-size: 10px;">
+                        <span t-esc="tot_sb" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                      <td style="border-right: 1px solid black;border-bottom: 1px solid black;text-align: right;font-size: 10px;">
+                        <span t-esc="tot_pa" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                      <td style="border-right: 1px solid black;border-bottom: 1px solid black;text-align: right;font-size: 10px;">
+                        <span t-esc="tot_pto" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                      <td style="border-right: 1px solid black;border-bottom: 1px solid black;text-align: right;font-size: 10px;">
+                        <span t-esc="tot_pp" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                      <td style="border-right: 1px solid black;border-bottom: 1px solid black;text-align: right;font-size: 10px;">
+                        <span t-esc="tot_id" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                      <td style="border-right: 1px solid black;border-bottom: 1px solid black;text-align: right;font-size: 10px;">
+                        <span t-esc="tot_ptr" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                      <td style="border-right: 1px solid black;border-bottom: 1px solid black;text-align: right;font-size: 10px;">
+                        <span t-esc="tot_ir" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                      <td style="border-right: 1px solid black;border-bottom: 1px solid black;text-align: right;font-size: 10px;">
+                        <span t-esc="tot_il" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                    </tr>
+
+                    <t t-set="sum_sb" t-value="tot_sb + sum_sb" />
+                    <t t-set="sum_pa" t-value="tot_pa + sum_pa" />
+                    <t t-set="sum_pto" t-value="tot_pto + sum_pto" />
+                    <t t-set="sum_pp" t-value="tot_pp + sum_pp" />
+                    <t t-set="sum_id" t-value="tot_id + sum_id" />
+                    <t t-set="sum_ptr" t-value="tot_ptr + sum_ptr" />
+                    <t t-set="sum_ir" t-value="tot_ir + sum_ir" />
+                    <t t-set="sum_il" t-value="tot_il + sum_il" />
+
+                    <t t-set="sum_sb_aff" t-value="tot_sb + sum_sb_aff" />
+                    <t t-set="sum_pa_aff" t-value="tot_pa + sum_pa_aff" />
+                    <t t-set="sum_pto_aff" t-value="tot_pto + sum_pto_aff" />
+                    <t t-set="sum_pp_aff" t-value="tot_pp + sum_pp_aff" />
+                    <t t-set="sum_id_aff" t-value="tot_id + sum_id_aff" />
+                    <t t-set="sum_ptr_aff" t-value="tot_ptr + sum_ptr_aff" />
+                    <t t-set="sum_ir_aff" t-value="tot_ir + sum_ir_aff" />
+                    <t t-set="sum_il_aff" t-value="tot_il + sum_il_aff" />
+                    <t t-set="sum_sbg_aff" t-value="tot_sbg + sum_sbg_aff" />
+                    <t t-set="sum_cnss_aff" t-value="tot_cnss + sum_cnss_aff" />
+                    <t t-set="sum_amo_aff" t-value="tot_amo + sum_amo_aff" />
+                    <t t-set="sum_rir_aff" t-value="tot_rir + sum_rir_aff" />
+                    <t t-set="sum_rp_aff" t-value="tot_rp + sum_rp_aff" />
+                    <t t-set="sum_rsa_aff" t-value="tot_rsa + sum_rsa_aff" />
+                    <t t-set="sum_np_aff" t-value="tot_np + sum_np_aff" />
+                    <t t-set="sum_arr_aff" t-value="tot_arr + sum_arr_aff" />
+
+                    <tr>
+                      <td style="border-right: 1px solid black;border-bottom: 1px solid black;text-align: right;">
+                        <span t-esc="tot_sbg" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                      <td style="border-right: 1px solid black;border-bottom: 1px solid black;text-align: right;">
+                        <span t-esc="tot_cnss" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                      <td style="border-right: 1px solid black;border-bottom: 1px solid black;text-align: right;">
+                        <span t-esc="tot_amo" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                      <td style="border-right: 1px solid black;border-bottom: 1px solid black;text-align: right;">
+                        <span t-esc="tot_rir" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                      <td style="border-right: 1px solid black;border-bottom: 1px solid black;text-align: right;">
+                        <span t-esc="tot_rp" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                      <td style="border-right: 1px solid black;border-bottom: 1px solid black;text-align: right;">
+                        <span t-esc="tot_rsa" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                      <td style="border-right: 1px solid black;border-bottom: 1px solid black;text-align: right;">
+                        <span t-esc="tot_np" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                      <td style="border-right: 1px solid black;border-bottom: 1px solid black;text-align: right;">
+                        <span t-esc="tot_arr" t-options='{"widget": "float", "precision": 2}' />
+                      </td>
+                    </tr>
+                    <!-- </t> -->
+                    <t t-set="sum_sbg" t-value="tot_sbg + sum_sbg" />
+                    <t t-set="sum_cnss" t-value="tot_cnss + sum_cnss" />
+                    <t t-set="sum_amo" t-value="tot_amo + sum_amo" />
+                    <t t-set="sum_rir" t-value="tot_rir + sum_rir" />
+                    <t t-set="sum_rp" t-value="tot_rp + sum_rp" />
+                    <t t-set="sum_rsa" t-value="tot_rsa + sum_rsa" />
+                    <t t-set="sum_np" t-value="tot_np + sum_np" />
+                    <t t-set="sum_arr" t-value="tot_arr + sum_arr" />
+
+                  </t>
+
+
+                  <table style="width: 100%;font-size: 10px;">
+                    <thead>
+                      <tr>
+                        <th rowspan="2" width="45%" style="text-align: center;height: 30px;
+                        line-height: 30px;">TOTAL</th>
+                        <th width="8%">
+                          <span t-esc="sum_sb_aff" t-options='{"widget": "float", "precision": 2}' />
+                        </th>
+                        <th width="6%">
+                          <span t-esc="sum_pa_aff" t-options='{"widget": "float", "precision": 2}' />
+                        </th>
+                        <th width="6%">
+                          <span t-esc="sum_pto_aff" t-options='{"widget": "float", "precision": 2}' />
+                        </th>
+                        <th width="6%">
+                          <span t-esc="sum_pp_aff" t-options='{"widget": "float", "precision": 2}' />
+                        </th>
+                        <th width="6%">
+                          <span t-esc="sum_id_aff" t-options='{"widget": "float", "precision": 2}' />
+                        </th>
+                        <th width="6%">
+                          <span t-esc="sum_ptr_aff" t-options='{"widget": "float", "precision": 2}' />
+                        </th>
+                        <th width="6%">
+                          <span t-esc="sum_ir_aff" t-options='{"widget": "float", "precision": 2}' />
+                        </th>
+                        <th width="6%">
+                          <span t-esc="sum_il_aff" t-options='{"widget": "float", "precision": 2}' />
+                        </th>
+                      </tr>
+
+                      <tr>
+                        <th width="8%">
+                          <span t-esc="sum_sbg_aff" t-options='{"widget": "float", "precision": 2}' />
+                        </th>
+                        <th width="6">
+                          <span t-esc="sum_cnss_aff" t-options='{"widget": "float", "precision": 2}' />
+                        </th>
+                        <th width="6%">
+                          <span t-esc="sum_amo_aff" t-options='{"widget": "float", "precision": 2}' />
+                        </th>
+                        <th width="6%">
+                          <span t-esc="sum_rir_aff" t-options='{"widget": "float", "precision": 2}' />
+                        </th>
+                        <th width="6%">
+                          <span t-esc="sum_rp_aff" t-options='{"widget": "float", "precision": 2}' />
+                        </th>
+                        <th width="6%">
+                          <span t-esc="sum_rsa_aff" t-options='{"widget": "float", "precision": 2}' />
+                        </th>
+                        <th width="6%">
+                          <span t-esc="sum_np_aff" t-options='{"widget": "float", "precision": 2}' />
+                        </th>
+                        <th width="6%">
+                          <span t-esc="sum_arr_aff" t-options='{"widget": "float", "precision": 2}' />
+                        </th>
+                      </tr>
+                    </thead>
+                  </table>
+                </tbody>
+
+              </table>
+            </t>
+            <!-- <div style="page-break-after: always;" /> -->
+
+            <br />
+
+            <table style="width: 100%;font-size: 10px;">
+              <tr>
+                <th width="12,5%">Salaire de Base</th>
+                <th width="12,5%">
+                  <span t-esc="sum_sb" t-options='{"widget": "float", "precision": 2}' />
+                </th>
+                <th width="12,5%">Prime Ancien</th>
+                <th width="12,5%">
+                  <span t-esc="sum_pa" t-options='{"widget": "float", "precision": 2}' />
+                </th>
+                <th width="12,5%">Prime Tournée</th>
+                <th width="12,5%">
+                  <span t-esc="sum_pto" t-options='{"widget": "float", "precision": 2}' />
+                </th>
+                <th width="12,5%">Prime Panier</th>
+                <th width="12,5%">
+                  <span t-esc="sum_pp" t-options='{"widget": "float", "precision": 2}' />
+                </th>
+              </tr>
+              <tr>
+                <th width="12,5%">Indémni.Déplace</th>
+                <th width="12,5%">
+                  <span t-esc="sum_id" t-options='{"widget": "float", "precision": 2}' />
+                </th>
+                <th width="12,5%">Prime Transport</th>
+                <th width="12,5%">
+                  <span t-esc="sum_ptr" t-options='{"widget": "float", "precision": 2}' />
+                </th>
+                <th width="12,5%">Indémni.Logement</th>
+                <th width="12,5%">
+                  <span t-esc="sum_il" t-options='{"widget": "float", "precision": 2}' />
+                </th>
+                <th width="12,5%">Salaire Brut Glob.</th>
+                <th width="12,5%">
+                  <span t-esc="sum_sbg" t-options='{"widget": "float", "precision": 2}' />
+                </th>
+              </tr>
+              <tr>
+                <th width="12,5%">Retenue CNSS</th>
+                <th width="12,5%">
+                  <span t-esc="sum_cnss" t-options='{"widget": "float", "precision": 2}' />
+                </th>
+                <th width="12,5%">Retenue AMO</th>
+                <th width="12,5%">
+                  <span t-esc="sum_amo" t-options='{"widget": "float", "precision": 2}' />
+                </th>
+                <th width="12,5%">Retenue IR</th>
+                <th width="12,5%">
+                  <span t-esc="sum_rir" t-options='{"widget": "float", "precision": 2}' />
+                </th>
+                <th width="12,5%">Retenue Prêt</th>
+                <th width="12,5%">
+                  <span t-esc="sum_rp" t-options='{"widget": "float", "precision": 2}' />
+                </th>
+              </tr>
+              <tr>
+                <th width="12,5%">Retenus S/Avanc</th>
+                <th width="12,5%">
+                  <span t-esc="sum_rsa" t-options='{"widget": "float", "precision": 2}' />
+                </th>
+                <th width="12,5%">Net A Payer</th>
+                <th width="12,5%">
+                  <span t-esc="sum_np" t-options='{"widget": "float", "precision": 2}' />
+                </th>
+                <th width="12,5%">Indémni.Réprésent.</th>
+                <th width="12,5%">
+                  <span t-esc="sum_ir" t-options='{"widget": "float", "precision": 2}' />
+                </th>
+                <th width="12,5%">Arrondis</th>
+                <th width="12,5%">
+                  <span t-esc="sum_arr" t-options='{"widget": "float", "precision": 2}' />
+                </th>
+              </tr>
+
+            </table>
+
+          </div>
+        </t>
+      </t>
+    </t>
+  </template>
+
+
+</odoo>

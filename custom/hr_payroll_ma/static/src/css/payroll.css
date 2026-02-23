@@ -1,0 +1,42 @@
+.th {
+  border: 2px solid gray;
+  font-family: "Times New Roman", Times, serif;
+  height:30px;
+  font-size: 13px;
+  font-weight: bold;
+  text-align:center;
+  color:gray;
+  vertical-align: middle;
+  background:lightgray;
+}
+
+.detail {
+  position:relative;
+  border: 2px solid gray;
+}
+
+.td {
+  #border-right-style: solid;
+  #border-left-style: solid;
+  #border-color: gray;
+  #border-width: 2px;
+  border: 2px solid gray;
+  font-family: "Times New Roman", Times, serif;
+  height:30px;
+  font-size: 13px;
+  font-weight: normal;
+  color:gray;
+  vertical-align: middle;
+}
+
+.header_style {
+  font-family: "Times New Roman", Times, serif;
+  height:30px;
+  font-size: 15px;
+  font-weight: bold;
+  color:gray;
+}
+
+.o_hr_payslip_run_tree_view .table-responsive .o_list_table .o_list_button {
+  width: 175px !important;
+}

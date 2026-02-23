@@ -1,0 +1,7 @@
+.o_form_readonly.res_groups_view_form_cost_center .o_data_row:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.o_form_readonly.res_groups_view_form_cost_center .o_data_row:active {
+    pointer-events: none;
+}

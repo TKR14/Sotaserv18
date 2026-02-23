@@ -1,0 +1,763 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+  <template id="ordre_virement">
+    <t t-call="web.basic_layout">
+      <style>
+        * {
+        margin: 0;
+        padding: 0;
+        }
+
+        .page {
+        font-size: 18px;
+        font-family: sans-serif;
+        height: 340mm;
+        position: relative;
+        }
+
+        p {
+        margin: 0;
+        }
+        .logo-container img {
+        margin-left: 15px;
+        width: 160px;
+        }
+
+        .body-container {
+        margin-top: 0px;
+        }
+
+        .sender-infos {
+        float: right;
+        }
+
+        .sender-infos p {
+        margin: 0;
+        }
+        .bold {
+        font-weight: bold;
+        }
+
+        .date-city {
+        float: right;
+        font-weight: bold;
+        }
+        .clear {
+        clear: both;
+        }
+        .sender-infos,
+        .date-city {
+        width: 300px;
+        }
+        .date-city {
+        margin-top: 30px;
+        }
+
+        .body-container > * {
+        margin: 20px 25px;
+        }
+
+        .amount {
+        margin-left: 50px;
+        color: rgb(152,101,42);
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        }
+        .label {
+        float: left;
+        width: 150px;
+        }
+
+        .recipient-infos {
+        width: 100%;
+        }
+
+        .signature {
+        margin-top: 40px;
+        padding-left: 200px;
+        text-align: center;
+        }
+        .footer-infos p {
+        text-align: center;
+        font-size: 12px;
+        margin: 0;
+        }
+        .footer-infos {
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        }
+        .body-container .tab {
+        margin: 100px auto;
+        width: 94%;
+        }
+        .tab {
+        border-collapse: collapse;
+
+        }
+        .tab th {
+        padding: 10px 4px;
+        border: 1px solid black;
+        text-align: center;
+        }
+        .tab td {
+        padding: 3px;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        }
+        .last {
+        border-top: 1px solid black;
+        }
+        .last td:nth-child(1) {
+        text-align: right;
+        border-left: none;
+        }
+
+        .last td:nth-child(2), .last td:nth-child(3) {
+        border-bottom: 1px solid black;
+        }
+        td:nth-child(5), .last td:nth-child(2) {
+        text-align: right;
+        }
+        .comp-message {
+        margin: 10px 25px;
+        }
+
+        /******************************/
+
+
+        .backimg::before {
+        content: "";
+        background-image: url("./accounting_cms/static/src/img/back-img.png");
+        background-repeat: no-repeat;
+        background-size: 500px 500px;
+        position: absolute;
+        top: 0;
+        right: 0px;
+        bottom: 100px;
+        left: 160px;
+        opacity: 0.1;
+        z-index: 100;
+        }
+
+        .backimg{
+        position: relative;
+        height: 100%;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        }
+
+
+        .bankcms {
+        margin-top: 30px;
+        float: right;
+        text-align: right;
+        margin: 10px 10px;
+        width: 300px;
+        height: 160px;
+
+        }
+        .bankcms p{
+        text-align: left;
+        margin-bottom: 0px;
+        }
+
+        /***********************************/
+
+        .company-infos {
+        margin-top: 10px;
+        text-align: center;
+        font-size: 10px;
+        color: grey;
+        /*position: relative;
+        top: 310px;
+        border: 1px solid green;*/
+        }
+        .company-infos p {
+        margin: 0;
+        padding: 0;
+        }
+
+        .company-name {
+        font-size: 12px;
+        }
+        .company-infos {
+        font-size: 10px;
+        }
+
+        .trait {
+        background-image: url("./accounting_cms/static/src/img/barre.png");
+        /*background-size: cover;*/
+        background-repeat: no-repeat;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 200px;
+        }
+
+
+        .imgright {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 140px;
+        }
+
+        .txleft{
+        padding-top: 15px;
+        }
+
+        .aa{
+        font-weight: bold;
+        }
+
+        .tabinfo{
+        width: 60%;
+        border: 0px;
+        float: right;
+        }
+
+        .add-infos {
+        margin-top: 100px;
+        }
+
+        .add-infos p{
+        margin: 10px 25px;
+        }
+        .lr {
+        border-bottom: 1px solid black;
+        }
+
+        /*******************************************/
+
+        .igaser-footer {
+        position: absolute;
+        bottom: 0px;
+        width: 100%;
+        }
+
+        .footer-elements {
+        }
+
+        .igaser-footer .txt {
+        float: left;
+        margin-top: 30px;
+        font-size: 11px;
+        }
+
+        .igaser-footer .img {
+        width : 200px;
+        float: right;
+        }
+
+        .website, .bar {
+        display: inline;
+        }
+
+        .bar {
+        height: 1px;
+        width: 87%;
+        float: right;
+        background-color: rgb(0, 89, 167);
+        display: inline-block;
+        margin: 8px 0;
+        border: 0px;
+        }
+
+        .website {
+        float: left;
+        color: rgb(236, 79, 26);
+        }
+
+        .clear {
+        clear: both;
+        }
+
+        .website, .bar {
+        display: inline;
+        }
+
+
+      </style>
+
+      <div class="page">
+
+        <header>
+          <div class="head-container">
+            <div class="logo-container">
+              <img src="https://i.imgur.com/zRFHkuE.jpeg" />
+            </div>
+            <div class="bankcms">
+              <p class="aa">
+                <span>Casablanca,
+                  le </span>
+                <span
+                  t-esc='docs.date.strftime("%d/%m/%Y")'></span>
+              </p>
+              <br />
+              <p class="aa">
+                <span
+                  t-esc='docs.journal_id.bank_id.name'></span>
+              </p>
+              <p class="bb">
+                <span
+                  t-esc='docs.journal_id.bank_id.street'></span>
+              </p>
+            </div>
+            <div style="clear: both;"></div>
+          </div>
+
+        </header>
+        <div class="clear"></div>
+        <div class="body-container">
+          <p class="object bold">Objet :
+            Ordre de virement</p>
+          <br />
+          <br />
+          <p>Messieurs,</p>
+          <t t-set="account_number"
+            t-value='(docs.journal_id.bank_account_id.acc_number).split("-")[0]' />
+          <p class="message-body"> Nous vous prions d'effectuer par le débit de notre compte n° <t
+              t-if="account_number">
+              <t t-if='len(account_number)>=24'>
+                <span class='bold' t-esc='account_number[:3]'></span>
+                <span class='bold' t-esc='account_number[3:6]'></span>
+                <span class='bold' t-esc='account_number[6:22]'></span>
+                <span class='bold' t-esc='account_number[22:]'></span>
+              </t>
+              <t t-else="">
+                <span t-esc='account_number'></span>
+              </t>
+            </t>
+                <br />un
+            virement bancaire d'un montant de : </p>
+          <div class="amount">
+            <p class="amount-nbr bold">
+              <span t-esc='docs.amount'
+                t-options='{"widget": "float", "precision": 2}'>
+              </span>
+              <span> DHS</span>
+            </p>
+            <p class="amount-car"> (<span
+                t-esc='(docs.amount_in_word(docs.amount)).capitalize()'></span>)</p>
+          </div>
+          <div class="recipient">
+            <div class="label">En
+              faveur
+              de:</div>
+            <div class="recipient-infos">
+              <!-- <div class="clear"></div> -->
+              <table class="tabinfo">
+                <tr>
+                  <td width="14%">Bénéficiaire :</td>
+                  <td width="31%" class="bold">
+                    <span t-esc="docs.partner_id.name"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>RIB
+                    ou IBAN :
+                  </td>
+                  <td>
+                    <span t-esc="docs.partner_bank_id.acc_number"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Banque
+                    :</td>
+                  <td>
+                    <span t-esc="docs.partner_bank_id.bank_id.name"></span>
+                  </td>
+                </tr>
+                <tr>
+
+                  <td></td>
+                  <td></td>
+                </tr>
+              </table>
+              <div class="clear"></div>
+            </div>
+            <div class="clear"></div>
+          </div>
+          <div class="additional-infos">
+            <br />
+            <br />
+            <br />
+            <p>
+
+              Nous vous prions d’agréer, Messieurs, nos salutations distinguées.
+            </p>
+            <p class="signature">Directeur Général</p>
+          </div>
+        </div>
+
+        <div class="igaser-footer">
+          <div class="txt">
+            <p>
+              SARL au capital de 40.000.000,00 dh - siège social : lot 313-315 Zone
+              industriel-El Jadida - ICE: 000087398000070
+            </p>
+            <p>
+              Tel: 05 23 35 29 00 - Fax: 05 23 35 29 01 - PatenteL 42104582 - RC: 3013
+              - CNSS: 2703892 - IF: 05701046
+            </p>
+          </div>
+          <img class='img' src="https://i.imgur.com/pfEkrlb.png" />
+          <div class="clear" />
+          <p class="website bold">www.igaser.com</p>
+          <hr class="bar" />
+        </div>
+      </div>
+
+      <div style="page-break-before: always;" class="clear"></div>
+
+      <t t-if="len(docs.reconciled_bill_ids) &lt; 9">
+        <div class="page">
+          <div class="header-container">
+            <div class="logo-container">
+              <img src="https://i.imgur.com/zRFHkuE.jpeg" />
+            </div>
+            <div class="sender-infos">
+              <p class="bold">
+                <span t-esc="docs.partner_id.name"></span>
+              </p>
+              <br />
+            </div>
+            <div class="clear"></div>
+            <div class="date-city">CASABLANCA, le <span t-esc='docs.date.strftime("%d/%m/%Y")'></span></div>
+          </div>
+          <!-- <div class="backimg"> -->
+          <div class="clear"></div>
+          <div class="body-container">
+            <p>Cher
+              fournisseur</p>
+            <p class="message-body">Nous vous prions de trouver ci-dessous le détail des sommes que
+              vous devons à date du <span class='bold' t-esc='docs.date.strftime("%d/%m/%Y")'></span></p>
+            <table class="tab">
+              <tr>
+                <th width='13%'>Date</th>
+                <th width='18%'>N ° facture</th>
+                <th width='42%'>Libellé</th>
+                <th width='12%'>Echéance</th>
+                <!-- <th width='15%'>Avoirs
+                    ou réglements</th> -->
+                <th width='15%'>Vos factures</th>
+              </tr>
+              <tr t-foreach='docs.reconciled_bill_ids' t-as='fac'>
+                <td>
+                  <span
+                    t-esc='fac.date.strftime("%d/%m/%y")'></span>
+                </td>
+                <td>
+                  <span t-esc='fac.ref'></span>
+                </td>
+                <td>
+                  <span
+                    t-esc='fac.partner_id.name'></span>
+                </td>
+                <td>
+                  <span
+                    t-esc='fac.invoice_date_due.strftime("%d/%m/%y")'></span>
+                </td>
+                <td>
+                  <t t-set='amount' t-value='fac.amount_total_signed' />
+                  <t
+                    t-if='amount &lt; 0'>
+                    <t t-set='amount' t-value='amount * -1' />
+                  </t>
+                  <span t-esc='amount'
+                    t-options='{"widget":
+                "float", "precision": 2}'></span>
+                </td>
+              </tr>
+              <tr class="last">
+                <td colspan="4" class="bold" style="padding-right: 6px">Solde
+                  en votre faveur</td>
+                <td>
+                  <span t-esc='docs.amount'
+                    t-options='{"widget": "float", "precision": 2}'></span>
+                </td>
+              </tr>
+            </table>
+
+          </div>
+          <div class="add-infos">
+            <p>Commentaires
+              : </p>
+            <p class="comp-message">Nous donnons ordre à notre banque d'émettre un virement de <span
+                class='bold' t-esc='docs.amount'
+                t-options='{"widget": "float", "precision": 2}'></span>
+                      <span class='bold'
+                t-esc='docs.currency_id.name'></span>
+                    <p
+                class="comp-message">Vous en
+                souhaitons bonne
+                réception, veuillez agréer, cher fournisseur, l'assurance de nos meilleurs
+              sentiments. </p>
+                    <p
+                class="comp-message">Service Comptabilité.</p>
+            </p>
+          </div>
+
+          <div class="igaser-footer">
+            <div class="txt">
+              <p>
+                SARL au capital de 40.000.000,00 dh - siège social : lot 313-315 Zone
+                industriel-El Jadida - ICE: 000087398000070
+              </p>
+              <p>
+                Tel: 05 23 35 29 00 - Fax: 05 23 35 29 01 - PatenteL 42104582 - RC: 3013
+                - CNSS: 2703892 - IF: 05701046
+              </p>
+            </div>
+            <img class='img' src="https://i.imgur.com/pfEkrlb.png" />
+            <div class="clear" />
+            <p class="website bold">www.igaser.com</p>
+            <hr class="bar" />
+          </div>
+        </div>
+      </t>
+      <t t-else="">
+
+        <t t-set="count_facs" t-value="len(docs.reconciled_bill_ids)" />
+        <t t-set="count_facs" t-value="count_facs - 15" />
+        <t t-set="count_lr" t-value="0" />
+        <t t-set="iterations" t-value="ceil(count_facs/20)" />
+        <t t-set="start" t-value="16" />
+
+
+        <div class="page">
+          <div class="header-container">
+            <div class="logo-container">
+              <img src="https://i.imgur.com/zRFHkuE.jpeg" />
+            </div>
+            <div class="sender-infos">
+              <p class="bold">
+                <span t-esc="docs.partner_id.name"></span>
+              </p>
+              <br />
+            </div>
+            <div class="clear"></div>
+            <div class="date-city">CASABLANCA, le <span t-esc='docs.date.strftime("%d/%m/%Y")'></span></div>
+          </div>
+          <!-- <div class="backimg"> -->
+          <div class="clear"></div>
+          <div class="body-container">
+            <p>Cher
+              fournisseur</p>
+            <p class="message-body">Nous vous prions de trouver ci-dessous le détail des sommes que
+              vous devons à date du <span class='bold' t-esc='docs.date.strftime("%d/%m/%Y")'></span></p>
+            <table class="tab">
+              <tr>
+                <th width='13%'>Date</th>
+                <th width='18%'>N ° facture</th>
+                <th width='42%'>Libellé</th>
+                <th width='12%'>Echéance</th>
+                <!-- <th width='15%'>Avoirs
+                    ou réglements</th> -->
+                <th width='15%'>Vos factures</th>
+              </tr>
+              <t t-foreach='docs.reconciled_bill_ids[:16]' t-as='fac'>
+                <t t-set="count_lr" t-value="count_lr + 1" />
+                <t t-if="count_lr == 16">
+                  <tr class="lr">
+                    <td>
+                      <span
+                        t-esc='fac.date.strftime("%d/%m/%y")'></span>
+                    </td>
+                    <td>
+                      <span t-esc='fac.ref'></span>
+                    </td>
+                    <td>
+                      <span
+                        t-esc='fac.partner_id.name'></span>
+                    </td>
+                    <td>
+                      <span
+                        t-esc='fac.invoice_date_due.strftime("%d/%m/%y")'></span>
+                    </td>
+                    <td>
+                      <t t-set='amount' t-value='fac.amount_total_signed' />
+                      <t
+                        t-if='amount &lt; 0'>
+                        <t t-set='amount' t-value='amount * -1' />
+                      </t>
+                      <span t-esc='amount'
+                        t-options='{"widget":
+                    "float", "precision": 2}'></span>
+                    </td>
+                  </tr>
+                </t>
+                <t t-else="">
+                  <tr>
+                    <td>
+                      <span
+                        t-esc='fac.date.strftime("%d/%m/%y")'></span>
+                    </td>
+                    <td>
+                      <span t-esc='fac.ref'></span>
+                    </td>
+                    <td>
+                      <span
+                        t-esc='fac.partner_id.name'></span>
+                    </td>
+                    <td>
+                      <span
+                        t-esc='fac.invoice_date_due.strftime("%d/%m/%y")'></span>
+                    </td>
+                    <td>
+                      <t t-set='amount' t-value='fac.amount_total_signed' />
+                      <t
+                        t-if='amount &lt; 0'>
+                        <t t-set='amount' t-value='amount * -1' />
+                      </t>
+                      <span t-esc='amount'
+                        t-options='{"widget":
+                    "float", "precision": 2}'></span>
+                    </td>
+                  </tr>
+                </t>
+              </t>
+            </table>
+          </div>
+
+          <div class="igaser-footer">
+            <div class="txt">
+              <p>
+                SARL au capital de 40.000.000,00 dh - siège social : lot 313-315 Zone
+                industriel-El Jadida - ICE: 000087398000070
+              </p>
+              <p>
+                Tel: 05 23 35 29 00 - Fax: 05 23 35 29 01 - PatenteL 42104582 - RC: 3013
+                - CNSS: 2703892 - IF: 05701046
+              </p>
+            </div>
+            <img class='img' src="https://i.imgur.com/pfEkrlb.png" />
+            <div class="clear" />
+            <p class="website bold">
+              www.igaser.com</p>
+            <hr class="bar" />
+          </div>
+        </div>
+
+        <t t-foreach="range(iterations)" t-as="o">
+
+          <div class="page">
+            <div class="header-container">
+              <div class="logo-container">
+                <img src="https://i.imgur.com/zRFHkuE.jpeg" />
+              </div>
+              <div class="sender-infos">
+                <p class="bold">
+                  <span t-esc="docs.partner_id.name"></span>
+                </p>
+                <br />
+              </div>
+              <div class="clear"></div>
+              <div class="date-city">CASABLANCA, le <span t-esc='docs.date.strftime("%d/%m/%Y")'></span></div>
+            </div>
+            <!-- <div class="backimg"> -->
+            <div class="clear"></div>
+            <div class="body-container">
+              <table class="tab">
+                <tr>
+                  <th width='13%'>Date</th>
+                  <th width='18%'>N ° facture</th>
+                  <th width='42%'>Libellé</th>
+                  <th width='12%'>Echéance</th>
+                  <!-- <th width='15%'>Avoirs
+                      ou réglements</th> -->
+                  <th width='15%'>Vos factures</th>
+                </tr>
+                <tr t-foreach='docs.reconciled_bill_ids[start:start+20]' t-as='fac'>
+                  <td>
+                    <span
+                      t-esc='fac.date.strftime("%d/%m/%y")'></span>
+                  </td>
+                  <td>
+                    <span t-esc='fac.ref'></span>
+                  </td>
+                  <td>
+                    <span
+                      t-esc='fac.partner_id.name'></span>
+                  </td>
+                  <td>
+                    <span
+                      t-esc='fac.invoice_date_due.strftime("%d/%m/%y")'></span>
+                  </td>
+                  <td>
+                    <t t-set='amount' t-value='fac.amount_total_signed' />
+                    <t
+                      t-if='amount &lt; 0'>
+                      <t t-set='amount' t-value='amount * -1' />
+                    </t>
+                    <span t-esc='amount'
+                      t-options='{"widget":
+                  "float", "precision": 2}'></span>
+                  </td>
+                </tr>
+                <t t-if="o + 1 == iterations">
+                  <tr class="last">
+                    <td colspan="4" class="bold" style="padding-right: 6px">Solde
+                      en votre faveur</td>
+                    <td>
+                      <span t-esc='docs.amount'
+                        t-options='{"widget": "float", "precision": 2}'></span>
+                    </td>
+                  </tr>
+                </t>
+              </table>
+            </div>
+            <t t-if="o + 1 == iterations">
+              <div class="add-infos">
+                <p>Commentaires
+                  : </p>
+                <p class="comp-message">Nous donnons ordre à notre banque d'émettre un virement de <span
+                    class='bold' t-esc='docs.amount'
+                    t-options='{"widget": "float", "precision": 2}'></span>
+                      <span class='bold'
+                    t-esc='docs.currency_id.name'></span>
+                    <p
+                    class="comp-message">Vous
+                    en
+                    souhaitons bonne
+                    réception, veuillez agréer, cher fournisseur, l'assurance de nos meilleurs
+                  sentiments. </p>
+                    <p
+                    class="comp-message">Service Comptabilité.</p>
+                </p>
+              </div>
+            </t>
+            <div class="igaser-footer">
+              <div class="txt">
+                <p>
+                  SARL au capital de 40.000.000,00 dh - siège social : lot 313-315 Zone
+                  industriel-El Jadida - ICE: 000087398000070
+                </p>
+                <p>
+                  Tel: 05 23 35 29 00 - Fax: 05 23 35 29 01 - PatenteL 42104582 - RC: 3013
+                  - CNSS: 2703892 - IF: 05701046
+                </p>
+              </div>
+              <img class='img' src="https://i.imgur.com/pfEkrlb.png" />
+              <div class="clear" />
+              <p class="website bold">
+                www.igaser.com</p>
+              <hr class="bar" />
+            </div>
+          </div>
+
+          <t t-set="start" t-value="start + 20" />
+
+        </t>
+      </t>
+
+    </t>
+
+  </template>
+
+</odoo>

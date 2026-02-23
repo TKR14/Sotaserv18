@@ -1,0 +1,137 @@
+<odoo>
+    <!-- Attachement fournisseur -->
+    <record id="purchase_entry_view_readonly_form" model="ir.ui.view">
+        <field name="name">purchase.entry.view.readonly.form</field>
+        <field name="model">purchase.entry</field>
+        <field name="arch" type="xml">
+            <form string="Attachement" class="o_purchase_order" create="false" delete="false">
+                <header>
+                    <field name="state_attachemnet" widget="statusbar" statusbar_visible="draft,internal_validated"/>
+                    <field name="state_decompte" widget="statusbar" invisible="1"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Informations générales">
+                            <field name="purchase_id" id="purchase_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="number" string='Numéro' readonly="1" options="{'no_open': True}"/>
+                            <field name="site_id" id="site_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="supplier_id" id="supplier_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="represent" readonly="1"/>
+                            <field name="executed" readonly="1" class="rg"/>
+                        </group>
+                        <group string="Période de l'attachement">
+                            <field name="start_date" readonly="state_attachemnet != 'draft'"/>
+                            <field name="end_date" readonly="state_attachemnet != 'draft'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lignes de l'attachement" name="products">
+                            <field name="line_ids" mode="list" context="{'attachment_view': True}" options="{'no_open': True}">
+                                <list editable="bottom" delete="false" create="false">
+                                    <field name="name" readonly="1" style="width: 999px !important;"/>
+                                    <button name="show_detail" type="object" string="Détail" class="btn-primary" icon="fa-info-circle"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_purchase_entry_readonly_tree" model="ir.ui.view">
+        <field name="name">purchase.entry.tree</field>
+        <field name="model">purchase.entry</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="purchase_id"/>
+                <field name="supplier_id"/>
+                <field name="site_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="state_attachemnet" widget="badge" string="statut" width="200"
+                    decoration-info="state_attachemnet == 'draft'"
+                    decoration-success="state_attachemnet == 'internal_validated'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_purchase_entry_readonly" model="ir.actions.act_window">
+        <field name="name">Attachements fournisseur</field>
+        <field name="res_model">purchase.entry</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0), 
+                                      (0, 0, {'view_mode': 'list', 'view_id': ref('view_purchase_entry_readonly_tree')}), 
+                                      (0, 0, {'view_mode': 'form', 'view_id': ref('purchase_entry_view_readonly_form')})]"/>
+        <field name="context">{"create": False, "edit": False, "delete": False}</field>
+    </record>
+
+    <!-- Attachement Client -->
+    <record id="building_attachment_readonly_form_view" model="ir.ui.view">
+        <field name="name">building.attachment.form</field>
+        <field name="model">building.attachment</field>
+        <field name="arch" type="xml">
+            <form string="Attachement Client" delete="false" duplicate="false">
+                <header>
+                    <button name="print_attachment_client" string="Imprimer Attachement" class="oe_highlight" type="object" groups=""/>
+                    <field name="open_attachment_state" invisible="not opening_attachment" widget="statusbar" statusbar_visible="draft,internal_validated,validated_accounting" statusbar_colors='{"draft":"blue","done":"blue"}'/>
+                    <field name="not_open_attachment_state" invisible="not opening_attachment" widget="statusbar" statusbar_visible="draft,internal_validated,count_established" statusbar_colors='{"draft":"blue","done":"blue"}'/>
+                </header>
+                <sheet>
+                    <group class="attachmnet_group">
+                        <group col="2" width="900px !important;">
+                            <separator string="Informations générales" colspan="2"/>
+                            <field name="customer_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="site_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="type_marche" readonly="1"/>
+                        </group>
+                        <group col="2">
+                            <separator string="Période de l'attachement" colspan="2"/>
+                            <field name="number" readonly="1"/>
+                            <field name="start_date" readonly="1"/>
+                            <field name="end_date" readonly="1"/>
+                            <field name="definitive_ok" widget="boolean_toggle" force_save="1" readonly="1" invisible="opening_attachment"/>
+                            <field name="opening_attachment" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Détails de l'attachement">
+                            <field name="line_ids" nolabel="1" options="{'no_open': True}" widget="section_and_note_one2many">
+                                <list string="Détails de l'Attachement" editable="bottom" delete="0" create="0">
+                                    <field name="display_type" readonly="1" invisible="1"/>
+                                    <field name="name" readonly="1" string="Produit" widget="section_and_note_text" force_save="True"/>
+                                    <field name="product_uom_id" readonly="1" options="{'no_open': True}"/>
+                                    <field name="price_quantity" readonly="1" column_invisible="parent.type_marche == 'metre'"/>
+                                    <field name="previous_quantity" readonly="1" force_save="1"/>
+                                    <field name="cumulative_quantity" readonly="1"/>
+                                    <field name="percentage_completion" readonly="1" column_invisible="parent.type_marche == 'metre'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Autres Informations" name="other_info" invisible="1">
+                            <group>
+                                <field name="is_inv_posted" readonly="1" force_save="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- menu Situation -->
+    <record id="action_client_purchase_readonly" model="ir.actions.act_window">
+        <field name="name">Attachements client</field>
+        <field name="res_model">building.attachment</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0), 
+                                    (0, 0, {'view_mode': 'list', 'view_id': ref('building.building_attachment_tree')}), 
+                                    (0, 0, {'view_mode': 'form', 'view_id': ref('building_attachment_readonly_form_view')})]"/>
+        <field name="context">{"create": False, "edit": False, "delete": False, "hide_actions":True, "group_by": ['site_id'],}</field>
+    </record>
+</odoo>

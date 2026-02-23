@@ -1,0 +1,18 @@
+<odoo>
+    <!-- Paiements control panel view -->
+    <record id="view_account_payment_search_inherit" model="ir.ui.view">
+        <field name="name">view.account.payment.search.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search//filter[@name='state']" position="after">
+                <filter string="Statut d'approbation" name="approval_state" domain="[('approval_state', '!=', False)]" context="{'group_by': 'approval_state'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Paiements action -->
+    <record id="account.action_account_payments_payable" model="ir.actions.act_window">
+        <field name="context">{'default_payment_type': 'outbound', 'default_partner_type': 'supplier', 'search_default_outbound_filter': 1, 'search_default_approval_state': 1, 'default_move_journal_types': ('bank', 'cash')}</field>
+    </record>
+</odoo>

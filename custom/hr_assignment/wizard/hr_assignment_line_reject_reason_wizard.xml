@@ -1,0 +1,23 @@
+<odoo>
+    <record id="view_hr_assignment_line_reject_reason_wizard_form" model="ir.ui.view">
+        <field name="name">hr.assignment.line.reject.reason.wizard.form</field>
+        <field name="model">hr.assignment.line.reject.reason.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Assistant de rejet de ligne d'affectation" class="o_form_dashboard_stock_wizard">
+                <group>
+                    <field name="assignment_line_ids" invisible="1"/>
+                    <field name="reason"/>
+                </group>
+                <footer>
+                    <button string="Confirmer"
+                            type="object"
+                            name="action_confirm_rejection"
+                            class="btn-primary"/>
+                    <button string="Annuler"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

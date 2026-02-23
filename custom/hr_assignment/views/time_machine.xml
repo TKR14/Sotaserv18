@@ -1,0 +1,35 @@
+<odoo>
+    <record id="time_machine_action" model="ir.actions.server">
+        <field name="name">Time Portal</field>
+        <field name="model_id" ref="hr_assignment.model_time_machine"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_portal()</field>
+    </record>
+
+    <record id="time_machine_view_form" model="ir.ui.view">
+        <field name="name">time.machine.view.form</field>
+        <field name="model">time.machine</field>
+        <field name="arch" type="xml">
+            <form class="time_machine_view_form" create="0" delete="0">
+                <header>
+                    <button name="big_bang" type="object" icon="fa-rotate-left" class="btn-info"/>
+                </header>
+                <sheet class="center">
+                    <label for="today_is" string="Aujourd'hui est" class="oe_inline"/>
+                    <h1 class="bigger">
+                        <field name="today_is" required="1"/>
+                    </h1>
+                    <div class="buttons">
+                        <button title="Mois plus tôt" class="square-it btn-secondary" name="last_month" type="object" icon="fa-fast-backward"/>
+                        <button title="Semaine plus tôt" class="square-it btn-secondary ml-2" name="last_week" type="object" icon="fa-backward"/>
+                        <button title="Hier" class="square-it btn-secondary ml-2" name="yesterday" type="object" icon="fa-minus"/>
+                        <button title="Réinitialiser" class="square-it btn-secondary mx-2" name="today" type="object" icon="fa-rotate-left"/>
+                        <button title="Demain" class="square-it btn-secondary mr-2" name="tomorrow" type="object" icon="fa-plus"/>
+                        <button title="Semaine plus tard" class="square-it btn-secondary mr-2" name="next_week" type="object" icon="fa-forward"/>
+                        <button title="Mois plus tard" class="square-it btn-secondary" name="next_month" type="object" icon="fa-fast-forward"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="payroll_jr_imputation">
+
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <!--<t t-call="web.internal_layout">-->
+                <div class="page">
+                    <style>
+                        .container {
+                            margin: auto;
+                            width: 100%;
+                            padding: 10px;
+                        }
+                
+                        table,
+                        th,
+                        td {
+                            border: 1px solid black;
+                            border-collapse: collapse;
+                        }
+                
+                        table td {
+                            border: none;
+                            padding: 5px;
+                        }
+                
+                        table {
+                            border-bottom: none;
+                            border-right: none;
+                            border-left: none;
+                        }
+                
+                        table th {
+                            padding: 8px;
+                        }
+                
+                        table.center {
+                            margin-left: auto;
+                            margin-right: auto;
+                        }
+
+                        .firstP, .secondP {
+                            display: inline;
+                        } 
+                  </style>
+                    <div class="oe_structure" />
+                    <div class="container">
+                        <h3 style="text-decoration: underline;text-align: center;">JOURNAL IMPUTATION COMPTABLE</h3>
+                        <div style="align-items: stretch;display: inline-block;">
+                            <p>IGASER 2021</p>
+                            <p style="font-weight: bold;font-family: sans-serif;">
+                                REF:
+                                <span t-field="o.slip_ids.number" />
+                            </p>
+                        </div>
+                        <div style="margin-left: 20%;
+        padding: 10px;display: inline-block;">
+                            <p style="word-spacing: 20px;">
+                                <span style="text-transform: uppercase;" t-esc="o.date_start.strftime('%B %Y')" />
+                            </p>
+                            <p class="firstP">
+                                (
+                                <span t-field="o.date_start" />
+                                Au
+                                <span t-field="o.date_end" />
+                                )
+                            </p>
+                            <p class="secondP">
+                                (
+                                <span t-esc="o.date_start.strftime('%m')" />
+                                )
+                            </p>
+                        </div>
+                        <br />
+                        <p class="firstP" style="font-weight: bold;font-family: sans-serif;padding-left: 40%;padding-right: 130px;">
+                            Edité le:
+                            <span style="font-weight: normal;" t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')" />
+                        </p>
+                        <p class="secondP" style="font-weight: bold;font-family: sans-serif;word-spacing: 15px;">Page: 1</p>
+                    </div>
+                    <br />
+                    <!--table-->
+                    <table class="center" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th width="5%">CODE</th>
+                                <th width="45%">DESIGNATION</th>
+                                <th width="15%">DEBIT/GAIN</th>
+                                <th width="20%">CREDIT/RETENUE</th>
+                                <th width="15%">COMPTE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="total_gain" t-value="0" />
+                            <t t-set="total_deduction" t-value="0" />
+
+                            <tr t-foreach="o.slip_ids[0].line_ids.filtered(lambda line: line.appears_on_payslip)" t-as="line">
+
+                                <t t-if="line.is_gain" t-set="total_gain" t-value="total_gain + line.total" />
+                                <t t-if="line.is_deduction" t-set="total_deduction" t-value="total_deduction + line.total" />
+                                <t t-if="line.total != 0">
+                                    <td style="border-right: 1px solid black;text-align: center;border-left: 1px solid;">
+                                        <span t-field="line.code" />
+                                    </td>
+                                    <td style="border-right: 1px solid black;text-align: left;padding-left: 8px;">
+                                        <span t-field="line.name" />
+                                    </td>
+                                    <td style="border-right: 1px solid black;text-align: right;padding-right: 8px;">
+                                        <t t-if="line.is_gain">
+                                            <span t-field="line.total" t-options='{"widget": "float", "precision": 2}' />
+                                        </t>
+                                    </td>
+                                    <td style="border-right: 1px solid black;text-align: right;padding-right: 8px;">
+                                        <t t-if="line.is_deduction">
+                                            <span t-field="line.total" t-options='{"widget": "float", "precision": 2}' />
+                                        </t>
+                                    </td>
+                                    <td style="border-right: 1px solid black;text-align: right;padding-right: 8px;">
+                        #</td>
+                                </t>
+                            </tr>
+                            <!--TOTAL-->
+                            <tr>
+                                <td colspan="2" style="text-align: right;padding-right: 10px;border-top: 1px solid;font-weight: bold;font-family: sans-serif;">TOTAL----></td>
+                                <td style="text-align: right;padding-right: 8px;border-top: 1px solid;">
+                                    <span t-esc="total_gain" t-options='{"widget": "float", "precision": 2}' />
+                                </td>
+                                <td style="text-align: right;padding-right: 8px;border-top: 1px solid;">
+                                    <span t-esc="total_deduction" t-options='{"widget": "float", "precision": 2}' />
+                                </td>
+                                <td style="border-top: 1px solid;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!--</t>-->
+            </t>
+        </t>
+
+    </template>
+
+    <!-- <template id="payroll_jr_imputation">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hr_payroll_ma.payroll_jr_imputation"/>
+            </t>
+        </t>
+    </template> -->
+
+</odoo>

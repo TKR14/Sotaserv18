@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+  <record model="ir.ui.view" id="hr_employee_import_wizard">
+    <field name="name">cnss.import.txt.wizard</field>
+    <field name="model">cnss.import.txt.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Importer Fichier CNSS">
+        <group>
+          <field name="file" />
+        </group>
+        <footer>
+          <button name="import_file" string="Importer" type="object" class="btn-primary" />
+          <button string="Annuler" class="btn-secondary" special="cancel" />
+        </footer>
+      </form>
+    </field>
+  </record>
+</odoo>

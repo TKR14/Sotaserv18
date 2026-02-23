@@ -1,0 +1,33 @@
+.time_machine_view_form .clearfix {
+    min-width: 400px !important;
+    max-width: 400px !important;
+    min-height: 250px !important;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.time_machine_view_form .square-it {
+    aspect-ratio: 1/1;
+    padding: 6px;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.time_machine_view_form .bigger {
+    font-size: 38px;
+}
+
+.time_machine_view_form label {
+    margin-bottom: 6.5px !important;
+}
+
+.time_machine_view_form .bigger input {
+    width: 225px !important;
+}
+
+.time_machine_view_form .buttons {
+    margin-bottom: 8px;
+}

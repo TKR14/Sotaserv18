@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_entry_wizard_form" model="ir.ui.view">
+        <field name="name">purchase.entry.wizard.form</field>
+        <field name="model">purchase.entry.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Assistant de création">
+                <group>
+                    <field name="site_id" options="{'no_create': True}"/>
+                    
+                    <field name="supplier_id" 
+                           options="{'no_create': True}" 
+                           domain="[('id', '=', 0)]" 
+                           invisible="not site_id"/>
+                    
+                    <field name="purchase_id" 
+                           options="{'no_create': True}" 
+                           domain="[('partner_id', '=', supplier_id), ('state_2', '=', 'approved'), ('state', '!=', 'po_canceled'), ('is_done', '=', False)]" 
+                           invisible="not supplier_id"/>
+                    
+                    <field name="start_date" 
+                           options="{'no_create': True}" 
+                           invisible="not purchase_id"/>
+                    
+                    <field name="end_date" 
+                           options="{'no_create': True}" 
+                           invisible="not start_date"/>
+                </group>
+                <footer>
+                    <button string="Créer" type="object" name="action_confirm" class="btn-primary" data-hotkey="q"/>
+                    <button string="Annuler" special="cancel" class="btn-secondary" data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_purchase_entry_wizard" model="ir.actions.act_window">
+        <field name="name">Assistant de création d'attachement</field>
+        <field name="res_model">purchase.entry.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

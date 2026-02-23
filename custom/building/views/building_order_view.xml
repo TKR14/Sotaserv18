@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_building_order_calendar" model="ir.ui.view">
+            <field name="name">building.order.calendar</field>
+            <field name="model">building.order</field>
+            <field name="arch" type="xml">
+                <calendar string="BP" color="state">
+                    <field name="partner_id"/>
+                    <field name="amount_total"/>
+                </calendar>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="view_building_order_graph">
+            <field name="name">building.order.graph</field>
+            <field name="model">building.order</field>
+            <field name="arch" type="xml">
+                <graph string="BP" type="bar">
+                    <field name="partner_id" type="row"/>
+                    <field name="amount_total" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="view_order_tree" model="ir.ui.view">
+            <field name="name">building.order.tree</field>
+            <field name="model">building.order</field>
+            <field name="priority">2</field>
+            <field name="arch" type="xml">
+                <list string="BP">
+                    <field name="name" string="Numéro du BP"/>
+                    <field name="site_id"/>
+                    <field name="partner_id"/>
+                    <field name="commercial_id"/>
+                    <field name="amount_total" sum="Total Tax Included"/>
+                    <field name="state" invisible="1"/>
+                </list>
+            </field>
+        </record>
+
+
+        <record id="view_order_form" model="ir.ui.view">
+            <field name="name">building.order.form</field>
+            <field name="model">building.order</field>
+            <field name="arch" type="xml">
+                <form string="DQE" class="pb_view_contant">
+                    <!-- <header> -->
+                        <!-- <button name="action_sent" string="Soummettre" class="oe_highlight" 
+                            type="object"  
+                            attrs="{'invisible': [('state','in',('sent','lost','gained','done'))]}"/>
+                        <button name="action_lost" string="Perdre" class="oe_highlight" 
+                            type="object"  
+                            attrs="{'invisible': [('state','in',('draft','lost','gained','done'))]}"/>
+                        <button name="action_gained" string="Gagner" class="oe_highlight" 
+                            type="object"  
+                            attrs="{'invisible': [('state','in',('draft','lost','gained','done'))]}"/>
+                        <button name="action_cancel" string="Annuler" class="oe_highlight" 
+                            type="object"  
+                            attrs="{'invisible': [('state','in',('gained','done'))]}"/> -->
+                        <!-- <field name="state" widget="statusbar"
+                            invisible="1"
+                            statusbar_visible="draft,sent,lost,gained,done" 
+                            statusbar_colors='{"sent":"yellow","draft":"gray"}'/>
+                	</header> -->
+                    <header>
+                        <button name="action_validate" string="Valider" type="object" class="btn-primary"
+                                invisible="state != 'draft'" groups="building_plus.valider_bp,building_plus.sotaserv_business_manager"/>
+                        <button name="action_approve" string="Approuver" type="object" class="btn-success"
+                                invisible="state != 'validated'"  groups="building_plus.sotaserv_directrice_technique"/>
+                        <button name="action_reset" string="Remettre" type="object" class="btn-secondary"
+                                invisible="state != 'approved'"/>
+                        <field name="state" widget="statusbar"
+                            statusbar_visible="draft,validated,approved,reset"
+                            statusbar_colors='{"draft": "gray", "validated": "yellow", "approved": "green", "reset": "red"}'/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <separator string="Informations Devis" colspan="2"/>
+                                <button name="action_display_id_order" string="ID Bordereau" class="oe_highlight" type="object" />
+                                <field name="name" class="oe_inline" readonly="1"/>
+                                <field name="commercial_id" readonly="state != 'draft'" />
+                                <field name="currency_id" readonly="state != 'draft'" />
+                                <field name="type_marche" readonly="1"/>
+                            </group>
+                            <group>
+                                <separator string="Informations du marché" colspan="2"/>
+                                <field name="partner_id" domain="[('customer_rank','&gt;', 0)]" readonly="state != 'draft'"/>
+                                <field name="site_id" readonly="1"/>
+                                <field name="opp_id" string="Appel d'offre" readonly="state != 'draft'"/>
+                                <!-- <field name="ref_tendering" readonly="state != 'draft'"/> -->
+                                <!-- <field name="ref_project" readonly="state != 'draft'"/> -->
+                                <label for="partner_invoice_address" style="white-space: nowrap;"/>
+                                <field name="partner_invoice_address" readonly="state != 'draft'" nolabel="1"/>
+                                <field name="tax_id" readonly="state != 'draft'" options="{'no_open': True, 'no_create': True}"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Lignes BP">
+                                <field name="order_line" widget="section_and_note_one2many" readonly="state != 'draft'">
+                                    <list string="Lignes BP" editable="bottom" class="disable_sort">
+                                        <control>
+                                            <create name="add_price_control" string="Ajouter un Numéro de Prix"/>
+                                            <create name="add_section_control" string="Ajouter une Section" context="{'default_display_type': 'line_section'}"/>
+                                            <create name="add_note_control" string="Ajouter une Description" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="display_type" invisible="1"/>
+    
+                                        <field name="type_line" invisible="1"/>
+                                        <field name="name" string="Designation" 
+                                            widget="section_and_note_text" style="max-width: 399px !important; width: 399px !important;"/>
+                                        <field name="code" invisible="1"/>
+                                        <field name="parent_id" invisible="1"/>
+                                        <field name="product_id" invisible="1"/>
+                                        <field name="quantity" style="min-width: 92px !important; width: 92px !important;"/>
+                                        <!-- <field name="analytic_id" invisible="0"/> -->
+                                        <field name="product_uom" options='{"no_open": True}' style="width: 126px !important;"/>
+                                        <field name="calculated_sales_price" invisible="1"/>
+                                        <field name="price_unit" style="min-width: 92px !important; width: 98px !important;"/>
+                                        <field name="tax_id" widget="many2many_tags" invisible="1"/>
+                                        <field name="price_subtotal" style="min-width: 92px !important; width: 141px !important;"/>
+                                    </list>
+                                    <form>
+                                        <group>
+                                            <field name="name" />
+                                            <field name="quantity" />
+                                            <field name="product_uom" options="{'no_open': True}" />
+                                            <field name="price_unit" />
+                                            <field name="tax_id" />
+                                            <field name="price_subtotal" />
+                                        </group>
+                                    </form>
+                                </field>
+                                <group class="oe_subtotal_footer oe_right" colspan="2" name="building_total">
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="amount_untaxed" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                    <field name="amount_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                    <div class="oe_subtotal_footer_separator oe_inline">
+                                        <label for="amount_total" />
+                                        <button name="button_dummy" invisible="state not in ('draft', 'sent')" string="(MAJ)" type="object" class="oe_edit_only oe_link"/>
+                                    </div>
+                                    <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                </group>
+                                <div class="oe_clear"/>
+                                <field name="note" class="oe_inline" placeholder="Description"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_order_form_readonly" model="ir.ui.view">
+            <field name="name">building.order.form.readonly</field>
+            <field name="model">building.order</field>
+            <field name="mode">primary</field>
+            <field name="inherit_id" ref="building.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="attributes">
+                    <attribute name="create">false</attribute>
+                    <attribute name="edit">false</attribute>
+                    <attribute name="delete">false</attribute>
+                    <attribute name="duplicate">0</attribute>
+                </xpath>
+
+                <xpath expr="//header" position="replace">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,validated,approved,reset"/>
+                    </header>
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']" position="attributes">
+                    <attribute name="options">{'no_open': True}</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='currency_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                    <attribute name="options">{'no_open': True}</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='opp_id']" position="attributes">
+                    <attribute name="options">{'no_open': True}</attribute>
+                </xpath>
+
+                <xpath expr="//button[@name='action_display_id_order']" position="replace">
+                <button name="action_display_id_order_read_only" string="ID Bordereau" class="oe_highlight" type="object" />
+                </xpath>
+
+                <xpath expr="//field[@name='site_id']" position="replace">
+                <field name="site_id" options="{'no_open': True}" />
+                </xpath>
+
+                <!-- <xpath expr="//field[@name='opp_id']" position="replace">
+                    <field name="opp_id" options="{'no_open': True}" />
+                </xpath> -->
+
+                <xpath expr="//field[@name='partner_id']" position="replace">
+                <field name="partner_id" options="{'no_open': True}" />
+                </xpath>
+
+                <xpath expr="//field[@name='commercial_id']" position="replace">
+                <field name="commercial_id" options="{'no_open': True}" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_buildings_order_filter" model="ir.ui.view">
+            <field name="name">building.order.list.select</field>
+            <field name="model">building.order</field>
+            <field name="arch" type="xml">
+                <search string="Search buildings Order">
+                	<field name="state" invisible="1"/>
+                    <field name="name" string="Bordereau des prix" filter_domain="[('name','ilike',self)]"/>
+                    <field name="partner_id" operator="child_of"/>
+                    <field name="user_id"/>
+                    <field name="commercial_id"/>
+                    <field name="site_id"/>
+                    <filter string="My" domain="[('user_id','=',uid)]" name="my_building_orders_filter"/>
+                    <separator/>
+                    <!-- <filter string="Soumissions" name="sent" domain="[('state','=','sent')]" />
+                    <filter string="Gagné" name="gained" domain="[('state','=','gained')]"/>
+                    <filter string="Perdu" name="lost" domain="[('state','=','lost')]" />
+                    <filter string="Terminé" name="done" domain="[('state','=','done')]" /> -->
+                    <separator/>
+                    <group expand="0" string="Group By">
+                    	<filter name="site" string="Affaire" domain="[]" context="{'group_by':'site_id'}"/>
+                        <filter name="user" string="Commercial" domain="[]" context="{'group_by':'commercial_id'}"/>
+                        <filter name="partner" string="Client" domain="[]" context="{'group_by':'partner_id'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+        <record id="action_orders" model="ir.actions.act_window">
+            <field name="name">BP(Bordereau des prix)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">building.order</field>
+            <field name="view_mode">list,form,calendar,graph</field>
+            <field name="search_view_id" ref="view_buildings_order_filter"/>
+            <field name="context">{
+                    'search_default_my_building_orders_filter': 1
+                }
+            </field>
+        </record>
+
+
+        <record id="action_orders_amendment" model="ir.actions.act_window">
+            <field name="name">BP(Bordereau des prix)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">building.order</field>
+            <field name="view_mode">list,form,calendar,graph</field>
+            <field name="search_view_id" ref="view_buildings_order_filter"/>
+            <field name="domain">[('amendment', '=', True)]</field>
+            <field name="context">{
+                    'search_default_my_building_orders_filter': 1
+                }
+            </field>
+        </record>
+
+        
+        <record id="action_orders_sale_readoly" model="ir.actions.act_window">
+            <field name="name">BP(Bordereau des prix)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">building.order</field>
+            <field name="view_mode">list,form,calendar,graph</field>
+            <field name="search_view_id" ref="view_buildings_order_filter"/>
+            <field name="domain">[]</field>
+            <field name="context">{
+                    'search_default_my_building_orders_filter': 1,
+                    'no_open_fields': 1,
+                }
+            </field>
+        </record>
+
+        <record id="view_order_line_tree" model="ir.ui.view">
+            <field name="name">building.order.line.tree</field>
+            <field name="model">building.order.line</field>
+            <field name="arch" type="xml">
+            <list string="Lignes BP" editable="bottom">
+                <field name="display_type" invisible="0"/>
+                <field name="order_id"/>
+                <field name="type_line" invisible="1"/>
+                <field name="name"/>
+                <field name="code" invisible="1" string="Produit"/>
+                <field name="parent_id" invisible="1"/>
+                <field name="name" string="Chapitre" invisible="1"/>
+                <!-- <field name="analytic_id" invisible="1"/> -->
+                <field name="product_id" on_change="onchange_product_id(product_id)" invisible="1"/>
+                <field name="quantity"/>
+                <field name="product_uom" options='{"no_open": True}'/>
+                <field name="calculated_sales_price" invisible="1"/>
+                <field name="price_unit" />
+                <field name="tax_id" widget="many2many_tags" invisible="1"/>
+                <field name="price_subtotal" invisible="1"/>
+            </list>
+            </field>
+        </record>
+
+        <record id="action_order_line" model="ir.actions.act_window">
+            <field name="name">Lignes BP</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">building.order.line</field>
+            <field name="view_mode">list</field>
+        </record>
+
+    </data>
+</openerp>

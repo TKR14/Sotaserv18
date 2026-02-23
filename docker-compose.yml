@@ -1,0 +1,35 @@
+version: '3.0'
+services:
+  odoo18_sotaserv_web:
+    container_name: odoo18_sotaserv_web
+    image: odoo:18
+    restart: unless-stopped
+    depends_on:
+      - odoo18_sotaserv_db
+    links:
+      - "odoo18_sotaserv_db:db"
+    ports:
+      - "18001:8069"
+    tty: true
+    command: -- --dev=reload
+    volumes:
+      - ./config:/etc/odoo
+      - ./addons:/usr/lib/python3/dist-packages/odoo/addons
+      - ./custom:/mnt/extra-addons
+      # - ./ergobit:/mnt/ergobit
+      # - ./enterprise:/mnt/enterprise-addons
+      # - odoo18-sotaserv-web-data:/var/lib/odoo
+      
+  odoo18_sotaserv_db:
+    container_name: odoo18_sotaserv_db
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+    restart: unless-stopped
+volumes:
+  odoo18-sotaserv-web-data:
+  odoo18-sotaserv-db-data:

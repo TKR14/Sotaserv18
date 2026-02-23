@@ -1,0 +1,101 @@
+<odoo>
+    <menuitem
+        id="res_partner_menu"
+        name="Fournisseurs"
+        parent="purchase.menu_purchase_root"
+        action="res_partner_action_readonly"
+        sequence="1"
+    />
+
+    <menuitem
+        id="purchase_menu"
+        name="Commandes"
+        parent="purchase.menu_purchase_root"
+        sequence="0"
+    />
+
+    <menuitem
+        id="purchase_request_line_menu"
+        name="Lignes de Demande d'Achat"
+        parent="purchase_menu"
+        action="purchase_request_line_action_server"
+        sequence="1"
+    />
+
+    <menuitem
+        id="price_request_menu"
+        name="Demandes de Prix"
+        parent="purchase_menu"
+        sequence="2"
+    />
+    <menuitem
+        id="price_request_menu_all"
+        name="Toutes"
+        parent="price_request_menu"
+        action="purchase_plus.price_request_action_all"
+        sequence="10"
+    />
+    <menuitem
+        id="price_request_menu_in_validation"
+        name="En Validation"
+        parent="price_request_menu"
+        action="purchase_plus.price_request_action_in_validation"
+        sequence="20"
+    />
+    <menuitem
+        id="price_request_menu_in_comparison"
+        name="En Comparaison"
+        parent="price_request_menu"
+        action="purchase_plus.price_request_action_in_comparison"
+        sequence="30"
+    />
+    <menuitem
+        id="price_request_menu_comparison"
+        name="Comparaison des Offres"
+        parent="price_request_menu"
+        action="purchase_igaser.purchase_price_comparison_action"
+        sequence="40"
+    />
+
+    <menuitem
+        id="purchase_order_menu"
+        name="Bons de Commande"
+        parent="purchase_menu"
+        sequence="3"
+    />
+    <menuitem
+        id="purchase_order_menu_no_attachment"
+        name="Sans Attachement"
+        parent="purchase_order_menu"
+        action="purchase_plus.purchase_order_action_no_attachment"
+        sequence="10"
+    />
+    <menuitem
+        id="purchase_order_menu_attachment"
+        name="Avec Attachement"
+        parent="purchase_order_menu"
+        action="purchase_plus.purchase_order_action_attachment"
+        sequence="20"
+    />
+
+    <menuitem
+        id="purchase_building_purchase_need_bc_root"
+        name="Liste des besoins"
+    />
+
+    <menuitem
+        id="purchase_request_menu_buyer"
+        parent="purchase.menu_procurement_management"
+        action="purchase_request_line_action_server"
+        sequence="2"
+    />
+
+    <menuitem
+        id="purchase_building_purchase_need_bc"
+        name="Liste des besoins"
+        parent="purchase_building_purchase_need_bc_root"
+        action="building_plus.building_purchase_need_action"
+        groups="purchase_plus.purchase_budgetary_control_group"
+    />
+    
+</odoo>

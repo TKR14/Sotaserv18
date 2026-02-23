@@ -1,0 +1,28 @@
+<odoo>
+    <record id="stock_picking_readonly_tree_view" model="ir.ui.view">
+        <field name="name">stock.picking.readonly.tree.view</field>
+        <field name="model">stock.picking</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="multi_edit">false</attribute>
+                <attribute name="create">false</attribute>
+                <attribute name="delete">false</attribute>
+                <attribute name="edit">false</attribute>
+            </xpath>
+            <xpath expr="//list/header" position="replace"/>
+            <xpath expr="//list/field[@name='priority']" position="replace"/>
+            <xpath expr="//list/field[@name='location_dest_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//list/field[@name='partner_id']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//list/field[@name='location_id']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

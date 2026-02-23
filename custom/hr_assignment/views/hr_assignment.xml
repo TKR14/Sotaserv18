@@ -1,0 +1,310 @@
+<odoo>
+    <!-- FORM -->
+    <record id="hr_assignment_view_form" model="ir.ui.view">
+        <field name="name">hr.assignment.view.form</field>
+        <field name="model">hr.assignment</field>
+        <field name="arch" type="xml">
+            <form class="hr_assignment_view_form" export_xlsx="0">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_timeclock" type="object" class="oe_stat_button width" icon="fa-table">
+                            <div class="o_stat_info">
+                                <span>Pointages</span>
+                            </div>
+                        </button>
+                        <button name="action_get_line_ids" type="object" class="oe_stat_button width" icon="fa-list-ul">
+                            <div class="o_stat_info">
+                                <span><field name="count_lines"/> Affectations / <field name="count_open_lines"/> En cours / <field name="count_planned_lines"/> Prévues</span>
+                            </div>
+                        </button>
+                    </div>
+                    <label for="site_id" class="oe_inline"/>
+                    <h1>
+                        <field name="site_id" readonly="1" class="oe_inline" options="{'no_open': True}"/>
+                    </h1>
+                    <notebook>
+                        <page string="Lignes d'affectation">
+                            <field name="undone_line_ids" options="{'no_open': True}">
+                                <list>
+                                    <field name="job_id"/>
+                                    <field name="employee_id"/>
+                                    <field name="volume_clocked"/>
+                                    <field name="uom_id"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="state" widget="badge" decoration-warning="state == 'planned'" decoration-success="state == 'open'" decoration-muted="state == 'done'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_assignment_view_form_magasinier" model="ir.ui.view">
+        <field name="name">hr.assignment.view.form.magasinier</field>
+        <field name="model">hr.assignment</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="hr_assignment_view_form"/>
+        <field name="arch" type="xml">
+            <button name="action_timeclock" position="before">
+                <button name="action_timeclock_am" type="object" class="oe_stat_button square-it no-bl" icon="fa-sun-o"/>
+                <button name="action_timeclock_pm" type="object" class="oe_stat_button square-it br" icon="fa-moon-o"/>
+            </button>
+        </field>
+    </record>
+
+    <!-- TREE -->
+    <record id="hr_assignment_view_tree" model="ir.ui.view">
+        <field name="name">hr.assignment.view.tree</field>
+        <field name="model">hr.assignment</field>
+        <field name="arch" type="xml">
+            <list class="hr_assignment_view_tree" export_xlsx="0">
+                <header>
+                    <button name="button_excel_report_wizard" type="object" string="Suivi — Excel" class="btn-success ml-1" groups="building_plus.sotaserv_dg,building_plus.sotaserv_rh,account_plus.acount_move_group_cg"/>
+                </header>
+                <field name="site_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_assignment_view_tree_temp" model="ir.ui.view">
+        <field name="name">hr.assignment.view.tree.temp</field>
+        <field name="model">hr.assignment</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="hr_assignment_view_tree"/>
+        <field name="arch" type="xml">
+            <list position="attributes">
+                <attribute name="editable">bottom</attribute>
+            </list>
+            <list position="inside">
+                <header>
+                    <button name="button_add_timeclock_lines" type="object" string="Pointages" class="btn-info ml-1"/>
+                </header>
+            </list>
+            <field name="site_id" position="attributes">
+                <attribute name="options">{"no_open": True, "no_create": True}</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- TREE -->
+    <record id="hr_assignment_line_view_tree" model="ir.ui.view">
+        <field name="name">hr.assignment.line.view.tree</field>
+        <field name="model">hr.assignment.line</field>
+        <field name="arch" type="xml">
+            <list class="hr_assignment_line_view_tree" decoration-muted="state in ['done', 'canceled']" export_xlsx="0" editable="bottom">
+                <field name="job_category_id" readonly="1" options="{'no_open': True}"/>
+                <field name="job_id" readonly="1" options="{'no_open': True}"/>
+                <field name="employee_id" readonly="1" options="{'no_open': True}"/>
+                <field name="volume_clocked" readonly="1"/>
+                <field name="uom_id" readonly="1" options="{'no_open': True}"/>
+                <field name="date_start" readonly="1"/>
+                <field name="date_end"/>
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-warning="state == 'planned'"
+                    decoration-success="state == 'open'"
+                    decoration-muted="state in ['done', 'canceled']"
+                    readonly="1"
+                />
+                <button
+                    name="button_canceled"
+                    type="object"
+                    invisible="state != 'planned'"
+                    title="Annuler"
+                    icon="fa-times"
+                    class="square-it btn-danger"
+                />
+            </list>
+        </field>
+    </record>
+
+    <!-- SEARCH -->
+    <record id="hr_assignment_line_view_search" model="ir.ui.view">
+        <field name="name">hr.assignment.line.view.search</field>
+        <field name="model">hr.assignment.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="job_category_id"/>
+                <field name="job_id"/>
+                <separator/>
+                <filter string="Prévue" name="filter_planned" domain="[('state', '=', 'planned')]"/>
+                <filter string="En cours" name="filter_open" domain="[('state', '=', 'open')]"/>
+                <filter string="Terminée" name="filter_done" domain="[('state', '=', 'done')]"/>
+                <filter string="Annulée" name="filter_canceled" domain="[('state', '=', 'canceled')]"/>
+                <separator/>
+                <group>
+                    <filter name="group_by_job_category_id" context="{'group_by': 'job_category_id'}"/>
+                    <filter name="group_by_job_id" context="{'group_by': 'job_id'}"/>
+                    <filter name="group_by_employee_id" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_by_date_start" context="{'group_by': 'date_start:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- TIMECLOCK -->
+    <record id="hr_assignment_timeclock_view_form" model="ir.ui.view">
+        <field name="name">hr.assignment.timeclock.view.form</field>
+        <field name="model">hr.assignment.timeclock</field>
+        <field name="arch" type="xml">
+            <form class="hr_assignment_timeclock_view_form" export_xlsx="0">
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <label for="site_id" class="oe_inline"/>
+                    <!-- <field name="date" readonly="1"/> -->
+                    <h1>
+                        <field name="site_id" readonly="1" class="oe_inline" options="{'no_open': True}"/>
+                    </h1>
+                    <notebook>
+                        <page string="Lignes d'affectation">
+                            <field name="line_ids" options="{'no_open': True}">
+                                <list editable="bottom" export_xlsx="0" create="0" delete="0">
+                                    <field name="job_id" options="{'no_open': True}" readonly="1" style="width: 250px;"/>
+                                    <field name="employee_id" options="{'no_open': True}" readonly="1" style="width: 250px;"/>
+                                    <field name="is_present" readonly="1" style="width: 100px;"/>
+                                    <field name="hours" readonly="1" style="min-width: 74px;width: 130px;"/>
+                                    <field name="has_surpassed_8" invisible="1" force_save="1"/>
+                                    <field name="reason" required="has_surpassed_8"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_assignment_timeclock_view_form_am" model="ir.ui.view">
+        <field name="name">hr.assignment.timeclock.view.form.am</field>
+        <field name="model">hr.assignment.timeclock</field>
+        <field name="inherit_id" ref="hr_assignment.hr_assignment_timeclock_view_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <field name="is_present" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="hours" position="replace">
+                <button name="button_is_present" type="object" icon="fa-check" class="btn-primary square-it" invisible="not is_present"/>
+                <button name="button_is_present" type="object" icon="fa-check" class="btn-outline-primary no-text square-it" invisible="is_present"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="hr_assignment_timeclock_view_form_pm" model="ir.ui.view">
+        <field name="name">hr.assignment.timeclock.view.form.pm</field>
+        <field name="model">hr.assignment.timeclock</field>
+        <field name="inherit_id" ref="hr_assignment.hr_assignment_timeclock_view_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <list position="attributes">
+                <attribute name="decoration-muted">not is_present</attribute>
+            </list>
+            <field name="is_present" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="hours" position="attributes">
+                <attribute name="readonly">0</attribute>
+                <attribute name="readonly">not is_present</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="hr_assignment_timeclock_line_view_tree" model="ir.ui.view">
+        <field name="name">hr.assignment.timeclock.line.view.tree</field>
+        <field name="model">hr.assignment.timeclock.line</field>
+        <field name="arch" type="xml">
+            <list class="hr_assignment_timeclock_line_view_tree" export_xlsx="0" default_order="date desc">
+                <field name="date"/>
+                <field name="job_category_id" options="{'no_open': True}"/>
+                <field name="job_id" options="{'no_open': True}"/>
+                <field name="employee_id" options="{'no_open': True}"/>
+                <field name="is_present"/>
+                <field name="hours"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_assignment_timeclock_line_recent_view_tree" model="ir.ui.view">
+        <field name="name">hr.assignment.timeclock.line.recent.view.tree</field>
+        <field name="model">hr.assignment.timeclock.line</field>
+        <field name="inherit_id" ref="hr_assignment.hr_assignment_timeclock_line_view_tree" />
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="class"></attribute>
+            </xpath>
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button name="action_validate" type="object" string="Valider" class="btn btn-success ml-2" groups="building_plus.sotaserv_rh"/>
+                    <button name="action_cancel" type="object" string="Annuler" class="btn btn-danger ml-2" groups="building_plus.sotaserv_rh"/>
+                </header>
+                <field name="state" invisible="1" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'cancel'" decoration-success="state == 'validated'"/>     
+                <field name="decision" widget="badge" decoration-danger="decision == 'canceled'" decoration-success="decision == 'modified'"/>     
+                <button name="action_update_timeclock" type="object" invisible="state == 'validated' or decision in ['canceled', 'modified']" class="btn btn-primary" icon="fa-pencil"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_assignment_timeclock_line_view_search" model="ir.ui.view">
+        <field name="name">hr.assignment.timeclock.line.view.search</field>
+        <field name="model">hr.assignment.timeclock.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="job_category_id"/>
+                <field name="job_id"/>
+
+                <filter string="Présents" name="filter_is_present" domain="[('is_present', '=', True)]"/>
+                <filter string="Absents" name="filter_not_is_present" domain="[('is_present', '=', False)]"/>
+                <group>
+                    <filter name="group_by_job_category_id" context="{'group_by': 'job_category_id'}"/>
+                    <filter name="group_by_job_id" context="{'group_by': 'job_id'}"/>
+                    <filter name="group_by_employee_id" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_by_is_present" string="Présence" context="{'group_by': 'is_present'}"/>
+                    <filter name="group_by_date" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- RH -->
+    <!-- <record id="hr_assignment_request_action_rh" model="ir.actions.server">
+        <field name="name">Demandes</field>
+        <field name="model_id" ref="model_hr_assignment_request"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignment_requests("SOTASERV_RH")</field>
+    </record> -->
+
+    <record id="hr_assignment_request_line_action_rh" model="ir.actions.server">
+        <field name="name">Lignes d'affectation</field>
+        <field name="model_id" ref="model_hr_assignment_request_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignment_request_lines("SOTASERV_RH")</field>
+    </record>
+
+    <record id="hr_assignment_action_rh" model="ir.actions.server">
+        <field name="name">Affectations</field>
+        <field name="model_id" ref="model_hr_assignment"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_hr_assignments("SOTASERV_RH")</field>
+    </record>
+
+    <record id="hr_assignment_recent_action_rh" model="ir.actions.server">
+        <field name="name">Pointages</field>
+        <field name="model_id" ref="model_hr_assignment"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_recent_timeclock()</field>
+    </record>
+
+    <record id="hr_assignment_action_temp" model="ir.actions.server">
+        <field name="name">Affectations</field>
+        <field name="model_id" ref="model_hr_assignment"/>
+        <field name="state">code</field>
+        <field name="code">action = model.temp_action_get_user_hr_assignments()</field>
+    </record>
+</odoo>

@@ -1,0 +1,784 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="crm_lead_view_form_inherit">
+        <field name="name">crm.lead.form.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/field[@name='stage_id']" position="before">
+                <!-- <field name="is_building_order_created" invisible="1"/>
+                <button name="action_create_building_order" string="Crér un BP" type="object" attrs="{'invisible': [('is_building_order_created', '=', True)]}" 
+                    class="oe_highlight"/> -->
+                <field name="state_by_stage" invisible="1"/>
+                <field name="stage_ids" invisible="1"/>
+            </xpath>
+
+            <field name="stage_id" position="attributes">
+                <attribute name="domain">[('id', 'in', stage_ids)]</attribute>
+            </field>
+
+<!--            <xpath expr="//header/button[@name='action_set_won_rainbowman']" position="before">-->
+<!--                <button name="action_set_tender" string="Envoyer au client" type="object" class="oe_highlight" attrs="{'invisible': [('state_by_stage','!=', 'is_qualif')]}"/>-->
+<!--            </xpath>-->
+
+<!--            <xpath expr="//header/button[@name='action_set_won_rainbowman']" position="replace">-->
+<!--                <button name="action_set_won_rainbowman" string="Marquer comme Adjugé" type="object" class="oe_highlight" attrs="{'invisible': [('state_by_stage','!=', 'is_tender')]}"/>-->
+<!--            </xpath>-->
+
+            <!-- <xpath expr="//header/button[@name='action_set_lost']" position="replace">
+                <button name="action_set_lost" string="Marquer comme Non Adjugé" type="object" attrs="{'invisible': [('state_by_stage','!=', 'is_tender')]}"/>
+            </xpath> -->
+
+            <!--            <xpath expr="//header/button[@name='%(crm.crm_lead_lost_action)d']" position="replace">-->
+<!--                <button name="%(crm.crm_lead_lost_action)d" string="Marquer comme Non Adjugé"-->
+<!--                            type="action" class="oe_highlight" context="{'default_lead_id': active_id}" attrs="{'invisible': [('state_by_stage','!=', 'is_tender')]}"/>-->
+<!--            </xpath>-->
+
+            <xpath expr="//header" position="inside">
+                <field name="is_validate_visible" invisible="1"/>
+                <field name="is_return_visible" invisible="1"/>
+                <field name="is_convert_to_project" invisible="1"/>
+                <field name="nav_controlls" invisible="1"/>
+                <field name="give_up" invisible="1"/>
+                <button name="action_validate" type="object" string="Valider" class="oe_highlight" invisible="not nav_controlls or not is_validate_visible or give_up != False"/>
+                <button name="action_call_crm_lead_return_wizard" type="object" string="Remettre" class="oe_highlight" invisible="not nav_controlls or not is_return_visible or give_up != False"/>
+                <button name="action_mark_as_won" type="object" string="Marquer comme gagné" class="oe_highlight" invisible="not nav_controlls or state_by_stage != 'is_sent_to_client'"/>
+                <button name="action_mark_as_lost" type="object" string="Marquer comme raté" class="oe_highlight" invisible="not nav_controlls or state_by_stage != 'is_sent_to_client'"/>
+                <button name="action_mark_as_cancel" type="object" string="Annuler" class="oe_highlight" invisible="not nav_controlls or state_by_stage != 'is_sent_to_client'"/>
+                <button name="action_restore" type="object" string="Restaurer" class="oe_highlight" invisible="not nav_controlls or state_by_stage != 'is_cancel' or give_up"/>
+                <button name="action_convert_to_project" type="object" string="Convertir en affaire" class="oe_highlight" invisible="not nav_controlls or not is_convert_to_project"/>
+                <button name="action_set_abandoned" type="object" string="Abandonner" class="btn-primary" invisible="state_by_stage == 'is_won' or give_up" groups="building_plus.sotaserv_crm_abandoned"/>
+            </xpath>
+
+            <xpath expr="//header/field[@name='stage_id']" position="attributes">
+                <attribute name="options">{'fold_field': 'fold'}</attribute>
+            </xpath>
+
+            <xpath expr="//header/button[@name='action_set_won_rainbowman']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- <xpath expr="//header/button[@name='427']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+
+            <!-- <xpath expr="//header/button[@name='action_set_lost']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+
+            <xpath expr="//group[@name='lead_info']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//group[@name='lead_priority']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//group[@name='lead_partner']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//group[@name='opportunity_partner']/label[@for='phone']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//group[@name='opportunity_partner']/div/button[@name='phone_action_blacklist_remove']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//group[@name='opportunity_partner']/div/field[@name='email_from']" 
+                position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//group[@name='opportunity_partner']/label[@for='email_from']" 
+                position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//group[@name='opportunity_partner']/div/field[@name='phone']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//sheet/group/group/field[@name='user_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//sheet/group/group/field[@name='team_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//page[@name='internal_notes']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//page[@name='lead']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- <xpath expr="//sheet/group/group/field[@name='date_deadline']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+            
+            <xpath expr="//sheet/group/group/field[@name='priority']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <xpath expr="//sheet/group/group/field[@name='tag_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//group[@name='lead_info']" position="after">
+                <group name="call_tender_info">
+                    <field name="num_ao" string="Numéro"/>
+                    <!-- <field name="deadline" string="Date limite de depot"/> -->
+                    <field name="date_open_ao"/>
+                    <field name="delai" string="Délai"/>
+                    <field name="source_id" />
+                    <field name="description" string="Notes"/>
+                </group>
+            </xpath>
+
+            <xpath expr="//page[@name='internal_notes']" position="after">
+                <page name='dg_decision_pg' string="Decision DG" invisible="1">
+                    <field name="dg_decision" nolabel="1"/>
+                </page>
+            </xpath>
+        
+            <xpath expr="//label[@for='phone']" position="before">
+                <field name="typ_marche"/>
+                <field name="contact_name"/>
+                <field name="owner"/>
+                <field name="user_id" domain="[('share', '=', False)]"
+                                string="Chargé d'affaire" context="{'default_sales_team_id': team_id}" widget="many2one_avatar_user"/>
+                <field name="city" string="Ville d'execution"/>
+                <!-- <label for="is_qualification_requested" string="Qualification" class="oe_inline"/>
+                <div class="o_row">
+                    <field name="is_qualification_requested" string="Qualification"/>
+                </div> -->
+                <!-- <label for="is_requested_class" string="Classification" class="oe_inline"/>
+                <div class="o_row">
+                    <field name="is_requested_class"/>
+                </div> -->
+
+                <label for="site_visit" class="oe_inline"/>
+                <div class="o_row">
+                    <field name="site_visit"/>
+                    <field name="date_site_visit" invisible="not site_visit" nolabel="1"/>
+                </div>
+
+                <label for="is_samples" class="oe_inline"/>
+                <div class="o_row">
+                    <field name="is_samples"/>
+                    <field name="date_samples" invisible="not is_samples" nolabel="1"/>
+                </div>
+                
+                <label for="deposit_envelopes" class="oe_inline"/>
+                <div>
+                    <field name="deposit_envelopes" nolabel="1"/>
+                </div>
+
+                <!-- <label for="is_deposit" string="Caution" class="oe_inline"/>
+                <div class="o_row">
+                    <field name="is_deposit"/>
+                </div> -->
+
+            </xpath>
+
+            <!-- <xpath expr="//sheet/div/h2[@class='o_row no-gutters align-items-end']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+
+            <xpath expr="//sheet/div/h1" position="after">
+                <label for="expected_revenue" string="Estimation" class="oe_edit_only"/>
+                <div name="expected_revenue_opp">
+                    <field name="expected_revenue" widget='monetary' options="{'currency_field': 'company_currency'}" style='width: 50%; font-weight: bold'/>
+                </div>
+            </xpath>
+
+            <xpath expr="//page[@name='internal_notes']" position="after">
+                <page string="Cautions" name="Cautions">
+                    <field name="caution_ids" nolabel="1" readonly="0">
+                        <list string="Cautions" editable="bottom" create="0">
+                            <field name="type_caution" readonly="1"/>
+                            <field name="ligne_id" readonly="1"/>
+                            <field name="bank_id" readonly="1"/>
+                            <field name="ref" readonly="1"/>
+                            <field name="responsible_id" readonly="1"/>
+                            <field name="deposit" readonly="1"/>
+                            <field name="caution_deposit_date" required="state_caution == 'caution_diposed'"/>
+                            <field name="nb_days" string="Nb jours"/>
+                            <field name="interest_amount"/>
+                            <field name="caution_provisional_recovery_date" required="state_caution == 'caution_diposed'"/>
+                            <field name="caution_recovery_date"/>
+                            <field name="state_caution" invisible="0" readonly="1"/>
+                            <button name="action_diposed" string="Déposer Caution" class="oe_highlight" 
+                            type="object"  
+                            invisible="state_caution in ['caution_diposed', 'released', 'retrieved_caution'] or not caution_deposit_date or not caution_provisional_recovery_date"/>
+                            <button name="action_retrieved" string="Récupurer Caution" class="oe_highlight" 
+                            type="object"  
+                            invisible="state_caution != 'released'"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Qualifications" name="Cautions">
+                    <field name="qualification_requested_ids" nolabel="1">
+                        <list string="Qualifications" editable="bottom">
+                            <field name="sector" string="Secteur"/>
+                            <field name="qualification_requested" domain="[('sector_id', '=', sector)]" string="Qualification"/>
+                            <field name="classi" string="Classe"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+
+            <xpath expr="//field[@name='user_id']" position="replace">
+                <field name="user_ids" widget="many2many_tags" placeholder="Chargés d'affaire"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="crm_case_form_view_oppor_inherit">
+        <field name="name">crm.lead.form.opp.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="sale_crm.crm_case_form_view_oppor"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//button[@name='action_sale_quotations_new']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_view_sale_quotation']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_view_sale_order']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="crm_case_kanban_view_leads_inherit">
+        <field name="name">crm.lead.kanban.lead.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="records_draggable">false</attribute>
+                <attribute name="on_create"/>
+                <attribute name="quick_create_view"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="crm_lead_sector_form_view">
+        <field name="name">crm.lead.sector.form</field>
+        <field name="model">crm.lead.sector</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="city">
+                <group >
+                    <field name="code"  />
+                    <field name="name"  />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="crm_lead_sector_list_view">
+        <field name="name">crm.lead.sector.list</field>
+        <field name="model">crm.lead.sector</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="City">
+                <field name="code"  />
+                <field name="name"  />
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_crm_lead_sector_list_view">
+        <field name="name">Secteurs AO</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">crm.lead.sector</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_crm_lead_sector_list" parent="crm.crm_menu_config" action="action_crm_lead_sector_list_view" sequence="9"/>
+
+    <record model="ir.ui.view" id="crm_lead_qualification_form_view">
+        <field name="name">crm.lead.qualification.form</field>
+        <field name="model">crm.lead.qualification</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="city">
+                <group >
+                    <field name="sector_id"  />
+                    <field name="code"  />
+                    <field name="name"  />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="crm_lead_qualification_list_view">
+        <field name="name">crm.lead.qualification.list</field>
+        <field name="model">crm.lead.qualification</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="City">
+                <field name="sector_id"  />
+                <field name="code"  />
+                <field name="name"  />
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_crm_lead_qualification_list_view">
+        <field name="name">Qualifications AO</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">crm.lead.qualification</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_crm_lead_qualification_list" parent="crm.crm_menu_config" action="action_crm_lead_qualification_list_view" sequence="10"/>
+
+    <record model="ir.ui.view" id="utm_source_orm_view">
+        <field name="name">utm.source.form</field>
+        <field name="model">utm.source</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="source">
+                <group >
+                    <field name="name"  />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="utm_source_list_view">
+        <field name="name">utm.source.list</field>
+        <field name="model">utm.source</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="source">
+                <field name="name"  />
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_utm_source_list_view">
+        <field name="name">Sources AO</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">utm.source</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_utm_source_qualification_list" parent="crm.crm_config_settings_menu" action="action_utm_source_list_view" sequence="10"/>
+
+    <record model="ir.ui.view" id="crm_lead_classification_view">
+        <field name="name">crm.lead.classification.form</field>
+        <field name="model">crm.lead.classification</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Classification">
+                <group >
+                    <field name="name"  />
+                    <field name="start_date"  />
+                    <field name="end_date"  />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="crm_lead_classification_list_view">
+        <field name="name">crm.lead.classification.list</field>
+        <field name="model">crm.lead.classification</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="source" decoration-danger="nb_days&lt;=25">
+                <field name="name"  />
+                <field name="start_date"  />
+                <field name="end_date"  />
+                <field name="nb_days"  invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_crm_lead_classification_list_view">
+        <field name="name">Classes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">crm.lead.classification</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_crm_lead_classification_list" parent="crm.crm_menu_config" action="action_crm_lead_classification_list_view" sequence="11"/>
+
+    <record model="ir.ui.view" id="account_caution_view">
+        <field name="name">account.caution.form</field>
+        <field name="model">account.caution</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Caution">
+                    <header>
+                        <button name="action_to_diposed" string="À déposer" class="oe_highlight" 
+                            type="object"  
+                            invisible="state_caution in ['caution_to_diposed', 'caution_diposed', 'released', 'retrieved_caution']"/>
+                        <!-- <button name="action_retrieved" string="Récupurer Caution" class="oe_highlight" 
+                            type="object"  
+                            attrs="{'invisible': [('state_caution', '!=', 'released')]}"/> -->
+                        <field name="state_caution" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="ref" class="oe_edit_only" string="N° Référence"/>
+                            <h1><field name="ref" placeholder="Ex 2021/11" readonly="state_caution in ['caution_diposed', 'released', 'retrieved_caution']"/></h1>
+                        </div>
+                        <group>
+                            <group name="caution_info">
+                                
+                                <field name="is_readonly" invisible="1"/>
+                                <field name="type_caution" readonly="is_readonly or state_caution in ['caution_diposed', 'released', 'retrieved_caution']"/>
+                                <field name="type_caution_str" invisible="1"/>
+                                <field name="ligne_id" readonly="state_caution in ['caution_diposed', 'released', 'retrieved_caution']" domain="[('type_caution', 'ilike', type_caution_str)]"/>
+                                <field name="bank_id" readonly="1" force_save = "1"/>
+                                <field name="opp_id" readonly="state_caution in ['caution_diposed', 'released', 'retrieved_caution']"
+invisible="type_caution != 'tender_caution'" domain="[('stage_id', 'not in', [8, 9, 10, 20, 21, 22])]"/>
+                                <!-- <field name="site_id" attrs="{'readonly': [('state_caution', 'in', ['caution_diposed','released','retrieved_caution'])], 'invisible': [('type_caution', '=', 'tender_caution'}" domain="[('state', '=', 'open')]"/> -->
+                                <field name="responsible_id"/>
+                                <field name="deposit" readonly="is_readonly or state_caution in ['caution_diposed', 'released', 'retrieved_caution']"/>
+                                <field name="interest_amount"/>
+                            </group>
+                            <group name="caution_dates">
+                                <field name="caution_deposit_date" readonly="state_caution in ['caution_diposed', 'released', 'retrieved_caution']" required="state_caution == 'released'"  force_save = "1"/>
+                                <field name="nb_days" readonly="1" force_save = "1"/>
+                                <field name="caution_provisional_recovery_date" readonly="state_caution in ['released', 'retrieved_caution']" required="state_caution == 'released'" force_save = "1"/>
+                                <field name="caution_recovery_date" readonly="state_caution == 'retrieved_caution'" force_save = "1"/>
+                            </group>
+                        </group>
+                    </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="account_caution_list_view">
+        <field name="name">account.caution.list</field>
+        <field name="model">account.caution</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="Caution" decoration-danger="(nb_days_after_released&gt;25) or (state_caution in ['caution_request', 'caution_to_diposed'])">
+                <field name="type_caution"/>
+                <field name="bank_id"/>
+                <field name="ligne_id"/>
+                <field name="partner_id"/>
+                <field name="ref"/>
+                <field name="responsible_id"/>
+                <field name="deposit"/>
+                <field name="caution_deposit_date"/>
+                <field name="nb_days"/>
+                <field name="nb_days_after_released" invisible="1"/>
+                <field name="interest_amount"/>
+                <field name="caution_provisional_recovery_date"/>
+                <field name="caution_recovery_date"/>
+                <field name="state_caution"/>
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_account_caution_list_view">
+        <field name="name">Cautions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.caution</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- <menuitem
+            id="menu_account_caution_root"
+            parent="account.menu_finance"
+            name = "Cautions"
+            sequence="2"
+    /> -->
+
+    <!-- <menuitem id="menu_account_caution_list" parent="menu_account_caution_root" 
+        action="action_account_caution_list_view" sequence="4"/> -->
+
+    <record model="ir.ui.view" id="account_caution_line_view">
+        <field name="name">account.caution.line.form</field>
+        <field name="model">account.caution.line</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Caution Line">
+                    <header>
+                        <button name="action_open" string="Rendre la ligne disponible" class="oe_highlight" 
+                            type="object"  
+                            invisible="state not in ['draft', 'closed']"/>
+                        <button name="action_close" string="Fermer la ligne" class="oe_highlight" 
+                            type="object"  
+                            invisible="state != 'open'"/>
+                        <button name="action_remette_draft" string="Remmettre en Brouillon" class="oe_highlight" 
+                            type="object"  
+                            invisible="state == 'draft' or is_reset_draft"/>
+                        <field name="state" widget="statusbar"/>
+                        <field name="is_reset_draft" invisible="1"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group name="caution_line_info">
+                                <field name="bank_id" readonly="state in ['open', 'closed']"/>
+                                <field name="is_cp" readonly="state in ['open', 'closed']"/>
+                                <field name="is_cd" readonly="state in ['open', 'closed']"/>
+                                <field name="is_gr" readonly="state in ['open', 'closed']"/>
+                                <field name="name" readonly="state in ['open', 'closed']"/>
+                                <field name="type_caution" invisible="1"/>
+                            </group>
+                            <group name="caution_line_amount">
+                                 <field name="date_deadline" readonly="state in ['open', 'closed']"/>
+                                <field name="amount" readonly="state in ['open', 'closed']" string ="Montant Global"/>
+                                <field name="pratical_amount" readonly="1"/>
+                                <field name="amount_available" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Cautions" name="Cautions">
+                                <field name="caution_ids" nolabel="1" readonly="1">
+                                    <list string="Cautions">
+                                        <field name="bank_id" invisible="1"/>
+                                        <field name="type_caution"/>
+                                        <field name="ref" string="N° Référence"/>
+                                        <field name="responsible_id"/>
+                                        <field name="deposit"/>
+                                        <field name="caution_provisional_recovery_date"/>
+                                        <field name="caution_deposit_date"/>
+                                        <field name="nb_days" string="Nb jours"/>
+                                        <field name="interest_amount"/>
+                                        <field name="caution_recovery_date"/>
+                                        <field name="state_caution"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="account_caution_line_list_view">
+        <field name="name">account.caution.line.list</field>
+        <field name="model">account.caution.line</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="Caution Line">
+                <field name="name"/>
+                <field name="bank_id"/>
+                <field name="amount"/>
+                <field name="amount_available"/>
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_account_caution_line_list_view">
+        <field name="name">Lignes des cautions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.caution.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- <menuitem id="menu_account_caution_line_list" parent="menu_account_caution_root" 
+        action="action_account_caution_line_list_view" sequence="3"/> -->
+
+    <record model="ir.ui.view" id="crm_trc_view">
+        <field name="name">crm.trc.form</field>
+        <field name="model">crm.trc</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="trc">
+                    <header>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group name="trc_info">
+                                <field name="partner_id"/>
+                                <field name="name"/>
+                                <field name="duration_work"/>
+                            </group>
+                            <group name="trc_other_info">
+                                <field name="cps_is_signed"/>
+                                <field name="os_is_available"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Dates TRC" name="dates_trc">
+                                <field name="line_ids" nolabel="1" readonly="0">
+                                    <list string="Dates" editable="bottom">
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="name" invisible="1"/>
+                                        <field name="duration_work" invisible="1"/>
+                                        <field name="cps_is_signed" invisible="1"/>
+                                        <field name="os_is_available" invisible="1"/>
+                                        <field name="ref"/>
+                                        <field name="start_date"/>
+                                        <field name="end_date"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="crm_trc_list_view">
+        <field name="name">crm.trc.list</field>
+        <field name="model">crm.trc</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="trc">
+                <field name="partner_id"/>
+                <field name="name"/>
+                <field name="duration_work"/>
+                <field name="cps_is_signed"/>
+                <field name="os_is_available"/>
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_trc_list_view">
+        <field name="name">Suivi TRC</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">crm.trc</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- <menuitem id="menu_trc_list" parent="crm.crm_menu_sales" 
+        action="action_trc_list_view" sequence="6"/> -->
+
+    <record model="ir.ui.view" id="crm_trc_line_list_view">
+        <field name="name">crm.trc.line.list</field>
+        <field name="model">crm.trc.line</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="trc" decoration-warning="is_warn==True">
+                <field name="trc_id"/>
+                <field name="partner_id"/>
+                <field name="name"/>
+                <field name="ref"/>
+                <field name="duration_work"/>
+                <field name="cps_is_signed"/>
+                <field name="os_is_available"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="nb_days" invisible="0"/>
+                <field name="is_warn" invisible="0"/>
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_trc_line_list_view">
+        <field name="name">Suivi Dates TRC</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">crm.trc.line</field>
+        <field name="domain">[('is_active', '=', True)]</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- <menuitem id="menu_trc_line_list" parent="crm.crm_menu_sales" 
+        action="action_trc_line_list_view" sequence="7"/> -->
+
+    <record id="ir_cron_auto_update_nb_days" model="ir.cron">
+        <field name="name">Maj NB de jours caution</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <!-- <field name="numbercall">-1</field> -->
+        <field name="nextcall" eval="(DateTime.now().replace(hour=2, minute=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <!-- <field name="doall" eval="False"/> -->
+        <field name="model_id" ref="model_account_caution"/>
+        <field name="code">model._update_nb_days_from_cron()</field>
+        <field name="state">code</field>
+    </record>
+
+
+    <record model="ir.ui.view" id="crm_stage_form_inherit_1">
+        <field name="name">crm.stage.form.inherit1</field>
+        <field name="model">crm.stage</field>
+        <field name="inherit_id" ref="crm.crm_stage_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='is_won']" position="after">
+                <label for="is_sent_to_client" string="Est envoyé au client?" style="width: 230%;"/>
+                <field name="is_sent_to_client" nolabel="1"/>
+
+                <label for="is_lost" string="Est en étape perdue?" style="width: 230%;"/>
+                <field name="is_lost" nolabel="1"/>
+
+                <label for="is_cancel" string="Est en étape annulé?" style="width: 230%;"/>
+                <field name="is_cancel" nolabel="1"/>
+            </xpath>
+
+            <xpath expr="//field[@name='fold']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="crm_stage_list_inherit">
+        <field name="name">crm.stage.list.inherit</field>
+        <field name="model">crm.stage</field>
+        <field name="inherit_id" ref="crm.crm_stage_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='team_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='sequence']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='is_won']" position="after">
+                <field name="is_sent_to_client" />
+                <field name="is_lost" />
+                <field name="is_cancel" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="ir_cron_is_active" model="ir.cron">
+        <field name="name">Maj is_active</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <!-- <field name="numbercall">-1</field> -->
+        <field name="nextcall" eval="(DateTime.now().replace(hour=2, minute=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <!-- <field name="doall" eval="False"/> -->
+        <field name="model_id" ref="model_crm_lead_classification"/>
+        <field name="code">model._update_is_active_cron()</field>
+        <field name="state">code</field>
+    </record>
+
+    <record id="ir_cron_trc_is_active" model="ir.cron">
+        <field name="name">Maj TRC is_active</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <!-- <field name="numbercall">-1</field> -->
+        <field name="nextcall" eval="(DateTime.now().replace(hour=2, minute=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <!-- <field name="doall" eval="False"/> -->
+        <field name="model_id" ref="model_crm_trc_line"/>
+        <field name="code">model._update_trc_is_active_cron()</field>
+        <field name="state">code</field>
+    </record>
+
+    <!-- Inherit etapes action -->
+    <record id="crm.crm_stage_action" model="ir.actions.act_window">
+        <field name="context">{'create': False, 'edit': False, 'delete': False}</field>
+    </record>
+
+</odoo>

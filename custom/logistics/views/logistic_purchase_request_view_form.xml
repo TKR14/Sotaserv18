@@ -1,0 +1,29 @@
+<odoo>
+    <record id="view_logistic_purchase_request_form" model="ir.ui.view">
+        <field name="name">logistic.purchase.request.form</field>
+        <field name="model">purchase.request</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="purchase_igaser.purchase_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='site_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='product_id']" position="replace">
+                <field 
+                    name="product_id" 
+                    required="1" 
+                    options="{'no_create': True, 'no_open': True}" 
+                    />
+            </xpath>
+            <!-- <xpath expr="//field[@name='product_id']" position="before">
+                <field name="category_type"/>
+            </xpath> -->
+            <xpath expr="//field[@name='line_ids']//field[@name='name']" position="replace"/>
+            <xpath expr="//field[@name='line_ids']//field[@name='assigned_to']" position="replace"/>
+            <xpath expr="//field[@name='line_ids']//field[@name='available_quantity']" position="replace"/>
+            <xpath expr="//field[@name='line_ids']//field[@name='estimated_cost']" position="replace"/>
+            <xpath expr="//label[@for='estimated_cost']" position="replace"/>
+            <xpath expr="//field[@name='estimated_cost']" position="replace"/>
+        </field>
+    </record>
+</odoo>

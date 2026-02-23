@@ -1,0 +1,40 @@
+<odoo>
+    <record id="stock_warehouse_view_form_diesel" model="ir.ui.view">
+        <field name="name">stock.warehouse.view.form.diesel</field>
+        <field name="inherit_id" ref="stock.view_warehouse" />
+        <field name="model">stock.warehouse</field>
+        <field name="arch" type="xml">
+            <field name="code" position="attributes">
+                <attribute name="string">Code</attribute>
+            </field>
+            <field name="partner_id" position="replace"/>
+            <notebook position="replace">
+                <group>
+                    <group string="Emplacement">
+                        <field name="view_location_id" string="Vue" readonly="1"/>
+                        <field name="lot_stock_id" string="Stock" readonly="1"/>
+                        <field name="fuel_location_id" string="Carburant" readonly="1"/>
+                        <field name="transit_location_id" string="Transit" readonly="1"/>
+                        <field name="release_location_id" string="Sortie" readonly="1"/>
+                        <field name="rebut_location_id" string="Rebut" readonly="1"/>
+                        <field name="mobile_location_id"/>
+                    </group>
+                    <group string="Types d'opérations">
+                        <field name="in_type_id" string="Entrée" readonly="1"/>
+                        <field name="int_type_id" string="Interne" readonly="1"/>
+                        <field name="out_type_id" string="Sortie" readonly="1"/>
+                    </group>
+                </group>
+            </notebook>
+        </field>
+    </record>
+
+    <record id="stock_warehouse_view_tree_inherit" model="ir.ui.view">
+        <field name="name">stock.warehouse.view.tree.inherit</field>
+        <field name="inherit_id" ref="stock.view_warehouse_tree"/>
+        <field name="model">stock.warehouse</field>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="replace"/>
+        </field>
+    </record>
+</odoo>

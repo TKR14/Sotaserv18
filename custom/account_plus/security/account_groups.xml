@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <record id="acount_move_group_bo" model="res.groups">
+            <field name="name">SOTASERV_BO</field>
+        </record>
+        <record id="acount_move_group_cg" model="res.groups">
+            <field name="name">SOTASERV_CG</field>
+        </record>
+        <record id="acount_move_group_gp" model="res.groups">
+            <field name="name">SOTASERV_GP</field>
+        </record>
+        <record id="acount_move_group_invoice" model="res.groups">
+            <field name="name">SOTASERV_FACTURATION</field>
+        </record>
+        <record id="acount_move_group_Aud" model="res.groups">
+            <field name="name">SOTASERV_AUDITEUR</field>
+        </record>
+        <record id="acount_move_group_creer" model="res.groups">
+            <field name="name">SOTASERV_CRÉER_FACTURE_FOURNISSEUR</field>
+        </record>
+        <record id="acount_move_group_commandes_service" model="res.groups">
+            <field name="name">SOTASERV_Commandes_Service</field>
+        </record>
+        <record id="acount_move_group_achat" model="res.groups">
+            <field name="name">SOTASERV_ACHAT</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+        <record id="admin_ba_temp" model="res.groups">
+            <field name="name">ADMIN</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+        <record id="account_group_reset_to_draft" model="res.groups">
+            <field name="name">Facturation / Remettre en brouillon</field>
+        </record>
+        <record id="account_move_group_pre_validate" model="res.groups">
+            <field name="name">Facturation / Validation des Factures Manuelles</field>
+        </record>
+    </data>
+</openerp>

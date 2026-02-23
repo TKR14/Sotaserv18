@@ -1,0 +1,9 @@
+<odoo>
+    <template id="assets_backend" name="building assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/hr_assignment/static/src/css/hr_assignment_request.css"/>
+            <link rel="stylesheet" href="/hr_assignment/static/src/css/hr_assignment.css"/>
+            <link rel="stylesheet" href="/hr_assignment/static/src/css/time_machine.css"/>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,236 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+
+		<record model="ir.ui.view" id="view_move_search_inherit1">
+                <field name="name">stock.move.search.inherit1</field>
+                <field name="model">stock.move</field>
+                <field name="type">search</field>
+                <field name="inherit_id" ref="stock.view_move_search"/>
+                <field name="arch" type="xml">
+                	<xpath expr="//filter[@name='by_product']" position="after">
+                    	<filter string="Affaire" name="by_site" icon="terp-accessories-archiver" domain="[]"  context="{'group_by':'site_id'}"/>
+                	</xpath>
+                </field>
+		</record>
+
+        <record model="ir.ui.view" id="stock_inherite2_form_view">
+                <field name="name">stock.picking.inherit2.form</field>
+                <field name="model">stock.picking</field>
+                <field name="type">form</field>
+                <field name="inherit_id" ref="stock.view_picking_form"/>
+                <field name="arch" type="xml">
+                    <xpath expr="//header/field[@name='state']" position="attributes">
+                        <attribute name="statusbar_visible">confirmed,assigned,done</attribute>
+                    </xpath>
+                	<xpath expr="//field[@name='partner_id']" position="after">
+                    	<field name="site_id" readonly="state != 'draft'"/>
+                	</xpath>
+                	<xpath expr="//sheet//field[@name='location_id']" position="attributes">
+                        <attribute name="readonly">state != 'draft'</attribute>
+                        <attribute name="invisible">picking_type_code == 'incoming'</attribute>
+                        <attribute name="force_save">1</attribute>
+                        <attribute name="string">Origine</attribute>
+                	</xpath>
+                	<xpath expr="//sheet//field[@name='location_dest_id']" position="attributes">
+                        <attribute name="readonly">state != 'draft'</attribute>
+                        <attribute name="invisible">picking_type_code == 'outgoing'</attribute>
+                        <attribute name="force_save">1</attribute>
+                        <attribute name="string">Destination</attribute>
+                	</xpath>
+                    <xpath expr="//page[@name='extra']/group" position="inside">
+                        <group string="Déductions">
+                            <field name="is_cg" invisible="1"/>
+                            <field name="remaining_advance"/>
+                            <field name="amount_advance_deduction"/>
+                        </group>
+                    </xpath>
+                </field>
+		</record>
+
+        <!-- Analytic_id stock move -->
+
+        <!-- <record model="ir.ui.view" id="analytic_view_move_picking_form">
+            <field name="name">analytic.stock.move.picking.form</field>
+            <field name="model">stock.move</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.view_move_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="after">
+                        <field name="analytic_id" />
+                        <field name="move_type" invisible="1" />
+                        <field name="transport_cost_unit" attrs="{'invisible': [('move_type','=','to_partner')]}"/>
+                </xpath>
+            </field>
+        </record> -->
+
+         <record model="ir.ui.view" id="analytic_view_move_picking_tree">
+            <field name="name">analytic.stock.move.picking.tree</field>
+            <field name="model">stock.move</field>
+            <field name="type">list</field>
+            <field name="inherit_id" ref="stock.view_picking_move_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="after">
+                        <!-- <field name="analytic_id" invisible="1"/> -->
+                        <field name="move_type" invisible="1" />
+                        <field name="transport_cost_unit" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+         <record model="ir.ui.view" id="analytic_view_move_tree">
+            <field name="name">analytic.stock.move.tree</field>
+            <field name="model">stock.move</field>
+            <field name="type">list</field>
+            <field name="inherit_id" ref="stock.view_move_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <!-- <field name="analytic_id" invisible="1" /> -->
+                    <field name="move_type" invisible="1" />
+                    <field name="transport_cost_unit" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="analytic_view_move_form">
+            <field name="name">analytic.stock.move.form</field>
+            <field name="model">stock.move</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="after">
+                        <!-- <field name="analytic_id"  readonly="1" invisible="1"/> -->
+                        <field name="move_type" invisible="1" />
+                        <field name="transport_cost_unit" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- <record model="ir.ui.view" id="analytic_view_stock_enter_transfer_details">
+            <field name="name">analytic.stock.move.form</field>
+            <field name="model">stock.transfer_details</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.view_stock_enter_transfer_details"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="after">
+                        <field name="analytic_id"  readonly="1"/>
+                </xpath>
+            </field>
+        </record> -->
+
+        <record model="ir.ui.view" id="view_stock_quant_form_inherit1">
+            <field name="name">stock.quant.form.inherit1</field>
+            <field name="model">stock.quant</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.view_stock_quant_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="before">
+                        <field name="site_id"  readonly="1"/>
+                </xpath>
+                <!-- <xpath expr="//field[@name='product_id']" position="after">
+                        <field name="analytic_id"  readonly="1" invisible="1"/>
+                </xpath> -->
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_stock_quant_tree_inherit1">
+            <field name="name">stock.quant.tree.inherit1</field>
+            <field name="model">stock.quant</field>
+            <field name="type">list</field>
+            <field name="inherit_id" ref="stock.view_stock_quant_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="before">
+                        <field name="site_id"  readonly="1"/>
+                </xpath>
+                <xpath expr="//field[@name='quantity']" position="replace"/>
+                <xpath expr="//list" position="attributes">
+                    <attribute name="js_class"></attribute>
+                </xpath>
+                <!-- <xpath expr="//field[@name='product_id']" position="after">
+                        <field name="analytic_id"  readonly="1" invisible="1"/>
+                </xpath> -->
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="view_stock_quant_graph_inherit1">
+            <field name="name">stock.quant.graph.inherit1</field>
+            <field name="model">stock.quant</field>
+            <field name="type">graph</field>
+            <field name="inherit_id" ref="stock.stock_quant_view_graph"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='location_id']" position="before">
+                        <field name="site_id" />
+                </xpath>
+                <!-- <xpath expr="//field[@name='location_id']" position="after">
+                        <field name="analytic_id" invisible="1"/>
+                </xpath> -->
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="quant_search_view_inherit1">
+            <field name="name">stock.quant.search.inherit1</field>
+            <field name="model">stock.quant</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="stock.quant_search_view"/>
+            <field name="arch" type="xml">
+
+                <!-- <xpath expr="//group[@string='Filters']" position="replace">
+                </xpath> -->
+
+                <xpath expr="//filter[@name='productgroup']" position="before">
+                    <filter name="sitegroup" string='Affaire' context="{'group_by' : 'site_id'}"/>
+                </xpath>
+                <!-- <xpath expr="//filter[@name='productgroup']" position="after">
+                    <filter name="analyticgroup" string='Compte Analytique' context="{'group_by' : 'analytic_id'}"/>
+                </xpath> -->
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_building_picking_internal">
+            <field name="name">Transferts Internes</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'default_picking_filter': 'specific'}</field>
+            <field name="domain">[('picking_type_code', '=','internal'), ('picking_filter', '=', 'specific')]</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_building_incoming_picking">
+            <field name="name">Bons de Receptions</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'default_picking_filter': 'specific'}</field>
+            <field name="domain">[('picking_type_code', '=', 'incoming'),('picking_filter', '=', 'specific')]</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="building_stock_quantsact">
+            <field name="name">Stocks par Emplacement</field>
+            <field name="res_model">stock.quant</field>
+            <field name="view_mode">list,form,graph</field>
+            <field name="domain">[('location_id.usage', 'in', ['internal', 'mobile'])]</field>
+            <field name="context">{'search_default_locationgroup': 1}</field>
+        </record>
+
+        <record id="view_stock_quant_readonly_tree_inherit" model="ir.ui.view">
+            <field name="name">view.stock.quant.readonly.tree.inherit</field>
+            <field name="model">stock.quant</field>
+            <field name="mode">primary</field>
+            <field name="inherit_id" ref="stock.view_stock_quant_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//list" position="attributes">
+                    <attribute name="js_class"></attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Action Server -->
+        <record id="building_stock_quantsact_server" model="ir.actions.server">
+            <field name="name">Stocks par Emplacement</field>
+            <field name="model_id" ref="model_stock_quant"/>
+            <field name="state">code</field>
+            <field name="code">action = model.action_get_site_user()</field>
+        </record>
+    </data>
+</odoo>

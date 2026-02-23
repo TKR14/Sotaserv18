@@ -1,0 +1,235 @@
+<odoo>
+    <menuitem 
+        id="menu_logistics_root"
+        name="Logistique"
+        groups="logistics.logistics_group"
+        sequence="0"
+    />
+
+    <!-- Achats -->
+    <menuitem 
+        id="menu_logistics_sales"
+        name="Achats"
+        parent="menu_logistics_root"
+        sequence="1"
+    />
+
+    <menuitem
+        id="purchase_request_menu"
+        name="Demandes d'achat"
+        parent="menu_logistics_sales"
+        action="purchase_request_action"
+        sequence="10"
+    />
+
+    <menuitem
+        id="purchase_order_menu"
+        name="Commandes"
+        parent="menu_logistics_sales"
+        action="purchase_order_action"
+        sequence="20"
+    />
+
+    <!-- Inventaire -->
+    <menuitem
+        id="inventory_menu"
+        name="Inventaire"
+        parent="menu_logistics_root"
+        sequence="2"
+    />
+
+    <menuitem
+        id="building_stock_quantsact_menu"
+        name="Stocks par Emplacement"
+        parent="inventory_menu"
+        action="building.building_stock_quantsact_server"
+        sequence="10"
+    />
+
+    <menuitem
+        id="stock_picking_type_menu"
+        name="Aperçu de l'inventaire"
+        parent="inventory_menu"
+        action="stock_picking_type_action"
+        sequence="20"
+    />
+
+    <menuitem
+        id="stock_picking_incoming_menu"
+        name="Réceptions"
+        parent="inventory_menu"
+        action="stock_picking_incoming_action"
+        sequence="30"
+    />
+
+    <!-- ajouter a stock plus  -->
+
+    <!-- <menuitem
+        id="stock_picking_outgoing_menu"
+        name="Sortie d'article"
+        parent="inventory_menu"
+        action="stock_picking_outgoing_action"
+        sequence="40"
+    />
+
+    <menuitem
+        id="stock_picking_scrap_menu"
+        name="Rebut"
+        parent="inventory_menu"
+        action="stock_picking_scrap_action"
+        sequence="50"
+    /> -->
+
+    <!-- ajouter a bulding_plus plus  -->
+    <!-- <menuitem
+        id="stock_picking_transfers_menu"
+        name="Transferts"
+        parent="inventory_menu"
+        action="building_plus.stock_picking_int_logistics_action_magasinier_chantier"
+        sequence="60"
+    /> -->
+
+    <!-- Matériels -->
+    <menuitem 
+        id="menu_logistics_materials"
+        name="Matériels"
+        parent="menu_logistics_root"
+        sequence="3"
+    />
+
+    <menuitem
+        id="maintenance_request_resource_material_menu"
+        name="Demandes"
+        parent="menu_logistics_materials"
+        action="maintenance_request_resource_material_action"
+        sequence="10"
+    />
+
+    <menuitem
+        id="maintenance_request_resource_material_line_menu"
+        name="Ligne Demande"
+        parent="menu_logistics_materials"
+        action="maintenance_request_resource_material_line_action"
+        sequence="20"
+    />
+
+    <menuitem
+        id="building_assignment_line_equipment_menu"
+        name="Affectations"
+        parent="menu_logistics_materials"
+        action="building_assignment_line_equipment_action"
+        sequence="30"
+    />
+
+    <menuitem
+        id="materials_worked_hours_menu"
+        name="Pointages"
+        parent="menu_logistics_materials"
+        action="materials_worked_hours_action"
+        sequence="40"
+    />
+
+    <menuitem
+        id="menu_logistics_incidents"
+        name="Incidents"
+        parent="menu_logistics_materials"
+        action="logistics.incident_materiel_action_logistics"
+        sequence="50"
+    />
+
+    <!-- Petit Matériels -->
+    <menuitem 
+        id="menu_logistics_small_materials"
+        name="Petit Matériels"
+        parent="menu_logistics_root"
+        sequence="4"
+    />
+
+    <menuitem
+        id="maintenance_request_resource_small_material_menu"
+        name="Demandes"
+        parent="menu_logistics_small_materials"
+        action="maintenance_request_resource_small_material_action"
+        sequence="10"
+    />
+
+    <menuitem
+        id="maintenance_request_resource_small_material_line_menu"
+        name="Ligne Demandes"
+        parent="menu_logistics_small_materials"
+        action="maintenance_request_resource_small_material_line_action"
+        sequence="20"
+    />
+
+    <menuitem
+        id="building_assignment_line_small_equipment_menu"
+        name="Affectations"
+        parent="menu_logistics_small_materials"
+        action="stock_picking_assignment_small_equipment_action"
+        sequence="30"
+    />
+
+    <!-- Référentiel -->
+    <menuitem 
+        id="menu_logistics_master_data"
+        name="Référentiel"
+        parent="menu_logistics_root"
+        sequence="5"
+    />
+
+    <menuitem
+        id="product_template_menu"
+        name="Articles"
+        parent="menu_logistics_master_data"
+        action="product_template_action"
+        sequence="10"
+    />
+
+    <menuitem
+        id="maintenance_equipment_category_menu"
+        name="Catégories Matériel"
+        parent="menu_logistics_master_data"
+        action="maintenance_equipment_category_action"
+        sequence="20"
+    />
+
+    <menuitem
+        id="maintenance_equipment_menu"
+        name="Matériel"
+        parent="menu_logistics_master_data"
+        action="maintenance_equipment_action"
+        sequence="30"
+    />
+
+    <menuitem
+        id="fleet_vehicle_model_brand_menu"
+        name="Fabricants"
+        parent="menu_logistics_master_data"
+        action="fleet.fleet_vehicle_model_brand_action"
+        sequence="40"
+    />
+
+    <menuitem
+        id="fleet_vehicle_model_menu"
+        name="Modèles Matériel"
+        parent="menu_logistics_master_data"
+        action="fleet_vehicle_model_action"
+        sequence="50"
+    />
+
+    <!-- Configuration -->
+    <menuitem 
+        id="logistics_configuration"
+        name="Configuration" 
+        parent="menu_logistics_root"
+        sequence="6"
+    />
+
+    <menuitem
+        id="logistics_menu_approval_chain"
+        name="Chaînes d'approbation"
+        parent="logistics_configuration"
+        action="purchase_igaser.approval_material_chain_action"
+        sequence="10"
+    />
+</odoo>

@@ -1,0 +1,60 @@
+<odoo>
+    <record id="account_payment_register_view_form_inherit" model="ir.ui.view">
+        <field name="name">account.payment.register.view.form.inherit</field>
+        <field name="model">account.payment.register</field>
+        <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+        <field name="arch" type="xml">
+            <field name="payment_method_line_id" position="after"> <field name="journal_type" invisible="1"/>
+                <field name="payment_method_code" invisible="1"/>
+                <field name="check_id"
+                       invisible="journal_type != 'bank' or payment_method_code not in ['check', 'effect']"
+                       required="journal_type == 'bank' and payment_method_code in ['check', 'effect']"
+                       options="{'no_create': True, 'no_open': True}"
+                       context="{'search_default_group_by_checkbook_id': True}"/>
+            </field>
+
+            <field name="communication" position="replace">
+                <field name="communication" 
+                       invisible="not can_edit_wizard or (can_group_payments and not group_payment)" 
+                       readonly="journal_type == 'bank' and payment_method_code in ['check', 'effect']" 
+                       force_save="1"/>
+            </field>
+
+            <button name="action_create_payments" position="replace">
+                <button name="action_create_payments_parent" type="object" class="btn-primary" string="Créer"/>
+            </button>
+
+            <field name="amount" position="attributes">
+                <attribute name="readonly">True</attribute>
+                <attribute name="force_save">True</attribute>
+            </field>
+            <field name="currency_id" position="attributes">
+                <attribute name="readonly">True</attribute>
+                <attribute name="force_save">True</attribute>
+                <attribute name="invisible">True</attribute>
+            </field>
+            <field name="group_payment" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+            
+            <!-- <group name="group3" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </group> -->
+
+            <form position="inside">
+                <notebook>
+                    <page string="Factures" name="invoices_page">
+                        <field name="apr_line_ids">
+                            <list delete="false" create="false" editable="bottom">
+                                <field name="move_id" options="{'no_open': True}" force_save="1"/>
+                                <field name="amount"/>
+                                <field name="paid" force_save="1"/>
+                                <field name="residual" force_save="1"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </form>
+        </field>
+    </record>
+</odoo>

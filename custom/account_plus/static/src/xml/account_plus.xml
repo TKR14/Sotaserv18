@@ -1,0 +1,7 @@
+<odoo>
+    <template id="account_plus_assets_backend" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/account_plus/static/src/css/style.css"/>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,44 @@
+.hr_assignment_request_line_view_tree .o_list_record_selector {
+    width: 16px !important;
+}
+
+.hr_assignment_request_line_view_tree .o_list_record_selector .custom-checkbox {
+    display: none !important;
+}
+
+.hr_assignment_request_line_view_tree.approved .square-it {
+    padding: 0 1px !important;
+}
+
+.hr_assignment_request_line_view_tree.approved .autism-it {
+    margin-left: 10px;
+}
+
+.modal-dialog:has(.confirm_like_modal) {
+    width: 650px !important;
+}
+
+.confirm_like_modal {
+    padding: 0 !important;
+}
+
+.confirm_like_modal p {
+    margin: 0 !important;
+    padding: 16px !important;
+}
+
+.confirm_like_modal .o_form_sheet {
+    min-width: 100% !important;
+}
+
+.modal-dialog:has(.confirm_like_modal) .modal-content .modal-footer footer > :not(:last-child) {
+    margin-right: .5rem !important;
+}
+
+.modal-dialog:has(.confirm_like_modal) .modal-content .modal-footer footer > :not(:first-child) {
+    margin-left: 0 !important;
+}
+
+.modal-dialog:has(.confirm_like_modal) .modal-content .modal-footer footer button {
+    margin-bottom: 0 !important;
+}

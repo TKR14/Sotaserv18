@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Rédifinition des de menus ventes>ventes aprés sa suppression-->
+
+         <record id="group_hide_menus" model="res.groups">
+              <field name='name'>Hide Menus Group</field>
+         </record>
+
+         <!-- <record model="ir.ui.menu" id="mail.mail_feeds_main">
+              <field name="groups_id" eval="[(6, 0, [ref('building.group_hide_menus')])]"/>
+         </record>
+
+        <record model="ir.ui.menu" id="base.menu_reporting">
+              <field name="groups_id" eval="[(6, 0, [ref('building.group_hide_menus')])]"/>
+         </record> -->
+
+         <!-- <delete id="base.menu_sales" model="ir.ui.menu"/> -->
+         <!-- <menuitem id="menu_sales" parent="base.menu_base_partner" name="Gestion commerciale"  sequence="1" /> -->
+         <!-- <menuitem id="base.menu_partner_form" parent="menu_sales" action="base.action_partner_form" sequence="2" /> -->
+         <!-- <menuitem action="sale.action_orders" id="sale.menu_sale_order" name="Consultations" parent="menu_sales" sequence="6" groups="base.group_sale_salesman,base.group_sale_manager"/>
+         <menuitem id="sale.menu_sale_quotations" action="sale.action_quotations" parent="menu_sales" sequence="5"/> -->
+
+         <!-- Menu appels offres-->
+         <menuitem id="menu_tendering" name="Marchés" parent="sale.sale_menu_root"  sequence="2"/>
+         <!-- <menuitem id="menu_price_calculation" name="Études de prix" action="action_building_price_calculation" parent="menu_tendering" sequence="1" /> -->
+         <menuitem id="menu_building_order" name="Bordereaux de prix" action="action_orders"  parent="menu_tendering"  sequence="2"/>
+
+        <!-- Menu appels offres-->
+        <menuitem id="menu_building_order_site" name="Bordereaux de prix" action="action_orders"  parent="crm.crm_menu_sales"  sequence="3"/>
+        <menuitem id="menu_building_order_line_site" name="Lignes BP" action="action_order_line"  parent="crm.crm_menu_sales"  sequence="3"/>
+
+    </data>
+</openerp>

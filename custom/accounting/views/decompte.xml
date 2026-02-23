@@ -1,0 +1,1038 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <!-- <record id="decompte_tree" model="ir.ui.view">
+        <field name="name">decompte.tree</field>
+        <field name="model">building.attachment</field>
+        <field name="inherit_id" ref="building.building_attachment_inv_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <header>
+                    <button name="print_decompte" string="Imprimer Décompte" class="btn-primary" type="object"/>
+                </header>
+            </xpath>
+        </field>
+    </record> -->
+
+    <record id="decompte_form" model="ir.ui.view">
+        <field name="name">decompte.form</field>
+        <field name="model">building.attachment</field>
+        <field name="inherit_id" ref="building.building_attachment_inv_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header//field[@name='state']" position="after">
+                <button name="print_decompte_provisional_report" string="Imprimer Décompte" invisible="state != 'done'" class="btn-primary" type="object" groups="building_plus.sotaserv_directeur_zone"/>
+                <button name="print_decompte" string="Imprimer Décompte" invisible="state not in ['customer_validated', 'validated_accounting', 'supplier_validated']" class="btn-primary" type="object" groups="building_plus.sotaserv_directeur_zone"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="decompte_paperformat" model="report.paperformat">
+        <field name="name">decompte.paperformat</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+    </record>
+
+    <record id="decompte_action" model="ir.actions.report">
+        <field name="name">Décompte</field>
+        <field name="model">building.attachment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">accounting.decompte_template</field>
+        <!-- <field name="binding_model_id" ref="building.model_building_attachment"/> -->
+        <field name="binding_model_id" eval="False"/>
+        <field name="print_report_name">'Décompte'</field>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="decompte_paperformat" />
+    </record>
+
+    <template id="decompte_template">
+        <t t-call="web.html_container">
+
+            <style>
+                * {
+                    padding: 0;
+                    margin: 0;
+                    border-collapse: collapse;
+                    box-sizing: border-box;
+                    font-family: 'Century';
+                }
+                
+                .page {
+                    position: relative;
+                    width: 100%;
+                }
+                
+                .padded {
+                    padding: 0 17px 21px;
+                    width: 100%;
+                }
+                
+                table {
+                    width: 100%;
+                    font-size: 10pt;
+                }
+                
+                table:not(.header) {
+                    border: 1px solid #000;
+                    margin-top: 17px;
+                }
+                
+                td, th {
+                    padding: 2px 4px;
+                }
+
+                td {
+                    vertical-align: top;
+                }
+
+                th {
+                    text-align: center;
+                    vertical-align: middle;
+                }
+                
+                .header th {
+                    text-align: center;
+                    border: 1px solid #000;
+                }
+                
+                .header h1 {
+                    font-size: 18pt;
+                }
+                
+                .header tr th:last-child {
+                    border-right: hidden;
+                    height: 90px;
+                }
+                
+                .header tr:first-child th:first-child {
+                    width: 191px;
+                    border-left: hidden;
+                }
+                
+                .header span {
+                    display: inline-block;
+                    width: 20px;
+                }
+                
+                .client td {
+                    border-right: 1px dashed #000;
+                    width: 175px;
+                    padding-left: 45px;
+                }
+                
+                .igaser td {
+                    font-weight: bold;
+                    border-right: 1px dashed #000;
+                    width: 117px;
+                }
+                
+                .decompte-provisoire th {
+                    border: 1px solid #000;
+                    background-color: rgb(217, 217, 217);
+                    width: 50%;
+                    text-decoration: underline;
+                    height: 30px;
+                }
+                
+                .montant-marche td {
+                    vertical-align: top;
+                    border-left: 1px solid #000;
+                    border-right: 1px solid #000;
+                    width: 50%;
+                }
+                
+                .montant-marche td span {
+                    display: inline-block;
+                }
+                
+                .montant-marche td span:first-child {
+                    float: left;
+                }
+                
+                .montant-marche td span:nth-child(2) {
+                    float: right;
+                }
+                
+                .empty {
+                    height: 17px;
+                }
+                
+                .main-table td {
+                    vertical-align: top;
+                    border-left: 1px solid #000;
+                    border-right: 1px solid #000;
+                    line-height: 1.1;
+                }
+                
+                .main-table .title {
+                    font-weight: bold;
+                }
+                
+                .main-table tr:first-child td:first-child {
+                    border-top: hidden;
+                    border-left: hidden;
+                    border-bottom: 1px solid #000;
+                }
+                
+                .main-table tr:first-child td, .main-table .total td {
+                    line-height: normal;
+                }
+                
+                .main-table tr:not(:first-child) td:not(:first-child) {
+                    text-align: right;
+                    padding-right: 15px;
+                }
+                
+                .main-table td:first-child:not(.title) {
+                    padding-left: 45px;
+                }
+                
+                .main-table tr:first-child td {
+                    text-align: center;
+                    border-bottom: 1px solid #000;
+                }
+                
+                .main-table .total td {
+                    border: 1px solid #000;
+                }
+                
+                .main-table .final td {
+                    font-weight: bold;
+                }
+                
+                .main-table .final td:first-child {
+                    padding-left: 4px;
+                    font-weight: normal;
+                }
+                
+                .main-table .gap td {
+                    height: 17px;
+                    border-left: hidden;
+                    border-right: hidden;
+                }
+                
+                .main-table .letter td {
+                    border: 1px solid #000;
+                    padding-left: 4px !important;
+                    text-align: left !important;
+                    line-height: normal;
+                }
+                
+                .main-table .letter td:first-child {
+                    border-right: 1px dashed #000;
+                }
+                
+                .main-table .letter td:last-child {
+                    border-left: 1px dashed #000;
+                }
+                
+                .visas td {
+                    border: 1px solid #000;
+                    text-align: center;
+                    width: 50%;
+                }
+                
+                .visas .space td {
+                    height: 75px;
+                }
+                
+                .visas tr:last-child td {
+                    margin-bottom: 21px;
+                }
+                
+                .page_number {
+                    position: absolute;
+                    bottom: 2px;
+                    left: 16px;
+                }
+            </style>
+
+            <t t-set="len_lines" t-value="len(docs.line_ids)"/>
+            <t t-set="pages_needed" t-value="ceil((len(docs.line_ids) - 35) / 60) + 1"/>
+
+            <t t-set="start" t-value="0"/>
+            <t t-set="end" t-value="35"/>
+
+            <t t-set="next_start" t-value=""/>
+
+            <t t-set="add_page" t-value="2"/>
+
+            <t t-if="len_lines &lt; 13">
+                <div class="page">
+                    <table class="header">
+                        <tr>
+                            <th><img src="https://i.imgur.com/2hWfRhW.png"/></th>
+                            <th style="text-align: center;"><h1>DÉCOMPTE N° <span t-esc="docs.ref_inv_count"/></h1></th>
+                            <!-- <th></th> -->
+                            <!-- <th>Réf.<span></span>: PS.GP. F36</th> -->
+                        </tr>
+                        <!-- <tr>
+                            <th>Version: 01 -17/06/2021</th>
+                        </tr> -->
+                    </table>
+
+                    <div class="padded">
+                        <table class="client">
+                            <tr>
+                                <td>PROJET</td>
+                                <th><span t-esc="docs.site_id.name"/></th>
+                            </tr>
+                            <tr>
+                                <td>CLIENT</td>
+                                <th><span t-esc="docs.customer_id.name"/></th>
+                            </tr>
+                            <tr>
+                                <td>RÉFERENCE</td>
+                                <th><span t-esc="docs.site_id.reference"/></th>
+                            </tr>
+                        </table>
+
+                        <t t-set="igaser" t-value="request.env['res.company'].search([])[0]"></t>
+                        <table class="igaser">
+                            <tr>
+                                <td>Titulaire</td>
+                                <th><span t-esc="igaser.partner_id.name"/></th>
+                            </tr>
+                            <tr>
+                                <td>Adresse</td>
+                                <th><span t-esc="igaser.partner_id.street"/></th>
+                            </tr>
+                            <tr>
+                                <td>Ville</td>
+                                <th>Abidjan</th>
+                            </tr>
+                            <tr>
+                                <td>R.C.C.M</td>
+                                <th>CI-ABJ-03-2024-B12-01326</th>
+                            </tr>
+                            <tr>
+                                <td>C.N.S.S. N°</td>
+                                <th>2703892</th>
+                            </tr>
+                            <tr>
+                                <td>I.F</td>
+                                <th><span t-esc="igaser.vat"/></th>
+                            </tr>
+                            <tr>
+                                <td>Patente</td>
+                                <th>42104582</th>
+                            </tr>
+                            <tr>
+                                <td>Compte N°</td>
+                                <th></th>
+                            </tr>
+                        </table>
+
+                        <table class="decompte-provisoire">
+                            <tr>
+                                <th>DECOMPTE PROVISOIRE N° <span t-esc="docs.ref_inv_count"/></th>
+                                <th><span t-esc="docs.date"/></th>
+                            </tr>
+                        </table>
+
+                        <table class="montant-marche">
+                            <tr>
+                                <td rowspan="4">
+                                    <span>MONTANT DU MARCHE:</span>
+                                    <span t-esc="docs.site_id.expected_revenue" t-options='{"widget": "float", "precision": 2}'></span>
+                                </td>
+                                <td>
+                                    <span>RETENU DE GARANTIE:</span>
+                                    <span><span t-esc="docs.site_id.prc_gr" t-options='{"widget": "float", "precision": 2}'></span>%</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>CAUTION BANCAIRE:</span>
+                                    <span></span>
+                                </td>
+                            </tr>
+                            <tr class="empty">
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>R.G RESTANTE:</span>
+                                    <span></span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table class="main-table">
+                            <tr>
+                                <td></td>
+                                <td style="width: 16.66%;">CUMUL ACTUEL</td>
+                                <td style="width: 16.66%;">CUMUL PRECEDENT</td>
+                                <td style="width: 16.66%;">MENSUEL REALISE</td>
+                            </tr>
+
+                            <tr class="empty"><td></td><td></td><td></td><td></td></tr>
+
+                            <t t-set="cumulative_total_1" t-value="0"/>
+                            <t t-set="previous_total_1" t-value="0"/>
+                            <t t-set="current_total_1" t-value="0"/>
+
+                            <t t-foreach="docs.line_ids" t-as="line">
+                                <t t-if="line.display_type == 'line_section'">
+                                    <tr>
+                                        <td class="title"><span t-esc="line.name"/></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </t>
+                                <t t-else="">
+                                    <tr>
+                                        <td><span t-esc="line.name"/></td>
+                                        <td><span t-esc="line.cumulative_price_subtotal" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="line.previous_price_subtotal"   t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="line.current_price_subtotal"    t-options='{"widget": "float", "precision": 2}'/></td>
+                                    </tr>
+                                </t>
+                                <t t-set="cumulative_total_1" t-value="cumulative_total_1 + line.cumulative_price_subtotal"/>
+                                <t t-set="previous_total_1" t-value="previous_total_1 + line.previous_price_subtotal"/>
+                                <t t-set="current_total_1" t-value="current_total_1 + line.current_price_subtotal"/>
+                            </t>
+
+                            <tr class="empty"><td></td><td></td><td></td><td></td></tr>
+
+                            <tr class="total">
+                                <td>TOTAL T.T.C (1)</td>
+                                <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_total_1"/></td>
+                                <td><span t-options='{"widget": "float", "precision": 2}' t-esc="previous_total_1"/></td>
+                                <td><span t-options='{"widget": "float", "precision": 2}' t-esc="current_total_1"/></td>
+                            </tr>
+
+                            <tr class="empty"><td></td><td></td><td></td><td></td></tr>
+
+                            <t t-set="cumulative_total_2" t-value="0"/>
+                            <t t-set="previous_total_2" t-value="0"/>
+                            <t t-set="current_total_2" t-value="0"/>
+
+                            <tr>
+                                <td class="title">2. RETENUES</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Récupération avance</td>
+                                <t t-set="advance_cumulative" t-value="docs.site_id.prc_advance_deduction * cumulative_total_1 / 100"/>
+                                <t t-set="advance_previous"   t-value="docs.site_id.prc_advance_deduction * previous_total_1 / 100"/>
+                                <t t-set="advance_current"    t-value="docs.site_id.prc_advance_deduction * current_total_1 / 100"/>
+                                <td><span t-esc="advance_cumulative" t-options='{"widget": "float", "precision": 2}'/></td>
+                                <td><span t-esc="advance_previous"   t-options='{"widget": "float", "precision": 2}'/></td>
+                                <td><span t-esc="advance_current"    t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                            <tr>
+                                <td>Retenue de garantie</td>
+                                <t t-set="gr_cumulative" t-value="docs.site_id.prc_gr * cumulative_total_1 / 100"/>
+                                <t t-set="gr_previous"   t-value="docs.site_id.prc_gr * previous_total_1 / 100"/>
+                                <t t-set="gr_current"    t-value="docs.site_id.prc_gr * current_total_1 / 100"/>
+                                <td><span t-esc="gr_cumulative" t-options='{"widget": "float", "precision": 2}'/></td>
+                                <td><span t-esc="gr_previous"   t-options='{"widget": "float", "precision": 2}'/></td>
+                                <td><span t-esc="gr_current"    t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                            <tr>
+                                <td>Pénalités de retard</td>
+                                <td t-options='{"widget": "float", "precision": 2}'>0</td>
+                                <td t-options='{"widget": "float", "precision": 2}'>0</td>
+                                <td t-options='{"widget": "float", "precision": 2}'>0</td>
+                            </tr>
+                            <tr>
+                                <td>Retenue compte prorata</td>
+                                <t t-set="prorata_cumulative" t-value="docs.site_id.prc_prorata_account * cumulative_total_1 / 100"/>
+                                <t t-set="prorata_previous"   t-value="docs.site_id.prc_prorata_account * previous_total_1 / 100"/>
+                                <t t-set="prorata_current"    t-value="docs.site_id.prc_prorata_account * current_total_1 / 100"/>
+                                <td><span t-esc="prorata_cumulative" t-options='{"widget": "float", "precision": 2}'/></td>
+                                <td><span t-esc="prorata_previous"   t-options='{"widget": "float", "precision": 2}'/></td>
+                                <td><span t-esc="prorata_current"    t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                            
+                            <t t-set="cumulative_total_2" t-value="cumulative_total_2 + advance_cumulative + gr_cumulative + 0 + prorata_cumulative"/>
+                            <t t-set="previous_total_2" t-value="previous_total_2 + advance_previous + gr_previous + 0 + prorata_previous"/>
+                            <t t-set="current_total_2" t-value="current_total_2 + advance_current + gr_current + 0 + prorata_current"/>
+
+                            <tr class="empty"><td></td><td></td><td></td><td></td></tr>
+
+                            <tr class="total">
+                                <td>TOTAL T.T.C (2)</td>
+                                <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_total_2"/></td>
+                                <td><span t-options='{"widget": "float", "precision": 2}' t-esc="previous_total_2"/></td>
+                                <td><span t-options='{"widget": "float", "precision": 2}' t-esc="current_total_2"/></td>
+                            </tr>
+
+                            <tr class="gap"><td></td><td></td><td></td><td></td></tr>
+
+                            <t t-set="cumulative_amount_total_ttc" t-value="cumulative_total_1 - cumulative_total_2"/>
+                            <t t-set="amount_previous_total_ttc" t-value="previous_total_1 - previous_total_2"/>
+                            <t t-set="amount_current_total_ttc" t-value="current_total_1 - current_total_2"/>
+                            <tr class="final total">
+                                <td style="font-weight: bold;" class="title">RESTE DU A L'ENTREPRISE T.T.C [ (1) - (2) ]</td>
+                                <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_amount_total_ttc"/></td>
+                                <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_previous_total_ttc"/></td>
+                                <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_current_total_ttc"/></td>
+                            </tr>
+
+                            <tr class="gap"><td></td><td></td><td></td><td></td></tr>
+
+                            <tr class="final total">
+                                <td>DONT H.T. = T.T.C./1.2 =</td>
+                                <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_amount_total_ttc / 1.2"/></td>
+                                <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_previous_total_ttc / 1.2"/></td>
+                                <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_current_total_ttc / 1.2"/></td>
+                            </tr>
+                            <tr class="final total">
+                                <td>T.V.A. =H.T. x 0,2 =</td>
+                                <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_amount_total_ttc / 1.2 * 0.2"/></td>
+                                <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_previous_total_ttc / 1.2 * 0.2"/></td>
+                                <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_current_total_ttc / 1.2 * 0.2"/></td>
+                            </tr>
+
+                            <tr class="gap"><td></td><td></td><td></td><td></td></tr>
+
+                            <tr class="letter">
+                                <td>Arrété le présent décompte à la somme de:</td>
+                                <td colspan="3"><span t-esc="(docs.amount_in_word(amount_current_total_ttc)).capitalize()"/></td>
+                            </tr>
+                        </table>
+
+                        <table class="visas">
+                            <tr>
+                                <th colspan="2">VISAS</th>
+                            </tr>
+                            <tr>
+                                <td>ENTREPRISE</td>
+                                <td>BET</td>
+                            </tr>
+                            <tr class="space">
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">MAITRE D'OUVRAGE</td>
+                            </tr>
+                            <tr class="space">
+                                <td colspan="2"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </t>
+
+            <t t-else="">
+                <!-- FIRST PAGE -->
+                <div class="page">
+                    <table class="header">
+                        <tr>
+                            <th><img src="https://i.imgur.com/2hWfRhW.png"/></th>
+                            <th style="text-align: center;"><h1>DÉCOMPTE N° <span t-esc="docs.ref_inv_count"/></h1></th>
+                            <!-- <th></th> -->
+                        </tr>
+                    </table>
+
+                    <div class="padded">
+                        <table class="client">
+                            <tr>
+                                <td>PROJET</td>
+                                <th><span t-esc="docs.site_id.name"/></th>
+                            </tr>
+                            <tr>
+                                <td>CLIENT</td>
+                                <th><span t-esc="docs.customer_id.name"/></th>
+                            </tr>
+                            <tr>
+                                <td>RÉFERENCE</td>
+                                <th><span t-esc="docs.site_id.reference"/></th>
+                            </tr>
+                        </table>
+
+                        <t t-set="igaser" t-value="request.env['res.company'].search([])[0]"></t>
+                        <table class="igaser">
+                            <tr>
+                                <td>Titulaire</td>
+                                <th><span t-esc="igaser.partner_id.name"/></th>
+                            </tr>
+                            <tr>
+                                <td>Adresse</td>
+                                <th><span t-esc="igaser.partner_id.street"/></th>
+                            </tr>
+                            <tr>
+                                <td>Ville</td>
+                                <th>EL JADIDA</th>
+                            </tr>
+                            <tr>
+                                <td>R.C. N°</td>
+                                <th>El jadida sous le n°3013</th>
+                            </tr>
+                            <tr>
+                                <td>C.N.S.S. N°</td>
+                                <th>2703892</th>
+                            </tr>
+                            <tr>
+                                <td>I.F</td>
+                                <th><span t-esc="igaser.vat"/></th>
+                            </tr>
+                            <tr>
+                                <td>Patente</td>
+                                <th>42104582</th>
+                            </tr>
+                            <tr>
+                                <td>Compte N°</td>
+                                <th></th>
+                            </tr>
+                        </table>
+
+                        <table class="decompte-provisoire">
+                            <tr>
+                                <th>DECOMPTE PROVISOIRE N° <span t-esc="docs.ref_inv_count"/></th>
+                                <th><span t-esc="docs.date"/></th>
+                            </tr>
+                        </table>
+
+                        <table class="montant-marche">
+                            <tr>
+                                <td rowspan="4">
+                                    <span>MONTANT DU MARCHE:</span>
+                                    <span t-esc="docs.site_id.expected_revenue" t-options='{"widget": "float", "precision": 2}'></span>
+                                </td>
+                                <td>
+                                    <span>RETENU DE GARANTIE:</span>
+                                    <span><span t-esc="docs.site_id.prc_gr" t-options='{"widget": "float", "precision": 2}'></span>%</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>CAUTION BANCAIRE:</span>
+                                    <span></span>
+                                </td>
+                            </tr>
+                            <tr class="empty">
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>R.G RESTANTE:</span>
+                                    <span></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- <p class="page_number">Page 1<t t-esc="page_number"/></p> -->
+                </div>
+
+                <t t-set="cumulative_total_1" t-value="0"/>
+                <t t-set="previous_total_1" t-value="0"/>
+                <td t-set="current_total_1" t-value="0"/>
+
+                <t t-set="cumulative_total_2" t-value="0"/>
+                <t t-set="previous_total_2" t-value="0"/>
+                <t t-set="current_total_2" t-value="0"/>
+
+                <t t-foreach="pages_needed" t-as="p">
+                    <div class="page">
+                        <div class="padded">
+                            <table class="main-table">
+                                <tr>
+                                    <td></td>
+                                    <td style="width: 16.66%;">CUMUL ACTUEL</td>
+                                    <td style="width: 16.66%;">CUMUL PRECEDENT</td>
+                                    <td style="width: 16.66%;">MENSUEL REALISE</td>
+                                </tr>
+        
+                                <tr class="empty"><td></td><td></td><td></td><td></td></tr>
+        
+                                <t t-if="next_start">
+                                    <tr>
+                                        <td class="title"><span t-esc="next_start.name"/></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </t>
+
+                                <t t-foreach="docs.line_ids[start:end]" t-as="line">
+                                    <t t-if="line.display_type == 'line_section' and line == docs.line_ids[start:end][-1]"></t>
+                                    <t t-elif="line.display_type == 'line_section'">
+                                        <tr>
+                                            <td class="title"><span t-esc="line.name"/></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </t>
+                                    <t t-else="">
+                                        <tr>
+                                            <td><span t-esc="line.name"/></td>
+                                            <td><span t-esc="line.cumulative_price_subtotal" t-options='{"widget": "float", "precision": 2}'/></td>
+                                            <td><span t-esc="line.previous_price_subtotal"   t-options='{"widget": "float", "precision": 2}'/></td>
+                                            <td><span t-esc="line.current_price_subtotal"    t-options='{"widget": "float", "precision": 2}'/></td>
+                                        </tr>
+                                    </t>
+                                    <t t-set="cumulative_total_1" t-value="cumulative_total_1 + line.cumulative_price_subtotal"/>
+                                    <t t-set="previous_total_1" t-value="previous_total_1 + line.previous_price_subtotal"/>
+                                    <t t-set="current_total_1" t-value="current_total_1 + line.current_price_subtotal"/>
+                                </t>
+
+                                <t t-set="found" t-value="0"/>
+                                <t t-if="docs.line_ids[start:end + 1][-1].display_type != 'line_section'">
+                                    <t t-foreach="docs.line_ids[:end]" t-as="line">
+                                        <t t-if="line.display_type == 'line_section'">
+                                            <t t-set="next_start" t-value="line"/>
+                                        </t>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <t t-set="next_start" t-value=""/>
+                                </t>
+
+                                <tr class="empty"><td></td><td></td><td></td><td></td></tr>
+
+                                <!-- IF true add_page = 0 -->
+                                <t t-if="p + 1 == pages_needed and len_lines - start &lt; 26">
+                                    <tr class="total">
+                                        <td>TOTAL T.T.C (1)</td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_total_1"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="previous_total_1"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="current_total_1"/></td>
+                                    </tr>
+            
+                                    <tr class="empty"><td></td><td></td><td></td><td></td></tr>
+            
+                                    <tr>
+                                        <td class="title">2. RETENUES</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Récupération avance</td>
+                                        <t t-set="advance_cumulative" t-value="docs.site_id.prc_advance_deduction * cumulative_total_1 / 100"/>
+                                        <t t-set="advance_previous"   t-value="docs.site_id.prc_advance_deduction * previous_total_1 / 100"/>
+                                        <t t-set="advance_current"    t-value="docs.site_id.prc_advance_deduction * current_total_1 / 100"/>
+                                        <td><span t-esc="advance_cumulative" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="advance_previous"   t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="advance_current"    t-options='{"widget": "float", "precision": 2}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Retenue de garantie</td>
+                                        <t t-set="gr_cumulative" t-value="docs.site_id.prc_gr * cumulative_total_1 / 100"/>
+                                        <t t-set="gr_previous"   t-value="docs.site_id.prc_gr * previous_total_1 / 100"/>
+                                        <t t-set="gr_current"    t-value="docs.site_id.prc_gr * current_total_1 / 100"/>
+                                        <td><span t-esc="gr_cumulative" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="gr_previous"   t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="gr_current"    t-options='{"widget": "float", "precision": 2}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pénalités de retard</td>
+                                        <td t-options='{"widget": "float", "precision": 2}'>0</td>
+                                        <td t-options='{"widget": "float", "precision": 2}'>0</td>
+                                        <td t-options='{"widget": "float", "precision": 2}'>0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Retenue compte prorata</td>
+                                        <t t-set="prorata_cumulative" t-value="docs.site_id.prc_prorata_account * cumulative_total_1 / 100"/>
+                                        <t t-set="prorata_previous"   t-value="docs.site_id.prc_prorata_account * previous_total_1 / 100"/>
+                                        <t t-set="prorata_current"    t-value="docs.site_id.prc_prorata_account * current_total_1 / 100"/>
+                                        <td><span t-esc="prorata_cumulative" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="prorata_previous"   t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="prorata_current"    t-options='{"widget": "float", "precision": 2}'/></td>
+                                    </tr>
+                                    
+                                    <t t-set="cumulative_total_2" t-value="cumulative_total_2 + advance_cumulative + gr_cumulative + 0 + prorata_cumulative"/>
+                                    <t t-set="previous_total_2" t-value="previous_total_2 + advance_previous + gr_previous + 0 + prorata_previous"/>
+                                    <t t-set="current_total_2" t-value="current_total_2 + advance_current + gr_current + 0 + prorata_current"/>
+            
+                                    <tr class="empty"><td></td><td></td><td></td><td></td></tr>
+            
+                                    <tr class="total">
+                                        <td>TOTAL T.T.C (2)</td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_total_2"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="previous_total_2"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="current_total_2"/></td>
+                                    </tr>
+
+                                    <tr class="gap"><td></td><td></td><td></td><td></td></tr>
+
+                                    <t t-set="cumulative_amount_total_ttc" t-value="cumulative_total_1 - cumulative_total_2"/>
+                                    <t t-set="amount_previous_total_ttc" t-value="previous_total_1 - previous_total_2"/>
+                                    <t t-set="amount_current_total_ttc" t-value="current_total_1 - current_total_2"/>
+                                    <tr class="final total">
+                                        <td style="font-weight: bold;" class="title">RESTE DU A L'ENTREPRISE T.T.C [ (1) - (2) ]</td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_amount_total_ttc"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_previous_total_ttc"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_current_total_ttc"/></td>
+                                    </tr>
+            
+                                    <tr class="gap"><td></td><td></td><td></td><td></td></tr>
+            
+                                    <tr class="final total">
+                                        <td>DONT H.T. = T.T.C./1.2 =</td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_amount_total_ttc / 1.2"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_previous_total_ttc / 1.2"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_current_total_ttc / 1.2"/></td>
+                                    </tr>
+                                    <tr class="final total">
+                                        <td>T.V.A. =H.T. x 0,2 =</td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_amount_total_ttc / 1.2 * 0.2"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_previous_total_ttc / 1.2 * 0.2"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_current_total_ttc / 1.2 * 0.2"/></td>
+                                    </tr>
+            
+                                    <tr class="gap"><td></td><td></td><td></td><td></td></tr>
+            
+                                    <tr class="letter">
+                                        <td>Arrété le présent décompte à la somme de:</td>
+                                        <td colspan="3"><span t-esc="(docs.amount_in_word(amount_current_total_ttc)).capitalize()"/></td>
+                                    </tr>
+
+                                    <t t-set="add_page" t-value="0"/>
+                                </t>
+
+                                <!-- IF true add_page = 1 -->
+                                <t t-elif="p + 1 == pages_needed and len_lines - start &lt; 51">
+                                    <tr class="total">
+                                        <td>TOTAL T.T.C (1)</td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_total_1"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="previous_total_1"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="current_total_1"/></td>
+                                    </tr>
+
+                                    <tr class="empty"><td></td><td></td><td></td><td></td></tr>
+
+                                    <tr>
+                                        <td class="title">2. RETENUES</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Récupération avance</td>
+                                        <t t-set="advance_cumulative" t-value="docs.site_id.prc_advance_deduction * cumulative_total_1 / 100"/>
+                                        <t t-set="advance_previous"   t-value="docs.site_id.prc_advance_deduction * previous_total_1 / 100"/>
+                                        <t t-set="advance_current"    t-value="docs.site_id.prc_advance_deduction * current_total_1 / 100"/>
+                                        <td><span t-esc="advance_cumulative" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="advance_previous"   t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="advance_current"    t-options='{"widget": "float", "precision": 2}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Retenue de garantie</td>
+                                        <t t-set="gr_cumulative" t-value="docs.site_id.prc_gr * cumulative_total_1 / 100"/>
+                                        <t t-set="gr_previous"   t-value="docs.site_id.prc_gr * previous_total_1 / 100"/>
+                                        <t t-set="gr_current"    t-value="docs.site_id.prc_gr * current_total_1 / 100"/>
+                                        <td><span t-esc="gr_cumulative" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="gr_previous"   t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="gr_current"    t-options='{"widget": "float", "precision": 2}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pénalités de retard</td>
+                                        <td t-options='{"widget": "float", "precision": 2}'>0</td>
+                                        <td t-options='{"widget": "float", "precision": 2}'>0</td>
+                                        <td t-options='{"widget": "float", "precision": 2}'>0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Retenue compte prorata</td>
+                                        <t t-set="prorata_cumulative" t-value="docs.site_id.prc_prorata_account * cumulative_total_1 / 100"/>
+                                        <t t-set="prorata_previous"   t-value="docs.site_id.prc_prorata_account * previous_total_1 / 100"/>
+                                        <t t-set="prorata_current"    t-value="docs.site_id.prc_prorata_account * current_total_1 / 100"/>
+                                        <td><span t-esc="prorata_cumulative" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="prorata_previous"   t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="prorata_current"    t-options='{"widget": "float", "precision": 2}'/></td>
+                                    </tr>
+                                    
+                                    <t t-set="cumulative_total_2" t-value="cumulative_total_2 + advance_cumulative + gr_cumulative + 0 + prorata_cumulative"/>
+                                    <t t-set="previous_total_2" t-value="previous_total_2 + advance_previous + gr_previous + 0 + prorata_previous"/>
+                                    <t t-set="current_total_2" t-value="current_total_2 + advance_current + gr_current + 0 + prorata_current"/>
+
+                                    <tr class="empty"><td></td><td></td><td></td><td></td></tr>
+
+                                    <tr class="total">
+                                        <td>TOTAL T.T.C (2)</td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_total_2"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="previous_total_2"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="current_total_2"/></td>
+                                    </tr>
+
+                                    <t t-set="add_page" t-value="1"/>
+                                </t>
+                            </table>
+                            <t t-if="add_page == 0">
+                                <table class="visas">
+                                    <tr>
+                                        <th colspan="2">VISAS</th>
+                                    </tr>
+                                    <tr>
+                                        <td>ENTREPRISE</td>
+                                        <td>BET</td>
+                                    </tr>
+                                    <tr class="space">
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">MAITRE D'OUVRAGE</td>
+                                    </tr>
+                                    <tr class="space">
+                                        <td colspan="2"></td>
+                                    </tr>
+                                </table>
+                            </t>
+                        </div>
+                        <p class="page_number">Page <t t-esc="p + 1"/></p>
+                        <t t-if="add_page != 0">
+                            <p style="page-break-before: always;"/>
+                        </t>
+                    </div>
+
+                    <t t-if="table == 0">
+                        <t t-set="start" t-value="35"/>
+                    </t>
+                    <t t-else="">
+                        <t t-set="start" t-value="end"/>
+                    </t>
+                    <t t-set="end" t-value="end + 60"/>
+                </t>
+
+                <!-- LAST PAGE -->
+                <t t-if="add_page != 0">
+                    <div class="page">  
+                        <div class="padded">
+                            <table class="main-table">
+                                <tr>
+                                    <td></td>
+                                    <td style="width: 16.66%;">CUMUL ACTUEL</td>
+                                    <td style="width: 16.66%;">CUMUL PRECEDENT</td>
+                                    <td style="width: 16.66%;">MENSUEL REALISE</td>
+                                </tr>
+    
+                                <t t-if="add_page != 1">
+                                    <tr class="total">
+                                        <td>TOTAL T.T.C (1)</td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_total_1"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="previous_total_1"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="current_total_1"/></td>
+                                    </tr>
+            
+                                    <tr class="empty"><td></td><td></td><td></td><td></td></tr>
+            
+                                    <tr>
+                                        <td class="title">2. RETENUES</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Récupération avance</td>
+                                        <t t-set="advance_cumulative" t-value="docs.site_id.prc_advance_deduction * cumulative_total_1 / 100"/>
+                                        <t t-set="advance_previous"   t-value="docs.site_id.prc_advance_deduction * previous_total_1 / 100"/>
+                                        <t t-set="advance_current"    t-value="docs.site_id.prc_advance_deduction * current_total_1 / 100"/>
+                                        <td><span t-esc="advance_cumulative" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="advance_previous"   t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="advance_current"    t-options='{"widget": "float", "precision": 2}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Retenue de garantie</td>
+                                        <t t-set="gr_cumulative" t-value="docs.site_id.prc_gr * cumulative_total_1 / 100"/>
+                                        <t t-set="gr_previous"   t-value="docs.site_id.prc_gr * previous_total_1 / 100"/>
+                                        <t t-set="gr_current"    t-value="docs.site_id.prc_gr * current_total_1 / 100"/>
+                                        <td><span t-esc="gr_cumulative" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="gr_previous"   t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="gr_current"    t-options='{"widget": "float", "precision": 2}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pénalités de retard</td>
+                                        <td t-options='{"widget": "float", "precision": 2}'>0</td>
+                                        <td t-options='{"widget": "float", "precision": 2}'>0</td>
+                                        <td t-options='{"widget": "float", "precision": 2}'>0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Retenue compte prorata</td>
+                                        <t t-set="prorata_cumulative" t-value="docs.site_id.prc_prorata_account * cumulative_total_1 / 100"/>
+                                        <t t-set="prorata_previous"   t-value="docs.site_id.prc_prorata_account * previous_total_1 / 100"/>
+                                        <t t-set="prorata_current"    t-value="docs.site_id.prc_prorata_account * current_total_1 / 100"/>
+                                        <td><span t-esc="prorata_cumulative" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="prorata_previous"   t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td><span t-esc="prorata_current"    t-options='{"widget": "float", "precision": 2}'/></td>
+                                    </tr>
+                                    
+                                    <t t-set="cumulative_total_2" t-value="cumulative_total_2 + advance_cumulative + gr_cumulative + 0 + prorata_cumulative"/>
+                                    <t t-set="previous_total_2" t-value="previous_total_2 + advance_previous + gr_previous + 0 + prorata_previous"/>
+                                    <t t-set="current_total_2" t-value="current_total_2 + advance_current + gr_current + 0 + prorata_current"/>
+            
+                                    <tr class="empty"><td></td><td></td><td></td><td></td></tr>
+
+                                    <tr class="total">
+                                        <td>TOTAL T.T.C (2)</td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_total_2"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="previous_total_2"/></td>
+                                        <td><span t-options='{"widget": "float", "precision": 2}' t-esc="current_total_2"/></td>
+                                    </tr>
+
+                                    <tr class="gap"><td></td><td></td><td></td><td></td></tr>
+                                </t>
+    
+                                <t t-set="cumulative_amount_total_ttc" t-value="cumulative_total_1 - cumulative_total_2"/>
+                                <t t-set="amount_previous_total_ttc" t-value="previous_total_1 - previous_total_2"/>
+                                <t t-set="amount_current_total_ttc" t-value="current_total_1 - current_total_2"/>
+                                <tr class="final total">
+                                    <td style="font-weight: bold;" class="title">RESTE DU A L'ENTREPRISE T.T.C [ (1) - (2) ]</td>
+                                    <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_amount_total_ttc"/></td>
+                                    <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_previous_total_ttc"/></td>
+                                    <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_current_total_ttc"/></td>
+                                </tr>
+        
+                                <tr class="gap"><td></td><td></td><td></td><td></td></tr>
+        
+                                <tr class="final total">
+                                    <td>DONT H.T. = T.T.C./1.2 =</td>
+                                    <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_amount_total_ttc / 1.2"/></td>
+                                    <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_previous_total_ttc / 1.2"/></td>
+                                    <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_current_total_ttc / 1.2"/></td>
+                                </tr>
+                                <tr class="final total">
+                                    <td>T.V.A. =H.T. x 0,2 =</td>
+                                    <td><span t-options='{"widget": "float", "precision": 2}' t-esc="cumulative_amount_total_ttc / 1.2 * 0.2"/></td>
+                                    <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_previous_total_ttc / 1.2 * 0.2"/></td>
+                                    <td><span t-options='{"widget": "float", "precision": 2}' t-esc="amount_current_total_ttc / 1.2 * 0.2"/></td>
+                                </tr>
+        
+                                <tr class="gap"><td></td><td></td><td></td><td></td></tr>
+        
+                                <tr class="letter">
+                                    <td>Arrété le présent décompte à la somme de:</td>
+                                    <td colspan="3"><span t-esc="(docs.amount_in_word(amount_current_total_ttc)).capitalize()"/></td>
+                                </tr>
+                            </table>
+    
+                            <table class="visas">
+                                <tr>
+                                    <th colspan="2">VISAS</th>
+                                </tr>
+                                <tr>
+                                    <td>ENTREPRISE</td>
+                                    <td>BET</td>
+                                </tr>
+                                <tr class="space">
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">MAITRE D'OUVRAGE</td>
+                                </tr>
+                                <tr class="space">
+                                    <td colspan="2"></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <p class="page_number">Page <t t-esc="pages_needed + 1"/></p>
+                    </div>
+                </t>
+            </t>
+
+        </t>
+    </template>
+</odoo>

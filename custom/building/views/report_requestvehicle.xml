@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="report_requestvehicle">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <style>
+                            * {
+                                margin: 10px;
+                            }
+
+                            table,
+                            th,
+                            td {
+                                border: 1px solid black;
+                                border-collapse: collapse;
+                            }
+
+                            table.center {
+                                margin-left: auto;
+                                margin-right: auto;
+                            }
+
+                            .fP,
+                            .sP {
+                                display: inline;
+                            }
+
+                            .mytable td {
+                                text-align: center;
+                            }
+
+                            .mytable th {
+                                padding: 8px;
+                                text-align: center;
+                            }
+
+                            table th {
+                                padding: 8px;
+                                text-align: center;
+                            }
+                        </style>
+                        <div class="oe_structure" />
+                        <table class="center" style="width: 100%; font-size:80%">
+                            <tr>
+                                <th rowspan="2" style="font-size: 20px; padding: 10px;">Demande de Matériel</th>
+                                <td style="padding: 10px;">Ref:</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;">Version: </td>
+                            </tr>
+                        </table>
+                        <br/>
+                        <p class="fP">Affaire:<span t-field="o.site_id.name"/></p>
+                        <p class="sP" style="float: right;">Date: <span t-field="o.request_date"/></p> <br/><br/><br/><br/>
+                        <table class="center mytable" style="width: 100%; font-size:80%">
+                            <thead>
+                                <tr>
+                                    <th colspan="5">Description de la demande Matériel</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td width="15%" style="font-weight: bold;padding: 10px;">Code</td>
+                                    <td width="25%" style="font-weight: bold;">Gamme</td>
+                                    <td width="20%" style="font-weight: bold;">Quantité</td>
+                                    <td width="20%" style="font-weight: bold;">Date de livraison</td>
+                                    <td width="20%" style="font-weight: bold;">Durée Demandé</td>
+                                </tr>
+                                <t t-foreach="o.line_ids" t-as="line">
+                                    <tr>
+                                        <td></td>
+                                        <td><span t-field="line.categ_vec_id.name"/></td>
+                                        <td><span t-field="line.qty"/></td>
+                                        <td><span t-field="line.shipping_date"/></td>
+                                        <td><span t-field="line.duration"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <table class="center" style="width: 100%; font-size:80%">
+                            <tr>
+                                <th>Justification de la Demande</th>
+                            </tr>
+                            <tr>
+                                <td style="padding-left:5px;">
+                                    <div style="height: 100px; overflow:hidden;">
+
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <br/>
+                        <table class="center" style="width: 100%; font-size:80%">
+                            <tr>
+                                <th>Observations et Remarques</th>
+                            </tr>
+                            <tr>
+                                <td style="padding-left:5px;">
+                                    <div style="height: 100px; overflow:hidden;">
+
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <br/>
+                        <table class="center" style="width: 80%; font-size:80%">
+                            <tr>
+                                <th width="33%">Demandeur</th>
+                                <th width="33%">Supérieure Hiérarchique</th>
+                                <th width="34%">Responsable Maintenance &amp; Logistique</th>
+                            </tr>
+                            <tr>
+                                <td style="padding-left:5px;">
+                                    <div style="height: 90px; overflow:hidden;">
+                                        <p style="padding-left: 5px;font-weight: bold;">Nom :</p>
+                                        <p style="padding-left: 5px;font-weight: bold;">Signature :</p>
+                                    </div>
+                                </td>
+                                <td style="padding-left:5px;">
+                                    <div style="height: 90px; overflow:hidden;">
+                                        <p style="padding-left: 5px;font-weight: bold;">Nom :</p>
+                                        <p style="padding-left: 5px;font-weight: bold;">Signature :</p>
+                                    </div>
+                                </td>
+                                <td style="padding-left:5px;">
+                                    <div style="height: 90px; overflow:hidden;">
+                                        <p style="padding-left: 5px;font-weight: bold;">Nom :</p>
+                                        <p style="padding-left: 5px;font-weight: bold;">Signature :</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

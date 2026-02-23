@@ -1,0 +1,60 @@
+<odoo>
+    <record id="purchase_request_line_view_tree_purchase_verification" model="ir.ui.view">
+        <field name="name">PRL View List Purchase Verification</field>
+        <field name="model">purchase.request.line</field>
+        <field name="inherit_id" ref="purchase_igaser.purchase_request_line_view_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button string="Vérification d'achat" name="%(purchase_verification_action_wizard)d" 
+                            type="action" class="btn-primary" 
+                            groups="purchase_request.group_purchase_request_manager,purchase_request.group_purchase_request_user"/>
+                    
+                    <button string="Transfert" name="button_transfer_wizard" 
+                            type="object" class="btn-primary" 
+                            groups="building_plus.sotaserv_magasinier"/>
+                    
+                    <button string="Remettre à Approuvée" name="button_reset_to_approved" 
+                            type="object" class="btn-secondary" 
+                            groups="building_plus.sotaserv_magasinier"/>
+                    
+                    <button string="Retour" name="open_cancel_reason_wizard" 
+                            context="{'method': 'cancel_prl_line'}" type="object" 
+                            confirm="Voulez-vous vraiment continuer cette action?" 
+                            class="btn-danger" 
+                            groups="building_plus.sotaserv_dg,account_plus.acount_move_group_achat"/>
+                </header>
+            </xpath>
+            <xpath expr="//list/field[@name='write_uid']" position="after">
+                <field name="purchase_order_code" optional="hide" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_request_line_view_tree_readonly" model="ir.ui.view">
+        <field name="name">purchase.request.line.view.list.readonly</field>
+        <field name="model">purchase.request.line</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="purchase_igaser.purchase_request_line_view_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="replace"/>
+        </field>
+    </record>
+
+    <record id="reason_form_view" model="ir.ui.view">
+        <field name="name">reason.form.view</field>
+        <field name="model">purchase.request.line</field>
+        <field name="arch" type="xml">
+            <form string="Raison">
+                <sheet>
+                    <group>
+                        <field name="reason" readonly="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="OK" class="btn-primary" special="cancel" data-hotkey="q"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

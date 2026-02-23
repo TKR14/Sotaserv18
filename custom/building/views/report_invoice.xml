@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_invoice">
+            <t t-name="building.report_invoice">
+                <t t-call="report.html_container">
+                    <t t-foreach="docs" t-as="o">
+                        <t t-call="report.external_layout">
+
+                            <div class="page">
+
+                                <div class="row">
+                                    <div class="col-xs-5 col-xs-offset-7">
+                                        <address  style="font-family: URW Palladio L;"  t-field="o.partner_id" t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}"/>
+                                    </div>
+                                </div>
+
+                                <br/><br/>
+
+                                <div align="center">
+                                    <h4 style="font-family: URW Palladio L;"><strong>Facture N° : <span t-att-style="style" t-esc="o.number"/></strong></h4>
+                                    <h5 style="font-family: URW Palladio L;"><strong>Date de Facture : <span t-att-style="style" t-field="o.date_invoice"/></strong></h5>
+                                    <h6 style="font-family: URW Palladio L;"><strong>ATTACHEMENT DES TRAVAUX REALISES N° : <span t-att-style="style" t-esc="o.attachment_id.number"/></strong></h6>
+                                    <h7 style="font-family: URW Palladio L;"><strong>DU : <u><span t-field="o.attachment_id.start_date"/></u> AU <u><span t-field="o.attachment_id.end_date"/></u></strong></h7>
+                                </div>
+
+                                <br/><br/>
+
+                              <div class="col-xs-10 pull-left">
+                                     <div style="font-family: URW Palladio L;font-size: 12;">
+                                         APPEL D'OFFRE N°: <span t-if="o.attachment_id.type == 'sale'" t-field="o.order_id.ref_tendering"/><span t-if="o.attachment_id.type == 'purchase'" t-field="o.subcontracting_id.origin_id.ref_tendering"/>
+                                     </div>
+                                     <div style="font-family: URW Palladio L;font-size: 12;">
+                                         MARCHE N° :<span t-if="o.attachment_id.type == 'sale'" t-field="o.order_id.ref_project"/><span t-if="o.attachment_id.type == 'purchase'" t-field="o.subcontracting_id.origin_id.ref_project"/>
+                                     </div>
+                                     <div style="font-family: URW Palladio L;font-size: 12;">
+                                         OBJET : <span t-field="o.attachment_id.name"/>
+                                     </div>
+                                </div>
+
+                                <br/><br/><br/><br/><br/>
+
+                                <table class="table table-bordered" t-if="o.invoice_line">
+                                     <thead style="display: table-header-group;">
+                                        <tr style="page-break-inside: avoid;">
+                                            <th rowspan="2" class="text-center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 15px;"><strong>N°</strong></th>
+                                            <th rowspan="2" class="text-center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 15px;"><strong>Désignation des travaux</strong></th>
+                                            <th rowspan="2" class="text-center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 15px;"><strong>Unité</strong></th>
+                                            <th colspan="3" class="text-center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 15px;"><strong>Quantité</strong></th>
+                                            <th rowspan="2" class="text-center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 15px;"><strong>PU. HT</strong></th>
+                                            <th rowspan="2" class="text-center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 15px;"><strong>Total HT</strong></th>
+                                        </tr>
+                                         <tr style="page-break-inside: avoid;">
+                                            <th class="text-center"  style="font-family: URW Palladio L;font-size: 14px;"><strong>Quantité <br/>exécutée<br/> précédemment</strong></th>
+                                            <th class="text-center"  style="font-family: URW Palladio L;font-size: 14px;"><strong>Quantité <br/>exécutée<br/> du mois</strong></th>
+                                            <th class="text-center"  style="font-family: URW Palladio L;font-size: 14px;"><strong>Quantité <br/>total<br/> exécutée</strong></th>
+                                        </tr>
+
+                                     </thead>
+                                     <tbody>
+                                        <tr style="page-break-inside: avoid;" t-foreach="o.invoice_line" t-as="line">
+                                            <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"><strong><span t-field="line.attachment_line_id.chapter"/></strong></td>
+                                            <td style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;text-justify : inter-word;"><span t-field="line.name"/></td>
+                                            <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"><span t-field="line.uos_id.name"/></td>
+                                            <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"><strong><span t-field="line.quantity_counts_previous"/></strong></td>
+                                            <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"><strong><span t-field="line.current_count_quantity"/></strong></td>
+                                            <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"><strong><span t-field="line.cumulative_quantity"/></strong></td>
+                                            <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"><strong><span t-field="line.current_price_unit"/></strong></td>
+                                            <td align="center" style="vertical-align:middle;font-family: URW Palladio L;font-size: 13;"><strong><span t-field="line.current_price_subtotal"/></strong></td>
+                                        </tr>
+                                     </tbody>
+                                </table>
+                                <div class="row">
+                                    <div class="col-xs-4 pull-right">
+
+                                          <table class="table table-condensed">
+
+                                              <tr class="border-black">
+                                                <td><strong>Montant Hors Taxes</strong></td>
+                                                <td class="text-right">
+                                                    <span t-field="o.amount_current_untaxed" t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                                                </td>
+                                              </tr>
+                                              <tr class="border-black">
+                                                <td>Montant de la TVA</td>
+                                                <td class="text-right">
+                                                    <span t-field="o.amount_tax" t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                                                </td>
+                                              </tr>
+                                              <tr class="border-black">
+                                                <td><strong>Montant global TVA comprise</strong></td>
+                                                <td class="text-right">
+                                                     <span t-field="o.amount_current" t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                                                </td>
+                                              </tr>
+                                              <tr class="border-black">
+                                                <td><strong>Retenu de garantie <span t-field="o.guaranty_number"/></strong></td>
+                                                <td class="text-right">
+                                                     <span t-field="o.amount_guaranty" t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                                                </td>
+                                              </tr>
+                                              <tr class="border-black" >
+                                                <td><strong>Restitution d'Accompte <span t-field="o.deposit_number"/></strong></td>
+                                                <td class="text-right">
+                                                     <span t-field="o.amount_deposit" t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                                                </td>
+                                              </tr>
+                                              <tr class="border-black">
+                                                <td><strong>Montant décompte précedent</strong></td>
+                                                <td class="text-right">
+                                                     <span t-field="o.amount_previous" t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                                                </td>
+                                              </tr>
+                                              <tr class="border-black">
+                                                <td><strong>Net à payer</strong></td>
+                                                <td class="text-right">
+                                                     <span t-field="o.amount_to_paid" t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                                                </td>
+                                              </tr>
+                                          </table>
+                                    </div>
+                                </div>
+
+                              </div>
+                        </t>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

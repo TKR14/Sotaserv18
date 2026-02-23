@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_payroll_ma_payday_advance_hr_user,hr.payroll_ma.payday_advance.hr.user,model_hr_payroll_ma_payday_advance,hr.group_hr_user,1,1,1,1
+access_hr_payroll_ma_loan_hr_user,hr.payroll_ma.loan.hr.user,model_hr_payroll_ma_loan,hr.group_hr_user,1,1,1,1
+access_hr_payroll_ma_general_income_tax_hr_user,hr.payroll_ma.general_income_tax.hr.user,model_hr_payroll_ma_general_income_tax,hr.group_hr_user,1,1,1,1
+access_hr_payroll_ma_senrioty_hr_user,hr.payroll_ma.senrioty.hr.user,model_hr_payroll_ma_senrioty,hr.group_hr_user,1,1,1,1
+access_hr_payroll_ma_salary_band_hr_user,hr.payroll_ma.salary.band.hr.user,model_hr_payroll_ma_salary_band,hr.group_hr_user,1,1,1,1
+access_hr_time_payroll_hr_user,hr.time.payroll.hr.user,model_hr_time_payroll,hr.group_hr_user,1,1,1,1
+access_hr_time_payroll_line_hr_user,hr.time.payroll.line.hr.user,model_hr_time_payroll_line,hr.group_hr_user,1,1,1,1
+
+
+access_validate_payday_advance_hr_user,hr.validate.payday.advance.user,model_validate_payday_advance,hr.group_hr_user,1,1,1,1
+access_payed_payday_advance_user,payed.payday.advance.user,model_payed_payday_advance,hr.group_hr_user,1,1,1,1
+access_personnel_permanent,personnel.permanent,model_personnel_permanent,hr.group_hr_user,1,1,1,1
+access_personnel_permanent_xml,personnel.permanent.xml,model_personnel_permanent_xml,hr.group_hr_user,1,1,1,1

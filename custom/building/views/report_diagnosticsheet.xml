@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template t-name="building.report_diagnosticsheet">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <style>
+                            table,
+                            th,
+                            td {
+                                border: 1px solid black;
+                                border-collapse: collapse;
+                            }
+
+                            table.center {
+                                margin-left: auto;
+                                margin-right: auto;
+                            }
+
+                            .line {
+                                display: inline;
+                                padding: 10px;
+                            }
+
+                            .middle td {
+                                padding: -4%;
+                            }
+
+                            .mytable td {
+                                padding: 20px;
+                                text-align: center;
+                            }
+
+                            .mytable th {
+                                padding: 10px;
+                                text-align: center;
+                            }
+                        </style>
+                        <div class="oe_structure"/>
+                        <table class="center" style="width: 100%; font-size:80%">
+                            <tr>
+                                <th rowspan="2" style="font-size: 20px; padding: 10px;">FICHE DE DIAGNOSTIC</th>
+                                <td style="padding: 10px;">Ref:</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;">Version: </td>
+                            </tr>
+                        </table>
+                        <br/>
+                        <t t-set="odometre_h" t-value="0"/>
+                        <t t-if="o.uom_id and o.uom_id.name=='Heures'">
+                            <t t-set="odometre_h" t-value="o.odometre"/>
+                        </t>
+                        <t t-set="odometre_km" t-value="0"/>
+                        <t t-if="o.uom_id and o.uom_id.name=='km'">
+                            <t t-set="odometre_km" t-value="o.odometre"/>
+                        </t>
+                        <t t-set="checked_equip" t-value="false"/>
+                        <t t-if="o.type_maint == 'equip'">
+                            <t t-set="checked_equip" t-value="true"/>
+                        </t>
+                        <t t-set="checked_vehicle" t-value="false"/>
+                        <t t-if="o.type_maint == 'vehicle'">
+                            <t t-set="checked_vehicle" t-value="true"/>
+                        </t>
+                        <td><span t-esc="checked_equip"/></td>
+                        <td><span t-esc="checked_vehicle"/></td>
+                        <table class="center middle" style="width: 100%; font-size:80%">
+                            <tr>
+                                <td width="50%">
+                                    <h4 style="padding-left: 10px;">Type d'intervention :</h4>
+                                    <div class="line">
+                                        <input type="checkbox" id="prev" name="prev"/>
+                                        <label for="prev">Préventive</label>
+                                    </div>
+
+                                    <div class="line">
+                                        <input type="checkbox" id="corr" name="corr" checked="checked"/>
+                                        <label for="corr">Corrective</label>
+                                    </div>
+                                </td>
+                                <td width="50%">
+                                    <p style="padding-left: 10px;">Date d'entrée : <span t-field="o.start_date"/></p>
+                                    <p style="padding-left: 10px;">Date de retour prévue : <span t-field="o.schedule_date"/></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="50%">
+                                    <div style="padding-left: 10px;">
+                                        <t t-if="checked_vehicle == true">
+                                          <input type="checkbox" id="engin" name="engin" checked="checked"/>
+                                        </t>
+                                        <t t-if="checked_vehicle == false">
+                                          <input type="checkbox" id="engin" name="engin"/>
+                                        </t>
+                                        <label for="engin">Engin (*): <span t-field="o.vehicle_id.name2"/></label>
+                                    </div>
+
+                                    <div style="padding-left: 10px;">
+                                        <t t-if="checked_equip == true">
+                                          <input type="checkbox" id="equip" name="equip" checked="checked"/>
+                                        </t>
+                                        <t t-if="checked_equip == false">
+                                          <input type="checkbox" id="equip" name="equip"/>
+                                        </t>
+                                        <label for="equip">Equipement : <span t-field="o.equipment_id.name"/></label>
+                                    </div>
+                                </td>
+                                <td width="50%">
+                                    <h4 style="padding-left: 10px;">Type :</h4>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="50%">
+                                    <h4 style="padding-left: 10px;">Code : <span t-field="o.vehicle_id.code"/></h4>
+                                </td>
+                                <td width="50%">
+                                    <h4 style="padding-left: 10px;">N° Série du châssis / équipement : <span t-field="o.equipment_id.serial_no"/></h4>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="50%">
+                                    <h4 style="padding-left: 10px;">*Compteur Kilométrique : <t t-if="odometre_km > 0"><span t-esc="odometre_km"/></t></h4>
+                                </td>
+                                <td width="50%">
+                                    <h4 style="padding-left: 10px;">*Compteur Horaire : <t t-if="odometre_h > 0"><span t-esc="odometre_h"/></t></h4>
+                                </td>
+                            </tr>
+                        </table>
+                        <br/>
+                                <t t-set="len_note_motor" t-value="0"/>
+                                <t t-if="len(o.note_motor) > 0">
+                                    <t t-set="len_note_motor" t-value="len(o.note_motor)+1"/>
+                                </t>
+                                <t t-set="len_chasis" t-vlue="0"/>
+                                <t t-if="len(o.note_chasis) > 0">
+                                    <t t-set="len_chasis" t-value="len(o.note_chasis)+1"/>
+                                </t>
+                                <t t-set="len_note_elec" t-value="0"/>
+                                <t t-if="len(o.note_elec) > 0">
+                                    <t t-set="len_note_elec" t-value="len(o.note_elec)+1"/>
+                                </t>
+                                <t t-set="len_note_hydro" t-value="0"/>
+                                <t t-if="len(o.note_hydro) > 0">
+                                    <t t-set="len_note_hydro" t-value="len(o.note_hydro)+1"/>
+                                </t>
+                                <t t-set="len_note_pneu" t-value="0"/>
+                                <t t-if="len(o.note_pneu) > 0">
+                                    <t t-set="len_note_pneu" t-value="len(o.note_pneu)+1"/>
+                                </t>
+                                <t t-set="len_note_other" t-value="0"/>
+                                <t t-if="len(o.note_other) > 0">
+                                    <t t-set="len_note_other" t-value="len(o.note_other)+1"/>
+                                </t>
+                        <br/>
+                        <table class="center mytable" style="width: 100%; font-size:80%">
+                            <thead>
+                                <tr>
+                                    <th width="10%" style="border-top-style: hidden;border-left-style: hidden;"/>
+                                    <th width="15%">Anomalies constactées</th>
+                                    <th width="20%">Traitement</th>
+                                    <th width="18%">Pièces et Consommables requis pour la réparation</th>
+                                    <th width="20%">Observation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td t-att-rowspan="len_note_motor" style="vertical-align: middle;">Moteur</td>
+                                    <t t-if="o.note_motor">
+                                        <t t-foreach="o.note_motor" t-as="motor">
+                                            <tr>
+                                                <td><span t-field="motor.anom"/></td>
+                                                <td><span t-field="motor.trait"/></td>
+                                                <td><span t-field="motor.pieces"/></td>
+                                                <td><span t-field="motor.observ"/></td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <t t-if="not o.note_motor">
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                    </t>
+                                </tr>
+                                <tr>
+                                    <td t-att-rowspan="len_chasis" style="vertical-align: middle;">Châssis</td>
+                                    <t t-if="o.note_chasis">
+                                        <t t-foreach="o.note_chasis" t-as="motor">
+                                            <tr>
+                                                <td><span t-field="motor.anom"/></td>
+                                                <td><span t-field="motor.trait"/></td>
+                                                <td><span t-field="motor.pieces"/></td>
+                                                <td><span t-field="motor.observ"/></td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <t t-if="not o.note_chasis">
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                    </t>
+                                </tr>
+                                <tr>
+                                    <td t-att-rowspan="0" style="vertical-align: middle;">Electrique Electronique</td>
+                                    <t t-if="o.note_elec">
+                                        <t t-foreach="o.note_elec" t-as="motor">
+                                            <tr>
+                                                <td><span t-field="motor.anom"/></td>
+                                                <td><span t-field="motor.trait"/></td>
+                                                <td><span t-field="motor.pieces"/></td>
+                                                <td><span t-field="motor.observ"/></td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <t t-if="not o.note_elec">
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                    </t>
+                                </tr>
+                                <tr>
+                                    <td  t-att-rowspan="len_note_hydro" style="vertical-align: middle;">Hydraulique</td>
+                                    <t t-if="o.note_hydro">
+                                        <t t-foreach="o.note_hydro" t-as="motor">
+                                            <tr>
+                                                <td><span t-field="motor.anom"/></td>
+                                                <td><span t-field="motor.trait"/></td>
+                                                <td><span t-field="motor.pieces"/></td>
+                                                <td><span t-field="motor.observ"/></td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <t t-if="not o.note_hydro">
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                    </t>
+                                </tr>
+                                <tr>
+                                    <td t-att-rowspan="len_note_pneu" style="vertical-align: middle;">Pneumatique</td>
+                                    <t t-if="o.note_pneu">
+                                        <t t-foreach="o.note_pneu" t-as="motor">
+                                            <tr>
+                                                <td><span t-field="motor.anom"/></td>
+                                                <td><span t-field="motor.trait"/></td>
+                                                <td><span t-field="motor.pieces"/></td>
+                                                <td><span t-field="motor.observ"/></td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <t t-if="not o.note_pneu">
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                    </t>
+                                </tr>
+                                <tr>
+                                    <td t-att-rowspan="len_note_other" style="vertical-align: middle;">Autres</td>
+                                    <t t-if="o.note_other">
+                                        <t t-foreach="o.note_other" t-as="motor">
+                                            <tr>
+                                                <td><span t-field="motor.anom"/></td>
+                                                <td><span t-field="motor.trait"/></td>
+                                                <td><span t-field="motor.pieces"/></td>
+                                                <td><span t-field="motor.observ"/></td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <t t-if="not o.note_other">
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                    </t>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/><br/>
+                        <table class="center" style="width: 100%; font-size:80%">
+                            <tr>
+                                <th width="33%" style="padding: 5px;">Visa MECANICIEN</th>
+                                <th width="33%">Visa Chef D'atelier</th>
+                                <th width="34%">Visa R.M.L</th>
+                            </tr>
+                            <tr>
+                                <td style="padding-left:5px;">
+                                    <div style="height: 90px; overflow:hidden;">
+                                        <p style="padding-left: 5px;font-weight: bold;">Nom :</p>
+                                        <p style="padding-left: 5px;font-weight: bold;">Visa :</p>
+                                    </div>
+                                </td>
+                                <td style="padding-left:5px;">
+                                    <div style="height: 90px; overflow:hidden;">
+                                        <p style="padding-left: 5px;font-weight: bold;">Nom :</p>
+                                        <p style="padding-left: 5px;font-weight: bold;">Visa :</p>
+                                    </div>
+                                </td>
+                                <td style="padding-left:5px;">
+                                    <div style="height: 90px; overflow:hidden;">
+                                        <p style="padding-left: 5px;font-weight: bold;">Nom :</p>
+                                        <p style="padding-left: 5px;font-weight: bold;">Visa :</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
+

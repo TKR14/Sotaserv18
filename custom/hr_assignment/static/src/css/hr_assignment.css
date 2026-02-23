@@ -1,0 +1,94 @@
+/* .hr_assignment_view_tree .o_list_record_selector {
+    width: 16px !important;
+}
+
+.hr_assignment_view_tree .o_list_record_selector .custom-checkbox {
+    display: none !important;
+} */
+
+
+.hr_assignment_timeclock_line_view_tree .o_list_record_selector {
+    width: 16px !important;
+}
+
+.hr_assignment_timeclock_line_view_tree .o_list_record_selector .custom-checkbox {
+    display: none !important;
+}
+
+
+.hr_assignment_view_form .no-bl {
+    border-left-width: 0 !important;
+}
+
+.hr_assignment_view_form .br {
+    border-right: 1px solid #ced4da;
+}
+
+.hr_assignment_view_form .width i {
+    width: 38px !important;
+    padding-right: 4px;
+}
+
+.hr_assignment_view_form .square-it {
+    float: left;
+}
+
+.hr_assignment_view_form .square-it i {
+    padding: 0 5px;
+}
+
+.hr_assignment_view_form .oe_stat_button {
+    width: auto !important;
+}
+
+.hr_assignment_view_form ul.nav-tabs {
+    display: none;
+}
+
+
+.hr_assignment_timeclock_view_form ul.nav-tabs {
+    display: none;
+}
+
+.hr_assignment_timeclock_view_form .oe_button_box {
+    height: 44px;
+}
+
+
+/* .hr_assignment_line_view_tree .o_list_record_selector {
+    width: 16px !important;
+} */
+
+/* .hr_assignment_line_view_tree .o_list_record_selector .custom-checkbox {
+    display: none !important;
+} */
+
+/* .hr_assignment_line_view_tree .square-it {
+    padding: 0 1px !important;
+} */
+
+
+.hr_assignment_timeclock_view_form .o_list_record_selector {
+    width: 16px !important;
+}
+
+.hr_assignment_timeclock_view_form .o_list_record_selector .custom-checkbox {
+    display: none !important;
+}
+
+.hr_assignment_timeclock_view_form .square-it {
+    padding: 0 1px !important;
+}
+
+.hr_assignment_timeclock_view_form .no-text {
+    border-color: #c6c6c6;
+    background-color: #e2e2e0;
+}
+
+.hr_assignment_timeclock_view_form .no-text i {
+    opacity: 0;
+}
+
+.hr_assignment_timeclock_view_form th.o_list_button::after {
+    content: "Présent(e)"
+}

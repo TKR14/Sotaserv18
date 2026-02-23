@@ -1,0 +1,178 @@
+<odoo>
+    <record id="building_purchase_need_ressource_humain_view_search" model="ir.ui.view">
+        <field name="name">Ressources Humaines - Search</field>
+        <field name="model">building.purchase.need.ressource.humain</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="type_resource"/>
+                <field name="profile_id"/>
+                <field name="job_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="building_purchase_need_ressource_humain_view_tree_get_lines" model="ir.ui.view">
+        <field name="name">Ressources Humaines - List</field>
+        <field name="model">building.purchase.need.ressource.humain</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" create="0" delete="0">
+                <field name="sequence_number_parent" invisible="1" />
+                <field name="line_number_parent" invisible="1" />
+                <field name="template_line_id" invisible="1" />
+                <field name="display_type" invisible="1" />
+                <field name="profile_id_integer" invisible="1" />
+                <field name="type_resource" string="Catégorie" readonly="1" force_save="1" />
+                <field name="profile_id"
+                    domain="[('categ_job', '=', type_resource)]"
+                    options="{'no_quick_create': True, 'no_create_edit': True}"
+                    readonly="1" force_save="1" />
+                <field name="job_id"
+                    domain="[('categ_job', '=', type_resource), ('profile_id', '=', profile_id_integer)]"
+                    options="{'no_quick_create': True, 'no_create_edit': True}"
+                    string="Poste" readonly="1" force_save="1" />
+                <field name="quantity" string="Nombre" />
+                <field name="quantity_ordered" invisible="1" />
+                <field name="quantity_remaining" invisible="1" />
+                <field name="quantity_requested" invisible="1" />
+                <field name="duree_j" string="Volume" />
+                <field name="uom_id" readonly="1" force_save="1" />
+                <field name="price_unit" string="Px Unit." />
+                <field name="price_subtotal" />
+                <field name="name" widget="section_and_note_text" readonly="1" force_save="1" />
+            </list>
+        </field>
+    </record>
+
+    <record id="building_purchase_need_line_view_search" model="ir.ui.view">
+        <field name="name">Fournitures - Search</field>
+        <field name="model">building.purchase.need.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="type_produit"/>
+                <field name="product_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="building_purchase_need_line_view_tree_get_lines" model="ir.ui.view">
+        <field name="name">Fournitures - List</field>
+        <field name="model">building.purchase.need.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" create="0" delete="0">
+                <field name="sequence_number_parent" invisible="1" />
+                <field name="line_number_parent" invisible="1" />
+                <field name="template_line_id" invisible="1" />
+                <field name="display_type" invisible="1" />
+                <field name="type_produit" readonly="1" force_save="1" />
+                <field name="type_produit_selected" invisible="1" />
+                <field name="product_id" readonly="1" force_save="1" />
+                <field name="name" widget="section_and_note_text" force_save="1" />
+                <field name="quantity" />
+                <field name="uom_id" readonly="1" force_save="1" />
+                <field name="price_unit" string="Prix unitaire" />
+                <field name="price_subtotal" />
+            </list>
+        </field>
+    </record>
+
+    <record id="building_purchase_need_service_provision_view_tree_get_lines" model="ir.ui.view">
+        <field name="name">Prestation de service - List</field>
+        <field name="model">building.purchase.need.service.provision</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" create="0" delete="0">
+                <field name="sequence_number_parent" invisible="1" />
+                <field name="line_number_parent" invisible="1" />
+                <field name="template_line_id" invisible="1" />
+                <field name="display_type" invisible="1" />
+                <field name="product_id" readonly="1" force_save="1" />
+                <field name="name" widget="section_and_note_text" force_save="1" />
+                <field name="quantity" />
+                <field name="uom_id" readonly="1" force_save="1" />
+                <field name="price_unit" string="Prix unitaire" />
+                <field name="price_subtotal" />
+                <field name="price_subtotal_remaining" invisible="1" />
+            </list>
+        </field>
+    </record>
+
+    <record id="building_purchase_need_mini_equipment_view_tree_get_lines" model="ir.ui.view">
+        <field name="name">Outillages - List</field>
+        <field name="model">building.purchase.need.mini.equipment</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" create="0" delete="0">
+                <field name="sequence_number_parent" invisible="1" />
+                <field name="line_number_parent" invisible="1" />
+                <field name="template_line_id" invisible="1" />
+                <field name="display_type" invisible="1" />
+                <field name="name" widget="section_and_note_text" readonly="1" force_save="1"/>
+                <field name="category_id" readonly="1" force_save="1"/>
+                <field name="product_id" domain="[('categ_id', '=', category_id)]"/>
+                <field name="description" />
+                <field name="quantity" />
+                <field name="uom_id" readonly="1" force_save="1" />
+                <field name="price_unit" string="Prix unitaire" />
+                <field name="price_subtotal" />
+            </list>
+        </field>
+    </record>
+
+    <record id="building_purchase_need_equipment_view_tree_get_lines" model="ir.ui.view">
+        <field name="name">Matériels - List</field>
+        <field name="model">building.purchase.need.equipment</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" create="0" delete="0">
+                <field name="sequence_number_parent" invisible="1" />
+                <field name="line_number_parent" invisible="1" />
+                <field name="template_line_id" invisible="1" />
+                <field name="display_type" invisible="1" />
+                <field name="equipment_category_id" domain="[]" readonly="1" force_save="1" />
+                <field name="name" widget="section_and_note_text" force_save="1" />
+                <field name="quantity" />
+                <field name="duree_j" />
+                <field name="uom_id" readonly="1" force_save="1" />
+                <field name="price_unit" string="Prix unitaire" />
+                <field name="price_subtotal" />
+            </list>
+        </field>
+    </record>
+
+    <record id="building_purchase_need_small_equipment_view_tree_get_lines" model="ir.ui.view">
+        <field name="name">Petit Matériels - List</field>
+        <field name="model">building.purchase.need.small.equipment</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" create="0" delete="0">
+                <field name="sequence_number_parent" invisible="1" />
+                <field name="line_number_parent" invisible="1" />
+                <field name="template_line_id" invisible="1" />
+                <field name="display_type" invisible="1" />
+                <field name="equipment_id" readonly="1" force_save="1"/>
+                <field name="name" widget="section_and_note_text" force_save="1" />
+                <field name="quantity" />
+                <field name="duree" />
+                <field name="uom_id" readonly="1" force_save="1" />
+                <field name="price_unit" string="Prix unitaire" />
+                <field name="price_subtotal" readonly="1" />
+            </list>
+        </field>
+    </record>
+
+    <record id="building_purchase_need_fuel_view_tree_get_lines" model="ir.ui.view">
+        <field name="name">Carburant - List</field>
+        <field name="model">building.purchase.need.fuel</field>
+        <field name="arch" type="xml">
+            <list create="0" delete="0" edit="0">
+                <field name="sequence_number_parent" invisible="1"/>
+                <field name="line_number_parent" invisible="1"/>
+                <field name="template_line_id" invisible="1"/>
+                <field name="display_type" invisible="1"/>
+                <field name="category_id" readonly="1" force_save="1" options="{'no_open': True, 'no_create': True}"/>
+                <field name="product_id" readonly="1" force_save="1" options="{'no_open': True, 'no_create': True}"/>
+                <field name="name" widget="section_and_note_text" force_save="1"/>
+                <field name="quantity" readonly="1"/>
+                <field name="uom_id" readonly="1" force_save="1" options="{'no_open': True, 'no_create': True}"/>
+                <field name="price_unit"/>
+                <field name="price_subtotal"/>
+            </list>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,19 @@
+<odoo>
+
+<record id="view_reset_draft_reason_wizard_form" model="ir.ui.view">
+    <field name="name">reset.draft.reason.wizard.form</field>
+    <field name="model">reset.draft.reason.wizard</field>
+    <field name="arch" type="xml">
+        <form string="Motif de remise en brouillon">
+            <group>
+                <field name="reason"/>
+            </group>
+            <footer>
+                <button name="action_confirm_reset" string="Confirmer" type="object" class="btn-primary"/>
+                <button string="Annuler" class="btn-secondary" special="cancel"/>
+            </footer>
+        </form>
+    </field>
+</record>
+
+</odoo>

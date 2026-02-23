@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Menus ressources humaines et ressources matérielles -->
+
+        <!-- <menuitem id="menu_resource_profile" name="Profils" parent="menu_site"  action="action_resource_profile_view" sequence="150"/>
+        <menuitem id="menu_building_resource_human" name="Ressources Affaires" parent="menu_site" action="action_building_resource_human"  sequence="250"/> -->
+
+        <!-- <menuitem id="menu_hr_assignment_emp_action" name="Affectations" action="building_assignment_emp_action" parent="hr.menu_hr_employee_payroll"  sequence="100" /> -->
+
+        <menuitem id="menu_building_assignment_equipment_root" name="Affectations" parent="maintenance.menu_maintenance_title"  sequence="1" />
+        <!-- <menuitem id="menu_building_assignment_equipment_action" name="Affectations Equipements" action="building_assignment_equipment_action" parent="menu_building_assignment_equipment_root"  sequence="1" /> -->
+        <!-- <menuitem id="menu_building_assignment_product_action" name="Affectations Coffrages/Echaffaudages" action="building_assignment_product_action" parent="menu_building_assignment_equipment_root"  sequence="2" /> -->
+        <!-- <menuitem id="menu_assigned_ressource_emp" name="Affecter employées" parent="hr.menu_hr_employee_payroll" action="create_assigned_ressource_emp"  sequence="250"/> -->
+
+        <!-- <menuitem id="menu_assigned_ressource_mat" name="Affecter equipements" parent="maintenance.menu_maintenance_title" action="create_assigned_ressource_equipement"  sequence="1"/>
+ -->
+        <!-- <menuitem id="menu_building_assignment_vehicle_action" name="Affectations matériels" action="building_assignment_vehicle_action" parent="fleet.fleet_vehicles"  sequence="220" /> -->
+
+        <!-- <menuitem id="menu_assigned_ressource_mat_veh" name="Affecter matériels" parent="fleet.fleet_vehicles" action="create_assigned_ressource_vehicule"  sequence="250"/> -->
+        
+        <!-- <menuitem id="menu_building_assignment_vehicle_action" name="Affectations des véhicules" action="building_assignment_vehicle_action" parent="menu_site"  sequence="5" /> -->
+        <!-- <delete model="ir.ui.menu" id="hr.menu_hr_employee"/>
+        <delete model="ir.ui.menu" id="hr.menu_config_plan_types"/>
+        <delete model="ir.ui.menu" id="hr.menu_config_plan_plan"/>
+        <delete model="ir.ui.menu" id="hr.menu_config_plan"/> -->
+    </data>
+</openerp>

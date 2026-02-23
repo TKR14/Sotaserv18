@@ -1,0 +1,15 @@
+<odoo>
+    <template id="hide_login" inherit_id="auth_signup.login" name="Hide login">
+        <!-- <xpath expr="//div[@class='justify-content-between mt-2 d-flex small']" position="replace">
+            <div class="mt-4 small">
+                <a href="/web/reset_password?">Réinitialiser le mot de passe</a>
+            </div>
+        </xpath> -->
+    </template>
+    <template id="hide_superuser" inherit_id="web.login" name="Hide Superuser">
+        <xpath expr="//button[@name='redirect']" position="replace"></xpath>
+    </template>
+    <template id="hide_database" inherit_id="web.login_layout" name="Hide Database">
+        <xpath expr="//div[@class='text-center small mt-4 pt-3 border-top']" position="replace"></xpath>
+    </template>    
+</odoo>

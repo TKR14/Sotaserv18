@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="attachement_client_action" model="ir.actions.report">
+        <field name="name">Attachement Client</field>
+        <field name="model">building.attachment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">building.attachement_client_template</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="print_report_name">"%s" % object.number</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="attachement_client_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&amp;display=swap');
+
+                    .page {
+                        position: relative;
+                        height: 330mm;
+                    }
+
+                    .container {
+                        width: 100%; 
+                        margin: 0 auto; 
+                        border: 0px solid #000; 
+                        padding: 20px; 
+                        box-sizing: border-box;
+                    }
+
+                    .logo{
+                        text-align: right; 
+                        display: flex; 
+                        margin-bottom: 20px;
+                    }
+
+                    .title{
+                        display: flex; 
+                        justify-content: center; 
+                        align-items: center; 
+                        border: 2px solid #000; 
+                        padding: 1px; 
+                        margin-bottom: 5px; 
+                        margin-top: 25px;
+                    }
+
+                    .tit{
+                        font-weight: bold; 
+                        font-size: 24px; 
+                        text-align: center;
+
+                    }
+
+                    .details {
+                        display: flex;
+                        justify-content: space-between;
+                        font-weight: bold;
+                        position: relative;
+                        top: 10px;
+                    }
+
+                    .left-details {
+                        width: 52%;
+                        vertical-align: top;
+                    }
+
+                    .right-details {
+                        width: 48%;
+                        vertical-align: top;
+                        margin-left: 67px;
+                    }
+
+                    .twoline-ellipsis {
+                        display: -webkit-box;
+                        -webkit-line-clamp: 2;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        word-break: break-word;
+                        font-size: 12px;
+                        width: 700px;
+                    }
+
+                    p{
+                        margin-bottom: -10px;
+                    }
+
+                    .table{
+                        margin-top: -15px; 
+                        width: 100%; 
+                        border-collapse: collapse;
+                    }
+
+                    th{
+                        border: 2px solid #000; 
+                        padding: 8px; 
+                        background-color: #f2f2f2; 
+                        font-size: 14px;
+                    }
+
+                    td {
+                        border: 2px solid #000; 
+                        padding: 8px; 
+                        border-right: none; 
+                        font-size: 14px;
+                    }
+
+                    .pied{
+                        color: grey; 
+                        font-weight: bold; 
+                        font-size: 17px; 
+                        font-family: 'Courier New', Courier, monospace; 
+                        margin-top: 20px; 
+                        text-align: center; 
+                        font-size: 14px; 
+                        font-weight: bold;
+
+                    }
+
+                    .text{
+                        padding-top: 10px; 
+                        text-align: center; 
+                        margin-top: 40px; 
+                        font-size: 12px;
+                    }
+
+                    .signatures{
+                        display: flex; 
+                        flex-direction: column; 
+                        align-items: center; 
+                        margin-top: 20px;
+                    }
+
+                    .signature-row{
+                        display: flex; 
+                        justify-content: space-between; 
+                        width: 100%; 
+                        max-width: 800px;
+                    }
+
+                    
+                    .signature-table {
+                        width: 100%;
+                        max-width: 800px;
+                        text-align: center;
+                        border-collapse: separate;
+                        border-spacing: 10px; 
+                    }
+
+                    .signature-box {
+                        border: 1px solid #4088a6;
+                        width: 200px;
+                        height: 80px;
+                        text-align: center;
+                        vertical-align: top;
+                        font-weight: bold;
+                        font-size: 13px;
+                        padding-top: 10px;
+
+                    }
+                    
+                    .foot {
+                        position: absolute;
+                        bottom: 0;
+                        width: 100%;
+                        color: #0070c0;
+                        padding-top: 40px;
+                        border-top: 1px solid #000;
+                        font-size: 14px;
+                    }
+                    
+                    .ltfoot-container {
+                        width: 100%;
+                        padding-top: 20px;
+                        border-top: 1px solid #000;
+                        position: absolute;
+                        text-align: center;
+                        color: rgb(0, 102, 0);
+                        font-size: 12px;
+                    }
+
+                    .invoice_footer {
+                        position: absolute; 
+                        bottom: -90px;
+                    }
+
+                    .company-info {
+                        line-height: 1.2;
+                        color: rgb(0, 102, 0);
+                        font-size: 12px;
+                        position: relative;
+                        left: 53px;
+                        margin-top: 10px;
+                    }
+
+                    .company-info span {
+                        display: block;
+                        text-align: center;
+                        white-space: nowrap;
+                        font-size: 11px;
+                        margin-top: 3px;
+                    }
+
+                    .company-info strong {
+                        font-weight: bold;
+                    }
+
+                    .company-info .underline {
+                        border-bottom: 2px solid rgb(60, 63, 60);
+                        margin-bottom: 5px;
+                        padding-bottom: 5px;
+                        width: 100%;
+                        margin: 20px auto;
+                    }
+
+                </style>
+
+                <t t-set="per_page" t-value="19" />
+                <t t-set="lines" t-value="doc._get_flattened_lines()" />
+                <t t-set="lines_count" t-value="len(lines)" />
+                <t t-set="pages" t-value="ceil(lines_count / per_page)" />
+                <t t-set="start" t-value="0"/>
+                <t t-set="end" t-value="per_page"/>
+
+                <t t-foreach="range(pages)" t-as="page">
+                    <div class="page">
+                        <div class="container">
+                            <div class="logo">
+                                <img t-att-src="image_data_uri(request.env['res.company'].search([], limit=1).logo)" 
+                                    alt="Logo" style="max-width: 200px; height: auto;" />
+                            </div>
+                            
+                            <div>
+                                <t t-if="(doc.not_open_attachment_state in ['draft', 'internal_validated'] and doc.opening_attachment == False) or (doc.open_attachment_state in ['draft', 'internal_validated'] and doc.opening_attachment == True)">
+                                    <p style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 55px; color: rgba(255, 0, 0, 0.1); font-weight: bold; text-transform: uppercase; z-index: 1; white-space: nowrap; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);"> 
+                                    copie provisoire</p>
+                                </t>
+                            </div>
+
+                            <div class="title">
+                                <h1 class="tit">ATTACHEMENT CLIENT</h1>
+                            </div>
+
+                            <div class="details">
+                                <div class="left-details">
+                                    <table style="width: 440px; text-align: justify; font-weight: bold; border-collapse: separate; border-spacing: 0 -6px;">
+                                        <tr>
+                                            <td style="border: none; font-size: 12px;">Client</td>
+                                            <td style="border: none; font-size: 12px;">:</td>
+                                            <td style="border: none; font-size: 12px;"><span t-esc="doc.customer_id.name"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: none; font-size: 12px;">Affaire</td>
+                                            <td style="border: none; font-size: 12px;">:</td>
+                                            <td style="border: none; font-size: 12px;">
+                                                <span t-esc="doc.site_id.name"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </div>
+                                <div class="right-details">
+                                    <table style="width: 370px; text-align: justify; font-weight: bold; border-collapse: separate; border-spacing: 0 -4px;">
+                                        <tr>
+                                            <td style="border: none; font-size: 12px; white-space: nowrap;">N° Attachement</td>
+                                            <td style="border: none; font-size: 12px;">:</td>
+                                            <td style="border: none; font-size: 12px;"><span t-esc="doc.number"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: none; font-size: 12px; white-space: nowrap;">Type de marché</td>
+                                            <td style="border: none; font-size: 12px;">:</td>
+                                            <td style="border: none; font-size: 12px;"><span t-esc="doc.type_marche" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: none; font-size: 12px;">Situation Du</td>
+                                            <td style="border: none; font-size: 12px;">:</td>
+                                            <td style="border: none; font-size: 12px;">
+                                                <span t-esc="doc.start_date" t-options='{"widget": "date", "format": "dd/MM/yyyy"}' />
+                                                &#160;Au&#160;
+                                                <span t-esc="doc.end_date" t-options='{"widget": "date", "format": "dd/MM/yyyy"}' />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: none; font-size: 12px;"></td>
+                                            <td style="border: none; font-size: 12px;"></td>
+                                            <td style="border: none; font-size: 12px;"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: none; font-size: 12px;"></td>
+                                            <td style="border: none; font-size: 12px;"></td>
+                                            <td style="border: none; font-size: 12px;"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <table class="table">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th style="text-align: center; width: 200px;">Produit</th>
+                                        <th style="text-align: center; width: 50px;">UDM</th>
+                                        <th style="text-align: center; width: 50px;">Qté BDP</th>
+                                        <th style="width: 50px;">Qté préc</th>
+                                        <th style="width: 50px;">Qté cumulée</th>
+                                        <th style="text-align: center; width: 50px;">% Avance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="lines_on_page" t-value="lines[start:end]" />
+                                    <t t-foreach="lines_on_page" t-as="line">
+                                        <tr t-if="line['is_section']">
+                                            <td colspan="7" style="background-color: #d9d9d9; font-weight: bold; border: 2px solid #000;">
+                                                <span t-esc="line['name']" />
+                                            </td>
+                                        </tr>
+                                        <tr t-if="not line['is_section']">
+                                            <td><span t-esc="line['name']" /></td>
+                                            <td style="text-align: center;"><span t-esc="line['product_uom_id']" /></td>
+                                            <td style="text-align: right;"><span t-esc="line['price_quantity']" t-options='{"widget": "float", "precision": 2}' /></td>
+                                            <td style="text-align: right;"><span t-esc="line['previous_quantity']" t-options='{"widget": "float", "precision": 2}' /></td>
+                                            <td style="text-align: right;"><span t-esc="line['cumulative_quantity']" t-options='{"widget": "float", "precision": 2}' /></td>
+                                            <td style="text-align: center; border-right: 2px solid #000;"><span t-esc="round(line['percentage_completion'])" />%</td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+
+                            <t t-if="pages > 0 and start + per_page >= lines_count">
+                                <div class="signatures">
+                                    <table class="signature-table">
+                                        <tr>
+                                            <td class="signature-box"> <span class="signature-text">BUREAU DE CONTROLE</span> </td>
+                                            <td class="signature-box"> <span class="signature-text">CT/CP</span> </td>
+                                            <td class="signature-box"> <span class="signature-text">CLIENT/REPRESENTANT</span> </td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <div class="invoice_footer">
+                                    <div class="company-info">
+                                        <div class="underline"></div>
+                                        <span>SARL au Capital de <t t-esc="'{:,.0f}'.format(doc.company_id.capital).replace(',', ' ')"/> FCFA - RCCM : <t t-esc="doc.company_id.rccm"/> - NIU N°: <t t-esc="doc.company_id.niu_nemuro"/> - CNPS : <t t-esc="doc.company_id.cnps"/></span>
+                                        <span>Siège Social : <t t-esc="doc.company_id.street"/> <t t-esc="doc.company_id.street2"/> <t t-esc="doc.company_id.city"/> <t t-esc="doc.company_id.country_id.display_name"/></span>
+                                        <span>Tél.: <t t-esc="doc.company_id.phone"/> / Mobile: <t t-esc="doc.company_id.mobile"/> Email: <t t-esc="doc.company_id.email"/> - Site Web: <t t-esc="doc.company_id.website"/></span>
+                                        <span>Compte Bancaire NSIA BANQUE N°: <t t-esc="doc.company_id.bank_account"/></span>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                        <t t-set="start" t-value="end" />
+                        <t t-set="end" t-value="min(start + per_page, lines_count)" />
+                    </div>
+                    <p style="page-break-before: always;" />
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

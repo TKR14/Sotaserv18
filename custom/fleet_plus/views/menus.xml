@@ -1,0 +1,16 @@
+<odoo>
+    <menuitem
+        id="fleet_plus_menu"
+        name="Fleet +"
+        groups="fleet_plus_group"
+        sequence="0"
+    />
+
+    <menuitem
+        id="fleet_request_menu"
+        name="Demandes"
+        parent="fleet_plus_menu"
+        action="fleet_request_action"
+        sequence="10"
+    />
+</odoo>

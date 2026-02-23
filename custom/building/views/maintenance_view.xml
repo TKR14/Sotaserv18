@@ -1,0 +1,857 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Equipment form view -->
+    <record model="ir.ui.view" id="maintenance_request_resource_material_form_view">
+        <field name="name">maintenance.request.resource.material.form</field>
+        <field name="model">maintenance.request.resource.material</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="gasoil">
+                <header>
+                    <button name="action_requested" string="Valider" class="oe_highlight" type="object"  
+                        invisible="state != 'draft'" groups="building_plus.sotaserv_chef_projet,building_plus.sotaserv_conduct_trv"/>
+                    <button name="action_open_set_draft_wizard" string="Remettre" class="oe_highlight" type="object"  
+                        invisible="state != 'validated'" groups="building_plus.sotaserv_directeur_zone"/>
+                    <button name="action_dlm" string="Approuver" class="oe_highlight" type="object"  
+                        invisible="state != 'validated'" groups="building_plus.sotaserv_directeur_zone"/>
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <field name="site_ids" invisible="1"/>
+                    <field name="is_equipment" invisible="1"/>
+                    <field name="is_equip" invisible="1"/>
+                    <div class="oe_edit_only">
+                        <label for="name" class="oe_inline"/>
+                    </div>
+                    <h1>
+                        <field name="name" readonly="1" class="oe_inline"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="requested_by" options="{'no_create': True, 'no_open': True}" readonly="1" force_save="1"/>
+                            <field name="site_id" readonly="state != 'draft'" options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="request_date" readonly="state != 'draft'"/>
+                            <field name="description" readonly="state != 'draft'"/>
+                            <field name="vehicle_ids" invisible="1"/>
+                            <field name="fleet_vehicle_ids" invisible="1"/>
+                            <field name="is_open" invisible="1" readonly="1"/>
+                            <field name="is_open_1"  invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Demandes">
+                            <field name="line_ids" nolabel="1" readonly="state != 'draft' or not site_id" options="{'no_open': [('state', '!=', 'draft')]}">
+                                <list string="Demandes" editable="bottom">
+                                    <field name="type" string="Nature" invisible="1"/>
+                                    <field name="categ_vec_id" domain="[('id', 'in', parent.vehicle_ids)]" readonly="not type or type != 'equipment'" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="code"  invisible="1"/>
+                                    <field name="request_type" invisible="1"/>
+                                    <field name="qty"/>
+                                    <field name="qty_available" class="oe_edit_only" string="Qté disponible"/>
+                                    <field name="shipping_date"/>
+                                    <field name="duration"/>
+                                    <field name="duree_available" readonly="1" class="oe_edit_only"/>
+                                    <field name="rental_type" readonly="0"/>
+                                    <field name="note" invisible="1"/>
+                                    <field name="quantity_affected" readonly="1"/>
+                                    <field name="estimated_cost" readonly="1" force_save="1"/>
+                                    <!-- <field name="is_open"  readonly="1"/> -->
+                                    <!-- <field name="state"  readonly="1"/> -->
+                                    <!-- <button name="action_affected" string="Affecter" class="oe_highlight" type="object" invisible="not is_open or state != 'dga'"/> -->
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right" invisible="context.get('is_siege')">
+                                <field name="currency_id" invisible="1" can_create="true" can_write="true" modifiers="{'invisible':true,'readonly':true}"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="estimated_cost" string="Coût total estimé"/>
+                                </div>
+                                <field name="estimated_cost" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}" modifiers="{'readonly':true}" id="estimated_cost"/>
+                            </group>
+                       </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Petit equipment form view -->
+    <record model="ir.ui.view" id="maintenance_request_resource_small_material_form_view">
+        <field name="name">maintenance.request.resource.small.material.form</field>
+        <field name="model">maintenance.request.resource.material</field>
+        <field name="inherit_id" ref="building.maintenance_request_resource_material_form_view"/>
+        <field name="mode">primary</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='line_ids']/list/field[@name='categ_vec_id']" position="replace">
+                <field name="categ_fleet_id" domain="[('id', 'in', parent.fleet_vehicle_ids)]" readonly="not type or type != 'small_equipment'" options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list/field[@name='duree_available']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list/field[@name='duration']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Equipment & Small Equipment listview -->
+    <record model="ir.ui.view" id="maintenance_request_resource_material_tree_view">
+        <field name="name">maintenance.request.resource.material.tree</field>
+        <field name="model">maintenance.request.resource.material</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="Matériels">
+                <field name="name"/>
+                <field name="requested_by"/>
+                <field name="site_id"  />
+                <field name="request_date"  />
+                <field name="state" widget="badge" decoration-info="state == 'validated'" decoration-success="state == 'approved'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Equipment & Small Equipment search view -->
+    <record id="maintenance_request_resource_material_search_view" model="ir.ui.view">
+        <field name="name">maintenance.request.resource.material.search</field>
+        <field name="model">maintenance.request.resource.material</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="requested_by"/>
+                <filter name="draft" string="Brouillon" domain="[('state', '=', 'draft')]"/>
+                <filter name="validated" string="Validée" domain="[('state', '=', 'validated')]"/>
+                <filter name="approved" string="Approuvée" domain="[('state', '=', 'approved')]"/>
+
+                <!-- Grouping fields -->
+                <filter name="group_state" string="Statut" context="{'group_by': 'state'}"/>
+                <filter name="group_site_id" string="Affaire" context="{'group_by': 'site_id'}"/>
+                <filter name="group_requested_by" string="Demandée par" context="{'group_by': 'requested_by'}"/>
+                <filter name="group_request_date" string="Date de demande" context="{'group_by': 'request_date'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Equipment ligne listview -->
+    <record model="ir.ui.view" id="maintenance_request_resource_material_line_tree_view">
+        <field name="name">maintenance.request.resource.material.line.tree</field>
+        <field name="model">maintenance.request.resource.material.line</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="request_date"/>
+                <field name="maintenance_request_id"/>
+                <field name="code" string="Référence"/>
+                <field name="categ_vec_id"/>
+                <field name="qty"/>
+                <field name="quantity_affected"/>
+                <field name="shipping_date"/>
+                <field name="duration"/>
+                <field name="estimated_cost"/>
+                <field name="requested_by"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'validated'" decoration-primary="state == 'in_affectation'" decoration-success="state == 'approved' or state == 'affected'"/>
+                <button name="action_affected" string="Affecter" class="oe_highlight" type="object" invisible="state == 'affected'" groups="logistics.logistics_group"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Small Equipment ligne listview -->
+    <record model="ir.ui.view" id="maintenance_request_resource_small_material_line_tree_view">
+        <field name="name">maintenance.request.resource.small.material.line.tree</field>
+        <field name="model">maintenance.request.resource.material.line</field>
+        <field name="inherit_id" ref="building.maintenance_request_resource_material_line_tree_view"/>
+        <field name="mode">primary</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <xpath expr="//list/field[@name='categ_vec_id']" position="replace">
+                <field name="categ_fleet_id"/>
+            </xpath>
+            <xpath expr="//list/field[@name='duration']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//list/field[@name='estimated_cost']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Equipment & Small Equipment Request Line search view -->
+    <record id="maintenance_request_resource_material_line_search_view" model="ir.ui.view">
+        <field name="name">maintenance.request.resource.material.line.search</field>
+        <field name="model">maintenance.request.resource.material.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <filter name="approved" string="Approuvée" domain="[('state', '=', 'approved')]"/>
+                <filter name="in_affectation" string="En cours d'affectation" domain="[('state', '=', 'in_affectation')]"/>
+                <filter name="affected" string="Affectée" domain="[('state', '=', 'affected')]"/>
+
+                <!-- Grouping fields -->
+                <filter name="group_state" string="Statut" context="{'group_by': 'state'}"/>
+                <filter name="group_maintenance_request_id" string="Demande" context="{'group_by': 'maintenance_request_id'}"/>
+                <filter name="group_categ_vec_id" string="Matériel" context="{'group_by': 'categ_vec_id'}"/>
+                <filter name="group_requested_by" string="Demandée par" context="{'group_by': 'requested_by'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="maintenance_request_resource_small_equipment_line_search_view" model="ir.ui.view">
+        <field name="name">maintenance.request.resource.small.equipment.line.search</field>
+        <field name="model">maintenance.request.resource.material.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <filter name="approved" string="Approuvée" domain="[('state', '=', 'approved')]"/>
+                <filter name="in_affectation" string="En cours d'affectation" domain="[('state', '=', 'in_affectation')]"/>
+                <filter name="affected" string="Affectée" domain="[('state', '=', 'affected')]"/>
+
+                <!-- Grouping fields -->
+                <filter name="group_state" string="Statut" context="{'group_by': 'state'}"/>
+                <filter name="group_maintenance_request_id" string="Demande" context="{'group_by': 'maintenance_request_id'}"/>
+                <filter name="group_categ_fleet_id" string="Petit Matériel" context="{'group_by': 'categ_fleet_id'}"/>
+                <filter name="group_requested_by" string="Demandée par" context="{'group_by': 'requested_by'}"/>
+            </search>
+        </field>
+    </record>
+
+    <menuitem id="menu_maintenance_request_resource" parent="maintenance.menu_maintenance_title" name = "Demandes"/>
+
+    <menuitem id="menu_maintenance_request_resource_to_affected" parent="maintenance.menu_maintenance_title" name = "Demandes A affecter" sequence="2"/>
+
+    <record model="ir.actions.act_window" id="action_maintenance_request_resource_material_to_affected_tree_view">
+        <field name="name">Demandes Matériels a Affecter</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">maintenance.request.resource.material</field>
+        <field name="domain">[('is_equipment','=',1), 
+            ('state', '=', 'dga'), ('is_open_1', '=', True)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.maintenance_request_resource_material_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building.maintenance_request_resource_material_form_view')})]"/>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_is_equipment': 1, 'default_is_equipment': 1, 'default_is_equip': 0, 'default_is_product': 0}</field>
+    </record>
+
+    <menuitem id="menu_maintenance_request_resource_material_to_affected_list" parent="fleet.menu_root" action="action_maintenance_request_resource_material_to_affected_tree_view" sequence="9"/>
+
+    <record model="ir.ui.view" id="maintenance_request_resource_equi_form_view">
+        <field name="name">maintenance.request.resource.equip.form</field>
+        <field name="model">maintenance.request.resource.material</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="equip">
+                <header>
+                    <button name="action_requested" string="Demander" class="oe_highlight" type="object"  
+                        invisible="state != 'draft'"/>
+                    <button name="action_dlm" string="DLM" class="oe_highlight" type="object"  
+                        invisible="state != 'requested'"/>
+                    <!-- <button name="action_dga" string="Valider DGA" class="oe_highlight" type="object"  
+                        states = "dlm"/> -->
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <group >
+                        <field name="name"/>
+                        <field name="site_id"  domain="[('state', '=', 'open')]" />
+                        <field name="request_date"  />
+                        <field name="equip_ids"  invisible="1"/>
+                        <field name="is_open"  readonly="1"/>
+                        <field name="is_open_1"  invisible="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Demandes">
+                            <field name="line_ids" nolabel="1">
+                                <list string="Demandes" editable="bottom">
+                                    <field name="site_id"  readonly="1"/>
+                                    <field name="request_date"  readonly="1"/>
+                                    <field name="categ_id"  domain="[('id', 'in', parent.equip_ids)]"/>
+                                    <field name="code"  invisible="1"/>
+                                    <field name="qty"/>
+                                    <field name="shipping_date"/>
+                                    <field name="duration"  />
+                                    <field name="note"/>
+                                    <field name="is_open"  readonly="1"/>
+                                    <field name="state"  readonly="1"/>
+                                    <button name="action_affected" string="Affecter" class="oe_highlight" type="object" invisible="not is_open or state != 'dga'"/>
+                                </list>
+                            </field>
+                       </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_maintenance_request_resource_equip_tree_view">
+        <field name="name">Demandes Equipements</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">maintenance.request.resource.material</field>
+        <field name="domain">[('is_equip','=',1)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.maintenance_request_resource_material_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building.maintenance_request_resource_equi_form_view')})]"/>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_is_equipment': 0, 'default_is_equipment': 0, 'default_is_equip': 1, 'default_is_product': 0}</field>
+    </record>
+
+    <menuitem id="menu_maintenance_request_resource_equip_list" parent="menu_maintenance_request_resource" action="action_maintenance_request_resource_equip_tree_view" sequence="11"/>
+
+    <record model="ir.actions.act_window" id="action_maintenance_request_resource_equip_to_affected_tree_view">
+        <field name="name">Demandes Equipements</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">maintenance.request.resource.material</field>
+        <field name="domain">[('is_equip','=',1), ('state', '=', 'dga'), ('is_open_1', '=', True)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.maintenance_request_resource_material_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building.maintenance_request_resource_equi_form_view')})]"/>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_is_equipment': 0, 'default_is_equipment': 0, 'default_is_equip': 1, 'default_is_product': 0}</field>
+    </record>
+
+    <menuitem id="menu_maintenance_request_resource_equip_to_affected_list" parent="menu_maintenance_request_resource_to_affected" action="action_maintenance_request_resource_equip_to_affected_tree_view" sequence="11"/>
+
+    <record model="ir.ui.view" id="maintenance_request_resource_coff_form_view">
+        <field name="name">maintenance.request.resource.material.form</field>
+        <field name="model">maintenance.request.resource.material</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="gasoil">
+                <header>
+                    <button name="action_requested" string="Demander" class="oe_highlight" type="object"  
+                        invisible="state != 'draft'"/>
+                    <button name="action_dlm" string="DLM" class="oe_highlight" type="object"  
+                        invisible="state != 'requested'"/>
+                    <!-- <button name="action_dga" string="Valider DGA" class="oe_highlight" type="object"  
+                        states = "dlm"/> -->
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <group >
+                        <field name="name"/>
+                        <field name="site_id" domain="[('state', '=', 'open')]" />
+                        <field name="request_date"  />
+                        <field name="product_ids" invisible="1" />
+                        <field name="is_open"  readonly="1"/>
+                        <field name="is_open_1"  invisible="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Demandes">
+                            <field name="line_ids" nolabel="1">
+                                <list string="Demandes" editable="bottom">
+                                    <field name="site_id"  readonly="1"/>
+                                    <field name="request_date"  readonly="1"/>
+                                    <field name="product_id"  domain="[('id', 'in', parent.product_ids)]"/>
+                                    <field name="code"  invisible="1"/>
+                                    <field name="qty"/>
+                                    <field name="shipping_date"/>
+                                    <field name="duration"  />
+                                    <field name="note"/>
+                                    <field name="is_open"  readonly="1"/>
+                                    <field name="state"  readonly="1"/>
+                                    <button name="action_affected" string="Affecter" class="oe_highlight" type="object" invisible="not is_open or state != 'dga'"/>
+                                </list>
+                            </field>
+                       </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_maintenance_request_resource_coff_tree_view">
+        <field name="name">Demandes Coffrages/EChaffaudages</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">maintenance.request.resource.material</field>
+        <field name="domain">[('is_product','=',1)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.maintenance_request_resource_material_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building.maintenance_request_resource_coff_form_view')})]"/>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_is_equipment': 0, 'default_is_equipment': 0, 'default_is_equip': 0, 'default_is_product': 1}</field>
+    </record>
+
+    <menuitem id="menu_maintenance_request_resource_coff_list" parent="menu_maintenance_request_resource" action="action_maintenance_request_resource_coff_tree_view" sequence="12"/>
+
+
+    <record model="ir.actions.act_window" id="action_maintenance_request_resource_coff_to_affected_tree_view">
+        <field name="name">Demandes Coffrages/EChaffaudages</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">maintenance.request.resource.material</field>
+        <field name="domain">[('is_product', '=', True), ('state', '=', 'dga'), ('is_open_1', '=', True)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.maintenance_request_resource_material_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building.maintenance_request_resource_coff_form_view')})]"/>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_is_equipment': 0, 'default_is_equipment': 0, 'default_is_equip': 0, 'default_is_product': 1}</field>
+    </record>
+
+    <menuitem id="menu_maintenance_request_resource_coff_to_affected_list" parent="menu_maintenance_request_resource_to_affected" action="action_maintenance_request_resource_coff_to_affected_tree_view" sequence="12"/>
+
+
+
+
+    <record model="ir.ui.view" id="maintenance_request_emp_form_view">
+        <field name="name">maintenance.request.emp.form</field>
+        <field name="model">maintenance.request.resource.material</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="emp">
+                <header>
+                    <button name="action_requested" string="Demander" class="oe_highlight" type="object"  
+                        invisible="state != 'draft'"/>
+                    <button name="action_dlm" string="RH" class="oe_highlight" type="object"  
+                        invisible="state != 'requested'"/>
+                    <!-- <button name="action_dga" string="Valider DGA" class="oe_highlight" type="object"  
+                        states = "dlm"/> -->
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <group >
+                        <field name="name"/>
+                        <field name="site_id" domain="[('state', '=', 'open')]" />
+                        <field name="request_date"  />
+                        <field name="job_ids" invisible="1" />
+                        <field name="is_open"  readonly="1"/>
+                        <field name="is_open_1"  invisible="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Demandes">
+                            <field name="line_ids" nolabel="1">
+                                <list string="Demandes" editable="bottom">
+                                    <field name="site_id"  readonly="1"/>
+                                    <field name="request_date"  readonly="1"/>
+                                    <field name="job_id"  domain="[('id', 'in', parent.job_ids)]"/>
+                                    <field name="code"  invisible="1"/>
+                                    <field name="qty"/>
+                                    <field name="shipping_date"/>
+                                    <field name="duration"  />
+                                    <field name="note"/>
+                                    <field name="is_open"  readonly="1"/>
+                                    <field name="state"  readonly="1"/>
+                                    <button name="action_affected" string="Affecter" class="oe_highlight" type="object" invisible="not is_open or state != 'dga'"/>
+                                </list>
+                            </field>
+                       </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_maintenance_request_emp_tree_view">
+        <field name="name">Demandes Ressources</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">maintenance.request.resource.material</field>
+        <field name="domain">[('is_hr','=',1)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.maintenance_request_resource_material_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building.maintenance_request_emp_form_view')})]"/>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_is_equipment': 0, 'default_is_equipment': 0, 'default_is_equip': 0, 'default_is_product': 0, 'default_is_hr': 1}</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_maintenance_request_emp_to_affected_tree_view">
+        <field name="name">Demandes Ressources A affecter</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">maintenance.request.resource.material</field>
+        <field name="domain">[('is_hr','=',1), ('state', '=', 'dga'), ('is_open_1', '=', True)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.maintenance_request_resource_material_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building.maintenance_request_emp_form_view')})]"/>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_is_equipment': 0, 'default_is_equipment': 0, 'default_is_equip': 0, 'default_is_product': 0, 'default_is_hr': 1}</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_pick_coff_acha_tree_view">
+        <field name="name">Transferts Coffrages/EChaffaudage</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.picking</field>
+        <field name="domain">[('is_coffech', '=', True)]</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_maintenance_move_list" parent="menu_maintenance_request_resource" action="action_pick_coff_acha_tree_view" sequence="13"/>
+
+    <record model="ir.ui.view" id="materials_worked_hours_form_view">
+        <field name="name">materials.worked.hours.form</field>
+        <field name="model">materials.worked.hours</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="pointage">
+                <header>
+                    <button name="action_validated" string="Valider" class="oe_highlight" type="object"  
+                        invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <group >
+                        <field name="site_id"  domain="[('state', '=', 'open')]" />
+                        <field name="worked_date"  />
+                    </group>
+                    <group >
+                        <field name="vehicle_id" />
+                        <field name="code"  />
+                        <field name="emp_id" />
+                    </group>
+                    <group >
+                        <field name="worked_hours_by_emp" />
+                        <field name="worked_hours_by_vehicle"  />
+                        <field name="internal_location_cost" />
+                        <field name="internal_location_amount" />
+                        <field name="vehicle_counter" />
+                        <field name="qty_diesel" />
+                    </group>
+                    <group >
+                        <field name="signature_customer" />
+                    </group>
+                    <notebook>
+                        <page string="Observation">
+                            <field name="note" />
+                       </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="materials_worked_hours_tree_view">
+        <field name="name">materials.worked.hours.tree</field>
+        <field name="model">materials.worked.hours</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="pointage" editable="bottom">
+                <header>
+                    <button name="action_submitted" string="Soumettre" class="oe_highlight ml-2" type="object" groups="logistics.logistics_group"/>
+                    <button name="action_validated" string="Valider" class="oe_highlight ml-2" type="object" groups="building_plus.sotaserv_chef_projet" />
+                    <button name="action_invoiced" string="Facturer" class="oe_highlight ml-2" type="object" />
+                </header>
+                <field name="is_editable" invisible="1"/>
+                <field name="site_id" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                <field name="maintenance_request_name" readonly="1"/>
+                <field name="maintenance_line_code" readonly="1"/>
+                <field name="vehicle_id" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                <field name="code" readonly="1"/>
+                <field name="worked_date" readonly="1"/>
+                <field name="cost" readonly="1"/>
+                <field name="worked_hours_by_vehicle" readonly="not is_editable"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'submitted'" decoration-success="state == 'validated'" decoration-primary="state == 'invoiced'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="materials_worked_hours_search_view" model="ir.ui.view">
+        <field name="name">materials.worked.hours.search.view</field>
+        <field name="model">materials.worked.hours</field>
+        <field name="arch" type="xml">
+            <search string="Search assignment">
+                <filter name="draft" string="Brouillon" domain="[('state','=','draft')]" />
+                <filter name="submitted" string="Soumis" domain="[('state','=','submitted')]" />
+                <filter name="validated" string="Validé" domain="[('state','=','validated')]" />
+                <filter name="invoiced" string="Facturé" domain="[('state','=','invoiced')]" />
+                <separator />
+                <group string="Group By">
+                    <filter string="Status" name='state' domain="[]" context="{'group_by':'state'}" />
+                    <filter string="Affaire" name='site_id' domain="[]" context="{'group_by':'site_id'}" />
+                    <filter string="Matériel" name='vehicle_id' domain="[]" context="{'group_by':'vehicle_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="ir_cron_create_materials_pointage" model="ir.cron">
+        <field name="name">Materials - Auto Create Pointage</field>
+        <field name="model_id" ref="building.model_building_assignment_line"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_pointage()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <!-- <field name="numbercall">-1</field>
+        <field name="doall">False</field> -->
+        <field name="active">True</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_materials_worked_hours_tree_view">
+        <field name="name">Pointages Matériels</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">materials.worked.hours</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_action_materials_worked_hours_tree_view" name="Pointages matériels" action="action_materials_worked_hours_tree_view" parent="fleet.fleet_vehicles"  sequence="219" />
+
+
+    <record model="ir.ui.view" id="trasport_schedule_form_view">
+        <field name="name">trasport.schedule.form</field>
+        <field name="model">trasport.schedule</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="planning de transport">
+                <header>
+                </header>
+                <sheet>
+                    <group >
+                        <field name="site_src_id"  domain="[('state', '=', 'open')]" />
+                        <field name="site_dest_id"  domain="[('state', '=', 'open')]" />
+                    </group>
+                    <group >
+                        <field name="vehicle_id" />
+                        <field name="code"  />
+                    </group>
+                    <group >
+                        <field name="start_date" />
+                        <field name="end_date"  />
+                    </group>
+                    <group >
+                        <field name="merchandise" />
+                        <field name="qty"  />
+                    </group>
+                    <notebook>
+                        <page string="Observation">
+                            <field name="note" />
+                       </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="trasport_schedule_tree_view">
+        <field name="name">trasport.schedule.tree</field>
+        <field name="model">trasport.schedule</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="planning de transport">
+                <field name="site_src_id" />
+                <field name="site_dest_id" />
+                <field name="vehicle_id" />
+                <field name="code"  />
+                <field name="start_date" />
+                <field name="end_date"  />
+                <field name="merchandise" />
+                <field name="qty"  />
+                <field name="note" />
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_trasport_schedule_tree_view">
+        <field name="name">Plannings de transport logistique</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">trasport.schedule</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_materials_worked_hours_trasport_schedule" parent="fleet.menu_root" name = "Plannings/Missions de transport"/>
+
+    <menuitem id="menu_action_trasport_schedule_tree_view" name="Plannings de transport" action="action_trasport_schedule_tree_view" parent="menu_materials_worked_hours_trasport_schedule"  sequence="1" />
+
+    <record model="ir.ui.view" id="transport_mission_order_form_view">
+        <field name="name">transport.mission.order.form</field>
+        <field name="model">transport.mission.order</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="mission de transport">
+                <header>
+                </header>
+                <sheet>
+                    <group >
+                        <field name="emp_id" />
+                        <field name="registration_number" />
+                    </group>
+                    <group >
+                        <field name="vehicle_id" />
+                        <field name="code"  />
+                        <field name="start_km" />
+                        <field name="end_km"  />
+                    </group>
+                    <group >
+                        <field name="date" />
+                    </group>
+
+                    <notebook>
+                        <page string="Planning de transport">
+                            <field name="trasport_schedule_ids" domain="[('vehicle_id', '=', vehicle_id)]" editable="1">
+                                <list string="Planning de transport">
+                                    <field name="site_src_id" />
+                                    <field name="site_dest_id" />
+                                    <field name="vehicle_id" />
+                                    <field name="code"  />
+                                    <field name="start_date" />
+                                    <field name="end_date"  />
+                                    <field name="merchandise" />
+                                    <field name="qty"  />
+                                    <field name="note" />
+                                </list>
+                            </field>
+                       </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="transport_mission_order_tree_view">
+        <field name="name">transport.mission.order.tree</field>
+        <field name="model">transport.mission.order</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="mission de transport">
+                <field name="emp_id" />
+                <field name="registration_number" />
+                <field name="vehicle_id" />
+                <field name="code"  />
+                <field name="start_km" />
+                <field name="end_km"  />
+                <field name="date" />
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_transport_mission_order_tree_view">
+        <field name="name">Ordres de missions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">transport.mission.order</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_action_transport_mission_order_tree_view" name="Ordres de missions" action="action_transport_mission_order_tree_view" parent="menu_materials_worked_hours_trasport_schedule"  sequence="2" />
+
+
+    <record model="ir.ui.view" id="building_request_view_form_inherit2">
+        <field name="name">maintenance.request.form.inherit2</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="site_id"/>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="old_serial_number" invisible="type_maint != 'vehicle'"/>
+                <field name="new_serial_number" invisible="type_maint != 'vehicle'"/>
+                <field name="old_ref_battery" invisible="type_maint != 'vehicle'"/>
+                <field name="new_ref_battery" invisible="type_maint != 'vehicle'"/>
+                <field name="qty" invisible="type_maint != 'coff'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="fleet_vehicle_consumption_form_view_inherit2">
+        <field name="name">fleet.vehicle.consumption.form.inherit2</field>
+        <field name="model">fleet.vehicle.consumption</field>
+        <field name="inherit_id" ref="fleet_maintenance.fleet_vehicle_consumption_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='site']" position="after">
+                <field name="site_ids" invisible="1"/>
+                <field name="site_id" domain="[('id', 'in', site_ids)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="fleet_vehicle_consumption_tree_view_inherit2">
+        <field name="name">fleet.vehicle.consumption.tree.inherit2</field>
+        <field name="model">fleet.vehicle.consumption</field>
+        <field name="inherit_id" ref="fleet_maintenance.fleet_vehicle_consumption_list_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='site']" position="after">
+                <field name="site_id"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="building_fleet_vehicle_log_services_view_form_inherit">
+        <field name="name">building.fleet.vehicle.log.services.form.inherit</field>
+        <field name="model">fleet.vehicle.log.services</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vendor_id']" position="after">
+                <!-- <field name="localisation" attrs="{'invisible': [('category', '=', 'contract')]}"/> -->
+                <field name="site_id"/>
+                <field name="odometre_remaining" invisible="1"/>
+                <field name="value_odometre_alert" invisible="1"/>
+                <!-- <field name="place" attrs="{'invisible': [('localisation', '!=', 'other')]}"/> -->
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="building_fleet_vehicle_log_services_view_tree_inherit">
+        <field name="name">building.fleet.vehicle.log.services.inherit</field>
+        <field name="model">fleet.vehicle.log.services</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount']" position="after">
+                <field name="value_odometre_alert" invisible="1"/>
+            </xpath>
+            <xpath expr="//list" position="attributes">
+                <attribute name="decoration-danger">value_odometre_alert&lt;=0</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="building_hr_equipment_request_view_tree_inherit">
+        <field name="name">building.maintenance.request.inherit</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="site_id" select="1"/>
+                <field name="type_maint"/>
+                <field name="vehicle_id" select="1"/>
+                <field name="equipment_id" select="1"/>
+                <field name="product_id" select="1"/>
+                <field name="duration" select="1"/>
+                <field name="cost" select="1"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- <record model="ir.ui.view" id="building_maintenance_request_view_tree_inherit_hr_inherit">
+        <field name="name">building.maintenance.request.view.tree.inherit.hr.inherit</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="hr_maintenance.maintenance_request_view_tree_inherit_hr"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee_id']" position="attributes">
+                <attribute name="string">Responsable</attribute>
+            </xpath>
+        </field>
+    </record> -->
+
+    <record model="ir.ui.view" id="building_hr_equipment_request_view_search_inherit">
+        <field name="name">building.equipment.request.search.inherit</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='maintenance_team_id']" position="after">
+                <field name="site_id" />
+                <field name="vehicle_id" />
+                <field name="product_id" />
+            </xpath>
+            <xpath expr="//filter[@name='created_by']" position="after">
+                <filter string="Affaire" name="site" domain="[]" context="{'group_by': 'site_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

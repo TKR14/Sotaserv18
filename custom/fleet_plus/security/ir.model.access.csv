@@ -1,0 +1,4 @@
+"id","name","group_id/id","model_id/id","perm_read","perm_write","perm_create","perm_unlink"
+
+access_fleet_request,fleet_request,,model_fleet_request,1,1,1,1
+access_fleet_request_line,fleet_request_line,,model_fleet_request_line,1,1,1,1

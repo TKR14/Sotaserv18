@@ -1,0 +1,207 @@
+<odoo>
+    <record id="account_customer_invoice_report_action" model="ir.actions.report">
+        <field name="name">Facture Client</field>
+        <field name="model">account.move</field>
+        <field name="report_name">account_plus.invoice_report_template</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="binding_type">report</field>
+        <field name="binding_view_types">form</field>
+    </record>
+
+    <record id="action_print_customer_invoice_report" model="ir.actions.server">
+        <field name="name">Facture Client</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = env.ref('account_plus.account_customer_invoice_report_action').report_action(records)
+        </field>
+    </record>
+
+    <record id="account_view_move_form_inherit" model="ir.ui.view">
+        <field name="name">account.view.move.form.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="delete">0</attribute>
+                <attribute name="duplicate">0</attribute>
+            </xpath>
+            <!-- <header>
+                <button name="%(action_print_customer_invoice_report)d" string="Facture Client" type="action" class="btn-primary" attrs="{'invisible': [('move_type', '!=', 'out_invoice')]}"/>
+            </header> -->
+        </field>
+    </record>
+
+    <record id="account_view_move_tree_inherit" model="ir.ui.view">
+        <field name="name">account.view.move.tree.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_out_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="delete">0</attribute>
+                <attribute name="duplicate">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='status_in_payment']" position="replace">
+                <field name="out_state"
+                        widget="badge"
+                        decoration-danger="out_state == 'draft'"
+                        decoration-success="out_state == 'posted'"
+                        decoration-warning="out_state in ('submitted', 'finance_validated')"
+                        decoration-primary="out_state == 'dg_validated'"/>
+                <field name="state" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <template id="invoice_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <meta charset="utf-8"/>
+                <style>
+                    .logo .sota-logo {
+                        width: 330px;
+                        height: 300px;
+                        margin-top: 5px;
+                    }
+                    .info {
+                        margin-top: 15px;
+                        border: 1.4px solid #B77458;
+                        width: 210px;
+                        margin-left: 10px;
+                    }
+                    .first_value_style { 
+                        font-weight: bolder;
+                        text-align: justify;
+                        letter-spacing: 2.98px;
+                        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                    }
+                    .value_style { 
+                        font-weight: bolder;
+                        text-align: justify;
+                        letter-spacing: 0.98px;
+                        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                    }
+                    .invoice_number {
+                        position: relative;
+                        top: 10px;
+                        left: 7px;
+                        font-weight: bold;
+                        font-size: 12.80px;
+                    }
+                    
+                    .numbered-stamp {
+                        position: relative;
+                        top: 10px;
+                        left: 24px;
+                        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                        font-weight: bold;
+                        color: #FF7067;
+                        font-size: 1.3rem;
+                        letter-spacing: 0.1em;
+                        text-shadow: 0.02em 0.02em 0 rgba(255, 255, 255, 0.5);
+                    }
+
+                    .text-imprim {
+                        position:absolute;
+                        top: 50%;
+                        left: 76.70%;
+                        font-weight: bold;
+                        font-size: 8.70px;
+                        width:10px;
+                        height: 400px;
+                    }
+
+                    .custamer-visa {
+                        position: absolute; 
+                        top: 86%;
+                    }
+
+                    .invoice_footer {
+                        position: absolute; 
+                        bottom: 10px;
+                    }
+
+                    .visa_span {
+                        font-family: "Baskerville", "Baskerville Old Face", "Hoefler Text", Garamond, Times, serif;
+                        margin-left: 25px; 
+                        font-weight: bold; 
+                        font-size: 12.80px; 
+                        text-decoration: underline; t
+                        ext-underline-offset: 1em;
+                        color: color:rgb(60, 63, 60);
+                    }
+
+                    .company-info {
+                        font-family: "Times New Roman", Times, serif;
+                        line-height: 1.2;
+                        font-weight: bold;
+                        color:rgb(60, 63, 60);
+                    }
+
+                    .company-info span {
+                        display: block;
+                        text-align: center;
+                        white-space: nowrap;
+                        font-size: 11px;
+                    }
+
+                    .company-info strong {
+                        font-weight: bold;
+                    }
+
+                    .company-info .underline {
+                        border-bottom: 2px solid rgb(60, 63, 60);
+                        margin-bottom: 5px;
+                        padding-bottom: 5px;
+                        width: 73%;
+                        margin: 10px auto;
+                    }
+                </style>
+                <body>
+                    <div class="logo">
+                        <img class="sota-logo" t-att-src="image_data_uri(doc.company_id.logo)" style="max-height: 65px;" alt="logo"/>
+                    </div>
+                    <div class="info">
+                        <table style="white-space: nowrap; width: 200px; font-size: 11px; font-family: Helvetica, Arial, sans-serif; text-align: justify;">
+                            <tr>
+                                <td class="key_style">N&#176;CC</td>
+                                <td>:</td>
+                                <td class="first_value_style"> 1637553T</td>
+                            </tr>
+                            <tr>
+                                <td class="key_style">Régime d'Imposition</td>
+                                <td>:</td>
+                                <td class="value_style">Réel Normal</td>
+                            </tr>
+                            <tr>
+                                <td class="key_style">Centre des Impôts</td>
+                                <td>:</td>
+                                <td class="value_style">Il Plateaux 2</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="inv_container">
+                        <span class="invoice_number">FACTURE N&#176; <t t-esc="doc.reference"/></span>
+                        <t t-set="base_url" t-value="request.env['ir.config_parameter'].sudo().get_param('web.base.url')"/>
+                        <img t-att-src="base_url + '/account_plus/static/src/img/tva.png'" style="width:87px; position:absolute; left:744px; top:82px;"/>
+                    </div>
+                    <div class="inv-section">
+                        <span class="text-imprim" style="transform: rotate(270deg); -webkit-transform: rotate(270deg); width: 400px; height: auto;">EDJEHOU DANHI IMPRIM Sarl: 27.21.56.26.67 -C.C.N° DB23390 A</span>
+                    </div>
+                    <div class="custamer-visa">
+                        <span class="visa_span">Visa Client</span>
+                    </div>
+                    <div class="invoice_footer">
+                        <div class="company-info">
+                            <div class="underline"></div>
+                            <span>SARL au Capital de <t t-esc="'{:,.0f}'.format(doc.company_id.capital).replace(',', ' ')"/> FCFA - RCCM : <t t-esc="doc.company_id.rccm"/> - NIU N°: <t t-esc="doc.company_id.niu_nemuro"/> - CNPS : <t t-esc="doc.company_id.cnps"/></span>
+                            <span>Siège Social : <t t-esc="doc.company_id.street"/> <t t-esc="doc.company_id.street2"/> <t t-esc="doc.company_id.city"/> <t t-esc="doc.company_id.country_id.display_name"/></span>
+                            <span>Tél.: <t t-esc="doc.company_id.phone"/> / Mobile: <t t-esc="doc.company_id.mobile"/> Email: <t t-esc="doc.company_id.email"/> - Site Web: <t t-esc="doc.company_id.website"/></span>
+                            <span>Compte Bancaire NSIA BANQUE N°: <t t-esc="doc.company_id.bank_account"/></span>
+                        </div>
+                    </div>
+                </body>
+            </t>
+        </t>
+    </template>
+</odoo>

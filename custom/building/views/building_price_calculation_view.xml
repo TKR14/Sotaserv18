@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="building_price_calculation_form_view">
+            <field name="name">building.price.calculation.form</field>
+            <field name="model">building.price.calculation</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Etude de prix">
+
+                    <header>
+                        <button name="action_start_price" type="object" invisible="state != 'draft'" string="Commencer l'Étude"  class="oe_highlight" context="{'view':'form'}"/>
+                        <button name="action_rejected" type="object" invisible="state != 'in_progress'" string="Rejeter l'Étude"  class="oe_highlight" context="{'view':'form'}"/>
+                        <button name="action_validate" type="object" invisible="state != 'in_progress'" string="Valider l'Étude"  class="oe_highlight" context="{'view':'form'}"/>
+                        <button name="action_validate" type="object" invisible="state != 'validated'" string="Terminer l'Étude"  class="oe_highlight" context="{'view':'form'}"/>
+                        <button name="action_create_building_order"  type="object" string="Générer le bordereau"  class="oe_highlight" context="{'view':'form'}" invisible="state in ('draft', 'in_progress', 'validated') or order_generated"/>
+                        <field name="state" widget="statusbar"/>
+                        <field name="order_generated" invisible="1"/>
+                    </header>
+
+                        <group  readonly="state == 'validate'">
+                            <group col="2" readonly="state == 'validate'">
+                                <separator colspan="2" string="Informations étude de prix"/>
+                                <field name="name" readonly="1"/>
+                                 <field name="commercial_id" readonly="state == 'validate'"/>
+                                <field name="object_project" readonly="0"/>
+                            </group>
+                            <group col="2" >
+                                 <separator string="Informations appel d'offre" colspan="2"/>
+                                <field name="ref_tendering" readonly="state == 'validate'"/>
+                                <field name="bid_amount" readonly="state == 'validate'"/>
+                                <field name="with_deposit" readonly="state == 'validate'"/>
+                                <field name="deposit_amount" invisible="not with_deposit" readonly="state == 'validate'"/>
+                                <field name="ref_project" readonly="state == 'validate'"/>
+                                <field name="number" readonly="state == 'validate'"/>
+                                <field name="partner_id" readonly="state == 'validate'"/>
+                                <field name="deadline"  />
+                                <field name="opening_date"/>
+                                <field name="project_duration"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Lignes d'Etude des prix" name="lignes">
+                                <field name="line_ids" nolabel="1"  readonly="state == 'validate'" context="{'line_ids': line_ids}" widget="section_and_note_one2many">
+                                    <list string="Détails de l'étude" editable="bottom">
+                                        <control>
+                                            <create name="add_price_control" string="Ajouter un Numéro de Prix"/>
+                                            <!-- <create name="add_chapter_control" string="Ajouter un Chapitre" context="{'default_display_type': 'line_chapter'}"/>
+                                            <create name="add_sub_chapter_control" string="Ajouter un sous Chapitre" context="{'default_display_type': 'line_sub_chapter'}"/> -->
+
+                                            <create name="add_section_control" string="Ajouter une Section" context="{'default_display_type': 'line_section'}"/>
+
+                                            <create name="add_note_control" string="Ajouter une Description" context="{'default_display_type': 'line_note'}"/>
+                                        </control>
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="state" invisible="1"/>
+                                        <field name="type_line" invisible="1"/>
+                                        <field name="parent_id" invisible="1"/>
+                                        <field name="price_number"/>
+                                        <field name="code" invisible="1"/>
+                                        <field name="name" widget="section_and_note_text"/>
+                                        <field name="product_id" on_change="onchange_product_id(product_id)" invisible="1"/>
+                                        <field name="quantity" required="not display_type"/>
+                                        <field name="product_uom"/>
+                                        <field name="calculated_sales_price"/>
+                                        <field name="actual_selling_price" />
+                                        <field name="subtotal"/>
+                                    </list>
+                                </field>
+                                <group class="oe_subtotal_footer oe_right" colspan="2" name="building_price_total">
+                                    <field name="amount_untaxed" widget='monetary'/>
+                                    <field name="estimated_margin_project" />
+                                </group>
+                            </page>
+
+                            <page string="Détail des Prix" groups="" readonly="state == 'validated'" >
+                                <field name="building_price_detail_ids" nolabel="1"  mode="list">
+                                    <list string="Détail des Prix" >
+                                        <field name="price_calculation_line_id" domain="[('display_type','=',False)]" string="N° de prix"/>
+                                        <field name="price_number" invisible="1"/>
+                                        <field name="amount_products"/>
+                                        <field name="amount_meterials"/>
+                                        <field name="amount_expendables"/>
+                                        <field name="amount_humans" />
+                                        <field name="amount_total"/>
+                                        <field name="amount_production_cost"/>
+                                        <field name="amount_direct_cost"/>
+                                        <field name="amount_standard_price"/>
+                                        <field name="sale_price"/>
+                                    </list>
+                                </field>
+                            </page>
+
+                            <page string="Autres Information" name="other_info" invisible="state == 'validate'">
+                                <group name="other_info">
+                                    <field name="user_id"/>
+                                    <field name="create_date"/>
+                                </group>
+                            </page>
+                        </notebook>
+
+                </form>
+            </field>
+        </record>
+            
+       <record model="ir.ui.view" id="building_price_calculation_tree_view">
+            <field name="name">building.price.calculation.tree</field>
+            <field name="model">building.price.calculation</field>
+            <field name="type">list</field>
+            <field name="arch" type="xml">
+                <list string="Etude des prix">
+                    <field name="name"/>
+                    <field name="number" />
+                    <field name="ref_tendering"/>
+                    <field name="user_id" />
+                    <field name="create_date" />
+                </list>
+            </field>
+       </record>
+
+       <record model="ir.actions.act_window" id="action_building_price_calculation">
+            <field name="name">Chiffrages</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">building.price.calculation</field>
+            <field name="view_mode">list,form</field>
+       </record>
+
+       <record model="ir.ui.view" id="building_price_details_form">
+	        <field name="name">building.price.details.form</field>
+	        <field name="model">building.price.details</field>
+	        <field name="type">form</field>
+	        <field name="arch" type="xml">
+	        	<form string="Détail des Prix">
+                    <group>
+                        <field name="price_calculation_line_id" domain="[('display_type','=',False)]" string="Ligne de Prix"/>
+                        <field name="price_number" resdonly="1" invisible="1"/>
+                    </group>
+					<notebook>
+						<page string="Matériaux" name="products">
+							<group class="oe_subtotal_footer oe_right" colspan="2" name="building_price_products">
+                            	<field name="amount_products" widget='monetary'/>
+                        	</group>
+							<field name="product_line_ids" nolabel="1">
+								<list string="Produits" editable="bottom">
+									<field name="product_id" />
+									<field name="name" string="Désignation"/>
+									<field name="quantity"/>
+									<field name="product_uom"/>
+									<field name="price_unit"/>
+								</list>
+							</field>
+						</page>
+						<page string="Matériels" name="materials">
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="building_price_materials">
+                                <field name="amount_meterials" widget='monetary'/>
+                            </group>
+							<field name="resource_material_ids" nolabel="1">
+								<list string="Matériels" editable="bottom">
+									<field name="resource_categ_id" />
+									<field name="resource_id" />
+									<field name="name" />
+									<field name="quantity"/>
+									<field name="product_uom"/>
+									<field name="price_unit"/>
+								</list>
+							</field>
+						</page>
+						<page string="Consommables" name="expendable">
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="building_price_expendables">
+                                <field name="amount_expendables" widget='monetary'/>
+                            </group>
+							<field name="expendable_ids" nolabel="1">
+								<list string="Consommables" editable="bottom">
+									<field name="product_id" />
+									<field name="name" string="Désignation"/>
+									<field name="quantity"/>
+									<field name="product_uom"/>
+									<field name="price_unit"/>
+								</list>
+							</field>
+						</page>
+						<page string="Mains d'oeuvre" name="humans">
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="building_price_humans">
+                                <field name="amount_humans" widget='monetary'/>
+                            </group>
+							<field name="resource_human_ids" nolabel="1">
+								<list string="Mains d'oeuvre" editable="bottom">
+									<field name="profile_id" />
+									<field name="resource_id" />
+									<field name="name" />
+									<field name="quantity"/>
+									<field name="product_uom"/>
+									<field name="price_unit"/>
+								</list>
+							</field>
+						</page>
+					</notebook>
+                    <group class="oe_subtotal_footer oe_right" colspan="2" name="building_ds_total">
+                        <field name="amount_total" widget='monetary'/>
+                        <field name="perc_construction_costs" />
+                        <field name="amount_production_cost" widget='monetary'/>
+                        <field name="perc_special_expenses" />
+                        <field name="amount_direct_cost" widget='monetary'/>
+                        <field name="perc_general_costs" />
+                        <field name="amount_standard_price" widget='monetary'/>
+                        <field name="margin_benefit" />
+                        <field name="sale_price" widget='monetary'/>
+                    </group>
+                </form>
+	        </field>
+       </record>
+
+	</data>
+</openerp>

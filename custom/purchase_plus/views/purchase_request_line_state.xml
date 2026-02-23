@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_purchase_request_line_state_tree" model="ir.ui.view">
+        <field name="name">purchase.request.line.state.tree</field>
+        <field name="model">purchase.request.line.state</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="selection_ids"/>
+                <field name="selection_id" domain="[('id', 'in', selection_ids)]"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_purchase_request_line_state_form" model="ir.ui.view">
+        <field name="name">purchase.request.line.state.form</field>
+        <field name="model">purchase.request.line.state</field>
+        <field name="arch" type="xml">
+            <form string="Purchase request Line State">
+                <sheet>
+                    <group>
+                        <field name="sequence" widget="handle"/>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_purchase_request_line_state" model="ir.actions.act_window">
+        <field name="name">États des LDA</field>
+        <field name="res_model">purchase.request.line.state</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="menu_purchase_request_line_state"
+        name="États des LDA"
+        parent="purchase.menu_purchase_config"
+        action="action_purchase_request_line_state"
+    />
+</odoo>

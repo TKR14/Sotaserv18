@@ -1,0 +1,2599 @@
+<odoo>
+    <!-- Chef de projet -->
+    <menuitem
+        id="menu_chef_projet"
+        name="Chef de projet"
+        groups="building_plus.sotaserv_chef_projet"
+        sequence="0"
+    />
+
+    <menuitem
+        id="menu_chef_projet_sites"
+        name="Affaires"
+        parent="menu_chef_projet"
+        sequence="1"
+    />
+    <menuitem
+        id="building_site_menu_chef_projet"
+        name="Affaires"
+        parent="menu_chef_projet_sites"
+        action="building_site_action_chef_projet"
+        sequence="10"
+    />
+    <menuitem
+        id="building_purchase_need_menu_chef_projet"
+        name="Liste des besoins"
+        parent="menu_chef_projet_sites"
+        action="building_purchase_need_action_chef_projet"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_chef_projet_purchases"
+        name="Achats"
+        parent="menu_chef_projet"
+        sequence="2"
+    />
+    <menuitem
+        id="purchase_request_menu_chef_projet"
+        name="Demandes d'achat"
+        parent="menu_chef_projet_purchases"
+        action="purchase_request_action_chef_projet"
+        sequence="10"
+    />
+    <menuitem
+        id="purchase_request_line_menu_chef_projet"
+        name="Lignes de demande d'achat"
+        parent="menu_chef_projet_purchases"
+        action="purchase_request_line_action_chef_projet"
+        sequence="20"
+    />
+    <menuitem
+        id="purchase_order_menu_cp"
+        name="Bons de Commande"
+        parent="menu_chef_projet_purchases"
+        sequence="30"
+    />
+    <menuitem
+        id="purchase_order_menu_chef_projet"
+        name="Sans Attachement"
+        parent="purchase_order_menu_cp"
+        action="building_plus.purchase_order_action_chef_projet"
+        sequence="10"
+    />
+    <menuitem
+        id="purchase_order_menu_attachemenet_chef_projet"
+        name="Avec Attachement"
+        parent="purchase_order_menu_cp"
+        action="building_plus.purchase_order_action_attachment_chef_projet"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_chef_projet_situation"
+        name="Fournisseurs"
+        parent="menu_chef_projet"
+        sequence="4"
+    />
+    <menuitem
+        id="menu_attachement_cp1"
+        name="Attachements fournisseurs"
+        parent="menu_chef_projet_situation"
+        action="purchase_plus.action_purchase_entry"
+        sequence="20"
+    />
+
+    <menuitem id="menu_create_attachement_cp1"
+        name="Créer un attachement fournisseurs" 
+        action="purchase_plus.action_purchase_entry_wizard" 
+        parent="menu_chef_projet_situation"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_decompte_cp1"
+        name="Décompte fournisseurs"
+        parent="menu_chef_projet_situation"
+        action="purchase_plus.action_purchase_entry_decompt_readonly2"
+        sequence="30"
+    />
+
+    <menuitem
+        id="menu_chef_projet_invoice_parent"
+        name="Factures fournisseurs"
+        parent="menu_chef_projet_situation"
+        action="account_action_invoice_readonly_server"
+        sequence="40"
+    />
+
+    <menuitem
+        id="menu_chef_projet_human_resources"
+        name="Ressources humaines"
+        parent="menu_chef_projet"
+        sequence="3"
+    />
+    <menuitem
+        id="hr_assignment_request_menu_chef_projet"
+        name="Demandes"
+        parent="menu_chef_projet_human_resources"
+        action="hr_assignment_request_action_chef_projet"
+        sequence="10"
+    />
+    <menuitem
+        id="hr_assignment_request_line_menu_chef_projet"
+        name="Lignes des demandes"
+        parent="menu_chef_projet_human_resources"
+        action="hr_assignment_request_line_action_chef_projet"
+        sequence="20"
+    />
+    <menuitem
+        id="hr_assignment_menu_chef_projet"
+        name="Affectations et Pointages"
+        parent="menu_chef_projet_human_resources"
+        action="hr_assignment_action_chef_projet"
+        sequence="30"
+    />
+
+    <menuitem
+        id="menu_chef_projet_material"
+        name="Matériels"
+        parent="menu_chef_projet"
+        sequence="5"
+    />
+
+    <menuitem
+        id="menu_material_view_cp"
+        name="Demandes"
+        parent="menu_chef_projet_material"
+        action="logistics.maintenance_request_resource_material_cp_action_serevr"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_materialrequests_line_view_cp"
+        name="Ligne Demandes"
+        parent="menu_chef_projet_material"
+        action="logistics.maintenance_request_resource_material_line_cp_action_serevr"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_assignment_line_view_cp"
+        name="Affectations"
+        parent="menu_chef_projet_material"
+        action="logistics.building_assignment_line_cp_action_serevr"
+        sequence="30"
+    />
+
+    <menuitem
+        id="menu_pointage_cp"
+        name="Pointages"
+        parent="menu_chef_projet_material"
+        action="logistics.materials_worked_hours_cp_action_serevr"
+        sequence="40"
+    />
+
+    <menuitem
+        id="menu_chef_projet_incidents"
+        name="Incidents"
+        parent="menu_chef_projet_material"
+        action="logistics.incident_materiel_cp_action_serevr"
+        sequence="50"
+    />
+
+    <menuitem
+        id="menu_chef_projet_small_materials"
+        name="Petit Matériels"
+        parent="menu_chef_projet"
+        sequence="6"
+    />
+
+    <menuitem
+        id="menu_chef_projet_request_resource_small_material"
+        name="Demandes"
+        parent="menu_chef_projet_small_materials"
+        action="logistics.maintenance_request_resource_small_material_cp_action_serevr"
+        sequence="10"
+    />
+
+    <menuitem
+        id="maintenance_request_resource_small_material_line_chef_projet_menu"
+        name="Ligne Demandes"
+        parent="menu_chef_projet_small_materials"
+        action="logistics.maintenance_request_resource_small_material_line_cp_action_serevr"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_assignment_line_view_cp_small_material"
+        name="Affectations"
+        parent="menu_chef_projet_small_materials"
+        action="logistics.stock_picking_log_cp_action_serevr"
+        sequence="30"
+    />
+
+    <menuitem 
+        id="menu_chef_projet_inventory"  
+        name="Inventaire"  
+        parent="menu_chef_projet"
+        sequence="7"
+    />
+
+    <menuitem
+        id="menu_chef_stock_quant"
+        name="Stocks par Emplacement"
+        parent="menu_chef_projet_inventory"
+        action="building.building_stock_quantsact_server"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_chef_stock_inventory_wizard"
+        name="Ajustement de l'inventaire – Excel"
+        parent="menu_chef_projet_inventory"
+        action="stock_plus.stock_inventory_wizard_action"
+        sequence="20"
+    />
+
+    <!-- <menuitem
+        id="menu_chef_stock_inventory"
+        name="Ajustements de l'inventaire"
+        parent="menu_chef_projet_inventory"
+        action="stock_plus.stock_inventory_action_server"
+        sequence="30"
+    /> -->
+
+    <menuitem
+        id="stock_picking_scrap_menu_project_manager"
+        name="Rebut"
+        parent="menu_chef_projet_inventory"
+        action="stock_picking_scrap_action_project_manager"
+        sequence="40"
+    />
+
+    <menuitem 
+        id="menu_building_attachment_cp_parent"  
+        name="Clients"  
+        parent="menu_chef_projet"
+        sequence="3"
+    />
+
+    <menuitem 
+        id="menu_building_attachment_cp"  
+        action="building.building_attachment_act_server"  
+        parent="menu_building_attachment_cp_parent" 
+        sequence="20"
+    />
+
+    <menuitem 
+        id="menu_create_building_attachment_cp"  
+        action="building.create_attachment_action"  
+        parent="menu_building_attachment_cp_parent" 
+        sequence="10"
+    />
+
+    <menuitem 
+        id="menu_decompte_client_readonly_cp"  
+        action="building.action_purchase_entry_decompt_clinet_readonly"  
+        parent="menu_building_attachment_cp_parent"
+        sequence="30"
+    />
+
+    <!-- Mak Pointage and Affectation inactive -->
+    <menuitem id="building.menu_action_materials_worked_hours_tree_view" active="False"/>
+    <menuitem id="fleet.fleet_vehicle_menu" active="False"/>
+    <menuitem id="fleet.fleet_vehicle_state_menu" active="False"/>
+    <menuitem id="fleet_maintenance.menu_vehicle_consumption__list" active="False"/>
+    <menuitem id="building.menu_building_common_report" active="False"/>
+    <menuitem id="building.menu_building_assignment_vehicle_action" active="False"/>
+    <menuitem id="building.menu_maintenance_request_resource_material_list" active="False"/>
+    <menuitem id="building.menu_maintenance_request_resource_material_to_affected_list" active="False"/>
+
+    <!-- Add menu Autre to the menu Matériels -->
+    <menuitem
+        id="menu_fleet_material_autre"
+        name="Autre"
+        parent="fleet.menu_root"
+        sequence="2"
+    />
+
+    <menuitem
+        id="fleet.fleet_vehicle_menu"
+        name="Matériel"
+        parent="fleet.fleet_vehicles"
+        action="building.action_server_materials_tree_view"
+        groups="building.group_logistics"
+        sequence="1"
+    />
+
+    <menuitem
+        id="fleet.fleet_vehicle_state_menu"
+        name="Statut du Matériel"
+        parent="fleet.fleet_configuration"
+        action="building.action_server_state_materials_tree_view"
+        sequence="10"
+    />
+
+    <menuitem
+        id="building.menu_maintenance_request_resource_material_list"
+        name="Demandes Matériels"
+        parent="menu_fleet_material_autre"
+        action="building.action_maintenance_request_server_resource_material_tree_view"
+        sequence="10"
+    />
+
+    <menuitem
+        id="building.menu_maintenance_request_resource_material_to_affected_list"
+        name="Demandes Matériels à Affecter"
+        parent="menu_fleet_material_autre"
+        action="building.action_maintenance_request_server_resource_material_to_affected_tree_view"
+        sequence="20"
+    />
+
+    <menuitem
+        id="building.menu_building_assignment_vehicle_action"
+        name="Affectation"
+        parent="menu_fleet_material_autre"
+        action="building.building_assignment_vehicle_action_server"
+        groups="building.group_logistics"
+        sequence="30"
+    />
+
+    <menuitem
+        id="building.menu_action_materials_worked_hours_tree_view"
+        name="Pointage"
+        parent="menu_fleet_material_autre"
+        action="building.action_server_materials_worked_hours_tree_view"
+        groups="building.group_logistics"
+        sequence="40"
+    />
+
+    <!-- Logistique -->
+    <menuitem
+        id="menu_logistique"
+        name="Logistique"
+        groups="building.group_logistics"
+        sequence="0"
+    />
+
+    <menuitem
+        id="fleet.fleet_vehicle_menu_logistique"
+        name="Matériel"
+        parent="menu_logistique"
+        sequence="10"
+    />
+
+    <menuitem
+        id="fleet.fleet_equipment_and_small_menu"
+        name="Matériel"
+        parent="fleet.fleet_vehicle_menu_logistique"
+        action="building.action_server_materials_tree_view"
+        sequence="10"
+    />
+    <menuitem
+        id="fleet.request_lines_to_assign"
+        name="Les Lignes de Demande à Affecter"
+        parent="fleet.fleet_vehicle_menu_logistique"
+        action="building.action_line_material_requests_tree_view"
+        sequence="20"
+    />
+    <menuitem
+        id="building.menu_logistique_building_assignment_vehicle_action"
+        name="Affectation"
+        parent="fleet.fleet_vehicle_menu_logistique"
+        action="building.building_assignment_vehicle_action_server"
+        sequence="30"
+    />
+    <menuitem
+        id="building.menu_logistique_materials_worked_hours_tree_view"
+        name="Pointage"
+        parent="fleet.fleet_vehicle_menu_logistique"
+        action="building.action_server_materials_worked_hours_tree_view"
+        sequence="40"
+    />
+
+    <menuitem
+        id="fleet.purchase_menu"
+        name="Achat"
+        parent="menu_logistique"
+        sequence="20"
+    />
+
+    <menuitem
+        id="building.purchase_request_menu"
+        name="Demande d'achat"
+        parent="fleet.purchase_menu"
+        action="building.purchase_request_action"
+        sequence="10"
+    />
+
+    <menuitem
+        id="building.purchase_requisition_lines_logistics_menu"
+        name="Lignes de Demande d'Achat"
+        parent="fleet.purchase_menu"
+        action="building.logistics_purchase_requisition_lines"
+        sequence="10"
+    />
+
+    <menuitem
+        id="fleet.inventory_menu"
+        name="Inventaire"
+        parent="menu_logistique"
+        sequence="30"
+    />
+
+    <menuitem
+        id="building.transfer_logistics_menu"
+        name="Transfert"
+        parent="fleet.inventory_menu"
+        action="stock.action_picking_tree_all"
+        sequence="10"
+    />
+
+    <menuitem
+        id="building.receptions_logistics_menu"
+        name="Réceptions"
+        parent="fleet.inventory_menu"
+        action="stock_picking_incoming_action_magasinier_1"
+        sequence="20"
+    />
+
+    <menuitem
+        id="fleet.construction_site_menu"
+        name="Chantier"
+        parent="menu_logistique"
+        sequence="30"
+    />
+
+    <menuitem
+        id="building_purchase_need_menu_group_logistics"
+        name="Liste des besoins"
+        parent="fleet.construction_site_menu"
+        action="building_plus.building_purchase_need_action_group_logistics"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_logistique_materials_worked_stock_quantsact_view"
+        name="Stocks par Emplacement"
+        parent="fleet.construction_site_menu"
+        action="building.building_stock_quantsact_server"
+        sequence="20"
+    />
+    <!-- Conducteur de travaux -->
+    <menuitem
+        id="menu_conduct_trv"
+        name="Conducteur de travaux"
+        groups="building_plus.sotaserv_conduct_trv"
+        sequence="0"
+    />
+
+    <menuitem
+        id="menu_conduct_trv_sites"
+        name="Affaires"
+        parent="menu_conduct_trv"
+        sequence="1"
+    />
+    <menuitem
+        id="building_site_menu_conduct_trv"
+        name="Affaires"
+        parent="menu_conduct_trv_sites"
+        action="building_site_action_conduct_trv"
+        sequence="10"
+    />
+    <menuitem
+        id="building_purchase_need_menu_conduct_trv"
+        name="Liste des besoins"
+        parent="menu_conduct_trv_sites"
+        action="building_purchase_need_action_conduct_trv"
+        sequence="20"
+    />
+    
+    <menuitem
+        id="suivi_budgetaire_menu_conduct_trv"
+        name="Suivi budgétaire"
+        parent="menu_conduct_trv_sites"
+        action="suivi_budgetaire_action_conduct_trv"
+        sequence="30"
+    />
+
+    <menuitem
+        id="menu_conduct_trv_purchases"
+        name="Achats"
+        parent="menu_conduct_trv"
+        sequence="2"
+    />
+    <menuitem
+        id="purchase_request_menu_conduct_trv"
+        name="Demandes d'achat"
+        parent="menu_conduct_trv_purchases"
+        action="purchase_request_action_conduct_trv"
+        sequence="10"
+    />
+    <menuitem
+        id="purchase_request_line_menu_conduct_trv"
+        name="Lignes de demande d'achat"
+        parent="menu_conduct_trv_purchases"
+        action="purchase_request_line_action_conduct_trv"
+        sequence="20"
+    />
+    <menuitem
+        id="purchase_order_menu_trv"
+        name="Bons de Commande"
+        parent="menu_conduct_trv_purchases"
+        sequence="30"
+    />
+    <menuitem
+        id="purchase_order_menu_conduct_trv"
+        name="Sans Attachement"
+        parent="purchase_order_menu_trv"
+        action="building_plus.purchase_order_action_conduct_trv"
+        sequence="10"
+    />
+    <menuitem
+        id="purchase_order_menu_attachemenet_conduct_trv"
+        name="Avec Attachement"
+        parent="purchase_order_menu_trv"
+        action="building_plus.purchase_order_action_attachment_conduct_trv"
+        sequence="20"
+    />
+    <menuitem
+        id="menu_conduct_trv_human_resources"
+        name="Ressources humaines"
+        parent="menu_conduct_trv"
+        sequence="3"
+    />
+    <menuitem
+        id="hr_assignment_request_menu_conduct_trv"
+        name="Demandes"
+        parent="menu_conduct_trv_human_resources"
+        action="hr_assignment_request_action_conduct_trv"
+        sequence="10"
+    />
+    <menuitem
+        id="hr_assignment_request_line_menu_conduct_trv"
+        name="Lignes des demandes"
+        parent="menu_conduct_trv_human_resources"
+        action="hr_assignment_request_line_action_conduct_trv"
+        sequence="20"
+    />
+    <menuitem
+        id="hr_assignment_menu_conduct_trv"
+        name="Affectations et Pointages"
+        parent="menu_conduct_trv_human_resources"
+        action="hr_assignment_action_conduct_trv"
+        sequence="30"
+    />
+
+    <menuitem
+        id="menu_conduct_trv_inventory_parent"
+        name="Inventaire"
+        parent="menu_conduct_trv"
+        sequence="4"
+    />
+    <menuitem
+        id="menu_conduct_trv_inventory"
+        name="Aperçu de l'inventaire"
+        parent="menu_conduct_trv_inventory_parent"
+        action="stock_picking_type_action_conduct_trv"
+        sequence="10"
+    />
+<!--     <menuitem
+        id="menu_conduct_trv_inventory"
+        name="Réceptions"
+        parent="menu_conduct_trv_inventory_parent"
+        action="stock_picking_incoming_action_conduct_trv"
+        sequence="20"
+    /> -->
+    
+    <menuitem
+        id="menu_conduct_trv_material"
+        name="Matériels"
+        parent="menu_conduct_trv"
+        sequence="5"
+    />
+
+    <menuitem
+        id="menu_material_view_ct"
+        name="Demandes"
+        parent="menu_conduct_trv_material"
+        action="logistics.maintenance_request_resource_material_trv_action_serevr"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_materialrequests_line_view_ct"
+        name="Ligne Demandes"
+        parent="menu_conduct_trv_material"
+        action="logistics.maintenance_request_resource_material_line_trv_action_serevr"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_assignment_line_view_trv"
+        name="Affectations"
+        parent="menu_conduct_trv_material"
+        action="logistics.building_assignment_line_trv_action_serevr"
+        sequence="30"
+    />
+
+    <menuitem
+        id="menu_pointage_ct"
+        name="Pointages"
+        parent="menu_conduct_trv_material"
+        action="logistics.materials_worked_hours_trv_action_serevr"
+        sequence="40"
+    />
+
+    <menuitem
+        id="menu_conduct_trv_incidents"
+        name="Incidents"
+        parent="menu_conduct_trv_material"
+        action="logistics.incident_materiel_trv_action_serevr"
+        sequence="50"
+    />
+
+    <menuitem
+        id="menu_conduct_trv_small_materials"
+        name="Petit Matériels"
+        parent="menu_conduct_trv"
+        sequence="6"
+    />
+
+    <menuitem
+        id="menu_conduct_trv_request_resource_small_material"
+        name="Demandes"
+        parent="menu_conduct_trv_small_materials"
+        action="logistics.maintenance_request_resource_small_material_trv_action_serevr"
+        sequence="10"
+    />
+
+    <menuitem
+        id="maintenance_request_resource_small_material_line_conduct_trv_menu"
+        name="Ligne Demandes"
+        parent="menu_conduct_trv_small_materials"
+        action="logistics.maintenance_request_resource_small_material_line_trv_action_serevr"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_assignment_line_view_trv_small_material"
+        name="Affectations"
+        parent="menu_conduct_trv_small_materials"
+        action="logistics.stock_picking_log_trv_action_serevr"
+        sequence="30"
+    />
+
+    <menuitem 
+        id="menu_building_attachment_ct_parent"  
+        name="Clients"  
+        parent="menu_conduct_trv"
+        sequence="7"
+    />
+
+    <menuitem 
+        id="menu_create_building_attachment_ct"  
+        action="building.create_attachment_action"  
+        parent="menu_building_attachment_ct_parent" 
+        sequence="10"
+    />
+
+    <menuitem 
+        id="menu_building_attachment_ct"  
+        action="building.building_attachment_act_server"  
+        parent="menu_building_attachment_ct_parent"
+        sequence="20"
+    />
+
+    <menuitem 
+        id="menu_decompte_client_readonly_ct"  
+        action="building.action_purchase_entry_decompt_clinet_readonly"  
+        parent="menu_building_attachment_ct_parent"
+        sequence="30"
+    />
+
+    <menuitem 
+        id="menu_purchase_entry_ct_parent"  
+        name="Fornisseurs"  
+        parent="menu_conduct_trv"
+        sequence="8"
+    />
+
+    <menuitem
+        id="menu_decompte_ct_01"
+        name="Décompte fournisseurs"
+        parent="menu_purchase_entry_ct_parent"
+        action="purchase_plus.action_purchase_entry_decompt_readonly2"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_ct_conduct_trv_invoice_parent"
+        name="Factures fournisseurs"
+        parent="menu_purchase_entry_ct_parent"
+        action="account_action_invoice_readonly_server"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_conduct_trv_stock_quant"
+        name="Stocks par Emplacement"
+        parent="menu_conduct_trv"
+        action="building.building_stock_quantsact_server"
+        sequence="9"
+    />
+
+    <!-- Assistant technique -->
+    <menuitem
+        id="menu_assistant_tech"
+        name="Assistant technique"
+        groups="building_plus.sotaserv_assistant_tech"
+        sequence="0"
+    />
+
+    <menuitem
+        id="menu_assistant_tech_purchases"
+        name="Achats"
+        parent="menu_assistant_tech"
+        sequence="1"
+    />
+    <menuitem
+        id="purchase_request_menu_assistant_tech"
+        name="Demandes d'achat"
+        parent="menu_assistant_tech_purchases"
+        action="purchase_request_action_assistant_tech"
+        sequence="10"
+    />
+    <menuitem
+        id="purchase_request_line_menu_assistant_tech"
+        name="Lignes de demande d'achat"
+        parent="menu_assistant_tech_purchases"
+        action="purchase_request_line_action_assistant_tech"
+        sequence="20"
+    />
+
+    <!-- Technicien -->
+    <menuitem
+        id="menu_technicien"
+        name="Technicien"
+        groups="building_plus.sotaserv_technicien"
+        sequence="0"
+    />
+
+    <menuitem
+        id="menu_technicien_purchases"
+        name="Achats"
+        parent="menu_technicien"
+        sequence="1"
+    />
+    <menuitem
+        id="purchase_request_menu_technicien"
+        name="Demandes d'achat"
+        parent="menu_technicien_purchases"
+        action="purchase_request_action_technicien"
+        sequence="10"
+    />
+    <menuitem
+        id="purchase_request_line_menu_technicien"
+        name="Lignes de demande d'achat"
+        parent="menu_technicien_purchases"
+        action="purchase_request_line_action_technicien"
+        sequence="20"
+    />
+
+    <!-- Responsable de zone -->
+    <menuitem
+        id="menu_resp_zone"
+        name="Responsable de zone"
+        groups="building_plus.sotaserv_resp_zone"
+        sequence="0"
+    />
+
+    <menuitem
+        id="menu_resp_zone_purchases"
+        name="Achats"
+        parent="menu_resp_zone"
+        sequence="1"
+    />
+    <menuitem
+        id="purchase_request_menu_resp_zone"
+        name="Demandes d'achat"
+        parent="menu_resp_zone_purchases"
+        action="purchase_request_action_resp_zone"
+        sequence="10"
+    />
+    <menuitem
+        id="purchase_request_line_menu_resp_zone"
+        name="Lignes de demande d'achat"
+        parent="menu_resp_zone_purchases"
+        action="purchase_request_line_action_resp_zone"
+        sequence="20"
+    />
+
+    <!-- Magasinier principal -->
+    <menuitem
+        id="menu_magasinier"
+        name="Magasinier principal"
+        groups="building_plus.sotaserv_magasinier"
+        sequence="0"
+    />
+
+    <menuitem
+        id="menu_magasinier_purchases"
+        name="Achats"
+        parent="menu_magasinier"
+        sequence="1"
+    />
+    <menuitem
+        id="purchase_request_line_menu_magasinier"
+        name="Demande de transfert"
+        parent="menu_magasinier_purchases"
+        action="purchase_request_line_action_magasinier"
+        sequence="10"
+    />
+    <menuitem
+        id="purchase_request_line_menu_magasinier_readonly"
+        name="Lignes de demande d'achat (Principal &amp; Logistique)"
+        parent="menu_magasinier_purchases"
+        action="purchase_request_line_action_magasinier_readonly"
+        sequence="20"
+    />
+    <menuitem
+        id="purchase_order_menu_magasinier"
+        name="Bons de Commande"
+        parent="menu_magasinier_purchases"
+        action="purchase_order_action_magasinier"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_magasinier_inventory"
+        name="Inventaire"
+        parent="menu_magasinier"
+        sequence="2"
+    />
+    <menuitem
+        id="stock_picking_incoming_menu_magasinier_1"
+        name="Réceptions"
+        parent="menu_magasinier_inventory"
+        action="stock_picking_incoming_action_magasinier_1"
+        sequence="20"
+    />
+    <menuitem
+        id="stock_picking_internal_menu_magasinier"
+        name="Transferts"
+        parent="menu_magasinier_inventory"
+        action="stock_picking_int_action_magasinier"
+        sequence="30"
+    />
+    <menuitem
+        id="stock_picking_internal_transfer_menu_magasinier"
+        name="Transferts intersiège"
+        parent="menu_magasinier_inventory"
+        action="stock_picking_internal_transfer_action"
+        sequence="40"
+    />
+    <menuitem
+        id="stock_picking_scrap_menu_magasinier"
+        name="Rebut"
+        parent="menu_magasinier_inventory"
+        action="stock_picking_scrap_action_magasinier"
+        sequence="50"
+    />
+    <menuitem
+        id="stock_picking_return_menu_magasinier"
+        name="Retour"
+        parent="menu_magasinier_inventory"
+        action="stock_picking_return_action_magasinier"
+        sequence="60"
+    />
+
+    <menuitem
+        id="menu_magasinier_human_resources"
+        name="Ressources humaines"
+        parent="menu_magasinier"
+        sequence="3"
+    />
+    <!-- <menuitem
+        id="hr_assignment_menu_magasinier"
+        name="Affectations et Pointages"
+        parent="menu_magasinier_human_resources"
+        action="hr_assignment_action_magasinier"
+        sequence="10"
+    /> -->
+    <menuitem
+        id="hr_assignment_menu_magasinier_1"
+        name="Affectations et Pointages"
+        parent="menu_magasinier_human_resources"
+        action="hr_assignment_action_magasinier_1"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_magasinier_principale_material"
+        name="Matériels"
+        parent="menu_magasinier"
+        sequence="3"
+    />
+
+    <menuitem
+        id="menu_magasinier_principale_material_allocation"
+        name="Affectation Matériels"
+        parent="menu_magasinier_principale_material"
+        action="building.action_building_assignment_line_vec_tree_readonly"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_magasinier_principale_material_scores"
+        name="Pointages Matériels"
+        parent="menu_magasinier_principale_material"
+        action="building.action_materials_worked_hours_tree_view"
+        sequence="20"
+    />
+
+    <!-- Vue global -->
+    <menuitem
+        id="menu_magasinier_global"
+        name="Vue global"
+        parent="menu_magasinier"
+        sequence="4"
+    />
+    <menuitem
+        id="stock_quant_menu_magasinier"
+        name="Stocks par Emplacement"
+        parent="menu_magasinier_global"
+        action="building.building_stock_quantsact"
+        sequence="10"
+    />
+    <menuitem
+        id="stock_picking_menu_magasinier_all"
+        name="Réceptions"
+        parent="menu_magasinier_global"
+        action= "stock_picking_incoming_action_magasinier_2"
+        sequence="20"
+    />
+
+    <!--
+    <menuitem
+        id="menu_magasinier_inventaire"
+        name="Inventaire"
+        parent="menu_magasinier"
+        sequence="5"
+    />
+    <menuitem
+        id="reception_menu_magasinier_inventaire"
+        name="Réception"
+        parent="menu_magasinier_inventaire"
+        action= "stock_picking_incoming_action_magasinier_3"
+        sequence="10"
+    /> -->
+
+    <!-- Aide magasinier -->
+    <menuitem
+        id="menu_aide_magasinier"
+        name="Aide magasinier"
+        groups="building_plus.sotaserv_aide_magasinier"
+        action="blank_action_aide_magasinier"
+        sequence="0"
+    />
+
+    <!-- Directeur de zone -->
+    <menuitem
+        id="menu_directeur_zone"
+        name="Directeur de zone"
+        groups="building_plus.sotaserv_directeur_zone"
+        sequence="0"
+    />
+
+    <menuitem
+        id="menu_directeur_zone_sites"
+        name="Affaires"
+        parent="menu_directeur_zone"
+        sequence="1"
+    />
+    <menuitem
+        id="building_site_menu_directeur_zone"
+        name="Affaires"
+        parent="menu_directeur_zone_sites"
+        action="building_site_action_directeur_zone"
+        sequence="10"
+    />
+    <menuitem
+        id="building_purchase_need_menu_directeur_zone"
+        name="Liste des besoins"
+        parent="menu_directeur_zone_sites"
+        action="building_purchase_need_action_directeur_zone"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_directeur_zone_purchases"
+        name="Achats"
+        parent="menu_directeur_zone"
+        sequence="2"
+    />
+    <menuitem
+        id="purchase_request_menu_directeur_zone"
+        name="Demandes d'achat"
+        parent="menu_directeur_zone_purchases"
+        action="purchase_request_action_directeur_zone"
+        sequence="10"
+    />
+    <menuitem
+        id="purchase_request_line_menu_directeur_zone"
+        name="Lignes de demande d'achat"
+        parent="menu_directeur_zone_purchases"
+        action="purchase_request_line_action_directeur_zone"
+        sequence="20"
+    />
+    <menuitem
+        id="purchase_order_menu_attachment_directeur_zone"
+        name="Bons de Commande avec Attachement"
+        parent="menu_directeur_zone_purchases"
+        action="building_plus.purchase_order_action_attachment_directeur_zone"
+        sequence="30"
+    />
+
+    <menuitem
+        id="menu_directeur_zone_human_resources"
+        name="Ressources humaines"
+        parent="menu_directeur_zone"
+        sequence="3"
+    />
+    <menuitem
+        id="hr_assignment_request_menu_directeur_zone"
+        name="Demandes"
+        parent="menu_directeur_zone_human_resources"
+        action="hr_assignment_request_action_directeur_zone"
+        sequence="10"
+    />
+    <menuitem
+        id="hr_assignment_request_line_menu_directeur_zone"
+        name="Lignes des demandes"
+        parent="menu_directeur_zone_human_resources"
+        action="hr_assignment_request_line_action_directeur_zone"
+        sequence="20"
+    />
+    <menuitem
+        id="hr_assignment_menu_directeur_zone"
+        name="Affectations et Pointages"
+        parent="menu_directeur_zone_human_resources"
+        action="hr_assignment_action_directeur_zone"
+        sequence="30"
+    />
+    <menuitem
+        id="menu_directeur_zone_facturation"
+        name="Fornisseurs"
+        parent="menu_directeur_zone"
+        sequence="5"
+    />
+
+    <menuitem
+        id="menu_decompt_view_dz"
+        name="Décompte fournisseurs"
+        parent="menu_directeur_zone_facturation"
+        action="purchase_plus.action_purchase_entry_decompt"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_invoice_parent_dz"
+        name="Factures fournisseurs"
+        parent="menu_directeur_zone_facturation"
+        action="account_action_invoice_readonly_server"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_directeur_zone_client"
+        name="Clients"
+        parent="menu_directeur_zone"
+        sequence="4"
+    />
+
+    <menuitem 
+        id="menu_building_attachment_dz"  
+        action="building.building_attachment_act_server"  
+        parent="menu_directeur_zone_client" 
+        sequence="10"
+    />
+
+    <menuitem 
+        id="menu_directeur_zone_building_attachment_inv"  
+        action="building.building_decompte_dz_act_server"
+        parent="menu_directeur_zone_client" 
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_directeur_zone_material"
+        name="Matériels"
+        parent="menu_directeur_zone"
+        sequence="7"
+    />
+
+    <menuitem
+        id="menu_material_view_dz"
+        name="Demandes"
+        parent="menu_directeur_zone_material"
+        action="logistics.maintenance_request_resource_material_dz_action_serevr"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_materialrequests_line_view_dz"
+        name="Ligne Demandes"
+        parent="menu_directeur_zone_material"
+        action="logistics.maintenance_request_resource_material_line_dz_action_serevr"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_assignment_line_view_dz"
+        name="Affectations"
+        parent="menu_directeur_zone_material"
+        action="logistics.building_assignment_line_dz_action_serevr"
+        sequence="30"
+    />
+
+    <menuitem
+        id="menu_directeur_zone_small_material"
+        name="Petit Matériels"
+        parent="menu_directeur_zone"
+        sequence="8"
+    />
+
+    <menuitem
+        id="menu_directeur_zone_request_resource_small_material"
+        name="Demandes"
+        parent="menu_directeur_zone_small_material"
+        action="logistics.maintenance_request_resource_small_material_dz_action_serevr"
+        sequence="10"
+    />
+
+    <menuitem
+        id="maintenance_request_resource_small_material_line_directeur_zone_menu"
+        name="Ligne Demandes"
+        parent="menu_directeur_zone_small_material"
+        action="logistics.maintenance_request_resource_small_material_line_dz_action_serevr"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_assignment_line_view_dz_small_material"
+        name="Affectations"
+        parent="menu_directeur_zone_small_material"
+        action="logistics.stock_picking_log_dz_action_serevr"
+        sequence="30"
+    />
+
+    <menuitem 
+        id="menu_directeur_zone_inventory"  
+        name="Inventaire"  
+        parent="menu_directeur_zone"
+        sequence="9"
+    />
+
+    <menuitem
+        id="menu_directeur_zone_stock_quant"
+        name="Stocks par Emplacement"
+        parent="menu_directeur_zone_inventory"
+        action="building.building_stock_quantsact_server"
+        sequence="10"
+    />
+
+    <menuitem
+        id="stock_picking_scrap_menu_directeur_zone"
+        name="Rebut"
+        parent="menu_directeur_zone_inventory"
+        action="stock_picking_scrap_action_directeur_zone"
+        sequence="20"
+    />
+
+    <!-- Superviseur de site -->
+    <menuitem
+        id="menu_superviseur_site"
+        name="Superviseur de site"
+        groups="building_plus.sotaserv_superviseur_site"
+        sequence="0"
+    />
+
+    <menuitem
+        id="menu_superviseur_site_sites"
+        name="Affaires"
+        parent="menu_superviseur_site"
+        sequence="1"
+    />
+    <menuitem
+        id="building_site_menu_superviseur_site"
+        name="Affaires"
+        parent="menu_superviseur_site_sites"
+        action="building_site_action_superviseur_site"
+        sequence="10"
+    />
+    <menuitem
+        id="building_purchase_need_menu_superviseur_site"
+        name="Liste des besoins"
+        parent="menu_superviseur_site_sites"
+        action="building_purchase_need_action_superviseur_site"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_superviseur_site_purchases"
+        name="Achats"
+        parent="menu_superviseur_site"
+        sequence="2"
+    />
+    <menuitem
+        id="purchase_request_menu_superviseur_site"
+        name="Demandes d'achat"
+        parent="menu_superviseur_site_purchases"
+        action="purchase_request_action_superviseur_site"
+        sequence="10"
+    />
+    <menuitem
+        id="purchase_request_line_menu_superviseur_site"
+        name="Lignes de demande d'achat"
+        parent="menu_superviseur_site_purchases"
+        action="purchase_request_line_action_superviseur_site"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_superviseur_site_human_resources"
+        name="Ressources humaines"
+        parent="menu_superviseur_site"
+        sequence="3"
+    />
+    <menuitem
+        id="hr_assignment_request_menu_superviseur_site"
+        name="Demandes"
+        parent="menu_superviseur_site_human_resources"
+        action="hr_assignment_request_action_superviseur_site"
+        sequence="10"
+    />
+    <menuitem
+        id="hr_assignment_request_line_menu_superviseur_site"
+        name="Lignes des demandes"
+        parent="menu_superviseur_site_human_resources"
+        action="hr_assignment_request_line_action_superviseur_site"
+        sequence="20"
+    />
+    <menuitem
+        id="hr_assignment_menu_superviseur_site"
+        name="Affectations"
+        parent="menu_superviseur_site_human_resources"
+        action="hr_assignment_action_superviseur_site"
+        sequence="40"
+    />
+
+    <!-- Bureau d'ordre -->
+    <menuitem
+        id="menu_bo"
+        name="Bureau d'ordre"
+        groups="account_plus.acount_move_group_bo"
+    />
+
+    <!-- <menuitem
+        id="menu_decompt_view_bo_readonly"
+        name="Décompte fournisseur"
+        parent="menu_bo"
+        action="purchase_plus.action_purchase_entry_decompt_readonly"
+        sequence="1"
+    /> -->
+
+    <menuitem
+        id="menu_bo_accounting"
+        name="Facturation"
+        parent="menu_bo"
+        sequence="2"
+    />
+    <menuitem
+        id="menu_bo_supplier_invoices"
+        name="Factures Fournisseurs"
+        parent="menu_bo_accounting"
+        sequence="10"
+    />
+    <menuitem
+        id="account_move_menu_bo"
+        name="Factures"
+        parent="menu_bo_supplier_invoices"
+        action="account_move_action_bo"
+        sequence="10"
+    />
+    <menuitem
+        id="account_avoirs_menu_bo"
+        name="Avoirs"
+        parent="menu_bo_supplier_invoices"
+        action="account_avoirs_action_bo"
+        sequence="20"
+    />
+    <menuitem
+        id="account_payment_menu_bo"
+        name="Paiements"
+        parent="menu_bo_supplier_invoices"
+        action="account_payment_action_bo"
+        sequence="30"
+    />
+    <menuitem
+        id="menu_bo_partner_invoices"
+        name="Factures Clients"
+        parent="menu_bo_accounting"
+        sequence="20"
+    />
+    <menuitem
+        id="menu_bo_client_invoices"
+        name="Factures"
+        parent="menu_bo_partner_invoices"
+        action="account_move_out_invoice_action_bo"
+        sequence="10"
+    />
+    <menuitem
+        id="account_client_avoirs_menu_bo"
+        name="Avoirs"
+        parent="menu_bo_partner_invoices"
+        action="account_avoirs_client_action_bo"
+        sequence="20"
+    />
+    <menuitem
+        id="account_client_payment_menu_bo"
+        name="Paiements"
+        parent="menu_bo_partner_invoices"
+        action="account_payment_client_action_bo"
+        sequence="30"
+    />
+
+    <!-- Directeur général -->
+    <menuitem
+        id="menu_dg"
+        name="Directeur général"
+        groups="building_plus.sotaserv_dg"
+        sequence="0"
+    />
+
+    <menuitem
+        id="menu_dg_human_resources"
+        name="Ressources humaines"
+        parent="menu_dg"
+        sequence="1"
+    />
+    <menuitem
+        id="hr_assignment_request_menu_dg"
+        name="Demandes"
+        parent="menu_dg_human_resources"
+        action="hr_assignment_request_action_dg"
+        sequence="10"
+    />
+    <menuitem
+        id="hr_assignment_request_line_menu_dg"
+        name="Lignes des demandes"
+        parent="menu_dg_human_resources"
+        action="hr_assignment_request_line_action_dg"
+        sequence="20"
+    />
+    <menuitem
+        id="hr_assignment_menu_dg"
+        name="Affectations"
+        parent="menu_dg_human_resources"
+        action="hr_assignment_action_dg"
+        sequence="40"
+    />
+
+    <menuitem
+        id="menu_dg_accounting"
+        name="Facturation"
+        parent="menu_dg"
+        sequence="2"
+    />
+    <menuitem
+        id="account_move_menu_dg"
+        name="Factures"
+        parent="menu_dg_accounting"
+        action="account_move_action_dg"
+    />
+    <menuitem
+        id="account_payment_menu_dg"
+        name="Paiements"
+        parent="menu_dg_accounting"
+        action="account_payment_action_dg"
+        sequence="20"
+    />
+    <!-- <menuitem
+        id="menu_dg_purchases"
+        name="Achats"
+        parent="menu_dg"
+        sequence="3"
+    />
+    <menuitem
+        id="purchase_order_menu_rfq_dg"
+        name="Demandes de Prix"
+        parent="menu_dg_purchases"
+        action="purchase_order_rfq"
+        sequence="10"
+    />
+    <menuitem
+        id="price_comparison_menu_dg"
+        name="Comparaison des Offres"
+        parent="menu_dg_purchases"
+        action="price_comparison_action"
+        sequence="20"
+    /> -->
+
+
+    <!-- Auditeur -->
+    <menuitem
+        id="menu_aud"
+        name="Auditeur"
+        groups="account_plus.acount_move_group_Aud"
+        sequence="0"
+    />
+    <menuitem
+        id="menu_aud_crm"
+        name="CRM"
+        parent="menu_aud"
+        groups="account_plus.acount_move_group_Aud"
+        sequence="1"
+    />
+    <menuitem
+        id="menu_pipeline_crm_auditeur"
+        name="Mon Pipeline"
+        parent="menu_aud_crm"
+        groups="account_plus.acount_move_group_Aud"
+        action="crm_pipeline_action"
+        sequence="10"
+    />
+    <menuitem id="menu_building_bp_auditeur"
+        name="Bordereau des Prix"
+        parent="menu_aud_crm"
+        groups="account_plus.acount_move_group_Aud"
+        action="building_bp_action_auditeur" 
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_audit_sites"
+        name="Affaires"
+        parent="menu_aud"
+        sequence="2"
+    />
+    <menuitem
+        id="building_site_menu_audit"
+        name="Affaires"
+        parent="menu_audit_sites"
+        action="building_site_action_audit"
+        sequence="10"
+    />
+    <menuitem
+        id="building_purchase_need_menu_audit"
+        name="Liste des besoins"
+        parent="menu_audit_sites"
+        action="building_purchase_need_action_audit"
+        sequence="20"
+    />
+    <menuitem
+        id="building_purchase_budget_menu_audit"
+        name="Suivi budgétaire"
+        parent="menu_audit_sites"
+        action="building_purchase_budget_action_audit"
+        sequence="30"
+    />
+
+    <menuitem
+        id="menu_audit_purchases"
+        name="Achats"
+        parent="menu_aud"
+        sequence="3"
+    />
+    <menuitem
+        id="purchase_request_menu_audit"
+        name="Demandes d'achat"
+        parent="menu_audit_purchases"
+        action="purchase_request_action_audit"
+        sequence="10"
+    />
+    <menuitem
+        id="purchase_request_line_menu_audit"
+        name="Lignes de demande d'achat"
+        parent="menu_audit_purchases"
+        action="purchase_request_line_action_audit"
+        sequence="20"
+    />
+    <menuitem
+        id="price_request_menu_all_audit"
+        name="Demandes de Prix"
+        parent="menu_audit_purchases"
+        action="building_plus.price_request_action_all"
+        sequence="30"
+    />
+    <menuitem
+        id="purchase_order_menu_audit"
+        name="Bons de Commande sans Attachement"
+        parent="menu_audit_purchases"
+        action="building_plus.purchase_order_action_no_attachment_audit"
+        sequence="40"
+    />
+
+    <menuitem
+        id="menu_audit_inventory"
+        name="Inventaire"
+        parent="menu_aud"
+        sequence="4"
+    />
+    <menuitem
+        id="stock_picking_type_menu_audit"
+        name="Aperçu de l'inventaire"
+        parent="menu_audit_inventory"
+        action="stock_picking_type_action_audit"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_audit_referentiel"
+        name="Référenciel"
+        parent="menu_aud"
+        sequence="5"
+    />
+    <menuitem id="menu_suppliers_aud" 
+        name="Fournisseurs"
+        parent="menu_audit_referentiel"
+        action="supplier_action_audit" 
+        sequence="10"
+    />
+    <menuitem id="menu_products_aud" 
+        name="Articles"
+        parent="menu_audit_referentiel" 
+        action="product_action_audit" 
+        sequence="20"
+    />
+    <menuitem id="menu_clients_aud" 
+        name="Clients"
+        parent="menu_audit_referentiel"
+        action="clients_action_audit" 
+        sequence="10"
+    />
+
+    <menuitem
+        id="account_move_menu_factures_aud"
+        name="Factures"
+        parent="menu_aud"
+        groups="account_plus.acount_move_group_Aud"
+        sequence="6"
+    />
+
+    <menuitem
+        id="account_move_menu_factures_aud_all"
+        name="Factures"
+        parent="account_move_menu_factures_aud"
+        action="account_plus.account_move_action_aud"
+        sequence="10"
+    />
+
+    <menuitem
+        id="account_move_menu_factures_bloquees"
+        name="Factures bloquées"
+        parent="account_move_menu_factures_aud"
+        action="account_plus.account_move_blocked_action_aud"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_aud_stock_quantsact_view"
+        name="Stocks par Emplacement"
+        parent="menu_aud"
+        action="building.building_stock_quantsact_server"
+        sequence="7"
+    />
+
+    <!-- Direction Administrative et Financière -->
+    <menuitem
+        id="menu_daf"
+        name="Direction Administrative et Financière"
+        groups="building_plus.sotaserv_daf"
+        sequence="0"
+    />
+
+    <menuitem id="menu_clients_daf" 
+        name="Clients"
+        parent="menu_daf"
+        sequence="10"
+    />
+
+    <menuitem
+        id="account_move_client_invoices_daf"
+        name="Factures"
+        parent="menu_clients_daf"
+        action="account_plus.account_move_client_action_validated"
+        sequence="10"
+    />
+    
+    <menuitem
+        id="account_move_client_avoir_daf"
+        name="Avoirs"
+        parent="menu_clients_daf"
+        action="account.action_move_out_refund_type"
+        sequence="20"
+    />
+
+    <menuitem
+        id="account_move_client_client_daf"
+        name="Clients"
+        parent="menu_clients_daf"
+        action="account_plus.account_action_client_readonly"
+        sequence="30"
+    />
+
+    <menuitem id="menu_suppliers_daf" 
+        name="Fournisseurs"
+        parent="menu_daf"
+        sequence="20"
+    />
+
+    <menuitem
+        id="account_move_supplier_invoices_daf"
+        name="Factures"
+        parent="menu_suppliers_daf"
+        action="account_plus.account_move_action_daf"
+        sequence="10"
+    />
+
+    <menuitem
+        id="account_move_supplier_avoirs_daf"
+        name="Avoirs"
+        parent="menu_suppliers_daf"
+        action="account_plus.account_move_action_avoir_daf"
+        sequence="20"
+    />
+
+    <menuitem
+        id="account_move_supplier_supplier_daf"
+        name="Fournisseurs"
+        parent="menu_suppliers_daf"
+        action="account_plus.account_action_supplier_readonly"
+        sequence="30"
+    />
+
+    <menuitem id="menu_employees_daf" 
+        name="Employés"
+        parent="menu_daf"
+        action="account_plus.account_action_employee_readonly"
+        sequence="30"
+    />
+
+    <menuitem id="menu_ldb_daf" 
+        name="Liste des besoins"
+        parent="menu_daf"
+        action="account_plus.account_action_ldb_readonly"
+        sequence="40"
+    />
+
+    <menuitem id="menu_bp_daf" 
+        name="Bordereau des prix"
+        parent="menu_daf"
+        action="account_plus.account_action_bp_readonly"
+        sequence="50"
+    />
+
+    <!-- Magasinier de chantier -->
+    <menuitem
+        id="menu_magasinier_chantier"
+        name="Magasinier de chantier"
+        groups="building_plus.sotaserv_magasinier_chantier"
+        sequence="0"
+    />
+
+    <menuitem
+        id="menu_magasinier_chantier_purchases"
+        name="Achats"
+        parent="menu_magasinier_chantier"
+        sequence="1"
+    />
+
+    <menuitem
+        id="purchase_order_menu_magasinier_chantier"
+        name="Bons de Commande"
+        parent="menu_magasinier_chantier_purchases"
+        action="purchase_order_action_magasinier_chantier"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_magasinier_chantier_inventory"
+        name="Inventaire"
+        parent="menu_magasinier_chantier"
+        sequence="2"
+    />
+    <menuitem
+        id="stock_picking_type_menu_magasinier_chantier"
+        name="Aperçu de l'inventaire"
+        parent="menu_magasinier_chantier_inventory"
+        action="stock_picking_type_action_magasinier_chantier"
+        sequence="10"
+    />
+    <menuitem
+        id="stock_quant_menu_magasinier_chantier"
+        name="Stocks par emplacement"
+        parent="menu_magasinier_chantier_inventory"
+        action="stock_quant_action_magasinier_chantier"
+        sequence="30"
+    />
+
+    <menuitem
+        id="stock_picking_menu_magasinier_chantier"
+        name="Transferts"
+        parent="menu_magasinier_chantier_inventory"
+        sequence="40"
+    />
+
+    <menuitem
+        id="stock_picking_internal_menu_magasinier_chantier"
+        name="Internes"
+        parent="stock_picking_menu_magasinier_chantier"
+        action="stock_picking_int_action_magasinier_chantier"
+        sequence="10"
+    />
+
+    <menuitem
+        id="stock_picking_internal_logistics_menu_magasinier_chantier"
+        name="Logistiques"
+        parent="stock_picking_menu_magasinier_chantier"
+        action="stock_picking_int_logistics_action_magasinier_chantier"
+        sequence="20"
+    />
+
+    <menuitem
+        id="stock_picking_internal_transfer_menu_magasinier_chantier"
+        name="Intersièges"
+        parent="stock_picking_menu_magasinier_chantier"
+        action="stock_picking_internal_transfer_action_magasinier_chantier"
+        sequence="30"
+    />
+
+    <menuitem
+        id="stock_picking_outgoing_menu_magasinier_chantier"
+        name="Sortie d'article"
+        parent="menu_magasinier_chantier_inventory"
+        action="stock_picking_outgoing_action_magasinier_chantier"
+        sequence="60"
+    />
+    <menuitem
+        id="stock_picking_scrap_menu_magasinier_chantier"
+        name="Rebut"
+        parent="menu_magasinier_chantier_inventory"
+        action="stock_picking_scrap_action_magasinier_chantier"
+        sequence="70"
+    />
+    <menuitem
+        id="stock_picking_return_menu_magasinier_chantier"
+        name="Retour"
+        parent="menu_magasinier_chantier_inventory"
+        action="stock_picking_return_action_magasinier_chantier"
+        sequence="80"
+    />
+    <!-- <menuitem
+        id="stock_outing_menu_magasinier_chantier"
+        name="Sortie de carburant"
+        parent="menu_magasinier_chantier_inventory"
+        action="stock_plus.stock_outing_action_server"
+        sequence="50"
+    /> -->
+    <menuitem
+        id="hr_assignment_menu_magasinier_chantier_parent"
+        name="Ressources humaines"
+        parent="menu_magasinier_chantier"
+        sequence="3"
+    />
+    <menuitem
+        id="hr_assignment_menu_magasinier_chantier"
+        name="Affectations et Pointages"
+        parent="hr_assignment_menu_magasinier_chantier_parent"
+        action="hr_assignment_action_magasinier_chantier"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_magasinier_chantier_material"
+        name="Matériels"
+        parent="menu_magasinier_chantier"
+        sequence="3"
+    />
+
+    <menuitem
+        id="menu_magasinier_chantier_material_allocation"
+        name="Affectation Matériels"
+        parent="menu_magasinier_chantier_material"
+        action="building.action_building_assignment_line_vec_tree_readonly"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_magasinier_chantier_material_scores"
+        name="Pointages Matériels"
+        parent="menu_magasinier_chantier_material"
+        action="building.action_materials_worked_hours_tree_view"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_magasinier_dashboard_stock"
+        name="Tableau de bord"
+        parent="menu_magasinier_chantier"
+        action="stock_plus.action_stock_dashboard_wizard"
+        sequence="4"
+    />
+
+    <!-- Pointage RH -->
+
+    <menuitem
+        id="hr_assignment_menu_pointage_rh"
+        name="Pointage RH"
+        action="hr_assignment_action_pointage_rh"
+        sequence="10"
+        groups="building_plus.sotaserv_pointage_rh"
+    />
+    <!-- LBD en Read Only -->
+
+    <menuitem
+        id="menu_lbd_ro"
+        name=" LBD RO"
+        groups="building_plus.sotaserv_lbd_ro"
+        sequence="0"
+    />
+
+    <menuitem
+        id="menu_lbd_ro_sites"
+        name="Affaires"
+        parent="menu_lbd_ro"
+        sequence="1"
+    />
+    <menuitem
+        id="building_site_menu_lbd_ro"
+        name="Affaires"
+        parent="menu_lbd_ro_sites"
+        action="building_site_action_lbd_ro"
+        sequence="10"
+    />
+    <menuitem
+        id="building_purchase_need_menu_lbd_ro"
+        name="Liste des besoins"
+        parent="menu_lbd_ro_sites"
+        action="building_purchase_need_action_lbd_ro"
+        sequence="20"
+    />
+
+    <!-- DIRECTRICE TECHNIQUE-->
+
+    <menuitem
+        id="menu_directrice_technique"
+        name="Directrice technique"
+        groups="building_plus.sotaserv_directrice_technique"
+        sequence="0"
+    />
+
+    <menuitem
+        id="menu_directrice_technique_crm"
+        name="CRM"
+        parent="menu_directrice_technique"
+        sequence="1"
+    />
+    <menuitem
+        id="menu_pipeline_crm_directrice_technique"
+        name="Mon Pipeline"
+        parent="menu_directrice_technique_crm"
+        action="crm_pipeline_action"
+        sequence="10"
+    />
+    <menuitem id="menu_building_bp"
+        name="Bordereau des Prix"
+        parent="menu_directrice_technique_crm"  
+        action="building_bp_action_directrice_technique" 
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_directrice_technique_sites"
+        name="Affaires"
+        parent="menu_directrice_technique"
+        sequence="2"
+    />
+    <menuitem
+        id="building_site_menu_directrice_technique"
+        name="Affaires"
+        parent="menu_directrice_technique_sites"
+        action="building_site_action_directrice_technique"
+        sequence="10"
+    />
+    <menuitem
+        id="building_purchase_need_menu_directrice_technique"
+        name="Liste des besoins"
+        parent="menu_directrice_technique_sites"
+        action="building_purchase_need_action_directrice_technique"
+        sequence="20"
+    />
+    <menuitem
+        id="building_purchase_budget_menu_directrice_technique"
+        name="Suivi budgétaire"
+        parent="menu_directrice_technique_sites"
+        action="building_purchase_budget_action_directrice_technique"
+        sequence="30"
+    />
+
+    <menuitem
+        id="menu_directrice_technique_purchases"
+        name="Achats"
+        parent="menu_directrice_technique"
+        sequence="3"
+    />
+    <menuitem
+        id="purchase_request_menu_directrice_technique"
+        name="Demandes d'achat"
+        parent="menu_directrice_technique_purchases"
+        action="purchase_request_action_directrice_technique"
+        sequence="10"
+    />
+    <menuitem
+        id="purchase_request_line_menu_directrice_technique"
+        name="Lignes de demande d'achat"
+        parent="menu_directrice_technique_purchases"
+        action="purchase_request_line_action_directrice_technique"
+        sequence="20"
+    />
+    <menuitem
+        id="price_request_menu_all_directrice_technique"
+        name="Demandes de Prix"
+        parent="menu_directrice_technique_purchases"
+        action="building_plus.price_request_action_all"
+        sequence="30"
+    />
+    <menuitem
+        id="purchase_order_menu_directrice_technique"
+        name="Bons de Commande avec Attachement"
+        parent="menu_directrice_technique_purchases"
+        action="building_plus.purchase_order_action_attachment_directrice_technique"
+        sequence="40"
+    />
+
+    <menuitem
+        id="menu_directrice_technique_inventory"
+        name="Inventaire"
+        parent="menu_directrice_technique"
+        sequence="4"
+    />
+    <menuitem
+        id="stock_picking_type_menu_directrice_technique"
+        name="Aperçu de l'inventaire"
+        parent="menu_directrice_technique_inventory"
+        action="stock_picking_type_action_directrice_technique"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_directrice_technique_referentiel"
+        name="Référenciel"
+        parent="menu_directrice_technique"
+        sequence="5"
+    />
+    <menuitem id="menu_suppliers" 
+        name="Fournisseurs"
+        parent="menu_directrice_technique_referentiel"
+        action="supplier_action_directrice_technique" 
+        sequence="10"
+    />
+    <menuitem id="menu_products" 
+        name="Articles"
+        parent="menu_directrice_technique_referentiel" 
+        action="product_action_directrice_technique" 
+        sequence="20"
+    />
+    <menuitem id="menu_Clients" 
+        name="Clients"
+        parent="menu_directrice_technique_referentiel"
+        action="clients_action_directrice_technique" 
+        sequence="10"
+    />
+
+    <menuitem id="menu_dt_entry_suppliers"
+        parent="menu_directrice_technique"
+        name="Fornisseurs"
+        sequence="6"
+    />
+
+    <menuitem id="menu_dt_decompte"
+        parent="menu_dt_entry_suppliers"
+        name="Décompte fournisseur"
+        action="purchase_plus.action_purchase_entry_decompt_dg"
+        sequence="10"
+    />
+
+    <!-- RESPONSABLE_TECHNIQUE -->
+
+    <menuitem
+        id="menu_responsable_technique"
+        name="Responsable technique"
+        groups="building_plus.sotaserv_responsable_technique"
+        sequence="0"
+    />
+
+    <menuitem
+        id="menu_responsable_technique_crm"
+        name="CRM"
+        parent="menu_responsable_technique"
+        sequence="1"
+    />
+    <menuitem
+        id="menu_pipeline_crm_directrice_technique"
+        name="Mon Pipeline"
+        parent="menu_responsable_technique_crm"
+        action="crm_pipeline_action"
+        sequence="10"
+    />
+    <menuitem id="menu_building_bp"
+        name="Bordereau des Prix"
+        parent="menu_responsable_technique_crm"  
+        action="building_bp_action_directrice_technique" 
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_responsable_technique_sites"
+        name="Affaires"
+        parent="menu_responsable_technique"
+        sequence="2"
+    />
+    <menuitem
+        id="building_site_menu_responsable_technique"
+        name="Affaires"
+        parent="menu_responsable_technique_sites"
+        action="building_site_action_directrice_technique"
+        sequence="10"
+    />
+    <menuitem
+        id="building_purchase_need_menu_responsable_technique"
+        name="Liste des besoins"
+        parent="menu_responsable_technique_sites"
+        action="building_purchase_need_action_directrice_technique"
+        sequence="20"
+    />
+    <menuitem
+        id="building_purchase_budget_menu_responsable_technique"
+        name="Suivi budgétaire"
+        parent="menu_responsable_technique_sites"
+        action="building_purchase_budget_action_directrice_technique"
+        sequence="30"
+    />
+
+    <menuitem
+        id="menu_responsable_technique_purchases"
+        name="Achats"
+        parent="menu_responsable_technique"
+        sequence="3"
+    />
+    <menuitem
+        id="purchase_request_menu_responsable_technique"
+        name="Demandes d'achat"
+        parent="menu_responsable_technique_purchases"
+        action="purchase_request_action_directrice_technique"
+        sequence="10"
+    />
+    <menuitem
+        id="purchase_request_line_menu_responsable_technique"
+        name="Lignes de demande d'achat"
+        parent="menu_responsable_technique_purchases"
+        action="purchase_request_line_action_directrice_technique"
+        sequence="20"
+    />
+    <menuitem
+        id="price_request_menu_all_directrice_technique"
+        name="Demandes de Prix"
+        parent="menu_responsable_technique_purchases"
+        action="building_plus.price_request_action_all"
+        sequence="30"
+    />
+    <menuitem
+        id="purchase_order_menu_responsable_technique"
+        name="Bons de Commande avec Attachement"
+        parent="menu_responsable_technique_purchases"
+        action="building_plus.purchase_order_action_attachment_directrice_technique"
+        sequence="40"
+    />
+
+    <menuitem
+        id="menu_responsable_technique_inventory"
+        name="Inventaire"
+        parent="menu_responsable_technique"
+        sequence="4"
+    />
+    <menuitem
+        id="stock_picking_type_menu_responsable_technique"
+        name="Aperçu de l'inventaire"
+        parent="menu_responsable_technique_inventory"
+        action="stock_picking_type_action_directrice_technique"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_responsable_technique_referentiel"
+        name="Référenciel"
+        parent="menu_responsable_technique"
+        sequence="5"
+    />
+    <menuitem id="menu_suppliers" 
+        name="Fournisseurs"
+        parent="menu_responsable_technique_referentiel"
+        action="supplier_action_directrice_technique" 
+        sequence="10"
+    />
+    <menuitem id="menu_products" 
+        name="Articles"
+        parent="menu_responsable_technique_referentiel" 
+        action="product_action_directrice_technique" 
+        sequence="20"
+    />
+    <menuitem id="menu_Clients" 
+        name="Clients"
+        parent="menu_responsable_technique_referentiel"
+        action="clients_action_directrice_technique" 
+        sequence="10"
+    />
+
+    <menuitem id="menu_dt_entry_suppliers"
+        parent="menu_responsable_technique"
+        name="Fornisseurs"
+        sequence="6"
+    />
+
+    <menuitem id="menu_dt_decompte"
+        parent="menu_dt_entry_suppliers"
+        name="Décompte fournisseur"
+        action="purchase_plus.action_purchase_entry_decompt_dg"
+        sequence="10"
+    />
+
+    <!-- <menuitem
+        id="menu_directrice_technique_invoice"
+        name="Factures"
+        parent="menu_directrice_technique"
+        sequence="7"
+    />
+
+    <menuitem
+        id="menu_directrice_technique_invoice_parent"
+        name="Factures fournisseurs"
+        parent="menu_directrice_technique_invoice"
+        action="account_action_invoice_readonly_server"
+        sequence="10"
+    /> -->
+
+    <!-- dashboard -->
+    <menuitem
+        id="menu_dashboard" 
+        name="Dashboard" 
+        action="dashboard_action" 
+        sequence="0"
+        groups="building_report.gp_building_report"
+    />
+
+    <!-- Attachements -->
+    <menuitem
+        id="menu_attachement"
+        name="Attachement"
+        groups="building_plus.sotaserv_conduct_trv,building_plus.sotaserv_dg,building_plus.sotaserv_directrice_technique"
+        sequence="0"
+    />
+
+    <menuitem
+        id="menu_attachement_view"
+        name="Attachement"
+        parent="menu_attachement"
+        sequence="1"
+    />
+
+    <menuitem
+        id="menu_attachement_view1"
+        name="Attachements"
+        parent="menu_attachement_view"
+        action="purchase_plus.action_purchase_entry"
+        sequence="10"
+    />
+
+    <menuitem id="menu_purchase_entry_wizard"
+        name="Créer un attachement" 
+        action="purchase_plus.action_purchase_entry_wizard" 
+        parent="menu_attachement_view"
+        sequence="20"
+        groups="purchase_plus.purchase_order_group_create_attachment"
+    />
+
+    <!-- Situation -->
+    <menuitem
+        id="menu_situation"
+        name="Situation"
+        groups="building_plus.sotaserv_situation"
+        sequence="0"
+    />
+
+    <menuitem
+        id="menu_situation_attachement"
+        name="Attachements"
+        parent="menu_situation"
+        sequence="1"
+    />
+    
+    <menuitem
+        id="menu_attachement_sit_view"
+        name="Attachements fournisseur"
+        parent="menu_situation_attachement"
+        sequence="10"
+        action="purchase_plus.action_purchase_entry_readonly"
+        
+    />
+
+    <menuitem
+        id="menu_attachement_client_view"
+        name="Attachements client"
+        parent="menu_situation_attachement"
+        sequence="20"
+        action="purchase_plus.action_client_purchase_readonly"
+    />
+
+    <menuitem
+        id="menu_decompte_sit_view"
+        name="Décomptes"
+        parent="menu_situation"
+        sequence="2"
+    />
+
+    <menuitem
+        id="menu_decompt_view_1"
+        name="Décomptes fournisseur"
+        parent="menu_decompte_sit_view"
+        action="purchase_plus.action_purchase_entry_decompt_readonly"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_decompt_client_view_1"
+        name="Décomptes client"
+        parent="menu_decompte_sit_view"
+        action="building.action_purchase_entry_decompt_clinet_readonly"
+        sequence="20"
+    />
+
+    <!-- Décomptes -->
+    <!-- <menuitem
+        id="menu_decompt"
+        name="Décompte fournisseur"
+        groups="purchase_plus.purchase_order_group_decompt"
+        sequence="0"
+    /> -->
+
+    <menuitem
+        id="menu_decompt_view"
+        name="Décompte fournisseurs"
+        parent="account.menu_finance_payables"
+        groups="building_plus.sotaserv_directeur_zone,building_plus.sotaserv_dg"
+        action="purchase_plus.action_purchase_entry_decompt"
+        sequence="0"
+    />
+
+    <!-- <menuitem
+        id="menu_decompt_view1"
+        name="Décompte fournisseur"
+        parent="menu_decompt_view"
+        action="purchase_plus.action_purchase_entry_decompt"
+        sequence="10"
+    /> -->
+
+    <menuitem
+        id="stock_picking_cg_receptions_menu"
+        name="Réceptions"
+        groups="account_plus.acount_move_group_cg"
+        parent="account_plus.account_move_menu_validated"
+        action="stock_picking_incoming_action_cg"
+    />
+
+    <!-- LDB for Achats -->
+    <menuitem
+        id="building_purchase_need_menu_group_achat"
+        name="Liste des besoins"
+        groups="account_plus.acount_move_group_achat"
+        parent="purchase.menu_purchase_root"
+        action="building_purchase_need_action_group_achat"
+        sequence="2"
+    />
+
+    <menuitem
+        id="menu_acount_move_group_invoice_sites_root"
+        name="Affaires"
+        sequence="10"
+        groups="account_plus.acount_move_group_invoice"
+    />
+
+    <menuitem
+        id="building_crm_sale_readonly_menu"
+        action="building.action_orders_sale_readoly"
+        name="CRM"
+        groups="building.group_pb_readonly"
+        sequence="20"
+    />
+
+    <menuitem
+        id="building_sales_readonly_menu"
+        name="Ventes"
+        parent="building_crm_sale_readonly_menu"
+        sequence="0"
+    />
+    
+    <menuitem
+        id="building_pb_sale_readonly_menu"
+        action="building.action_orders_sale_readoly"
+        name="Bordereau de prix"
+        parent="building_sales_readonly_menu"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_acount_move_group_invoice_sites"
+        name="Affaires"
+        sequence="10"
+        parent="menu_acount_move_group_invoice_sites_root"
+        action="action_acount_move_group_invoice_sites"
+    />
+
+    <!-- CRM / Devis -->
+    <record id="sale_crm.sale_order_menu_quotations_crm" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+    <!-- CRM / Configuration / Secteurs AO -->
+    <record id="crm_igaser.menu_crm_lead_sector_list" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+    <!-- CRM / Configuration / Type d'activités -->
+    <record id="crm.crm_team_menu_config_activity_types" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+    <!-- CRM / Configuration / Qualifications AO -->
+    <record id="crm_igaser.menu_crm_lead_qualification_list" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+    <!-- CRM / Configuration / Classes -->
+    <record id="crm_igaser.menu_crm_lead_classification_list" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+    <!-- CRM / Configuration / étiquettes -->
+    <record id="crm.menu_crm_lead_categ" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+    <!-- CRM / Configuration / Génération de Pistes -->
+    <!-- <record id="crm_iap_lead.crm_menu_lead_generation" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record> -->
+
+    <!-- CRM / CHARGÉ D'AFFAIRE -->
+    <menuitem
+        id="menu_charge_affaire"
+        name="Chargé d'affaires"
+        groups="building_plus.sotaserv_business_manager"
+        sequence="0"
+    />
+    <menuitem
+        id="menu_charge_affaire_crm"
+        name="CRM"
+        parent="menu_charge_affaire"
+        sequence="1"
+    />
+    <menuitem
+        id="menu_pipeline_crm_charge_affaire"
+        name="Mon Pipeline"
+        parent="menu_charge_affaire_crm"
+        action="business_manager_crm_pipeline_action"
+        sequence="10"
+    />
+    <menuitem 
+        id="menu_building_order_crm_charge_affaire" 
+        name="Bordereaux de prix"
+        action="building.action_orders"
+        parent="menu_charge_affaire_crm"
+        sequence="20"/>
+
+    <menuitem 
+        id="menu_list_site_crm_charge_affaire" 
+        name="Affaires" 
+        parent="menu_charge_affaire"  
+        sequence="2"/>
+
+    <menuitem 
+        id="menu_list_site_crm_charge_affaire_parent" 
+        name="Affaires" 
+        action="building.action_building_site" 
+        parent="menu_list_site_crm_charge_affaire"  
+        sequence="10"/>
+
+    <menuitem
+        id="purchase_building_purchase_need_menu_charge_affaire"
+        name="Liste des besoins"
+        parent="menu_list_site_crm_charge_affaire"
+        action="building.building_purchase_need_action"
+        sequence="20"
+    />
+
+    <!-- RH_VISUALISATION -->
+    <menuitem
+        id="menu_hr_visualization_root"
+        name="Aperçu RH"
+        sequence="0"
+        groups="building_plus.group_hr_view"/>
+
+    <menuitem
+        id="menu_hr_visualization"
+        name="Ressources Humaines"
+        parent="menu_hr_visualization_root"
+        sequence="1"/>
+
+    <menuitem
+        id="menu_hr_visualization_assignment"
+        name="Demandes"
+        parent="menu_hr_visualization"
+        action="building_plus.action_hr_assignment_requests_server"
+        sequence="10"/>
+
+    <menuitem
+        id="hr_assignment_hr_views_menu"
+        name="Affectations"
+        parent="menu_hr_visualization"
+        action="building_plus.hr_assignment_hr_views_action"
+        sequence="20"
+    />
+
+    <!-- SOTASERV_OPC -->
+    <menuitem
+        id="menu_sotaserv_opc_root"
+        name="OPC"
+        groups="building_plus.group_opc"
+        sequence="0"/>
+    
+    <menuitem
+        id="menu_sotaserv_opc_products_root"
+        name="Articles"
+        parent="menu_sotaserv_opc_root"
+        sequence="1"/>
+    
+    <menuitem
+        id="menu_sotaserv_opc_products"
+        name="Articles"
+        parent="menu_sotaserv_opc_products_root"
+        action="building_plus.action_sotaserv_article_opc"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_sotaserv_opc_purchase_root"
+        name="Achats"
+        parent="menu_sotaserv_opc_root"
+        sequence="2"/>
+
+    <menuitem
+        id="purchase_request_menu_opc"
+        name="Demandes d'achat"
+        parent="menu_sotaserv_opc_purchase_root"
+        action="building_plus.purchase_request_opc_action"
+        sequence="1"
+    />
+
+    <menuitem
+        id="purchase_request_line_menu_opc"
+        name="Lignes de demande d'achat"
+        parent="menu_sotaserv_opc_purchase_root"
+        action="building_plus.purchase_request_line_opc_action"
+        sequence="2"
+    />
+
+    <menuitem
+        id="opc_purchase_order_root_menu"
+        name="Commandes"
+        parent="menu_sotaserv_opc_purchase_root"
+        sequence="3"
+    />
+    
+    <menuitem
+        id="opc_purchase_order_menu"
+        name="Bons de Commande"
+        parent="opc_purchase_order_root_menu"
+        sequence="1"
+    />
+
+    <menuitem
+        id="opc_purchase_order_menu_no_attachment"
+        name="Sans Attachement"
+        parent="opc_purchase_order_menu"
+        action="building_plus.opc_purchase_order_action_no_attachment"
+        sequence="10"
+    />
+
+    <menuitem
+        id="opc_purchase_order_menu_attachment"
+        name="Avec Attachement"
+        parent="opc_purchase_order_menu"
+        action="building_plus.opc_purchase_order_action_attachment"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_sotaserv_opc_crm_root"
+        name="CRM"
+        parent="menu_sotaserv_opc_root"
+        sequence="2"/>
+
+    <menuitem
+        id="menu_crm_opportunities_opc"
+        name="Opportunités"
+        parent="menu_sotaserv_opc_crm_root"
+        action="building_plus.action_crm_lead_opportunities"
+        sequence="10"
+    />
+    
+    <menuitem
+        id="menu_sotaserv_opc_site_root"
+        name="Affaires"
+        parent="menu_sotaserv_opc_root"
+        sequence="3"/>
+
+    <menuitem
+        id="menu_site_opc"
+        name="Affaires"
+        parent="menu_sotaserv_opc_site_root"
+        action="building_plus.action_ops_sites"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_building_purchase_need_opc"
+        name="Liste des besoins"
+        parent="menu_sotaserv_opc_site_root"
+        action="building_plus.building_purchase_need_opc_action"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_assignments_opc"
+        name="Affectations"
+        parent="menu_sotaserv_opc_root"
+        sequence="4"
+    />
+
+    <menuitem
+        id="opc_hr_assignments_menu"
+        name="RH"
+        action="building_plus.hr_assignment_opc_action"
+        parent="menu_assignments_opc"
+        sequence="10"
+    />
+
+    <menuitem
+        id="opc_material_assignments_menu"
+        name="Matériels"
+        action="building_plus.material_assignment_opc_action"
+        parent="menu_assignments_opc"
+        sequence="20"
+    />
+
+    <menuitem
+        id="opc_small_material_assignments_menu"
+        name="Petit Matériel"
+        action="building_plus.small_material_assignment_opc_action"
+        parent="menu_assignments_opc"
+        sequence="20"
+    />
+
+    <record id="building_purchase_need_action" model="ir.actions.act_window">
+        <field name="name">Liste des besoins</field>
+        <field name="res_model">building.purchase.need</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('building.building_purchase_need_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('building_plus.building_purchase_need_form_inherit_building')})]"/>
+        <field name="domain">[("is_template", "!=", True)]</field>
+        <field name="context">{"create": False}</field>
+    </record>
+
+</odoo>

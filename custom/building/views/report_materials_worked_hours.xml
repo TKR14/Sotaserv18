@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="report_materials_worked_hours">
+        <t t-call="web.html_container">
+            <t t-foreach="list_vehicle" t-as="vehicle">
+                <t t-call="web.internal_layout">
+                    <div class="page">
+                        <style>
+                            table,
+                            th,
+                            td {
+                                border: 1px solid black;
+                                border-collapse: collapse;
+                            }
+
+                            table.center {
+                                margin-left: auto;
+                                margin-right: auto;
+                            }
+
+                            .fP,
+                            .sP {
+                                display: inline;
+                            }
+
+                            .mytable td {
+                                padding: 2px;
+                                text-align: center;
+                            }
+                            .mytable th {
+                                padding: 5px;
+                                text-align: center;
+                            }
+                        </style>
+                        <div class="oe_structure" />
+                        <table class="center" style="width: 100%; font-size:80%">
+                            <tr>
+                                <th rowspan="2" style="font-size: 20px; padding: 10px;">Fiche Pointage Matériel</th>
+                                <td style="padding: 10px;">Ref:</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;">Version: </td>
+                            </tr>
+                        </table>
+                        <br/>
+                        <div style="float: left;margin-top: 14px;">
+                            <p class="fP">Engin : <span t-field="vehicle.name2"/></p><br/>
+                            <p class="fP">Code : <span t-field="vehicle.code"/></p><br/>
+                        </div>
+                        <br/>
+                        <div style="float: right;">
+                            <p class="sP">Date : <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')" /></p>
+                        </div>
+                        <br/><br/><br/>
+                        <div>
+                            <t t-if="start_date or end_date">
+                                <p class="secondP" style="font-weighht: bold;padding-left: 35%;">
+                                    Période Du
+                                    <span t-esc="start_date.strftime('%d/%m/%Y')"/>
+                                    Au
+                                    <span t-esc="end_date.strftime('%d/%m/%Y')"/>
+                                </p>
+                            </t>
+                            <p class="thirdP" style="padding-left: 10%;"></p>
+                        </div>
+
+                        <br/><br/><br/>
+
+                        <table class="center mytable" style="width: 100%; font-size:80%">
+                            <thead>
+                                <tr>
+                                    <th>Jrs</th>
+                                    <th>Chantier</th>
+                                    <th>Conducteur</th>
+                                    <th>Nombre H Chauffeur</th>
+                                    <th>Nombre H Engin</th>
+                                    <th>Compteur</th>
+                                    <th>Gasoil</th>
+                                    <th>Signature Client</th>
+                                    <th>Observation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set='nb_hours_emp' t-value='0'/>
+                                <t t-set='nb_hours_vehicle' t-value='0'/>
+                                <t t-set='tt_vehicle_counter' t-value='0'/>
+                                <t t-set='tt_diesel' t-value='0'/>
+                                <t t-foreach="lines(start_date, end_date,vehicle.id)" t-as="line">
+                                    <t t-set='nb_hours_emp' t-value='nb_hours_emp+line.worked_hours_by_emp'/>
+                                    <t t-set='nb_hours_vehicle' t-value='nb_hours_vehicle+line.worked_hours_by_vehicle'/>
+                                    <t t-set='tt_vehicle_counter' t-value='tt_vehicle_counter+line.vehicle_counter'/>
+                                    <t t-set='tt_diesel' t-value='tt_diesel+line.qty_diesel'/>
+                                    <tr>
+                                        <td><span t-field="line.worked_date"/></td>
+                                        <td><span t-field="line.site_id.name"/></td>
+                                        <td><span t-field="line.emp_id.name"/></td>
+                                        <td><span t-field="line.worked_hours_by_emp"/></td>
+                                        <td><span t-field="line.worked_hours_by_vehicle"/></td>
+                                        <td><span t-field="line.vehicle_counter"/></td>
+                                        <td><span t-field="line.qty_diesel"/></td>
+                                        <td></td>
+                                        <td><span t-field="line.note"/></td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td colspan="3">TOTAL</td>
+                                    <td><span t-esc="nb_hours_emp"/></td>
+                                    <td><span t-esc="nb_hours_vehicle"/></td>
+                                    <td><span t-esc="tt_vehicle_counter"/></td>
+                                    <td><span t-esc="tt_diesel"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <table class="center" style="width: 90%; font-size:80%">
+                            <tr>
+                                <th width="33%">Visa Responsable
+                                    Maintenance &amp;Logistique</th>
+                                <th width="33%">Visa Pointeur</th>
+                                <th width="34%">Visa Chef Chantier</th>
+                            </tr>
+                            <tr>
+                                <td style="padding-left:5px;">
+                                    <div style="height: 90px; overflow:hidden;">
+                                    </div>
+                                </td>
+                                <td style="padding-left:5px;">
+                                    <div style="height: 90px; overflow:hidden;">
+                                    </div>
+                                </td>
+                                <td style="padding-left:5px;">
+                                    <div style="height: 90px; overflow:hidden;">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

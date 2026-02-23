@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <template id="report_payslip_document">
+        <!-- <t t-call="web.external_layout"> -->
+            <div class="page">
+                <style>
+                   *{
+                    margin: 5px;
+                    } 
+                    .table,
+                    th,
+                    td {
+                        border: 1px solid black;
+                        border-collapse: collapse;
+                    }
+
+                    .table3 {
+                        border: 1px solid black;
+                        border-collapse: collapse;
+                        border-bottom: none;
+                        border-left: none;
+                    }
+
+                    .table th {
+                        padding: 8px;
+                    }
+
+                    .table td {
+                        padding: 5px;
+                        text-align: center;
+                    }
+
+                    /* .table3 th {
+                        padding: 10px;
+                    } */
+
+                    <!-- .des{
+                        
+                       width: 80% !important;
+                    } -->
+
+                    .table3 td {
+                        
+                        border: none;
+                    }
+                    .logo{
+                        text-align: left; 
+                        display: flex; 
+                        margin-bottom: 20px;
+                    }
+
+                    .center {
+                        margin: auto;
+                        width: 35%;
+                        border: 1px solid black;
+                        padding: 20px;
+                    }
+                    #element1 {display:inline-block;} 
+                    #element2 {display:inline-block;} 
+
+                    .table-container {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 20px;
+                    }
+                    .table-container th, .table-container td {
+                        border: 1px solid #000;
+                        padding: 5px;
+                        text-align: center;
+                    }
+                    .table-container th {
+                        background-color: #f2f2f2;
+                        font-size: 10px; 
+
+                    }
+                    .details {
+                        margin-bottom: 10px;
+                    }
+                    .details .row {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 5px;
+                    }
+                    .details .highlight {
+                        font-weight: bold;
+                    }
+                </style>
+
+                <div class="oe_structure"/>
+                <div class="logo">
+                    <img t-att-src="image_data_uri(request.env['res.company'].search([])[0].logo)" alt="Logo" style="max-width: 200px; height: auto;"/>
+                </div>
+
+                <div class="center">
+                    <h4 style="text-align: center;">BULLETIN DE PAIE</h4>
+                </div>
+                <span style="float: right;"><span  t-esc="o.date_from.strftime('%B %Y')"/></span>
+
+                <t t-set="nb_parts" t-value="o.line_ids.filtered(lambda l: l.code == 'NB_PARTS')[:1].total"/>
+                <t t-set="tot_paid" t-value="sum(line.total for line in o.line_ids if line.code == 'TOT_PAID_DAYS')"/>
+                <t t-set="holidays" t-value="sum(line.total for line in o.line_ids if line.code == 'HOLIDAY_DAYS')"/>
+                <t t-set="nbre" t-value="tot_paid - holidays"/>
+                <t t-set="taux" t-value="nbre / 30"/>
+                <t t-set="base" t-value="sum(line.total for line in o.line_ids if line.code == 'SALAIRE_C_B')"/>
+                <t t-set="gain" t-value="base * taux"/>
+                <t t-set="anc_mnt" t-value="sum(line.total for line in o.line_ids if line.code == 'ANC_MNT')"/>
+                <t t-set="a_p_imposable" t-value="sum(line.total for line in o.line_ids if line.code == 'A_P_IMPOSABLE')"/>
+                <t t-set="s_salaire" t-value="sum(line.total for line in o.line_ids if line.code == 'S_SALAIRE')"/>
+                <t t-set="salaire_c" t-value="sum(line.total for line in o.line_ids if line.code == 'SALAIRE_C')"/>
+                <t t-set="gain_conge" t-value="sum(line.total for line in o.line_ids if line.code == 'HOLIDAY_MNT')"/>
+                <t t-set="taux_2" t-value="tot_paid / 30"/>
+                <t t-set="taux_anc" t-value="sum(line.total for line in o.line_ids if line.code == 'ANC_TAUX')"/>
+                <t t-set="total_soumis" t-value="gain + anc_mnt + gain_conge + a_p_imposable + s_salaire"/>
+                <t t-set="sbi" t-value="sum(line.total for line in o.line_ids if line.code == 'BRUT_TOT')"/>
+                <t t-set="its" t-value="sum(line.total for line in o.line_ids if line.code == 'ITS')"/>
+                <t t-set="cnps_cr" t-value="sum(line.total for line in o.line_ids if line.code == 'CNPS_CR')"/>
+                <t t-set="caisse_ret" t-value="sum(line.total for line in o.line_ids if line.code == 'CAISSE_RETRAITE')"/>
+                <t t-set="its_pat" t-value="sum(line.total for line in o.line_ids if line.code == 'ITS_PAT')"/>
+                <t t-set="taxe_dapp" t-value="sum(line.total for line in o.line_ids if line.code == 'TAXE_APPRENT')"/>
+                <t t-set="fdfp" t-value="sum(line.total for line in o.line_ids if line.code == 'FDFP_FPC')"/>
+                <t t-set="nbr_enf" t-value="sum(line.total for line in o.line_ids if line.code == 'NB_ENF')"/>
+                <t t-set="nbr_maladie" t-value="nbr_enf + 1"/>
+                <t t-set="cmu" t-value="sum(line.total for line in o.line_ids if line.code == 'CMU')"/>
+                <t t-set="cmu_pat" t-value="sum(line.total for line in o.line_ids if line.code == 'CMU_PAT')"/>
+                <t t-set="prest_fam" t-value="sum(line.total for line in o.line_ids if line.code == 'PREST_FAM')"/>
+                <t t-set="ass_mat" t-value="sum(line.total for line in o.line_ids if line.code == 'ASS_MAT')"/>
+                <t t-set="famille" t-value="prest_fam + ass_mat"/>
+                <t t-set="acc_trav" t-value="sum(line.total for line in o.line_ids if line.code == 'ACC_TRAV')"/>
+                <t t-set="total_cot" t-value="its + cnps_cr + cmu"/>
+                <t t-set="total_cot1" t-value="caisse_ret + its_pat + taxe_dapp + fdfp + prest_fam + acc_trav + cmu_pat "/>
+                <t t-set="avance_acompte" t-value="sum(line.total for line in o.line_ids if line.code == 'AVANCE_ACOMPTE')"/>
+                <t t-set="transport" t-value="sum(line.total for line in o.line_ids if line.code == 'IND_N_IMPOSABLE')"/>
+                <t t-set="arr_plus" t-value="sum(line.total for line in o.line_ids if line.code == 'ARR_PLUS')"/>
+                <t t-set="arr_moins" t-value="sum(line.total for line in o.line_ids if line.code == 'ARR_MOINS')"/>
+                <t t-set="gain_brut" t-value="transport + sbi "/>
+                <t t-set="salaire_net" t-value="sum(line.total for line in o.line_ids if line.code == 'NET')"/>
+                <t t-set="rappel" t-value="sum(line.total for line in o.line_ids if line.code == 'RAPPEL')"/>
+
+
+                <!--1st table-->
+                <table class="table-container">
+                    <tr>
+                        <th>PERIODE DU</th>
+                        <td><span t-field="o.date_from"/></td>
+                        <th>AU</th>
+                        <td><span t-field="o.date_to"/></td>
+                        <th>PAYE PAR</th>
+                        <td>Virement</td>
+                    </tr>
+                    <tr>
+                        <th>MATRICULE</th>
+                        <td><span t-field="o.employee_id.registration_number"/></td>
+                        <th>EMBAUCHE LE</th>
+                        <td><span t-field="o.contract_id.date_start"/></td>
+                        <th>ANCIENNETÉ</th>
+                        <td><span t-esc="str(o.nb_months) + ' mois'"/></td>
+                        <!-- <td><span t-field="o.nb_year"/></td> -->
+                    </tr>
+                    <tr>
+                        <th>CATEGORIE</th>
+                        <td>#</td>
+                        <th>EMPLOI OCCUPÉ</th>
+                        <td><span t-field="o.contract_id.job_id"/></td>
+                        <th>DEPARTEMENT</th>
+                        <td><span t-field="o.contract_id.department_id.name"/></td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">NOM ET PRÉNOM</th>
+                        <td colspan="2"><span t-field="o.employee_id.name"/></td>
+                        <th colspan="1"> N° CNPS</th>
+                        <td><span t-field="o.employee_id.ssnid"/></td>
+                    </tr>
+                </table>
+                <!-- Leave Section -->
+                <table class="table-container">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="padding: 10px 135px 10px 135px; text-align: center; letter-spacing: 10px;">CONGÉS</th>
+                            <th colspan="2" style="padding: 10px 32px 10px 32px; text-align: center; font-size: 13px;" class="no-wrap">Pris</th>
+                            <th colspan="2" style="padding: 10px 32px 10px 32px; text-align: center; font-size: 13px;" class="no-wrap">Acquis</th>
+                            <th colspan="2" style="padding: 10px 32px 10px 32px; text-align: center; font-size: 13px;" class="no-wrap">Reste à prendre</th>
+                            <th colspan="2" style="padding: 10px 32px 10px 32px; text-align: center; font-size: 13px;" class="no-wrap">Nombre de part</th>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="padding: 3px 32px 3px 32px;"><t t-esc="'{:,}'.format(int(holidays)).replace(',', ' ')"/></td>
+                            <td colspan="2" style="padding: 3px 32px 3px 32px;">#</td>
+                            <td colspan="2" style="padding: 3px 32px 3px 32px;">#</td>
+                            <td colspan="2" style="padding: 3px 32px 3px 32px;"><t t-esc="('%.2f' % nb_parts).replace('.', ',')"/></td>
+                        </tr>
+                    </thead>
+                    <!-- <tbody>
+                        <tr>
+                            <th rowspan="2" style="padding: 10px 135px 10px 135px; text-align: center; letter-spacing: 10px;">DATES DE CONGÉS</th>
+                            <td colspan="8" style="padding: 10px 32px 10px 32px; text-align: center; font-size: 13px;" class="no-wrap">DU</td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" style="padding: 3px 32px 3px 32px;">AU</td>
+                        </tr>
+                    </tbody> -->
+                </table>
+
+                <table class="table3" style="width: 100%;font-family:Courier New, Courier, monospace; font-size:90%">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="padding: 30px 100px 30px 100px; text-align: center; width: 80% !important">Désignation</th>
+                            <th rowspan="2" style="padding: 10px 20px 10px 20px; text-align: center;" >Nbre</th>
+                            <th rowspan="2" style="padding: 30px 40px 30px 40px; text-align: center;">Base</th>
+                            <th colspan="3" style="padding: 20px 70px 20px 70px; text-align: center;"> Part salariale</th>
+                            <th colspan="2" style="padding: 20px 70px 20px 70px; text-align: center;">Part patronale</th>
+                        </tr>
+                        <tr>
+                            <th style="padding: 20px">Taux</th>
+                            <th style="padding: 40px">Gain</th>
+                            <th style="padding: 20px">Retenue</th>
+                            <th style="padding: 20px">Taux</th>
+                            <th style="padding: 20px">Retenue</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <!-- <t t-set="total_gain" t-value="0"/>
+                        <t t-set="total_deduction" t-value="0"/>
+
+                        <tr t-foreach="o.line_ids" t-as="line">
+                            <t t-if="line.is_gain" t-set="total_gain" t-value="total_gain + line.total"/>
+                            <t t-if="line.is_deduction" t-set="total_deduction" t-value="total_deduction + line.total"/>
+                            <t t-if="line.total != 0 and line.appears_on_payslip">
+                                <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important;"><span t-field="line.name"/></td>
+                                <td style="border-right: 1px solid black;text-align: right;padding-right: 10px;"><span t-field="line.quantity" t-options='{"widget": "float", "precision": 2}'/></td>
+                                <td style="border-right: 1px solid black;text-align: right;padding-right: 10px;"><span t-if="line.base_amount != 0" t-field="line.base_amount" t-options='{"widget": "float", "precision": 2}'/></td>
+                                <td style="border-right: 1px solid black;text-align: right;padding-right: 10px;"><span t-if="line.rate_amount != 0"  t-field="line.rate_amount" t-options='{"widget": "float", "precision": 2}'/></td>
+                                <td style="border-right: 1px solid black;text-align: right;padding-right: 10px;"><t t-if="line.is_gain"> <span t-field="line.total" t-options='{"widget": "float", "precision": 2}'/></t></td>
+                                <td style="border-right: 1px solid black;text-align: right;padding-right: 10px;"><t t-if="line.is_deduction"> <span t-field="line.total" t-options='{"widget": "float", "precision": 2}'/></t></td>
+                                <td style="border-right: 1px solid black;text-align: right;padding-right: 10px;"></td>
+                                <td style="border-right: 1px solid black;text-align: right;padding-right: 10px;border-left: 1px solid black;"></td>
+                            </t>
+                        </tr> -->
+
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Salaire de base</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(nbre)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,.2f}'.format(base).replace(',', ' ').replace('.', ',')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="('%.2f' % taux).replace('.', ',')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(gain)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Avantage en nature</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Prime d'ancienneté</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(nbre)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,.2f}'.format(base).replace(',', ' ').replace('.', ',')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="('%.2f' % taux_anc).replace('.', ',')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(anc_mnt)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Congés</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(holidays)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(gain_conge)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"></td>
+                        </tr>
+                        <!-- <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Gratification</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(a_p_imposable)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"></td>
+                        </tr> -->
+                        <t t-if="rappel">
+                            <tr>
+                                <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Rappel</td>
+                                <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                                <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                                <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                                <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(rappel)).replace(',', ' ')"/></td>
+                                <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                                <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                                <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"></td>
+                            </tr>
+                        </t>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Sursalaire</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(tot_paid)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,.2f}'.format(s_salaire).replace(',', ' ').replace('.', ',')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="('%.2f' % taux_2).replace('.', ',')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(s_salaire)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Total Soumis</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px; font-weight: bold; font-size: 13px;"><t t-esc="'{:,}'.format(int(total_soumis)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" style="height: 8px; border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px; font-weight: bold;">Salaire Brut Imposable</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px; font-weight: bold;"><t t-esc="'{:,}'.format(int(sbi)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" style="height: 8px; border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">ITS</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(tot_paid)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(sbi)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(its)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Retenue CNPS</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;">SB</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(sbi)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;">6,30% </td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(cnps_cr)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;">7,70%</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"><t t-esc="'{:,}'.format(int(caisse_ret)).replace(',', ' ')"/></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">IS Patronal</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(sbi)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;">1,20% </td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"><t t-esc="'{:,}'.format(int(its_pat)).replace(',', ' ')"/></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Taxe d'Apprentissage</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(sbi)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;">0,40% </td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"><t t-esc="'{:,}'.format(int(taxe_dapp)).replace(',', ' ')"/></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Taxe Formation Prof. Continue</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(sbi)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;">0,60% </td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"><t t-esc="'{:,}'.format(int(fdfp)).replace(',', ' ')"/></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Prestation Familliales</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;">75 000 </td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;">5,75% </td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"><t t-esc="'{:,}'.format(int(famille)).replace(',', ' ')"/></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Accident de Travail</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;">75 000 </td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;">5,00% </td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"><t t-esc="'{:,}'.format(int(acc_trav)).replace(',', ' ')"/></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Couverture Maladie Universelle</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(nbr_maladie)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;">500</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(cmu)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;">1</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"><t t-esc="'{:,}'.format(int(cmu_pat)).replace(',', ' ')"/></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px; font-weight: bold;">Total cotisations</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px; font-weight: bold;"><t t-esc="'{:,}'.format(int(total_cot)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black; font-weight: bold;"><t t-esc="'{:,}'.format(int(total_cot1)).replace(',', ' ')"/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" style="height: 8px; border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Autres retenues</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Acompte</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"><t t-esc="'{:,}'.format(int(avance_acompte)).replace(',', ' ')"/></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px; font-weight: bold;">Indemité de Transport</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(tot_paid)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(transport)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(transport)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"></td>
+                        </tr>
+                        <!-- <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Indemnités de fonction</td>
+                            <td style="border-right: 1px solid black;text-align: right;padding-right: 10px;">#</td>
+                            <td style="border-right: 1px solid black;text-align: right;padding-right: 10px;">#</td>
+                            <td style="border-right: 1px solid black;text-align: right;padding-right: 10px;">#</td>
+                            <td style="border-right: 1px solid black;text-align: right;padding-right: 10px;">#</td>
+                            <td style="border-right: 1px solid black;text-align: right;padding-right: 10px;">#</td>
+                            <td style="border-right: 1px solid black;text-align: right;padding-right: 10px;">#</td>
+                            <td style="border-right: 1px solid black;text-align: right;padding-right: 10px;border-left: 1px solid black;">#</td>
+                        </tr> -->
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px; font-weight: bold;">Total prime</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-esc="'{:,}'.format(int(transport)).replace(',', ' ')"/></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" style="height: 8px; border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;">Arrondi de paie</td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-if="arr_plus != 0"><t t-esc="'{:,}'.format(int(arr_plus)).replace(',', ' ')"/></t></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"><t t-if="arr_moins != 0"><t t-esc="'{:,}'.format(int(arr_moins)).replace(',', ' ')"/></t></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;"></td>
+                            <td style="border-right: 1px solid black;text-align: center;padding-right: 10px;border-left: 1px solid black;"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" style="height: 8px; border-right: 1px solid black;border-left: 1px solid black;text-align: left; width: 50% !important; padding-left: 7px;"></td>
+                        </tr>
+
+                        <!--last columns-->
+                        <tr>
+                            <td style="border: solid 1px;  padding:8px;text-align: center; font-weight: bold;"> Gain brut</td>
+                            <td style="border: solid 1px;  padding:8px;text-align: center;">Gain</td>
+                            <td style="border: solid 1px;  padding:8px;text-align: center;"> Charges salariales</td>
+                            <td style="border: solid 1px;  padding:8px;text-align: center;">Charges patronales</td>
+                            <td style="border: solid 1px;  padding:8px;text-align: center;">HT</td>
+                            <td style="border: solid 1px;  padding:8px;text-align: center;"> Salaire Impos</td>
+                            <td style="border: solid 1px;  padding:8px;text-align: center;"> Brut Congé</td>
+                            <td style="border: solid 1px;  padding:8px;text-align: center; font-weight: bold;">NET A PAYER</td>
+                        </tr>
+                        <tr>
+                            <td style="border: solid 1px;  padding:8px;text-align: center; font-weight: bold;"><t t-esc="'{:,}'.format(int(gain_brut)).replace(',', ' ')"/></td>
+                            <td style="border: solid 1px;  padding:8px;text-align: center;"><t t-esc="'{:,}'.format(int(gain_brut)).replace(',', ' ')"/></td>
+                            <td style="border: solid 1px;  padding:8px;text-align: center;"><t t-esc="'{:,}'.format(int(total_cot)).replace(',', ' ')"/></td>
+                            <td style="border: solid 1px;  padding:8px;text-align: center;"><t t-esc="'{:,}'.format(int(total_cot1)).replace(',', ' ')"/></td>
+                            <td style="border: solid 1px;  padding:8px;text-align: center;"></td>
+                            <td style="border: solid 1px;  padding:8px;text-align: center;"><t t-esc="'{:,}'.format(int(sbi)).replace(',', ' ')"/></td>
+                            <td style="border: solid 1px;  padding:8px;text-align: center;"></td>
+                            <td rowspan="2" style="border: solid 1px;  padding:8px;text-align: center; font-weight: bold;"><t t-esc="'{:,}'.format(int(salaire_net)).replace(',', ' ')"/></td>
+                        </tr>
+                        <tr>
+                            <td style="border: solid 1px;  padding:8px;text-align: center;"> Année: ( Cumul )</td>
+                            <td style="border: solid 1px;  padding:8px;text-align: left;"></td>
+                            <td style="border: solid 1px;  padding:8px;text-align: left;"></td>
+                            <td style="border: solid 1px;  padding:8px;text-align: left;"></td>
+                            <td style="border: solid 1px;  padding:8px;text-align: left;"></td>
+                            <td style="border: solid 1px;  padding:8px;text-align: left;"></td>
+                            <td style="border: solid 1px;  padding:8px;text-align: left;"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="footer">
+                    <p style="font-size: 10px; text-align: center; margin-top: 20px;">Pour vous aider à faire valoir vos droits, conservez ce bulletin de paie sans limitation de durée.</p>
+                </div>
+            </div>
+        <!-- </t> -->
+    </template>
+
+    <template id="payslip_igaser">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hr_payroll_ma.report_payslip_document"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

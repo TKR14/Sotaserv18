@@ -1,0 +1,5 @@
+<odoo>
+    <record id="logistics_group" model="res.groups">
+        <field name="name">SOTASERV_LOGISTIQUE</field>
+    </record>
+</odoo>

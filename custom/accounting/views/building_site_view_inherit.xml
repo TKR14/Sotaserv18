@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+  <!-- <record id="building_site_view_inherit" model="ir.ui.view">
+    <field name="name">building.site.view.inherit</field>
+    <field name="model">building.site</field>
+    <field name="inherit_id" ref="building.building_site_form_view" />
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='location_diesel_id']" position="after">
+        <field name="reference" />
+        <field name="client_to_pay" />
+      </xpath>
+    </field>
+  </record> -->
+
+</odoo>

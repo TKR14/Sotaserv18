@@ -1,0 +1,98 @@
+<odoo>
+    <!-- SEQUENCE -->
+    <record id="stock_inventory_sequence" model="ir.sequence">
+        <field name="name">StockInventory</field>
+        <field name="code">stock.quant</field>
+        <field name="implementation">no_gap</field>
+        <field name="prefix">AJIV/%(y)s/</field>
+        <field name="padding">4</field>
+    </record>
+
+    <!-- FORM -->
+    <record id="stock_inventory_view_form" model="ir.ui.view">
+        <field name="name">stock.quant.view.form</field>
+        <field name="model">stock.quant</field>
+        <field name="priority">15</field>
+        <field name="arch" type="xml">
+            <form class="stock_inventory_view_form">
+                <field name="from_excel" invisible="1"/>
+                <field name="site_ids" invisible="1"/>
+                <!-- <field name="line_ids" invisible="1"/> -->
+                <field name="company_id" invisible="1"/>
+                <header>
+                    <button name="action_apply_inventory"  string="Démarrer" type="object" class="btn-primary"/>
+                    <!-- <button name="action_valiinventory_date" string="Valider" type="object" invisible="state != 'confirm'" class="btn-primary"/>
+                    <button name="action_valiinventory_date" string="Valider" type="object" invisible="state != 'confirm'"/> -->
+                    <!-- <button name="action_cancel_draft" invisible="state != 'confirm'" string="Annuler" type="object" confirm="Si vous annulez cet ajustement d'inventaire, toutes ses lignes d'ajustement seront perdues. Etes-vous certain de vouloir l'annuler?"/> -->
+                    <!-- <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/> -->
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button string="Lignes" type="object" name="action_open_inventory_lines" class="oe_stat_button" icon="fa-bars" />
+                        <!-- <button string="Mouvements" type="object" name="action_view_related_move_lines" class="oe_stat_button" icon="fa-exchange"  context="{'no_reference': True}"/> -->
+                    </div>
+                    <div class="oe_title">
+                        <label for="display_name" class="oe_edit_only"/>
+                        <h1><field name="display_name" placeholder="e.g. Annual inventory" readonly="from_excel"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="site_id" options="{'no_open': True, 'no_create': True}" required="1" readonly="from_excel"/>
+                            <field name="product_id" context="{'default_type': 'product'}" widget="many2many_tags" />
+                            <field name="location_id" force_save="1" invisible="1"/>
+                        </group>
+                        <group class="wider_labels">
+                            <!-- <field name="exhausted" /> -->
+                            <!-- <field name="prefill_counted_quantity" widget="radio" /> -->
+                        </group>
+                    </group>
+                </sheet>
+                <!-- <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div> -->
+            </form>
+        </field>
+    </record>
+
+    <!-- TREE -->
+    <record id="stock_inventory_view_tree" model="ir.ui.view">
+        <field name="name">stock.quant.view.tree</field>
+        <field name="model">stock.quant</field>
+        <field name="priority">15</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="display_name"/>
+                <field name="site_id"/>
+                <field name="inventory_date"/>
+                <!-- <field name="state" widget="badge" decoration-success="state == 'done'" decoration-info="state in ('draft', 'confirm')"/> -->
+            </list>
+        </field>
+    </record>
+
+    <!-- SEARCH -->
+    <record id="stock_inventory_filter_inherit" model="ir.ui.view">
+        <field name="name">stock.quant.filter.inherit</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.quant_search_view"/>
+        <field name="arch" type="xml">
+            <filter name="my_count" position="after">
+                <filter string="Affaire" name="site_id" domain="[]" context="{'group_by': 'site_id'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <!-- ACTION -->
+    <!-- <record id="stock.action_inventory_form" model="ir.actions.act_window">
+        <field name="view_id" ref="stock_inventory_view_tree"/>
+        <field name="context">{"search_default_status": True, "search_default_site_id": True}</field>
+    </record> -->
+
+    <!-- <record id="stock_inventory_action_server" model="ir.actions.server">
+        <field name="name">Ajustements de l'inventaire</field>
+        <field name="model_id" ref="stock.model_stock_quant"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_user_stock_inventory()</field>
+    </record> -->
+</odoo>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_stock_attachement" model="ir.ui.view">
+            <field name="name">building.attachment.create.form</field>
+            <field name="model">building.attachment.create</field>
+            <field name="arch" type="xml">
+                <form string="Créer un Attachement Client">
+                    <field name="show_opening_attachment" invisible="1"/>
+                    <field name="warning" invisible="1"/>
+                    <group invisible="opening_attachment and not show_opening_attachment">
+                        <field name="site_id" required="1" invisible="opening_attachment" options="{'no_create': True}"/>
+                        <field name="opening_attachment" invisible="not show_opening_attachment" readonly="opening_attachment" required="1" force_save="1" options="{'horizontal': true}"/>
+                    </group>
+                    <group invisible="not opening_attachment">
+                        <field name="site_id" readonly="1" force_save="1" options="{'no_create': True}"/>
+                        <field name="name" invisible="1"/>
+                        <field name="number" readonly="1" force_save="1"/>
+                        <field name="location_src_id" invisible="1"/>
+                        <field name="location_dest_id" invisible="1"/>
+                        <field name="type_marche" invisible="0"/>
+                        <field name="order_id" readonly="order_id" force_save="1" required="1" domain="[('site_id', '=', site_id)]" options="{'no_create': True}"/>
+                    </group>
+                    <group invisible="not opening_attachment">
+                        <field name="start_date" force_save="1" readonly="opening_attachment == 'yes'"/>
+                        <field name="end_date" force_save="1" readonly="opening_attachment == 'yes'"/>
+                        <field name="date" invisible="1" readonly="1" force_save="1"/>
+                    </group>
+                    <field name="is_invisible_last_attachment" invisible="1"/>
+                    <group invisible="is_invisible_last_attachment or not opening_attachment">
+                        <field name="is_readonly_last_attachment" invisible="1"/>
+                        <field name="last_attachment" widget="boolean_toggle" force_save="1" readonly="is_readonly_last_attachment"/>
+                    </group>
+                    <group invisible="not opening_attachment">
+                        <field name="attachment_line_ids" nolabel="1" widget="section_and_note_one2many" options="{'create': false}">
+                            <list string="Details de l'Attachement" editable="bottom" delete="false" class="create_att_bp disable_sort">
+                                <!-- <control>
+                                    <create name="add_price_control" string="Ajouter un Numéro de Prix"/>
+                                    <create name="add_section_control" string="Ajouter une Section" context="{'default_display_type': 'line_section'}"/>
+                                    <create name="add_note_control" string="Ajouter une Description" context="{'default_display_type': 'line_note'}"/>
+                                </control> -->
+                                <field name="sequence" invisible="1" widget="handle"/>
+                                <field name="display_type" invisible="1"/>
+                                <field name="name" readonly="True" string="Produit" widget="section_and_note_text" force_save="True" />
+                                <!-- <field name="chapter" readonly="1" force_save="1"/> -->
+                                <field name="quantity" invisible="1"/>
+                                <field name="order_line_id" invisible="1"/>
+                                <field name="product_uom_id" readonly="1" options="{'no_open': True}" force_save="1"/>
+                                <field name="price_quantity" readonly="1" force_save="1" column_invisible="parent.type_marche == 'metre'"/>
+                                <field name="previous_quantity" readonly="parent.opening_attachment == 'no'" force_save="1"/>
+                                <field name="cumulative_quantity" readonly="is_readonly_cumulative_quantity" force_save="1" />
+                                <field name="percentage_completion" readonly="1" force_save="1" column_invisible="parent.type_marche == 'metre'"/>
+                                <field name="current_quantity" invisible="1" readonly="1" force_save="1"/>
+                                <field name="is_readonly_cumulative_quantity" invisible="1"/>
+                            </list>
+                        </field>
+                    </group>
+                    <footer>
+                    	<button name="create_attachment" string="Créer" type="object" class="btn-primary"/>
+                    	<!-- <button name="warning_switch" string="Désactiver les Alertes" type="object" class="btn-outline-danger" attrs="{'invisible': ['|', ('warning', '=', False), ('order_id', '=', False)]}"/>
+                    	<button name="warning_switch" string="Réactiver les Alertes" type="object" class="btn-outline-info" attrs="{'invisible': ['|', ('warning', '=', True), ('order_id', '=', False)]}"/> -->
+                        <button special="cancel" string="Annuler" class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="create_attachment_action" model="ir.actions.act_window">
+            <field name="name">Création des Attachements Client</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">building.attachment.create</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'type_attachment' : 'sale'}</field>
+            <field name="view_id" ref="view_stock_attachement"/>
+        </record>
+
+        <!-- <act_window id="action_attachment_customer_create"
+            multi="True"
+            key2="client_action_multi" name="Créer un Attachement client"
+            res_model="building.attachment.create" src_model="building.site"
+            view_mode="form" target="new" view_type="form" context="{'type':'sale'}" view_id="view_stock_attachement"/> -->
+
+        <record id="view_stock_supplier_attachement" model="ir.ui.view">
+            <field name="name">building.attachment.create.supplier.form</field>
+            <field name="model">building.attachment.create</field>
+            <field name="arch" type="xml">
+                <form string="Créer un Attachement Fournisseur">
+                	<group>
+                		<field name="name"/>
+                		<field name="location_src_id"/>
+                		<field name="location_dest_id"/>
+                    	<field name="site_id" invisible="0"/>
+                        <field name="partner_id" required="1"/>
+                    	<field name="subcontracting_id" invisible="0" required="1"/>
+                        <field name="start_date"/>
+                    	<field name="end_date"/>
+                    	<field name="date" readonly="1"/>
+                    	<field name="last_attachment"/>
+                  	</group>
+                    <group >
+                        <field name="attachment_line_ids" nolabel="1" readonly="0">
+                            <list string="Details de l'Attachement" editable="bottom" mode="list,form">
+                                <!-- <field name="chapter" readonly="1" /> -->
+                                <field name="name" string="Produit"/>
+                                <field name="product_id" required="False" invisible="1"/>
+                                <field name="quantity" invisible="1"/>
+                                <field name="order_line_id" invisible="1"/>
+                                <field name="subcontracting_line_id" invisible="1"/>
+                                <field name="product_uom_id" readonly="1"/>
+                                <field name="cumulative_quantity" readonly="0" force_save="1"/>
+                                <field name="previous_quantity" readonly="1" force_save="1"/>
+                                <field name="current_quantity" readonly="1" force_save="1"/>
+                            </list>
+                        </field>
+                    </group>
+                    <footer>
+                    	<button name="create_attachment" string="Créer" groups="" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Annuler" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="create_supplier_attachment_action" model="ir.actions.act_window">
+            <field name="name">Création des Attachements Fournisseur</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">building.attachment.create</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'type_attachment' : 'purchase'}</field>
+            <field name="view_id" ref="view_stock_supplier_attachement"/>
+        </record>
+
+        <!-- <act_window id="action_attachment_supplier_create"
+            multi="True"
+            key2="client_action_multi" name="Créer un Attachement fournisseur"
+            res_model="building.attachment.create" src_model="building.site"
+            view_mode="form" target="new" view_type="form" context="{'type':'purchase'}" view_id="view_stock_supplier_attachement"/> -->
+    </data>
+</openerp>

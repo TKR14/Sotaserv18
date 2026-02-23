@@ -1,0 +1,618 @@
+<odoo>
+    <record id="account_move_view" model="ir.ui.view">
+        <field name="name">account.move.view</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml"> 
+            <xpath expr="//group" position="inside">
+                <field name="invoice_line_ids_readability" invisible="1" />
+                <field name="based_on" invisible="1" />
+            </xpath>
+            <div class="oe_button_box" name="button_box">
+                <button class="oe_stat_button" name="action_view_purchase_entry_decompte" type="object" icon="fa-list-alt" context="{'hide_actions': True}" invisible="based_on in ['based_on_purchase_order', 'other']">
+                    <span>Décompte</span>
+                </button>
+            </div>
+            <div class="oe_button_box" name="button_box">
+                <button class="oe_stat_button" name="action_view_purchase_order" type="object" icon="fa-file-text" context="{'hide_actions': True}" invisible="based_on == 'other' or move_type == 'out_invoice'">
+                    <span>Bon de Commande</span>
+                </button>
+            </div>
+            <div class="oe_button_box" name="button_box">
+                <button class="oe_stat_button" name="action_view_stock_picking" type="object" icon="fa-file-text" context="{'hide_actions': True}" invisible="move_type_code != 'inv_reception_supply'">
+                    <span>Réceptions</span>
+                </button>
+            </div>
+            <div class="oe_button_box" name="button_box">
+                <button class="oe_stat_button" name="action_view_purchase_entry_decompte_client" type="object" icon="fa-list-alt" context="{'hide_actions': True}" invisible="move_type != 'out_invoice' or move_type_code != 'inv_entry'">
+                    <span>Décompte</span>
+                </button>
+                <button class="oe_stat_button" name="action_view_bp_client" type="object" icon="fa-signal" context="{'hide_actions': True}" invisible="move_type != 'out_invoice' or move_type_code != 'inv_entry'" style="width: 100px; padding-right: 10px;">
+                    <span>BDP</span>
+                </button>
+            </div>
+            <xpath expr="//button[@name='action_post']" position="replace"/>
+            <xpath expr="//button[@name='action_post']" position="replace">
+                <field name="is_cancel_visible" invisible="1"/>
+                <field name="is_payrun_entry" invisible="1"/>
+                <field name="is_payrun_paid" invisible="1"/>
+
+                <field name="move_type_type" invisible="1"/>
+                <button name="button_submit" string="Soumettre" type="object" class="btn-primary" invisible="state != 'draft' or move_type != 'in_invoice' or move_type_type != 'manual'" groups="account_plus.acount_move_group_invoice"/>
+                <button name="button_pre_validate" string="Valider" type="object" class="btn-primary" invisible="state != 'submitted' or move_type != 'in_invoice' or move_type_type != 'manual'" groups="account_plus.account_move_group_pre_validate"/>
+                <button name="action_received" string="Récéptionner" type="object" invisible="move_type in ['entry', 'out_invoice'] or state != 'pre_validated'" class="btn-primary" groups="account_plus.acount_move_group_bo"/>
+                <button name="action_validated" string="Valider" type="object" invisible="move_type in ['entry', 'out_invoice'] or state != 'received'" class="btn-primary" groups="account_plus.acount_move_group_cg"/>
+                <button name="action_post" string="Comptabiliser" type="object" invisible="move_type == 'out_invoice' or state != 'validated'" class="btn-primary" groups="account_plus.acount_move_group_invoice"/>
+
+                <!-- action_cancel_decompte_invoice --> <button name="action_cancel_reason" type="object" string="Annuler" invisible="state in ['posted', 'blocked', 'cancel'] or is_cancel_visible == False or move_type_code != 'inv_entry' or move_type == 'out_invoice'" groups="account_plus.acount_move_group_cg,building_plus.sotaserv_dg" context="{'method': 'action_cancel_decompte_invoice'}"/>
+                <button name="entry_action_post" string="Comptabiliser" type="object" invisible="is_payrun_entry == True or move_type != 'entry' or entry_state != 'draft'" class="btn-primary" groups="account_plus.acount_move_group_invoice"/>
+                <button name="action_register_payments_payrun" string="Enregistrer les Paiements" type="object" invisible="move_type == 'out_invoice' or is_payrun_entry == False or is_payrun_paid == True" class="btn-primary" groups="account_plus.acount_move_group_invoice"/>
+                <button name="action_cancel_block" string="Débloquer" type="object" invisible="move_type == 'out_invoice' or state != 'blocked'" class="btn-primary" groups="building_plus.sotaserv_dg,account_plus.acount_move_group_Aud"/>     
+                <!-- <button name="action_cancel_block" string="Approuver" type="object" attrs="{'invisible':[('state', '!=', 'blocked')]}" class="btn-primary" groups="building_plus.sotaserv_dg,account_plus.acount_move_group_Aud"/> -->
+                <button name="open_bolque_reason_wizard" 
+                        string="Bloquer" 
+                        type="object" 
+                        invisible="move_type in ['entry', 'out_invoice'] or state != 'received'" 
+                        context="{'method': 'action_block'}" 
+                        groups="account_plus.acount_move_group_cg"/>
+
+                <button name="action_cancel_reason" 
+                        type="object" 
+                        string="Annuler" 
+                        invisible="state in ['posted', 'blocked', 'cancel'] or move_type == 'out_invoice' or move_type_code not in ['inv_reception_supply', 'inv_other']" 
+                        groups="account_plus.acount_move_group_cg,building_plus.sotaserv_dg" 
+                        context="{'method': 'action_cancel_reason'}"/>
+
+                <button name="action_return_to_cg" 
+                        string="Retour CG" 
+                        type="object" 
+                        invisible="move_type == 'out_invoice' or state != 'posted' or payment_state != 'not_paid'" 
+                        groups="account_plus.acount_move_group_invoice"/>     
+
+                <button name="action_return_to_bo" 
+                        string="Retour BO" 
+                        type="object" 
+                        invisible="move_type == 'out_invoice' or (state == 0 and state != 'blocked')" 
+                        groups="building_plus.sotaserv_dg,account_plus.acount_move_group_Aud"/>
+
+                <button name="action_submit" type="object" string="Soumettre" class="btn-primary" invisible="out_state != 'draft' or move_type != 'out_invoice'" groups="account_plus.acount_move_group_invoice"/>
+                <button name="action_validate_finance" type="object" string="Valider Finance" class="btn-primary" invisible="out_state != 'submitted' or move_type != 'out_invoice'" groups="building_plus.sotaserv_daf,building_plus.sotaserv_dg"/>
+                <button name="action_out_post" type="object" string="Comptabiliser" class="btn-primary" invisible="out_state != 'finance_validated' or move_type != 'out_invoice'" groups="account_plus.acount_move_group_invoice"/> 
+
+                <button name="open_back_to_draft_reason_wizard" type="object" string="Remettre" 
+                        invisible="state != 'submitted' or move_type != 'in_invoice' or move_type_type != 'manual'" 
+                        groups="account_plus.account_move_group_pre_validate" 
+                        context="{'method': 'action_return_draft'}"/>
+
+                <button name="open_back_to_draft_reason_wizard" type="object" string="Remettre" 
+                        invisible="move_type in ['entry', 'out_invoice'] or state != 'pre_validated' or move_type_type != 'manual'" 
+                        groups="account_plus.acount_move_group_bo" 
+                        context="{'method': 'action_return_submitted'}"/>
+
+                <button name="open_back_to_draft_reason_wizard" type="object" string="Remettre" 
+                        invisible="move_type in ['entry', 'out_invoice'] or state != 'received'" 
+                        groups="account_plus.acount_move_group_cg" 
+                        context="{'method': 'action_return_pre_validated'}"/>
+
+                <button name="open_back_to_draft_reason_wizard" type="object" string="Remettre" 
+                        invisible="move_type == 'out_invoice' or state != 'validated'" 
+                        groups="account_plus.acount_move_group_invoice" 
+                        context="{'method': 'action_return_received'}"/>
+
+                <button name="open_back_to_draft_reason_wizard" type="object" string="Remettre" 
+                        invisible="move_type == 'out_invoice' or (state == 0 and state != 'posted')" 
+                        groups="account_plus.acount_move_group_invoice,building_plus.sotaserv_dg,building_plus.sotaserv_daf,building_plus.sotaserv_administrator,building_plus.sotaserv_director_general,building_plus.sotaserv_accountant_manager,building_plus.sotaserv_accountant_user,building_plus.sotaserv_accountant_supervisor,building_plus.sotaserv_accountant_approver,building_plus.sotaserv_accountant_validator,building_plus.sotaserv_accountant_reviewer,building_plus.sotaserv_accountant_auditor,building_plus.sotaserv_accountant_controller,building_plus.sotaserv_accountant_comptroller,building_plus.sotaserv_accountant_bookkeeper,building_plus.sotaserv_accountant_cfo,building_plus.sotaserv_accountant_cto,building_plus.sotaserv_accountant_coo,building_plus.sotaserv_accountant_cio" 
+                        context="{'method': 'action_return_received'}"/>
+
+                <button name="open_create_line_taxe_wizard" type="object" string="Ajouter ligne Taxe" 
+                        invisible="move_type != 'in_invoice' or move_type_code != 'inv_reception_supply' or state != 'blocked' or has_tax_line" 
+                        class="btn-primary" 
+                        groups="account_plus.acount_move_group_Aud"/>
+            </xpath>
+            <xpath expr="//button[@name='action_register_payment']" position="after">
+                <button name="action_out_invoice_back" 
+                        type="object" 
+                        string="Remettre" 
+                        class="btn-secondary" 
+                        invisible="out_state != 'submitted' or move_type != 'out_invoice'" 
+                        groups="building_plus.sotaserv_daf,building_plus.sotaserv_dg"/>
+
+                <button name="action_out_invoice_back" 
+                        type="object" 
+                        string="Remettre" 
+                        class="btn-secondary" 
+                        invisible="out_state != 'finance_validated' or move_type != 'out_invoice'" 
+                        groups="account_plus.acount_move_group_invoice"/>
+
+                <button name="action_out_invoice_back" 
+                        type="object" 
+                        string="Remettre" 
+                        class="btn-secondary" 
+                        invisible="out_state != 'posted' or move_type != 'out_invoice'" 
+                        groups="account_plus.acount_move_group_invoice"/>
+            </xpath>
+            <xpath expr="//button[@name='action_invoice_sent']" position="replace"/>
+            <xpath expr="//button[@name='entry_action_post']" position="after">
+                <field name="entry_state" widget="statusbar" statusbar_visible="draft,posted" invisible="move_type != 'entry'"/>
+            </xpath>
+            <xpath expr="//button[@name='action_reverse']" position="replace">
+                <button name="action_reverse" 
+                string="Ajouter une note de crédit" 
+                type="object" 
+                groups="account.group_account_invoice" 
+                invisible="move_type not in ['out_invoice', 'in_invoice'] or state != 'approved'"/>
+            </xpath>
+            <xpath expr="//button[@name='button_draft']" position="replace">
+                <button name="open_reset_draft_reason_wizard" 
+                        string="Remettre en brouillon" 
+                        type="object" 
+                        invisible="is_payrun_entry or move_type_type != 'manual' or state == 'draft' or move_type == 'out_invoice'" 
+                        groups="account_plus.account_group_reset_to_draft"/>
+
+                <button name="open_reset_draft_reason_wizard" 
+                        string="Remettre en brouillon" 
+                        type="object" 
+                        invisible="is_payrun_entry or move_type_type == 'manual' or state == 'pre_validated' or move_type == 'out_invoice'" 
+                        groups="account_plus.account_group_reset_to_draft"/>
+            </xpath>
+            <!-- <xpath expr="//button[@name='button_cancel']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+            <!-- <xpath expr="//button[@name='182']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+            <xpath expr="//field[@name='state']" position="replace">
+                <field name="state" widget="statusbar" statusbar_visible="draft,submitted,pre_validated,received,validated,posted" invisible="move_type in ['entry', 'out_invoice', 'out_refund']"/>
+                <field name="out_state" widget="statusbar" invisible="move_type not in ['out_invoice', 'out_refund']"/>
+            </xpath>
+            <field name="invoice_date" position="attributes">
+                <attribute name="invisible">move_type not in ['out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt']</attribute>
+                <attribute name="readonly">not move_type</attribute>
+            </field>
+            <field name="date" position="attributes">
+                <attribute name="invisible">invoice_date_due != False</attribute>
+            </field>
+            <field name="name" position="attributes">
+                <attribute name="readonly">True</attribute>
+                <attribute name="force_save">True</attribute>
+            </field>
+            <label for="ref" position="replace"/>
+            <field name="ref" position="replace"/>
+            <field name="ref" position="replace">
+                <field name="ref" readonly="state not in ['draft', 'pre_validated', 'blocked'] or is_general_paie_entry or (journal_type != 'general' and move_type == 'entry')"/>
+            </field>
+
+            <xpath expr="//form//header" position="inside">
+                <button name="print_invoice_decompte_report" type="object" string="Imprimer Facture" class="btn-primary" invisible="move_type_code not in ['inv_entry', 'inv_other'] or move_type != 'out_invoice'"/>
+            </xpath>
+
+            <xpath expr="//field[@name='payment_reference']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <xpath expr="//form//group//field[@name='ref'][1]" position="attributes">
+                <attribute name="invisible">move_type == 'entry'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_bank_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- <span class="oe_inline o_form_label mx-3 oe_read_only" position="replace"/> -->
+            <!-- <span class="oe_inline o_form_label mr-3 ml-5 oe_edit_only" position="replace"/> -->
+
+            <xpath expr="//div[@name='journal_div']//field[@name='journal_id']" position="after">
+                <span class="oe_inline o_form_label mx-3 oe_read_only" groups="base.group_multi_currency" invisible="move_type == 'entry'"> en </span>
+                <span class="oe_inline o_form_label mr-3 ml-5 oe_edit_only" groups="base.group_multi_currency" invisible="move_type == 'entry'"> en </span>
+            </xpath>
+
+            <xpath expr="//sheet/group/group[1]/field[@name='ref']" position="after">
+                <field name="set_invoice_type" invisible="1"/>
+                <field name="is_decompte" invisible="1"/>
+                <field name="is_automatic_move_type" invisible="1"/>
+                <field name="decompte" invisible="not is_decompte"/>
+                <field name="move_type_id" readonly="state != 'draft' or is_automatic_move_type" invisible="move_type == 'entry'" options="{'no_open': True, 'no_create': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/list" position="inside">
+                <field name="is_tax_line" invisible="1"/>
+                <!-- <field name="is_landed_costs_line" invisible="1"/> -->
+                <field name="analytic_distribution" invisible="1"/>
+                <field name="purchase_order_id" invisible="1"/>
+            </xpath>
+            <xpath expr="//page[@id='invoice_tab']//field[@name='analytic_distribution']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- <xpath expr="//page[@id='invoice_tab']//field[@name='amount_untaxed']" position="attributes">
+                <attribute name="attrs">{}</attribute>
+            </xpath> -->
+            <xpath expr="//field[@name='tax_totals']" position="before">
+                <field name="is_decompte" invisible="1"/>
+                <field name="is_advance_invoice" invisible="1"/>
+                <field name="is_readonly_advance" invisible="1"/>
+                <field name="is_invisible_rg" invisible="1"/>
+                <field name="is_invisible_penalty" invisible="1"/>
+                <field name="is_controle_gestion_user" invisible="1"/>
+                <field name="move_type_code" invisible="1"/>
+                <field name="avance" force_save="1" invisible="is_advance_invoice or move_type == 'out_invoice'" readonly="is_decompte or not is_readonly_advance or not is_controle_gestion_user"/>
+                <field name="return_of_guarantee" string="RG" invisible="is_advance_invoice or is_invisible_rg or move_type == 'out_invoice'" readonly="is_decompte or not is_readonly_advance or not is_controle_gestion_user"/>
+                <!-- <field name="penalty" readonly="1" attrs="{'invisible': ['|', ('is_advance_invoice', '=', True), ('is_invisible_penalty', '=', True)]}"/> -->
+
+                <field name="prc_advance_deduction" invisible="move_type != 'out_invoice' or move_type_code == 'inv_advance'" readonly="out_state != 'draft' or move_type_code == 'inv_entry'"/>
+                <field name="prc_gr" invisible="move_type != 'out_invoice' or move_type_code == 'inv_advance'" readonly="out_state != 'draft' or move_type_code == 'inv_entry'"/>
+                <field name="prc_ten_year" invisible="move_type != 'out_invoice' or move_type_code == 'inv_advance'" readonly="out_state != 'draft' or move_type_code == 'inv_entry'"/>
+                <field name="is_tax_ids_readonly" invisible="1"/>
+            </xpath>
+            <field name="partner_id" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+                <attribute name="readonly">state in ['validated', 'received', 'posted']</attribute>
+                <attribute name="invisible">move_type == 'entry'</attribute>
+                <attribute name="required">move_type != 'entry'</attribute>
+            </field>
+            <field name="site_id" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+                <attribute name="readonly">state in ['validated', 'received', 'posted']</attribute>
+                <attribute name="invisible">move_type == 'entry'</attribute>
+            </field>
+            <field name="invoice_line_ids" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+                <attribute name="readonly">invoice_line_ids_readability == True</attribute>
+            </field>
+            <xpath expr="///field[@name='invoice_line_ids']//field[@name='product_id']" position="attributes">
+                <attribute name="readonly">parent.state != 'draft'</attribute>
+                <attribute name="options">{'no_open': True, 'no_create': True}</attribute>
+            </xpath>
+            <xpath expr="///field[@name='invoice_line_ids']//field[@name='name']" position="attributes">
+                <attribute name="readonly">parent.state != 'draft'</attribute>
+            </xpath>
+            <xpath expr="///field[@name='invoice_line_ids']//field[@name='account_id']" position="attributes">
+                <attribute name="readonly">parent.state not in ['draft', 'pre_validated', 'validated', 'blocked']</attribute>
+            </xpath>
+            <xpath expr="///field[@name='invoice_line_ids']//field[@name='quantity']" position="attributes">
+                <attribute name="readonly">parent.state != 'draft'</attribute>
+            </xpath>
+            <xpath expr="///field[@name='invoice_line_ids']//field[@name='product_uom_id']" position="attributes">
+                <attribute name="readonly">parent.state not in ['draft', 'blocked']</attribute>
+            </xpath>
+            <xpath expr="///field[@name='invoice_line_ids']//field[@name='price_unit']" position="attributes">
+                <attribute name="readonly">parent.state not in ['draft', 'pre_validated', 'blocked']</attribute>
+            </xpath>
+            <xpath expr="///field[@name='invoice_line_ids']//field[@name='tax_ids']" position="attributes">
+                <attribute name="readonly">parent.state not in ['draft', 'blocked']</attribute>
+                <attribute name="options">{'no_create': True}</attribute>
+            </xpath>
+            <field name="journal_id" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+                <attribute name="readonly">state in ['validated', 'received', 'posted']</attribute>
+            </field>
+            <xpath expr="//field[@name='line_ids']//field[@name='vehicle_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="///field[@name='line_ids']/list/field[@name='analytic_distribution']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//form" position="inside">
+                <field name="has_tax_line" invisible="1"/>
+                <field name="journal_type" invisible="1"/>
+                <field name="is_general_paie_entry" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='tax_totals']" position="after">
+                <field name="amount_tax" string="TVA" invisible="has_tax_line == False"/>
+            </xpath>
+            <field name="line_ids" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+                <attribute name="readonly">state in ['validated', 'received', 'posted'] or is_general_paie_entry == True or (journal_type != 'general' and move_type == 'entry')</attribute>
+            </field>
+            <xpath expr="//field[@name='currency_id']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+                <attribute name="readonly">state in ['validated', 'received', 'posted']</attribute>
+                <attribute name="invisible">move_type == 'entry'</attribute>
+            </xpath>
+            <!-- <xpath expr="//field[@name='currency_id'][2]" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+                <attribute name="invisible">move_type == 'entry'</attribute>
+                <attribute name="readonly">state in ['validated', 'received', 'posted']</attribute>
+            </xpath> -->
+            <xpath expr="//field[@name='payment_reference']" position="attributes">
+                <attribute name="groups">!account_plus.acount_move_group_bo</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_bank_id']" position="attributes">
+                <attribute name="groups">!account_plus.acount_move_group_bo</attribute>
+            </xpath>
+            <!-- <field name="purchase_vendor_bill_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <label for="purchase_vendor_bill_id" position="replace"/> -->
+            <xpath expr="//sheet/group/group[2]/field[@name='date']" position="after">
+                <field name="deposit_date" readonly="state != 'draft'" invisible="move_type == 'entry'" required="1" />
+            </xpath>
+            <!-- <xpath expr="//sheet/group/group[2]/field[@name='date']" position="after">
+                <field name="is_approved" invisible="1" />
+            </xpath> -->
+            <xpath expr="//form//header//button[@name='preview_invoice']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//page[@id='other_tab_entry']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_account_invoice_filter_inherit2">
+        <field name="name">account.invoice.select.inherit2</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='sitegroup']" position="after">
+                <field name="move_type" invisible="1"/>
+                <filter name="typegroup" string='Type de Facture' context="{'group_by' : 'move_type_id'}"/>
+            </xpath>
+            <xpath expr="//filter[@name='status']" position="attributes">
+                <attribute name="invisible">move_type == 'out_invoice'</attribute>
+            </xpath>
+            <xpath expr="//group//filter[@name='group_by_partner_id']" position="after">
+                <filter name="out_state" string="Status" context="{'group_by':'out_state'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_move_form_bo" model="ir.ui.view">
+        <field name="name">account.move.bo.view</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group" position="inside">
+                <field name="based_on" invisible="1" />
+            </xpath>
+
+            <!-- <xpath expr="//group/label[@name='invoice_vendor_bill_id_label']" position="attributes">
+                <attribute name="invisible">state != 'draft' or move_type != 'in_invoice' or based_on in ('other', 'based_on_purchase_order', 'based_on_attachment')</attribute>
+            </xpath>
+
+            <xpath expr="//group/field[@name='invoice_vendor_bill_id']" position="attributes">
+                <attribute name="invisible">state != 'draft' or move_type != 'in_invoice' or based_on in ('other', 'based_on_purchase_order', 'based_on_attachment')</attribute>
+            </xpath>
+
+            <xpath expr="//group/field[@name='partner_id']" position="attributes">
+                <attribute name="readonly">state in ['validated', 'received', 'posted'] or based_on in ('based_on_purchase_order', 'based_on_attachment')</attribute>
+                <attribute name="required">based_on == 'other' and move_type != 'entry'</attribute>
+                <attribute name="invisible">move_type == 'entry'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='site_id']" position="attributes">
+                <attribute name="readonly">state in ['validated', 'received', 'posted'] or based_on in ('based_on_purchase_order', 'based_on_attachment')</attribute>
+                <attribute name="invisible">move_type == 'entry'</attribute>
+            </xpath>
+
+            <xpath expr="//group/field[@name='invoice_date']" position="attributes">
+                <attribute name="invisible">move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')</attribute>
+                <attribute name="readonly">state in ['validated', 'received', 'posted']</attribute>
+                <attribute name="required">based_on in ('other', 'based_on_purchase_order')</attribute>
+            </xpath>
+
+            <xpath expr="//group/field[@name='ref']" position="attributes">
+                <attribute name="required">based_on in ('other', 'based_on_purchase_order', 'based_on_attachment')</attribute>
+                <attribute name="readonly">state not in ['draft', 'pre_validated', 'blocked'] or is_general_paie_entry == True or journal_type != 'general' and move_type == 'entry'</attribute>
+            </xpath>
+
+            <xpath expr="//group/field[@name='date']" position="attributes">
+                <attribute name="invisible">move_type in ['out_invoice', 'out_refund', 'out_receipt']</attribute>
+                <attribute name="readonly">state != 'draft' or based_on in ['based_on_purchase_order', 'based_on_attachment'] or is_general_paie_entry or (invoice_date_due and based_on == 'other') or (journal_type != 'general' and move_type == 'entry')</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='currency_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+                <attribute name="invisible">move_type == 'entry'</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_date_due']" position="attributes">
+                <attribute name="readonly">state != 'draft'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_payment_term_id']" position="attributes">
+                <attribute name="readonly">state != 'draft'</attribute>
+            </xpath> -->
+
+            <!-- <xpath expr="//field[@name='amount_by_group']" position="after">
+                <field name="move_type_code" invisible="1" />
+                <field name="amount_total_before_deduction" invisible="move_type_code not in ['inv_reception_supply', 'inv_service_no_attachment', 'inv_entry']"/>
+            </xpath> -->
+
+            <xpath expr="//page[@id='other_tab']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="temp_invoicing" model="res.groups">
+        <field name="name">Temp Invoicing*</field>
+    </record>
+
+    <record id="account_plus_invoice_tree" model="ir.ui.view">
+        <field name="name">account.plus.invoice.tree</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list//header" position="inside">
+                <button name="recompute_dynamic_lines" string="FIX" type="object" groups="account_plus.admin_ba_temp,account_plus.acount_move_group_cg"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- <record id="view_move_form_bo" model="ir.ui.view">
+        <field name="name">account.move.bo.view</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml"> -->
+            <!-- <xpath expr="//header" position="inside">
+                <button name="action_post" string="Comptabiliser*" type="object" groups="account_plus.temp_invoicing"/>
+                <button name="button_draft" string="Remettre Brouillon*" type="object" groups="account_plus.temp_invoicing" />
+            </xpath> -->
+            
+            <!-- <xpath expr="//group" position="inside">
+                <field name="based_on" invisible="1" />
+            </xpath> -->
+
+            <!-- <xpath expr="//field[@name='amount_by_group']" position="after">
+                <field name="move_type_code" invisible="1" />
+                <field name="amount_total_before_deduction" invisible="move_type_code not in ['inv_reception_supply', 'inv_service_no_attachment', 'inv_entry']"/>
+            </xpath> -->
+
+            <!-- <xpath expr="//group/label[@name='invoice_vendor_bill_id_label']" position="attributes">
+                <attribute name="invisible">state != 'draft' or move_type != 'in_invoice' or based_on in ['other', 'based_on_purchase_order', 'based_on_attachment']</attribute>
+            </xpath>
+
+            <xpath expr="//group/field[@name='invoice_vendor_bill_id']" position="attributes">
+                <attribute name="invisible">state != 'draft' or move_type != 'in_invoice' or based_on in ['other', 'based_on_purchase_order', 'based_on_attachment']</attribute>
+            </xpath>
+
+            <xpath expr="//group/field[@name='partner_id']" position="attributes">
+                <attribute name="readonly">state in ['validated', 'received', 'posted'] or based_on in ['based_on_purchase_order', 'based_on_attachment']</attribute>
+                <attribute name="required">based_on == 'other' and move_type != 'entry'</attribute>
+                <attribute name="invisible">move_type == 'entry'</attribute>
+            </xpath>
+
+            <xpath expr="//group/field[@name='site_id']" position="attributes">
+                <attribute name="readonly">state in ['validated', 'received', 'posted'] or based_on in ['based_on_purchase_order', 'based_on_attachment']</attribute>
+                <attribute name="invisible">move_type == 'entry'</attribute>
+            </xpath>
+
+            <xpath expr="//group/field[@name='invoice_date']" position="attributes">
+                <attribute name="invisible">move_type not in ['out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt']</attribute>
+                <attribute name="readonly">state in ['validated', 'received', 'posted']</attribute>
+                <attribute name="required">move_type in ['in_invoice', 'out_invoice']</attribute>
+            </xpath>
+
+            <xpath expr="//group/field[@name='ref']" position="attributes">
+                <attribute name="required">based_on in ['other', 'based_on_purchase_order', 'based_on_attachment'] and move_type in ['in_invoice', 'out_invoice']</attribute>
+                <attribute name="readonly">state not in ['draft', 'pre_validated', 'blocked'] or is_general_paie_entry == True or journal_type != 'general' and move_type == 'entry'</attribute>
+            </xpath>
+
+            <xpath expr="//group/field[@name='date']" position="attributes">
+                <attribute name="invisible">move_type in ['out_invoice', 'out_refund', 'out_receipt']</attribute>
+                <attribute name="readonly">
+                    state != 'draft' 
+                    or based_on in ['based_on_purchase_order', 'based_on_attachment'] 
+                    or is_general_paie_entry 
+                    or (invoice_date_due and based_on == 'other') 
+                    or (journal_type != 'general' and move_type == 'entry')
+                </attribute>
+            </xpath>
+
+            <xpath expr="//sheet/group/group[2]/field[@name='currency_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+                <attribute name="invisible">move_type == 'entry'</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_date_due']" position="attributes">
+                <attribute name="readonly">based_on in ['based_on_purchase_order', 'based_on_attachment']</attribute>
+            </xpath> -->
+
+            <!-- <xpath expr="//field[@name='invoice_payment_term_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('based_on', 'in', ('based_on_purchase_order', 'based_on_attachment'))]}</attribute>
+            </xpath> -->
+
+            <!-- <xpath expr="//page[@id='invoice_tab']//field[@name='is_landed_costs_line']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            
+
+            <xpath expr="//page[@id='invoice_tab']//field[@name='analytic_account_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//page[@id='invoice_tab']//field[@name='product_uom_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//page[@id='invoice_tab']//field[@name='purchase_order_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//sheet/group/group[1]/field[@name='purchase_vendor_bill_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//group/field[@name='journal_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+
+            <xpath expr="//label[@for='purchase_vendor_bill_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+
+            <!-- <xpath expr="//page[@id='other_tab']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//page[@id='invoice_tab']//field[@name='vehicle_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//page[@id='invoice_tab']//field[@name='discount']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record> -->
+
+    <!-- Facture Client action -->
+    <record id="account.action_move_out_invoice_type" model="ir.actions.act_window">
+        <field name="context">{'default_move_type': 'out_invoice', 'hide_actions':True,}</field>
+    </record>
+
+    <record id="custom_account_move_out_refund_tree" model="ir.ui.view">
+        <field name="name">account.plus.invoice.tree</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//field[@name='state']" position="replace"/> -->
+            <xpath expr="//field[@name='amount_total_in_currency_signed']" position="before">
+                <field name="out_state"
+                        widget="badge"
+                        decoration-danger="out_state == 'draft'"
+                        decoration-success="out_state == 'posted'"
+                        decoration-warning="out_state in ('submitted', 'finance_validated')"
+                        decoration-primary="out_state == 'dg_validated'"/>
+                <field name="state" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Avoir Client action -->
+    <record id="account.action_move_out_refund_type" model="ir.actions.act_window">
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="account_plus.custom_account_move_out_refund_tree"/>
+    </record>
+
+    <record id="account_move_form_out_invoice_back" model="ir.ui.view">
+        <field name="name">account.move.form.out.invoice.back</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="reason" required="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Remettre" type="object" name="button_out_invoice_back" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="cron_fix_invoice_vat" model="ir.cron">
+        <field name="name">Fix VAT on Invoices</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_fix_invoice_vat()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

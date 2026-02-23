@@ -1,0 +1,141 @@
+<odoo>
+    <record id="account_payment_view_form_inherit" model="ir.ui.view">
+        <field name="name">account.payment.view.form.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//form" position="attributes">
+                <attribute name="create">0</attribute>    
+            </xpath>
+
+            <header position="replace">
+                <header>
+                    <field name="approval_state" invisible="1"/>
+                    <field name="state" invisible="1"/>
+                    
+                    <button
+                        name="action_submit"
+                        type="object"
+                        string="Soumettre"
+                        class="btn-primary oe_read_only"
+                        invisible="payment_method_code in ['check', 'effect'] or approval_state != 'submit'"
+                        groups="building_plus.sotaserv_tresorier"
+                    />
+                    <button
+                        name="action_validate"
+                        type="object"
+                        string="Valider"
+                        class="btn-primary oe_read_only"
+                        invisible="payment_method_code in ['check', 'effect'] or approval_state != 'validation'"
+                        groups="building_plus.sotaserv_dg"
+                    />
+                    <button
+                        name="open_cancellation_reason_wizard"
+                        type="object"
+                        string="Remettre"
+                        class="oe_read_only"
+                        invisible="payment_method_code in ['check', 'effect'] or approval_state != 'validation'"
+                        context="{'index': 'return_payment', 'state': 'submit'}"
+                        groups="building_plus.sotaserv_dg"
+                    />
+                    <button 
+                        name="print_virement" 
+                        string="Imprimer"
+                        class="btn-primary" 
+                        type="object"
+                        invisible="payment_method_code != 'transfer'"
+                    />
+                    <field
+                        name="state_1"
+                        widget="statusbar"
+                        statusbar_visible="submit,validation,validated,close"
+                        invisible="payment_method_code in ['check', 'effect']"
+                    />
+
+                    <!-- if payment_method_code in ["check", "effect"] -->
+                    <button
+                        name="action_submit"
+                        type="object"
+                        string="Soumettre"
+                        class="btn-primary oe_read_only"
+                        invisible="payment_method_code not in ['check', 'effect'] or approval_state != 'submit'"
+                        groups="building_plus.sotaserv_tresorier"
+                    />
+                    <button
+                        name="action_validate"
+                        type="object"
+                        string="Valider"
+                        class="btn-primary oe_read_only"
+                        invisible="payment_method_code not in ['check', 'effect'] or approval_state != 'validation'"
+                        groups="building_plus.sotaserv_dg"
+                    />
+                    <button
+                        name="open_cancellation_reason_wizard"
+                        type="object"
+                        string="Remettre"
+                        class="oe_read_only"
+                        invisible="payment_method_code not in ['check', 'effect'] or approval_state != 'validation'"
+                        context="{'index': 'return_payment', 'state': 'submit'}"
+                        groups="building_plus.sotaserv_dg"
+                    />
+                    <button
+                        name="action_submit_bo"
+                        type="object"
+                        string="Remis"
+                        class="btn-primary oe_read_only"
+                        invisible="payment_method_code not in ['check', 'effect'] or approval_state != 'validated'"
+                        groups="account_plus.acount_move_group_bo"
+                    />
+                    <button
+                        name="open_cancellation_reason_wizard"
+                        type="object"
+                        string="Remettre"
+                        class="oe_read_only"
+                        invisible="payment_method_code not in ['check', 'effect'] or approval_state != 'validated'"
+                        context="{'index': 'return_payment', 'state': 'validation'}"
+                        groups="account_plus.acount_move_group_bo"
+                    />
+                    <field
+                        name="state_2"
+                        widget="statusbar"
+                        invisible="payment_method_code not in ['check', 'effect']"
+                    />
+                </header>
+            </header>
+            <field name="payment_method_line_id" position="after">
+                <field name="journal_type" invisible="1"/>
+                <field name="payment_method_code" invisible="1"/>
+                <field
+                    name="check_id"
+                    invisible="journal_type != 'bank' or payment_method_code not in ['check', 'effect']"
+                    required="journal_type == 'bank' and payment_method_code in ['check', 'effect']"
+                    readonly="state != 'draft'"
+                    options="{'no_create': True, 'no_open': True}"
+                />
+            </field>
+        </field>
+    </record>
+
+    <record id="account_payment_view_tree_inherit" model="ir.ui.view">
+        <field name="name">account.payment.view.tree.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list//header//button[@name='action_post']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//list//header" position="inside">
+                <button name="action_validate" string="Valider DG" type="object" class="btn-primary oe_read_only ml-2" groups="building_plus.sotaserv_dg"/>
+            </xpath>
+            <xpath expr="//list" position="attributes">
+                <attribute name="create">0</attribute>    
+            </xpath>
+            <xpath expr="//list" position="inside">
+                <field name="check_id" invisible="1"/>  
+            </xpath>
+
+        </field>
+
+    </record>
+</odoo>

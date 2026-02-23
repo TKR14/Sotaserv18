@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <record id="building_location_chantiers" model="stock.location">
+            <field name="name">CHANTIERS</field>
+            <field name="location_id" ref="stock.stock_location_locations"/>
+            <field name="usage">view</field>
+        </record>
+
+  </data>
+</openerp>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+     
+		<record model="ir.ui.view" id="building_document_form">
+	        <field name="name">building.document.form</field>
+	        <field name="model">building.document</field>
+	        <field name="type">form</field>
+	        <field name="arch" type="xml">
+	        	<form string="Import des documents">
+	        		<group>
+	        			<field name="state" invisible="1"/> 
+			            <field name="attachment_type_id" required="1"/> 
+			            <field name="name" required="1"/> 
+			            <field name="start_date"  required="1" invisible="state in ('stopping', 'restart', 'provisional_receipt', 'ultimately_reception', 'closing')"/> 
+			           	<field name="stopping_date"  required="1" invisible="state in ('open', 'restart', 'provisional_receipt', 'ultimately_reception', 'closing')"/> 
+			            <field name="restart_date"  required="1" invisible="state in ('open', 'stopping', 'provisional_receipt', 'ultimately_reception', 'closing')"/> 
+			            <field name="provisional_receipt_date"  required="1" invisible="state in ('open', 'restart', 'stopping', 'ultimately_reception', 'closing')"/> 
+			            <field name="ultimately_reception_date"  required="1" invisible="state in ('open', 'restart', 'stopping', 'provisional_receipt', 'closing')"/> 
+			            <field name="file" /> 
+			       		<field name="duration"  required="0" invisible="state in ('stopping', 'restart', 'provisional_receipt', 'ultimately_reception', 'closing')"/>
+		                <!-- <field name="with_advance" invisible="state in ('stopping', 'restart', 'provisional_receipt', 'ultimately_reception', 'closing')"/> -->
+                    	<field name="prc_cd"  required="0" invisible="state in ('stopping', 'restart', 'provisional_receipt', 'ultimately_reception', 'closing')"/>
+						<field name="type_gr"  required="0" invisible="state in ('stopping', 'restart', 'provisional_receipt', 'ultimately_reception', 'closing')"/>
+						<field name="prc_gr"  required="0" invisible="type_gr == 'none' or state in ('stopping', 'restart', 'provisional_receipt', 'ultimately_reception', 'closing')"/>
+                    </group>
+	              	<footer>
+	                	<button name="create_document" string="Valider" type="object" class="oe_highlight"/>
+	                	or
+	                	<button string="Annuler" class="oe_link" special="cancel" />
+	           		</footer>
+	            </form>
+	        </field>
+		</record>
+            
+		<record model="ir.actions.act_window" id="action_create_document">
+		    <field name="name">créer un document</field>
+		    <field name="res_model">building.document</field>
+		    <field name="view_mode">form</field>
+		    <field name="target">new</field>
+		</record>
+            
+    </data>
+</openerp>

@@ -1,0 +1,907 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="view_esg_wizard" model="ir.ui.view">
+		<field name="name">esg.wizard.view</field>
+		<field name="model">esg.wizard</field>
+		<field name="arch" type="xml">
+			<form>
+				<group>
+					<group>
+						<field name="from_date" />
+						<field name="to_date" />
+					</group>
+					<group>
+						<field name="entries" widget="radio" />
+					</group>
+				</group>
+				<footer>
+					<button string="Imprimer" class="btn-primary" name="print_data" type="object" />
+					<button string="Annuler" class="btn-secondary" special="cancel" />
+				</footer>
+			</form>
+		</field>
+	</record>
+	<record id="action_esg_wizard" model="ir.actions.act_window">
+		<field name="name">ESG</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">esg.wizard</field>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="view_esg_wizard" />
+		<field name="target">new</field>
+	</record>
+	<menuitem id="menu_esg_wizard" name="ESG" sequence="21"
+		parent="accounting_pdf_reports.menu_finance_legal_statement" action="action_esg_wizard" />
+	<record id="report_esg_wizard" model="ir.actions.report">
+		<field name="name">ESG</field>
+		<field name="model">esg.wizard</field>
+		<field name="report_type">qweb-pdf</field>
+		<field name="report_name">accounting.esg_wizard</field>
+	</record>
+	<template id="esg_wizard">
+		<t t-call="web.basic_layout">
+			<style>
+				* {
+				margin: 0;
+				padding: 0;
+				}
+				h2 {
+				margin-top: 20px;
+				font-size: 18px;
+				}
+				th {
+				text-align: center;
+				}
+				body {
+				font-family: Arial, Helvetica, sans-serif;
+				font-size: 12px
+				}
+
+				header {
+				font-weight: bold;
+				}
+
+				.main-title {
+				padding: 15px;
+				}
+
+				.name {
+				float: left;
+				}
+
+				.details {
+				float: right;
+				text-align: center;
+				}
+
+				.title {
+				text-align: center;
+				font-size: 24px;
+				}
+
+				.periode {
+				margin-top: 15px;
+				text-align: center;
+				}
+
+				table {
+				width: 100%;
+				}
+
+				table,
+				tr,
+				td,
+				th {
+				border: 1px solid black;
+				border-collapse: collapse;
+				}
+
+				td:nth-child(1),
+				td:nth-child(2),
+				td:nth-child(3) {
+				text-align: center;
+				}
+				td:nth-child(5),
+				td:nth-child(6) {
+				text-align: right;
+				padding-right: 5px;
+				}
+				td:nth-child(4) {
+				padding-left: 5px;
+				}
+
+				td,
+				th {
+				padding: 1px;
+				}
+
+				td:nth-child(1),
+				.unique td:nth-child(4),
+				.unique td:nth-child(5),
+				.unique td:nth-child(6) {
+				font-weight: bold;
+				}
+			</style>
+
+			<t t-set="from_date" t-value="form['from_date']" />
+			<t t-set="to_date" t-value="form['to_date']" />
+			<t t-set="state" t-value="form['entries']" />
+			<span t-set="pieces" t-value="request.env['account.move'].search([])"></span>
+			<body>
+				<div class='page'>
+					<header>
+						<div>
+							<p class="name">Tableau</p>
+							<div class="details">
+								<p>I.F. :5701046</p>
+								<p>Page 1</p>
+							</div>
+						</div>
+						<div style="clear: both;" />
+						<div class="main-title">
+							<div>
+								<h1 class="title">ETAT DES SOLDES DE GESTION (E.S.G)</h1>
+							</div>
+							<p class="periode">
+								<span>Exercice du :</span>
+								<span t-esc="datetime.datetime.strptime(to_date, '%Y-%m-%d').strftime('%d/%m/%Y')"></span>
+							</p>
+						</div>
+					</header>
+
+					<div class="contents">
+						<!-- Variables declaration-->
+						<t t-set="V3" t-value="pieces.get_solde(1, state, '711', to_date)" />
+
+						<t t-set="V4" t-value="pieces.get_solde(-1, state, '711', to_date)" />
+
+						<t t-set="V5" t-value="pieces.get_solde(1, state, '611', to_date)" />
+
+						<t t-set="V6" t-value="pieces.get_solde(-1, state, '611', to_date)" />
+
+						<t t-set="V7" t-value="V3-V5" />
+
+						<t t-set="V8" t-value="V4-V6" />
+
+						<t t-set="V11" t-value="pieces.get_solde(1, state, '712', to_date)" />
+
+						<t t-set="V12" t-value="pieces.get_solde(-1, state, '712', to_date)" />
+
+						<t t-set="V13" t-value="pieces.get_solde(1, state, '713', to_date)" />
+
+						<t t-set="V14" t-value="pieces.get_solde(-1, state, '713', to_date)" />
+
+						<t t-set="V15" t-value="pieces.get_solde(1, state, '714', to_date)" />
+
+						<t t-set="V16" t-value="pieces.get_solde(-1, state, '714', to_date)" />
+
+						<t t-set="V9" t-value="V11+V13+V15" />
+
+						<t t-set="V10" t-value="V12+V14+V16" />
+
+						<t t-set="V19" t-value="pieces.get_solde(1, state, '612', to_date)" />
+
+						<t t-set="V20" t-value="pieces.get_solde(-1, state, '612', to_date)" />
+
+						<t t-set="V21a" t-value="pieces.get_solde(1, state, '613', to_date)" />
+						<t t-set="V21b" t-value="pieces.get_solde(1, state, '614', to_date)" />
+						<t t-set="V21" t-value="V21a+V21b" />
+
+						<t t-set="V22a" t-value="pieces.get_solde(-1, state, '613', to_date)" />
+						<t t-set="V22b" t-value="pieces.get_solde(-1, state, '614', to_date)" />
+						<t t-set="V22" t-value="V22a+V22b" />
+						<t t-set="V17" t-value="V19+V21" />
+
+						<t t-set="V18" t-value="V20+V22" />
+
+						<t t-set="V23" t-value="V7+V9-V17" />
+
+						<t t-set="V24" t-value="V8+V10-V18" />
+
+						<t t-set="V25" t-value="pieces.get_solde(1, state, '716', to_date)" />
+
+						<t t-set="V26" t-value="pieces.get_solde(-1, state, '716', to_date)" />
+
+						<t t-set="V27" t-value="pieces.get_solde(1, state, '616', to_date)" />
+
+						<t t-set="V28" t-value="pieces.get_solde(-1, state, '616', to_date)" />
+
+						<t t-set="V29" t-value="pieces.get_solde(1, state, '617', to_date)" />
+
+						<t t-set="V30" t-value="pieces.get_solde(-1, state, '617', to_date)" />
+
+						<t t-set="V31" t-value="V23+V25-V27-V29" />
+
+						<t t-set="V32" t-value="V24+V26-V28-V30" />
+
+						<t t-set="V33" t-value="0" />
+
+						<t t-set="V34" t-value="0" />
+
+						<t t-set="V35" t-value="pieces.get_solde(1, state, '718', to_date)" />
+
+						<t t-set="V36" t-value="pieces.get_solde(-1, state, '718', to_date)" />
+
+						<t t-set="V37" t-value="pieces.get_solde(1, state, '618', to_date)" />
+
+						<t t-set="V38" t-value="pieces.get_solde(-1, state, '618', to_date)" />
+
+						<t t-set="V39" t-value="pieces.get_solde(1, state, '719', to_date)" />
+
+						<t t-set="V40" t-value="pieces.get_solde(-1, state, '719', to_date)" />
+
+						<t t-set="V41" t-value="pieces.get_solde(1, state, '619', to_date)" />
+
+						<t t-set="V42" t-value="pieces.get_solde(-1, state, '619', to_date)" />
+
+						<t t-set="V43" t-value="V31+V33+V35-V37+V39-V41" />
+
+						<t t-set="V44" t-value="V32+V34+V36-V38+V40-V42" />
+
+						<t t-set="V45a" t-value="pieces.get_solde(1, state, '73', to_date)" />
+						<t t-set="V45b" t-value="pieces.get_solde(1, state, '63', to_date)" />
+						<t t-set="V45" t-value="V45a-V45b" />
+
+						<t t-set="V46a" t-value="pieces.get_solde(-1, state, '73', to_date)" />
+						<t t-set="V46b" t-value="pieces.get_solde(-1, state, '63', to_date)" />
+						<t t-set="V46" t-value="V46a-V46b" />
+
+						<t t-set="V47" t-value="V43+V45" />
+
+						<t t-set="V48" t-value="V44+V46" />
+
+						<t t-set="V49a" t-value="pieces.get_solde(1, state, '75', to_date)" />
+						<t t-set="V49b" t-value="pieces.get_solde(1, state, '65', to_date)" />
+						<t t-set="V49" t-value="V49a-V49b" />
+
+						<t t-set="V50a" t-value="pieces.get_solde(-1, state, '75', to_date)" />
+						<t t-set="V50b" t-value="pieces.get_solde(-1, state, '65', to_date)" />
+						<t t-set="V50" t-value="V50a-V50b" />
+
+						<t t-set="V51" t-value="pieces.get_solde(1, state, '670', to_date)" />
+
+						<t t-set="V52" t-value="pieces.get_solde(-1, state, '670', to_date)" />
+
+						<t t-set="V53" t-value="V47+V49-V51" />
+
+						<t t-set="V54" t-value="V48+V50-V52" />
+
+						<t t-if='V53 &gt;= 0'>
+							<t t-set='V57' t-value='V53' />
+						</t>
+						<t t-else=''>
+							<t t-set='V57' t-value='0' />
+						</t>
+						<t t-if='V54 &gt;= 0'>
+							<t t-set='V58' t-value='V54' />
+						</t>
+						<t t-else=''>
+							<t t-set='V58' t-value='0' />
+						</t>
+						<t t-if='V53 &lt;= 0'>
+							<t t-set='V59' t-value='V53' />
+						</t>
+						<t t-else=''>
+							<t t-set='V59' t-value='0' />
+						</t>
+						<t t-if='V54 &lt;= 0'>
+							<t t-set='V60' t-value='V54' />
+						</t>
+						<t t-else=''>
+							<t t-set='V60' t-value='0' />
+						</t>
+
+						<t t-set="V61a" t-value="pieces.get_solde(1, state, '619', to_date)" />
+						<t t-set="V61b" t-value="pieces.get_solde(1, state, '6196', to_date)" />
+						<t t-set="V61" t-value="V61a-V61b" />
+
+						<t t-set="V62a" t-value="pieces.get_solde(-1, state, '619', to_date)" />
+						<t t-set="V62b" t-value="pieces.get_solde(-1, state, '6196', to_date)" />
+						<t t-set="V62" t-value="V62a-V62b" />
+
+						<t t-set="V63a" t-value="pieces.get_solde(1, state, '639', to_date)" />
+						<t t-set="V63b" t-value="pieces.get_solde(1, state, '6396', to_date)" />
+						<t t-set="V63" t-value="V63a-V63b" />
+
+						<t t-set="V64a" t-value="pieces.get_solde(-1, state, '639', to_date)" />
+						<t t-set="V64b" t-value="pieces.get_solde(-1, state, '6396', to_date)" />
+						<t t-set="V64" t-value="V64a-V64b" />
+
+						<t t-set="V65a" t-value="pieces.get_solde(1, state, '659', to_date)" />
+						<t t-set="V65b" t-value="pieces.get_solde(1, state, '65963', to_date)" />
+						<t t-set="V65" t-value="V65a-V65b" />
+
+						<t t-set="V66a" t-value="pieces.get_solde(-1, state, '659', to_date)" />
+						<t t-set="V66b" t-value="pieces.get_solde(-1, state, '65963', to_date)" />
+						<t t-set="V66" t-value="V66a-V66b" />
+
+						<t t-set="V67a" t-value="pieces.get_solde(1, state, '719', to_date)" />
+						<t t-set="V67b" t-value="pieces.get_solde(1, state, '7196', to_date)" />
+						<t t-set="V67c" t-value="pieces.get_solde(1, state, '7197', to_date)" />
+						<t t-set="V67" t-value="V67a-(V67b+V67c)" />
+
+						<t t-set="V68a" t-value="pieces.get_solde(-1, state, '719', to_date)" />
+						<t t-set="V68b" t-value="pieces.get_solde(-1, state, '7196', to_date)" />
+						<t t-set="V68c" t-value="pieces.get_solde(-1, state, '7197', to_date)" />
+						<t t-set="V68" t-value="V68a-(V68b+V68c)" />
+
+						<t t-set="V69a" t-value="pieces.get_solde(1, state, '739', to_date)" />
+						<t t-set="V69b" t-value="pieces.get_solde(1, state, '7396', to_date)" />
+						<t t-set="V69c" t-value="pieces.get_solde(1, state, '7397', to_date)" />
+						<t t-set="V69" t-value="V69a-(V69b+V69c)" />
+
+						<t t-set="V70a" t-value="pieces.get_solde(-1, state, '739', to_date)" />
+						<t t-set="V70b" t-value="pieces.get_solde(-1, state, '7396', to_date)" />
+						<t t-set="V70c" t-value="pieces.get_solde(-1, state, '7397', to_date)" />
+						<t t-set="V70" t-value="V70a-(V70b+V70c)" />
+
+						<t t-set="V71a" t-value="pieces.get_solde(1, state, '759', to_date)" />
+						<t t-set="V71b" t-value="pieces.get_solde(1, state, '75963', to_date)" />
+						<t t-set="V71c" t-value="pieces.get_solde(1, state, '7597', to_date)" />
+						<t t-set="V71d" t-value="pieces.get_solde(1, state, '757', to_date)" />
+						<t t-set="V71" t-value="V71a-(V71b+V71c)+V71d" />
+
+						<t t-set="V72a" t-value="pieces.get_solde(-1, state, '759', to_date)" />
+						<t t-set="V72b" t-value="pieces.get_solde(-1, state, '75963', to_date)" />
+						<t t-set="V72c" t-value="pieces.get_solde(-1, state, '7597', to_date)" />
+						<t t-set="V72d" t-value="pieces.get_solde(-1, state, '757', to_date)" />
+						<t t-set="V72" t-value="V72a-(V72b+V72c)+V72d" />
+
+						<t t-set="V73" t-value="pieces.get_solde(1, state, '751', to_date)" />
+						<t t-set="V74" t-value="pieces.get_solde(-1, state, '751', to_date)" />
+
+						<t t-set="V75" t-value="pieces.get_solde(1, state, '651', to_date)" />
+						<t t-set="V76" t-value="pieces.get_solde(-1, state, '651', to_date)" />
+
+						<t t-set="V77" t-value="V57-V59+V61+V63+V65-V67-V69-V71-V73+V75" />
+						<!-- <t t-set="V77" t-value="0" /> -->
+						<t t-set="V78" t-value="V58-V60+V62+V64+V66-V68-V70-V72-V74+V76" />
+						<!-- <t t-set="V78" t-value="0" /> -->
+
+						<t t-set="V79" t-value="pieces.get_solde(1, state, '4465000', to_date)" />
+						<t t-set="V80" t-value="pieces.get_solde(-1, state, '4465000', to_date)" />
+
+						<!-- <t t-set="V81" t-value="0" /> -->
+						<t t-set="V81" t-value="V77-V79" />
+						<!-- <t t-set="V82" t-value="0" /> -->
+						<t t-set="V82" t-value="V78-V80" />
+
+						<h2 style="color: black;">I – TABLEAU DE FORMATION DES RESULTATS (T.F.R)</h2>
+						<table>
+							<tr>
+								<th width="6%"></th>
+								<th width="4%"></th>
+								<th width="4%"></th>
+								<th></th>
+								<th width="20%">EXERCICE</th>
+								<th width="20%">EXERCICE PRECEDENT</th>
+							</tr>
+							<tr>
+								<td></td>
+								<td>1</td>
+								<td></td>
+								<td>Ventes de marchandises (en l'état)</td>
+								<td>
+									<span t-esc="V3" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V4" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>2</td>
+								<td>-</td>
+								<td>Achats revendus de marchandises</td>
+								<td>
+									<span t-esc="V5" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V6" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr class="unique">
+								<td>I</td>
+								<td></td>
+								<td>=</td>
+								<td>MARGE BRUTE SUR VENTES EN L'ETAT</td>
+								<td>
+									<span t-esc="V7" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V8" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr class="unique">
+								<td>II</td>
+								<td></td>
+								<td>+</td>
+								<td>PRODUCTION DE L'EXERCICE : (3+4+5)</td>
+								<td>
+									<span t-esc="V9" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V10" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>3</td>
+								<td></td>
+								<td>Ventes de biens et services produits</td>
+								<td>
+									<span t-esc="V11" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V12" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>4</td>
+								<td></td>
+								<td>Variation stocks de produits (+ ou -)</td>
+								<td>
+									<span t-esc="V13" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V14" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>5</td>
+								<td></td>
+								<td>Immobilisations produites par l'entreprise pour elle-même</td>
+								<td>
+									<span t-esc="V15" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V16" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr class="unique">
+								<td>III</td>
+								<td></td>
+								<td>-</td>
+								<td>CONSOMMATIONS DE L'EXERCICE : (6+7)</td>
+								<td>
+									<span t-esc="V17" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V18" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>6</td>
+								<td></td>
+								<td>Achats consommés de matière et fournitures</td>
+								<td>
+									<span t-esc="V19" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V20" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>7</td>
+								<td></td>
+								<td>Autres charges externes</td>
+								<td>
+									<span t-esc="V21" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V22" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr class="unique">
+								<td>IV</td>
+								<td></td>
+								<td>=</td>
+								<td>VALEUR AJOUTEE ( I+II-III )</td>
+								<td>
+									<span t-esc="V23" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V24" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>8</td>
+								<td>+</td>
+								<td>Subventions d'exploitation
+								</td>
+								<td>
+									<span t-esc="V25" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V26" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr>
+								<td>V</td>
+								<td>9</td>
+								<td>-</td>
+								<td>Impôts et taxes
+								</td>
+								<td>
+									<span t-esc="V27" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V28" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>10</td>
+								<td>-</td>
+								<td>Charges de personnel
+								</td>
+								<td>
+									<span t-esc="V29" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V30" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr class="unique">
+								<td>XI</td>
+								<td></td>
+								<td>=</td>
+								<td>EXCEDENT BRUT D'EXPLOITATION (EBE) OU INSUFFISANCE BRUTE D'EXPLOITATION (IBE)</td>
+								<td>
+									<span t-esc="V31" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V32" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>11</td>
+								<td>+</td>
+								<td>Autres produits d'exploitation</td>
+								<td>
+									<span t-esc="V35" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V36" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>12</td>
+								<td>-</td>
+								<td>Autres charges d'exploitation</td>
+								<td>
+									<span t-esc="V37" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V38" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>13</td>
+								<td>+</td>
+								<td>Reprises d'exploitation ; transfert de charges</td>
+								<td>
+									<span t-esc="V39" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V40" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>14</td>
+								<td>-</td>
+								<td>Dotations d'exploitation</td>
+								<td>
+									<span t-esc="V41" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V42" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr class="unique">
+								<td>VI</td>
+								<td></td>
+								<td>=</td>
+								<td>RESULTAT D'EXPLOITATION (+ OU -) </td>
+								<td>
+									<span t-esc="V43" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V44" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr class="unique">
+								<td>VII</td>
+								<td></td>
+								<td>±</td>
+								<td>RESULTAT FINANCIER</td>
+								<td>
+									<span t-esc="V45" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V46" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr class="unique">
+								<td>VIII</td>
+								<td></td>
+								<td>=</td>
+								<td>RESULTAT COURANT (+ OU - )</td>
+								<td>
+									<span t-esc="V47" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V48" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr class="unique">
+								<td>IX</td>
+								<td></td>
+								<td>±</td>
+								<td>RESULTAT NON COURANT</td>
+								<td>
+									<span t-esc="V49" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V50" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr class="unique">
+								<td></td>
+								<td>15</td>
+								<td>-</td>
+								<td>IMPOT SUR LES RESULTATS</td>
+								<td>
+									<span t-esc="V51" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V52" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr style="height: 25px;">
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr class="unique">
+								<td>X</td>
+								<td></td>
+								<td>=</td>
+								<td>RESULTAT NET DE L'EXERCICE (+ OU - )</td>
+								<td>
+									<span t-esc="V53" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+								<td>
+									<span t-esc="V54" t-options='{"widget": "float", "precision": 2}'></span>
+								</td>
+							</tr>
+							<tr style="height: 25px;">
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+
+						</table>
+					</div>
+				</div>
+				<div style="page-break-after: always;" />
+				<div class='page'>
+
+					<header>
+						<div>
+							<p class="name">Tableau</p>
+							<div class="details">
+								<p>I.F. :5701046</p>
+								<p>Page 2</p>
+							</div>
+						</div>
+						<div style="clear: both;" />
+						<div>
+							<div>
+								<h1 class="title">ETAT DES SOLDES DE GESTION (E.S.G)</h1>
+							</div>
+							<p class="periode">
+								<span>Exercice du :</span>
+								<span t-esc="datetime.datetime.strptime(to_date, '%Y-%m-%d').strftime('%d/%m/%Y')"></span>
+							</p>
+						</div>
+					</header>
+
+					<h2>II- CAPACITE D'AUTOFINANCEMENT (CAF) - AUTOFINANCEMENT</h2>
+					<table>
+						<tr>
+							<th width="6%"></th>
+							<th width="4%"></th>
+							<th width="4%"></th>
+							<th></th>
+							<th width="20%">EXERCICE</th>
+							<th width="20%">EXERCICE PRECEDENT</th>
+						</tr>
+						<tr>
+							<td></td>
+							<td>1</td>
+							<td></td>
+							<td>Résultat net de l'exercice</td>
+							<td>
+								<span t-esc="V53" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+							<td>
+								<span t-esc="V54" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td>Bénéfice +</td>
+							<td>
+								<span t-if='V57 != 0' t-esc="V57" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+							<td>
+								<span t-if='V58 != 0' t-esc="V58" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td>Perte -</td>
+							<td>
+								<span t-if='V59 != 0' t-esc="V59" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+							<td>
+								<span t-if='V60 != 0' t-esc="V60" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>2</td>
+							<td>+</td>
+							<td>Dotations d'exploitation (1)</td>
+							<td>
+								<span t-esc="V61" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+							<td>
+								<span t-esc="V62" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>3</td>
+							<td>+</td>
+							<td>Dotations financière (1)</td>
+							<td>
+								<span t-esc="V63" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+							<td>
+								<span t-esc="V64" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>4</td>
+							<td>+</td>
+							<td>Dotations non courantes (1)</td>
+							<td>
+								<span t-esc="V65" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+							<td>
+								<span t-esc="V66" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>5</td>
+							<td>-</td>
+							<td>Reprises d'exploitation (2)</td>
+							<td>
+								<span t-esc="V67" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+							<td>
+								<span t-esc="V68" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>6</td>
+							<td>-</td>
+							<td>Reprises financière (2)</td>
+							<td>
+								<span t-esc="V69" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+							<td>
+								<span t-esc="V70" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>7</td>
+							<td>-</td>
+							<td>Reprises non courantes (2) (3) </td>
+							<td>
+								<span t-esc="V71" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+							<td>
+								<span t-esc="V72" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>8</td>
+							<td>-</td>
+							<td>Produits de cession des immobilisations</td>
+							<td>
+								<span t-esc="V73" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+							<td>
+								<span t-esc="V74" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>9</td>
+							<td>+</td>
+							<td>Valeurs nettes d'amortissement des immobilisations cédées</td>
+							<td>
+								<span t-esc="V75" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+							<td>
+								<span t-esc="V76" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+						</tr>
+						<tr class="unique">
+							<td>I</td>
+							<td></td>
+							<td>=</td>
+							<td>CAPACITE D'AUTOFINANCEMENT (CAF)</td>
+							<td>
+								<span t-esc="V77" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+							<td>
+								<span t-esc="V78" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>10</td>
+							<td>-</td>
+							<td>Distribution de bénéfices</td>
+							<td>
+								<span t-esc="V79" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+							<td>
+								<span t-esc="V80" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+						</tr>
+						<tr class="unique">
+							<td>II</td>
+							<td></td>
+							<td>=</td>
+							<td>Autofinancement</td>
+							<td>
+								<span t-esc="V81" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+							<td>
+								<span t-esc="V82" t-options='{"widget": "float", "precision": 2}'></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</body>
+		</t>
+	</template>
+</odoo>

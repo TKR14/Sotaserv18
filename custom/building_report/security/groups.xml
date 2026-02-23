@@ -1,0 +1,5 @@
+<odoo>
+    <record id="gp_building_report" model="res.groups">
+        <field name="name">BUILDING REPORT</field>
+    </record>
+</odoo>

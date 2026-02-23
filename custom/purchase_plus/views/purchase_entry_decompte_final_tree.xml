@@ -1,0 +1,18 @@
+<odoo>
+    <!-- Ajouter dans account_plus -->
+    <record id="purchase_action_server_decompte_final_view" model="ir.actions.server">
+        <field name="name">Décompte final</field>
+        <field name="model_id" ref="model_purchase_entry"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_get_decompte_final()</field>
+    </record>
+
+    <menuitem
+        id="purchase_plus_menu_decompte_final_aud"
+        name="Décompte final"
+        parent="building_plus.menu_aud"
+        groups="account_plus.acount_move_group_Aud"
+        action="purchase_plus.purchase_action_server_decompte_final_view"
+        sequence="7"
+    />
+</odoo>

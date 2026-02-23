@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_stock_plus_stock_picking_form_form_inherited" model="ir.ui.view">
+        <field name="name">stock.plus.stock.return.picking.form.inherited</field>
+        <field name="inherit_id" ref="purchase_igaser.view_picking_form_inherit50" />
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <button name="%(stock.act_stock_return_picking)d" position="replace">
+                <field name='return_btn_visible' invisible="1" />
+
+                <button name="%(stock.act_stock_return_picking)d" string="Retourner"
+                    invisible="not return_btn_visible"
+                    type="action"
+                    groups="building_plus.sotaserv_magasinier,building_plus.sotaserv_magasinier_chantier,stock.group_stock_user" />
+            </button>
+
+            <button name="button_validate" position="replace"/>
+            <button name="button_validate" position="replace">
+                <field name="return_to_mg" invisible="1" />
+                <button name="button_validate" 
+                    string="Valider" 
+                    type="object" 
+                    class="oe_highlight" 
+                    groups="building_plus.sotaserv_magasinier,building_plus.sotaserv_magasinier_chantier"
+                    invisible="state != 'assigned'"
+                />
+                <!-- <button name="correct_quantities" string="Corriger les quantités" type="object" attrs="{'invisible': [('return_to_mg', '=', False)]}" /> -->
+            </button>
+
+            <xpath expr="//button[@name='do_print_picking']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>         
+   
+            <!-- <xpath expr="//button[@name='do_unreserve']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+
+            <xpath expr="//field[@name='move_ids_without_package']/list" position="attributes">
+                <attribute name="create">0</attribute>    
+                <attribute name="delete">0</attribute>    
+            </xpath>
+
+            <!-- <xpath expr="//button[@type='action'][@name='505']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+
+            <button name="button_validate" position="after">
+                <button string="Pas de réception" name="action_no_reception" type="object" class="oe_highlight" confirm="Voulez vous vraiment continuer?" invisible="state != 'assigned'" groups="building_plus.sotaserv_magasinier,building_plus.sotaserv_magasinier_chantier"/>
+            </button>
+            
+            <div class="o_td_label" position="attributes">
+                <attribute name="invisible">picking_type_code == 'internal'</attribute>
+            </div>
+            <field name="partner_id" position="attributes">
+                <attribute name="invisible">picking_type_code == 'internal'</attribute>
+                <attribute name="readonly">1</attribute>
+            </field>
+
+            <field name="origin" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="stock_picking_view_tree_outgoing" model="ir.ui.view">
+        <field name="name">stock.picking.view.tree.outgoing</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="site_id"/>
+                <field name="scheduled_date" string="Date de sortie"/>
+                <field name="out_number"/>
+                <field name="employee_id"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="stock_picking_view_form_outgoing" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.outgoing</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="is_outgoing_process" invisible="1"/>
+                    <button name="button_express" string="Confirmer" class="btn-primary" invisible="state == 'done' or not is_outgoing_process" type="object"/>
+                    <button name="button_print_outgoing" class="btn-secondary" type="object" icon="fa-print" invisible="state != 'done' or not is_outgoing_process"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="priority" widget="priority" class="mr-3" invisible="name == '/'"/>
+                            <field name="name" invisible="name == '/'"/>
+                        </h1>
+                    </div>
+                    <group readonly="state != 'draft'">
+                        <group>
+                            <field name="is_logistic" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="site_id" options="{'no_open': True, 'no_create': True}" required="1" readonly="is_logistic"/>
+                            <field name="scheduled_date" string="Date de sortie"/>
+                            <field name="out_number" readonly="1"/>
+                            <field name="employee_id"/>
+                        </group>
+                        <group>
+                            <field name="picking_type_id" options="{'no_open': True, 'no_create': True}" readonly="1" force_save="1" string="Opération"/>
+                            <field name="location_id" options="{'no_open': True, 'no_create': True}" readonly="1" force_save="1" string="Origine"/>
+                            <field name="location_dest_id" options="{'no_open': True, 'no_create': True}" readonly="1" force_save="1" string="Destination"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Opérations">
+                            <field name="product_ids" invisible="1"/>
+                            <field name="move_ids_without_package" readonly="not site_id or state == 'done'" context="{'default_company_id': company_id, 'default_date': scheduled_date, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id}">
+                                <list editable="bottom">
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="name" invisible="1"/>
+                                    <field name="date" invisible="1"/>
+                                    <field name="location_id" invisible="1"/>
+                                    <field name="location_dest_id" invisible="1"/>
+                                    <field name="name" invisible="1" force_save="1"/>
+                                    <field name="name" invisible="1" force_save="1"/>
+                                    <field name="product_id" domain="[('id', 'in', parent.product_ids)]" readonly="False" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="product_uom" string="UDM" readonly="1" force_save="1" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="outgoing_available" column_invisible="parent.state == 'done'"/>
+                                    <field name="product_uom_qty" string="Sortie" readonly="not product_id" required="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Motif">
+                            <field name="note" string="Motif" placeholder="Ajouter le motif de sortie"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="stock_picking_view_tree_scrap" model="ir.ui.view">
+        <field name="name">stock.picking.view.tree.scrap</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="state" invisible="1"/>
+                <field name="name"/>
+                <field name="site_id"/>
+                <field name="scheduled_date" string="Date de sortie" readonly="0"/>
+                <field name="scrap_number"/>
+                <field name="employee_id"/>
+                <field name="scrap_state" string="Statut" widget="badge" decoration-info="scrap_state == 'draft'" decoration-warning="scrap_state == 'confirmed'" decoration-success="scrap_state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="stock_picking_view_form_scrap" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.scrap</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <header>
+                    <field name="is_scrap_process" invisible="1"/>
+                    <field name="state" invisible="1"/>
+                    <button name="button_submit_scrap" string="Soumettre" invisible="scrap_state != 'draft'" class="btn-primary" type="object" groups="building_plus.sotaserv_magasinier_chantier"/>
+                    <button name="open_cancellation_reason_wizard" string="Remettre" invisible="scrap_state != 'submitted'" class="btn-primary" type="object" context="{'method': 'button_draft_scrap'}" groups="building_plus.sotaserv_chef_projet,building_plus.sotaserv_directeur_zone"/>
+                    <button name="button_confirm_scrap" string="Confirmer" invisible="scrap_state != 'submitted'" class="btn-primary" type="object" groups="building_plus.sotaserv_chef_projet,building_plus.sotaserv_directeur_zone"/>
+                    <button name="open_cancellation_reason_wizard" string="Remettre" invisible="scrap_state != 'confirmed'" class="btn-primary" type="object" context="{'method': 'button_resubmit_scrap'}" groups="building_plus.sotaserv_magasinier"/>
+                    <button name="button_done_scrap" string="Traiter" invisible="scrap_state != 'confirmed'" class="btn-primary" type="object" groups="building_plus.sotaserv_magasinier"/>
+                    <field name="scrap_state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="priority" widget="priority" class="mr-3" invisible="name == '/'"/>
+                            <field name="name" invisible="name == '/'"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="is_logistic" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="site_id" options="{'no_open': True, 'no_create': True}" required="1" readonly="is_logistic or scrap_state != 'draft'"/>
+                            <field name="scheduled_date" string="Date de rebut" readonly="scrap_state != 'draft'"/>
+                            <field name="scrap_number" readonly="1"/>
+                            <field name="employee_id" readonly="1" options="{'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="picking_type_id" options="{'no_open': True, 'no_create': True}" readonly="1" force_save="1" string="Opération"/>
+                            <field name="location_id" options="{'no_open': True, 'no_create': True}" readonly="1" force_save="1" string="Origine"/>
+                            <field name="location_dest_id" options="{'no_open': True, 'no_create': True}" readonly="1" force_save="1" string="Destination"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Opérations">
+                            <field name="product_ids" invisible="1"/>
+                            <field name="move_ids_without_package" readonly="not site_id or scrap_state != 'draft'" options="{'no_open': True}" context="{'default_company_id': company_id, 'default_date': scheduled_date, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id}">
+                                <list editable="bottom">
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="name" invisible="1"/>
+                                    <field name="date" invisible="1"/>
+                                    <field name="location_id" invisible="1"/>
+                                    <field name="location_dest_id" invisible="1"/>
+                                    <field name="name" invisible="1" force_save="1"/>
+                                    <field name="name" invisible="1" force_save="1"/>
+                                    <field name="product_id" domain="[('id', 'in', parent.product_ids)]" readonly="False" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="product_uom" string="UDM" readonly="1" force_save="1" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="outgoing_available" column_invisible="parent.scrap_state != 'draft'"/>
+                                    <field name="product_uom_qty" string="Rebut" readonly="not product_id" required="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Motif">
+                            <field name="note" string="Motif" placeholder="Ajouter le motif de sortie" readonly="scrap_state != 'draft'"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="stock_picking_view_tree_return" model="ir.ui.view">
+        <field name="name">stock.picking.view.tree.return</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="state" invisible="1"/>
+                <field name="name"/>
+                <field name="site_id"/>
+                <field name="scheduled_date" string="Date de sortie" readonly="0"/>
+                <field name="return_number"/>
+                <field name="employee_id"/>
+                <field name="return_state" string="Statut" widget="badge" decoration-info="return_state == 'draft'" decoration-warning="return_state == 'confirmed'" decoration-success="return_state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="stock_picking_view_form_return" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.return</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <header>
+                    <field name="is_return_process" invisible="1"/>
+                    <field name="state" invisible="1"/>
+                    <button name="button_submit_return" string="Soumettre" invisible="return_state != 'draft'" class="btn-primary" type="object" groups="building_plus.sotaserv_magasinier_chantier"/>
+                    <button name="open_cancellation_reason_wizard" string="Remettre" invisible="return_state != 'submitted'" class="btn-primary" type="object" context="{'method': 'button_draft_return'}" groups="building_plus.sotaserv_magasinier"/>
+                    <button name="button_done_return" string="Valider" invisible="return_state != 'submitted'" class="btn-primary" type="object" groups="building_plus.sotaserv_magasinier"/>
+                    <field name="return_state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="priority" widget="priority" class="mr-3" invisible="name == '/'"/>
+                            <field name="name" invisible="name == '/'"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="site_id" options="{'no_open': True, 'no_create': True}" required="1" readonly="return_state != 'draft'"/>
+                            <field name="scheduled_date" string="Date de retour" readonly="return_state != 'draft'"/>
+                            <field name="return_number" readonly="1"/>
+                            <field name="employee_id" readonly="1" options="{'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="picking_type_id" options="{'no_open': True, 'no_create': True}" readonly="1" force_save="1" string="Opération"/>
+                            <field name="location_id" options="{'no_open': True, 'no_create': True}" readonly="1" force_save="1" string="Origine"/>
+                            <field name="location_dest_id" options="{'no_open': True, 'no_create': True}" readonly="1" force_save="1" string="Destination"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Opérations">
+                            <field name="product_ids" invisible="1"/>
+                            <field name="move_ids_without_package" readonly="not site_id or return_state != 'draft'" options="{'no_open': True}" context="{'default_company_id': company_id, 'default_date': scheduled_date, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id}">
+                                <list editable="bottom">
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="name" invisible="1"/>
+                                    <field name="date" invisible="1"/>
+                                    <field name="location_id" invisible="1"/>
+                                    <field name="location_dest_id" invisible="1"/>
+                                    <field name="name" invisible="1" force_save="1"/>
+                                    <field name="name" invisible="1" force_save="1"/>
+                                    <field name="product_id" domain="[('id', 'in', parent.product_ids)]" readonly="0" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="product_uom" string="UDM" readonly="1" force_save="1" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="outgoing_available" column_invisible="parent.return_state != 'draft'"/>
+                                    <field name="product_uom_qty" string="Retour" readonly="not product_id" required="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Motif">
+                            <field name="note" string="Motif" placeholder="Ajouter le motif de sortie" readonly="return_state != 'draft'"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="stock_picking_view_tree_internal_transfer" model="ir.ui.view">
+        <field name="name">stock.picking.view.tree.return</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="state" invisible="1"/>
+                <field name="name"/>
+                <field name="site_id"/>
+                <field name="scheduled_date" string="Date de Transfert" readonly="0"/>
+                <field name="internal_transfer_number"/>
+                <field name="employee_id"/>
+                <field name="internal_transfer_state" string="Statut" widget="badge" decoration-primary="internal_transfer_state == 'draft'" decoration-warning="internal_transfer_state == 'confirmed'" decoration-info="internal_transfer_state == 'validated'" decoration-success="internal_transfer_state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="stock_picking_view_form_internal_transfer" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.return</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <header>
+                    <field name="is_internal_transfer_process" invisible="1"/>
+                    <field name="state" invisible="1"/>
+                    <field name="is_user_site" invisible="1"/>
+                    <field name="is_user_destination_site" invisible="1"/>
+                    <button name="button_submit_internal_transfer" string="Soumettre" invisible="internal_transfer_state != 'draft'" class="btn-primary" type="object" groups="building_plus.sotaserv_magasinier"/>
+                    <button name="open_cancellation_reason_wizard" string="Remettre" type="object" class="btn-primary" context="{'method': 'button_draft_internal_transfer'}" groups="building_plus.sotaserv_magasinier_chantier" invisible="internal_transfer_state != 'submitted' or not is_user_site"/>
+                    <button name="button_validate_internal_transfert" string="Valider" type="object" class="btn-primary" groups="building_plus.sotaserv_magasinier_chantier" invisible="internal_transfer_state != 'submitted' or not is_user_site"/>
+                    <button name="open_cancellation_reason_wizard" string="Remettre" type="object" class="btn-primary" context="{'method': 'button_resubmitted_internal_transfer'}" groups="building_plus.sotaserv_magasinier_chantier" invisible="internal_transfer_state != 'validated' or not is_user_destination_site"/>
+                    <button name="button_done_internal_transfert" string="Cloturer" type="object" class="btn-primary" groups="building_plus.sotaserv_magasinier_chantier" invisible="internal_transfer_state != 'validated' or not is_user_destination_site"/>
+                    <field name="internal_transfer_state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="priority" widget="priority" class="mr-3" invisible="name == '/'"/>
+                            <field name="name" invisible="name == '/'"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="scheduled_date" string="Date de Transfert" readonly="internal_transfer_state != 'draft'"/>
+                            <field name="site_id" string="Affaire Origine" options="{'no_open': True, 'no_create': True}" required="1" readonly="internal_transfer_state != 'draft'"/>
+                            <field name="destination_site_id" string="Affaire Destination" options="{'no_open': True, 'no_create': True}" required="1" readonly="internal_transfer_state != 'draft'"/>
+                            <field name="internal_transfer_number" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="picking_type_id" options="{'no_open': True, 'no_create': True}" readonly="1" force_save="1" string="Opération"/>
+                            <field name="location_id" options="{'no_open': True, 'no_create': True}" readonly="1" force_save="1" string="Origine"/>
+                            <field name="location_dest_id" options="{'no_open': True, 'no_create': True}" readonly="1" force_save="1" string="Destination"/>
+                            <field name="employee_id" readonly="1" options="{'no_open': True}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Opérations">
+                            <field name="product_ids" invisible="1"/>
+                            <field name="move_ids_without_package" readonly="not site_id or internal_transfer_state != 'draft'" options="{'no_open': True}" context="{'default_company_id': company_id, 'default_date': scheduled_date, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id}">
+                                <list editable="bottom">
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="name" invisible="1"/>
+                                    <field name="date" invisible="1"/>
+                                    <field name="location_id" invisible="1"/>
+                                    <field name="location_dest_id" invisible="1"/>
+                                    <field name="name" invisible="1" force_save="1"/>
+                                    <field name="name" invisible="1" force_save="1"/>
+                                    <field name="product_id" domain="[('id', 'in', parent.product_ids)]" readonly="0" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="product_uom" string="UDM" readonly="1" force_save="1" options="{'no_open': True, 'no_create': True}"/>
+                                    <field name="outgoing_available" column_invisible="parent.internal_transfer_state != 'draft'"/>
+                                    <field name="product_uom_qty" string="Transfert" readonly="not product_id" required="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Motif">
+                            <field name="note" string="Motif" placeholder="Ajouter le motif de sortie" readonly="internal_transfer_state != 'draft'"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="stock_picking_view_tree_no_buttons" model="ir.ui.view">
+        <field name="name">stock.picking.view.tree.no.buttons</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="mode">primary</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <header position="replace">
+                <header>
+                    <button name="action_group_transfer" string="Grouper" type="object" class="btn-primary mx-1" groups="building_plus.sotaserv_magasinier"/>
+                    <button name="action_set_deduction_advance" string="Générer Facture" type="object" groups="account_plus.acount_move_group_cg" class="btn-primary"/>
+                </header>
+            </header>
+        </field>
+    </record>
+
+    <record id="view_picking_internal_search_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.internal.search.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group//filter[@name='status']" position="after">
+                <filter string="État de certification" name="group_certification_state" context="{'group_by':'certification_state'}"/>
+                <filter string="Facturé" name="group_is_invoiced" context="{'group_by':'is_invoiced'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock_picking_view_form_no_buttons" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.no.buttons</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="mode">primary</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <header position="replace">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="confirmed,assigned,done"/>
+                </header>
+            </header>
+        </field>
+    </record>
+
+    <record id="stock_picking_view_form_cg" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.cg</field>
+        <field name="inherit_id" ref="stock_plus.stock_picking_view_form_no_buttons"/>
+        <field name="mode">primary</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <header position="replace">
+                <header>
+                    <field name="is_invoiced" invisible="1"/>
+                
+                    <button name="open_cancellation_reason_wizard" string="Retour" type="object"  invisible="certification_state != 'certification' or state != 'done'" context="{'method': 'button_back_cg'}"/>
+                    <button name="action_mark_as_certified" string="Certifier" type="object"  class="oe_highlight" invisible="certification_state != 'certification' or state != 'done'"/>
+                    <button name="open_cancellation_reason_wizard" string="Retour" type="object"  invisible="certification_state != 'certified'" context="{'method': 'button_back_certification'}"/>
+                    <button name="action_set_deduction_advance" string="Facturer" type="object" groups="account_plus.acount_move_group_cg" invisible="certification_state != 'certified' or is_invoiced" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="confirmed,assigned,done" invisible="state == 'done'"/>
+                    <field name="certification_state" widget="statusbar" invisible="state != 'done'"/>
+                </header>
+            </header>
+
+            <xpath expr="//div[@class='oe_button_box']" position="replace">
+                <div name="button_box" class="oe_button_box">
+                    <button class="oe_stat_button" name="action_view_purchase_order" type="object" icon="fa-file-text" invisible="origin == False">
+				    <span>Bon de Commande</span>
+			</button>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock_picking_view_form_int_magasinier" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.int.magasinier</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="mode">primary</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <button name="button_validate" position="replace"/>
+            <header position="inside">
+                <button name="button_print_transfer" class="btn-secondary" type="object" icon="fa-print" invisible="picking_type_code != 'internal'" groups="building_plus.sotaserv_magasinier"/>
+            </header>
+        </field>
+    </record>
+
+    <record id="stock_picking_view_form_magasinier_chantier" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.magasinier.chantier</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="mode">primary</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <button name="action_confirm" position="replace"/>
+            <button name="action_assign" position="replace"/>
+        </field>
+    </record>
+
+    <record id="view_stock_plus_stock_picking_form_inherited_disable_delete" model="ir.ui.view">
+        <field name="name">stock.plus.stock.picking.form.inherited.disable.delete</field>
+        <field name="inherit_id" ref="stock_plus.stock_picking_view_form_magasinier_chantier"/>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="delete">false</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock_picking_view_form_conduct_trv" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.conduct.trv</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="mode">primary</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="edit">false</attribute>
+            </xpath>
+            <field name="partner_id" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </field>
+            <field name="picking_type_id" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </field>
+            <field name="location_dest_id" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </field>
+            <field name="location_id" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </field>
+            <field name="backorder_id" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </field>
+            <field name="scheduled_date" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </field>
+            <field name="user_id" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </field>
+            <field name="group_id" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </field>
+            <xpath expr="//field[@name='move_ids_without_package']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+            <xpath expr="//header" position="replace">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,purchase" readonly="1"/>
+                </header>
+            </xpath>
+            <xpath expr="//button[@name='action_show_details']" position="attributes">
+                <attribute name="class">oe_readonly</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_show_details']" position="attributes">
+                <attribute name="disabled">True</attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

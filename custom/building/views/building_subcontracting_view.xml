@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_building_subcontracting_calendar" model="ir.ui.view">
+            <field name="name">building.subcontracting.calendar</field>
+            <field name="model">building.subcontracting</field>
+            <field name="arch" type="xml">
+                <calendar string="Subcontracting" color="state" date_start="date_confirmed">
+                    <field name="partner_id"/>
+                    <field name="amount_total"/>
+                </calendar>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="view_building_subcontracting_graph">
+            <field name="name">building.subcontracting.graph</field>
+            <field name="model">building.subcontracting</field>
+            <field name="arch" type="xml">
+                <graph string="Subcontracting" type="bar">
+                    <field name="partner_id" type="row"/>
+                    <field name="amount_total" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="view_subcontracting_tree" model="ir.ui.view">
+            <field name="name">building.subcontracting.tree</field>
+            <field name="model">building.subcontracting</field>
+            <field name="priority">2</field>
+            <field name="arch" type="xml">
+                <list string="Subcontracting">
+                    <field name="name" string="Numéro du Contrat"/>
+                    <field name="site_id"/>
+                    <field name="date_confirmed"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="amount_total" sum="Total Tax Included"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+
+        <record id="view_subcontracting_form" model="ir.ui.view">
+            <field name="name">building.subcontracting.form</field>
+            <field name="model">building.subcontracting</field>
+            <field name="arch" type="xml">
+                <form string="Subcontracting">
+                    <header>
+                        <button name="action_confirmed" string="Confirmer" class="oe_highlight" type="object" groups="" invisible="state in ('confirmed', 'approved', 'done')"/>
+                        <button name="action_approved" string="Approuver" class="oe_highlight" type="object" groups="" invisible="state in ('draft', 'approved', 'done')"/>
+                        <button name="action_done" string="Terminer" class="oe_highlight" type="object" groups="" invisible="state in ('draft', 'confirmed', 'done')"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,approved,done" statusbar_colors='{"confirmed":"yellow","draft":"gray"}'/>
+                	</header>
+	                <sheet>
+	                    <h1>
+	                        <label for="name" string="Contrat de sous-traitance" />
+	                        <field name="name" class="oe_inline" readonly="1"/>
+	                    </h1>
+	                    <group>
+	                        <group>
+	                        	<field name="site_id"/>
+	                            <field name="partner_id" domain="[('supplier_rank','&gt;', 0)]" options='{"always_reload": True}'/>
+                                <field name="partner_invoice_id"  />
+	                            <field name="partner_invoice_address"  />
+	                        </group>
+	                        <group>
+	                            <field name="date_confirmed"/>
+	                            <field name="supplier_order_ref"/>
+                                <field name="user_id"  />
+                                <field name="responsible_id"  />
+	                        </group>
+	                    </group>
+	                    <notebook>
+	                        <page string="Details">
+	                            <field name="order_line">
+	                                <list string="Details" editable="bottom">
+                                        <field name="chapter" string="N° de Prix"/>
+                                        <field name="product_id" invisible="1"/>
+	                                    <field name="name"/>
+	                                    <field name="quantity"/>
+	                                    <field name="product_uom" options='{"no_open": True}'/>
+                                        <!-- <field name="analytic_id" /> -->
+	                                    <field name="price_unit"/>
+	                                    <field name="tax_id" widget="many2many_tags" domain="[('type_tax_use','&lt;&gt;','purchase')]"/>
+	                                    <field name="price_subtotal"/>
+	                                </list>
+	                            </field>
+	                            <group class="oe_subtotal_footer oe_right" colspan="2" name="building_total">
+	                             	<field name="currency_id" invisible="1"/>
+	                                <field name="amount_untaxed" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+	                                <field name="amount_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+	                                <div class="oe_subtotal_footer_separator oe_inline">
+	                                    <label for="amount_total" />
+	                                    <button name="button_dummy" invisible="state not in ('draft', 'sent')" string="(MAJ)" type="object" class="oe_edit_only oe_link"/>
+	                                </div>
+	                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+	                            </group>
+	                            <div class="oe_clear"/>
+	                            <field name="note" class="oe_inline" placeholder="Description"/>
+	                        </page>
+                            <page string="Comptabilité">
+	                            <group>
+	                                <group>
+	                                    <field name="with_advance"/>
+	                                    <field name="deposit_number" invisible="not with_advance"/>
+                                        <field name="guaranty_number" />
+                                        <field name="advance_created" invisible="1"/>
+	                                </group>
+	                            </group>
+	                        </page>
+
+	                        <page string="Autres" groups="base.group_user">
+	                            <group>
+	                                <group groups="base.group_user">
+	                                    <field name="user_id" />
+	                                    <field groups="base.group_no_one" name="origin"/>
+	                                </group>
+	                                <group >
+	                                    <field name="company_id" widget="selection" groups="base.group_multi_company"/>
+	                                </group>
+	                                <group>
+	                                    <field name="invoiced"/>
+	                                    <field name="shipped" />
+	                                </group>
+	                            </group>
+	                        </page>
+	                    </notebook>
+	                </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="view_buildings_subcontracting_filter" model="ir.ui.view">
+            <field name="name">building.subcontracting.list.select</field>
+            <field name="model">building.subcontracting</field>
+            <field name="arch" type="xml">
+                <search string="Search subcontracting">
+                	<field name="state" invisible="1"/>
+                    <field name="name" string="Contrat" filter_domain="[('name','ilike',self)]"/>
+                    <field name="partner_id" operator="child_of"/>
+                    <field name="user_id"/>
+                    <field name="responsible_id"/>
+                    <field name="product_id"/>
+                    <field name="site_id"/>
+                    <separator/>
+                    <filter name="sate_confirmed" string="Confirmé" domain="[('state','=','confirmed')]" />
+                    <filter name="state_approved" string="Approuvé" domain="[('state','=','approved')]"/>
+                    <filter name="sate_done" string="Terminé" domain="[('state','=','done')]" />
+                    <separator/>
+                    <group expand="0" string="Group By">
+                    	<filter name="site_filt" string="Affaire" domain="[]" context="{'group_by':'site_id'}"/>
+                        <filter name="user_filt" string="Commercial" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter name="partner_filt" string="Fournisseur" domain="[]" context="{'group_by':'partner_id'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+        <record id="action_subcontracting" model="ir.actions.act_window">
+            <field name="name">Contrats de Sous-traitance</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">building.subcontracting</field>
+            <field name="view_mode">list,form,calendar,graph</field>
+            <field name="search_view_id" ref="view_buildings_subcontracting_filter"/>
+            <field name="context">{
+                    'search_default_my_building_subcontracting_filter': 1
+                }
+            </field>
+        </record>
+
+        <record id="building_purchase_form_action" model="ir.actions.act_window">
+            <field name="name">Fournitures</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">list,form,graph,calendar</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+        </record>
+
+
+
+
+    </data>
+</openerp>
