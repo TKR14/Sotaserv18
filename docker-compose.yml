@@ -16,9 +16,6 @@ services:
       - ./config:/etc/odoo
       - ./addons:/usr/lib/python3/dist-packages/odoo/addons
       - ./custom:/mnt/extra-addons
-      # - ./ergobit:/mnt/ergobit
-      # - ./enterprise:/mnt/enterprise-addons
-      # - odoo18-sotaserv-web-data:/var/lib/odoo
       
   odoo18_sotaserv_db:
     container_name: odoo18_sotaserv_db
