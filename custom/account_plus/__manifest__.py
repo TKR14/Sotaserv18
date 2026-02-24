@@ -7,7 +7,7 @@
         financial management and reporting.
         """,
     "category": "Accounting",
-    "depends": ["base", "account", "partner_igaser", "purchase_plus"],
+    "depends": ["base", "account", "partner_igaser"],
     "data": [
         'security/account_groups.xml',
         'security/ir.model.access.csv',

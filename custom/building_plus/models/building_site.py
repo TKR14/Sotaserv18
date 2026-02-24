@@ -27,10 +27,10 @@ class BuildingSite(models.Model):
         return {
             "name": "Affaires",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "building.site",
             "views": [
-                (self.env.ref("building.building_site_tree_view").id, "tree"),
+                (self.env.ref("building.building_site_tree_view").id, "list"),
                 (self.env.ref("building_plus.building_site_form_view_inherit_building").id, "form"),
             ],
             "domain": domain,

@@ -164,7 +164,7 @@ class purchase_request_price(models.TransientModel):
             'res_model': 'purchase.order',
             'type': 'ir.actions.act_window',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'limit': 80,
             }
 

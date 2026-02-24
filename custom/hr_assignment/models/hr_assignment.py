@@ -44,10 +44,10 @@ class HrAssignment(models.Model):
             return {
                 "name": "Affectations",
                 "type": "ir.actions.act_window",
-                "view_mode": "tree",
+                "view_mode": "list",
                 "res_model": "hr.assignment.line",
                 "views": [
-                    (self.env.ref("hr_assignment.hr_assignment_line_view_tree").id, "tree"),
+                    (self.env.ref("hr_assignment.hr_assignment_line_view_tree").id, "list"),
                 ],
                 "domain": domain,
                 "context": {
@@ -64,10 +64,10 @@ class HrAssignment(models.Model):
         return {
             "name": "Affectations",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "hr.assignment",
             "views": [
-                (self.env.ref("hr_assignment.hr_assignment_view_tree").id, "tree"),
+                (self.env.ref("hr_assignment.hr_assignment_view_tree").id, "list"),
                 (self.env.ref(form_view).id, "form"),
             ],
             "domain": domain,
@@ -85,10 +85,10 @@ class HrAssignment(models.Model):
         return {
             "name": "Lignes affectées",
             "type": "ir.actions.act_window",
-            "view_mode": "tree",
+            "view_mode": "list",
             "res_model": "hr.assignment.line",
             "views": [
-                (self.env.ref("hr_assignment.hr_assignment_line_view_tree").id, "tree"),
+                (self.env.ref("hr_assignment.hr_assignment_line_view_tree").id, "list"),
             ],
             "domain": [("assignment_id", "=", self.id)],
             "context": {
@@ -107,10 +107,10 @@ class HrAssignment(models.Model):
         return {
             "name": "Pointages",
             "type": "ir.actions.act_window",
-            "view_mode": "tree",
+            "view_mode": "list",
             "res_model": "hr.assignment.timeclock.line",
             "views": [
-                (self.env.ref("hr_assignment.hr_assignment_timeclock_line_view_tree").id, "tree"),
+                (self.env.ref("hr_assignment.hr_assignment_timeclock_line_view_tree").id, "list"),
             ],
             "domain": [("timeclock_id.assignment_id", "=", self.id)],
             "context": {
@@ -128,10 +128,10 @@ class HrAssignment(models.Model):
         return {
             "name": "Pointages",
             "type": "ir.actions.act_window",
-            "view_mode": "tree",
+            "view_mode": "list",
             "res_model": "hr.assignment.timeclock.line",
             "views": [
-                (self.env.ref("hr_assignment.hr_assignment_timeclock_line_recent_view_tree").id, "tree"),
+                (self.env.ref("hr_assignment.hr_assignment_timeclock_line_recent_view_tree").id, "list"),
             ],
             "domain": [
                 # ("date", ">=", two_days_ago),
@@ -151,10 +151,10 @@ class HrAssignment(models.Model):
         return {
             "name": "Affectations",
             "type": "ir.actions.act_window",
-            "view_mode": "tree",
+            "view_mode": "list",
             "res_model": "hr.assignment",
             "views": [
-                (self.env.ref("hr_assignment.hr_assignment_view_tree_temp").id, "tree"),
+                (self.env.ref("hr_assignment.hr_assignment_view_tree_temp").id, "list"),
             ],
             "domain": [],
             "context": {
@@ -171,10 +171,10 @@ class HrAssignment(models.Model):
         return {
             "name": "Pointages",
             "type": "ir.actions.act_window",
-            "view_mode": "tree",
+            "view_mode": "list",
             "res_model": "hr.assignment.wizard.line",
             "views": [
-                (self.env.ref("hr_assignment.hr_assignment_wizard_line_view_tree").id, "tree"),
+                (self.env.ref("hr_assignment.hr_assignment_wizard_line_view_tree").id, "list"),
             ],
             "context": {
                 "parent_id": parent_id,

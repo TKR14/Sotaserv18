@@ -1418,7 +1418,7 @@ class building_purchase_need(models.Model):
             'res_model': 'building.purchase.need.report',
             'type': 'ir.actions.act_window',
             'view_id': False,
-            'view_mode': 'tree,graph',
+            'view_mode': 'list,graph',
             'search_view_id': search_view_id,
             'limit': 80
         }
@@ -1443,10 +1443,10 @@ class building_purchase_need(models.Model):
             "name": name,
             "res_model": model,
             "type": "ir.actions.act_window",
-            "view_mode": "tree",
+            "view_mode": "list",
             "search_view_id": (search_view_id, "search"),
             "views": [
-                (tree_view_id, "tree"),
+                (tree_view_id, "list"),
             ],
             "domain": [("need_id", "=", self.id), ("display_type", "!=", "line_section")],
             "context": {

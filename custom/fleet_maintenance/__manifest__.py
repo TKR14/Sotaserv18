@@ -55,9 +55,9 @@
     'installable': True,
     'auto_install': False,
     'application': False,
-    'assets': {
-        'web.assets_backend': [
-            'fleet_maintenance/static/src/css/fleet_maintenance.css',
-        ],
-    },
+    # 'assets': {
+    #     'web.assets_backend': [
+    #         'fleet_maintenance/static/src/css/fleet_maintenance.css',
+    #     ],
+    # },
 }

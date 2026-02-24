@@ -172,10 +172,10 @@ class HrAssignmentRequestLine(models.Model):
         return {
             "name": "Lignes des demandes",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "hr.assignment.request.line",
             "views": [
-                (self.env.ref("hr_assignment.hr_assignment_request_line_view_tree").id, "tree"),
+                (self.env.ref("hr_assignment.hr_assignment_request_line_view_tree").id, "list"),
                 (self.env.ref("hr_assignment.hr_assignment_request_line_view_form").id, "form"),
             ],
             "search_view_id": (self.env.ref("hr_assignment.hr_assignment_request_line_view_search").id, "search"),

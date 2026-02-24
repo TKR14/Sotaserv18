@@ -175,11 +175,11 @@ class building_advance_inv(models.TransientModel):
         return {
             'name': _('Facture Acompte'),
             'view_type': 'form',
-            'view_mode': 'form,tree',
+            'view_mode': 'form,list',
             'res_model': 'account.move',
             'res_id': invoice_ids[0],
             'view_id': False,
-            'views': [(form_id, 'form'), (tree_id, 'tree')],
+            'views': [(form_id, 'form'), (tree_id, 'list')],
             'context': "{'type': 'out_invoice'}",
             'type': 'ir.actions.act_window'
         }

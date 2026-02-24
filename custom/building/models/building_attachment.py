@@ -912,10 +912,10 @@ class building_attachment(models.Model):
         return {
             'name': 'Décompte Client',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'building.attachment',
             'views': [
-                (self.env.ref('building.building_attachment_inv_tree').id, 'tree'),
+                (self.env.ref('building.building_attachment_inv_tree').id, 'list'),
                 (self.env.ref('building.building_attachment_inv_form').id, 'form'),
             ],
             'domain': domain,
@@ -954,10 +954,10 @@ class building_attachment(models.Model):
         return {
             'name': 'Attachements Client',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'building.attachment',
             'views': [
-                (self.env.ref('building.building_attachment_tree').id, 'tree'),
+                (self.env.ref('building.building_attachment_tree').id, 'list'),
                 (self.env.ref('building.building_attachment_form').id, 'form')
             ],
             'domain': domain,

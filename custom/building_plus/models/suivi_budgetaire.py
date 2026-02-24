@@ -16,10 +16,10 @@ class SuiviBudgetaire(models.Model):
         return {
             "name": "Suivi budgétaire",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "suivi.budgetaire",
             "views": [
-                (self.env.ref("building_report.view_suivi_budgetaire_tree").id, "tree"),
+                (self.env.ref("building_report.view_suivi_budgetaire_tree").id, "list"),
             ],
             "domain": domain,
         }

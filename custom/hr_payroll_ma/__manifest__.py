@@ -57,9 +57,9 @@
     'demo_xml': [],
     'installable': True,
     'active': False,
-    'assets': {
-        'web.assets_backend': [
-            'hr_payroll_ma/static/src/css/payroll.css',
-        ],
-    },
+    # 'assets': {
+    #     'web.assets_backend': [
+    #         'hr_payroll_ma/static/src/css/payroll.css',
+    #     ],
+    # },
 }

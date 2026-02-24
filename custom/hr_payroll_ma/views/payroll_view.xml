@@ -1084,22 +1084,22 @@
                 <attribute name="invisible">True</attribute>
             </xpath>
 
-            <xpath expr="//page[1]//group[2]" position="attributes">
+            <!-- <xpath expr="//page[2]/group[2]" position="attributes">
                 <attribute name="invisible">True</attribute>
             </xpath>
 
-            <xpath expr="//page[1]//group[4]" position="attributes">
+            <xpath expr="//page[2]/group[4]" position="attributes">
                 <attribute name="invisible">True</attribute>
-            </xpath>
+            </xpath> -->
 
-            <xpath expr="//notebook/page[1]//group[2]" position="after">
+            <!-- <xpath expr="//sheet/notebook/page[2]/group[1]/group[2]" position="after">
 				<group string="Contrat">
 					<field name="recruitment_date" string=" Date contrat"/>
 					<field name="contract_type" />
 					<field name="job_id" />
 					<field name="user_id" />
 				</group>            
-			</xpath>
+			</xpath> -->
 
             <!-- <xpath expr="//field[@name='address_home_id']" position="attributes">
                 <attribute name="invisible">True</attribute>
@@ -1120,7 +1120,7 @@
                 <label for="km_home_work" invisible="1"/>
             </xpath> -->
 
-            <xpath expr="//notebook/page[2]//group[1]//group[1]" position="replace">
+            <!-- <xpath expr="//notebook/page[2]//group[1]//group[1]" position="replace">
 				<group string="Informations générales">
 					<field name="gender" />
 					<field name="birthday" />
@@ -1140,18 +1140,18 @@
                     <field name="nationality_code"/>
                     <field name="category"/>
 				</group>            
-			</xpath>
+			</xpath> -->
             <!-- <xpath expr="//notebook/page[2]//group[1]//group[8]" position="replace">
 				<group string="Éducation">
 					<field name="certificate" string="Diplôme"/>
 				</group>            
 			</xpath> -->
-            <xpath expr="//notebook/page[2]//group[1]//group[3]" position="attributes">
+            <!-- <xpath expr="//notebook/page[2]//group[1]//group[3]" position="attributes">
                 <attribute name="invisible">True</attribute>
             </xpath>
             <xpath expr="//notebook/page[2]//group[1]//group[4]" position="attributes">
                 <attribute name="invisible">True</attribute>
-            </xpath>
+            </xpath> -->
             <!-- <xpath expr="//notebook/page[2]//group[1]//group[5]" position="attributes">
                 <attribute name="invisible">True</attribute>
             </xpath> -->
@@ -1159,9 +1159,9 @@
                 <attribute name="invisible">True</attribute>
             </xpath> -->
 
-            <xpath expr="//page[3]" position="attributes">
+            <!-- <xpath expr="//page[3]" position="attributes">
                 <attribute name="invisible">True</attribute>
-            </xpath>
+            </xpath> -->
 		</field>
 	</record>
 

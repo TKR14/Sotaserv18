@@ -33,10 +33,10 @@ class PurchaseOrder(models.Model):
         return {
             "name": "Bons de Commande sans Attachement",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "purchase.order",
             "views": [
-                (view_tree_id, "tree"),
+                (view_tree_id, "list"),
                 (view_form_id, "form"),
             ],
             "search_view_id": (self.env.ref("purchase_plus.purchase_order_view_search").id, "search"),
@@ -62,10 +62,10 @@ class PurchaseOrder(models.Model):
         return {
             "name": "Bons de Commande",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "purchase.order",
             "views": [
-                (view_tree_id, "tree"),
+                (view_tree_id, "list"),
                 (view_form_id, "form"),
             ],
             "search_view_id": (self.env.ref("purchase_plus.purchase_order_view_search").id, "search"),
@@ -86,10 +86,10 @@ class PurchaseOrder(models.Model):
         return {
             "name": "Bons de Commande avec Attachement",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "purchase.order",
             "views": [
-                (self.env.ref("purchase_plus.purchase_order_tree").id, "tree"),
+                (self.env.ref("purchase_plus.purchase_order_tree").id, "list"),
                 (self.env.ref("purchase_plus.purchase_order_line_attachment_form").id, "form"),
             ],
             "search_view_id": (self.env.ref("purchase_plus.purchase_order_view_search").id, "search"),
@@ -112,10 +112,10 @@ class PurchaseOrder(models.Model):
         return {
             "name": "Demandes de Prix",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "purchase.order",
             "views": [
-                (self.env.ref("purchase.purchase_order_tree").id, "tree"),
+                (self.env.ref("purchase.purchase_order_tree").id, "list"),
                 (self.env.ref("account_plus.purchase_order_form_readonly").id, "form"),
             ],
             "domain": [("state", "in", ["draft", "sent"])], 

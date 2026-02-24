@@ -22,7 +22,7 @@
         <field name="res_model">purchase.entry</field>
         <field name="view_mode">tree,form</field>
         <field name="view_ids" eval="[(5, 0, 0), 
-                                      (0, 0, {'view_mode': 'tree', 'view_id': ref('view_purchase_entry_tree')}), 
+                                      (0, 0, {'view_mode': 'list', 'view_id': ref('view_purchase_entry_tree')}), 
                                       (0, 0, {'view_mode': 'form', 'view_id': ref('purchase_entry_view_form')})]"/>
         <field name="context">{"create": False}</field>
         <field name="domain">[('user_id', '=', uid)]</field> 

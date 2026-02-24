@@ -353,10 +353,10 @@ class PurchaseEntry(models.Model):
         return {
             'name': 'Attachements fournisseur',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'purchase.entry',
             'views': [
-                (self.env.ref('purchase_plus.view_purchase_entry_tree').id, 'tree'),
+                (self.env.ref('purchase_plus.view_purchase_entry_tree').id, 'list'),
                 (self.env.ref('purchase_plus.purchase_entry_view_form').id, 'form')
             ],
             'domain': domain,
@@ -384,10 +384,10 @@ class PurchaseEntry(models.Model):
         return {
             'name': 'Décompte fournisseurs',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'purchase.entry',
             'views': [
-                (self.env.ref('purchase_plus.view_purchase_entry_decompt_tree').id, 'tree'),
+                (self.env.ref('purchase_plus.view_purchase_entry_decompt_tree').id, 'list'),
                 (self.env.ref('purchase_plus.purchase_entry_decompt_view_form').id, 'form')
             ],
             'domain': domain,
@@ -416,10 +416,10 @@ class PurchaseEntry(models.Model):
         return {
             'name': 'Décompte fournisseurs',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'purchase.entry',
             'views': [
-                (self.env.ref('purchase_plus.view_purchase_entry_decompt_readonly_tree').id, 'tree'),
+                (self.env.ref('purchase_plus.view_purchase_entry_decompt_readonly_tree').id, 'list'),
                 (self.env.ref('purchase_plus.purchase_entry_decompt_readonly_form').id, 'form')
             ],
             'domain': domain,
@@ -867,10 +867,10 @@ class PurchaseEntry(models.Model):
         return {
             'name': 'Décompte final',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'purchase.entry',
             'views': [
-                (self.env.ref('purchase_plus.view_purchase_entry_decompt_tree').id, 'tree'),
+                (self.env.ref('purchase_plus.view_purchase_entry_decompt_tree').id, 'list'),
                 (self.env.ref('purchase_plus.purchase_entry_decompt_view_form').id, 'form')
             ],
             'domain': [("id", "in", values.ids)],

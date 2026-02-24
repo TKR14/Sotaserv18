@@ -105,7 +105,7 @@ class FleetRequestLine(models.Model):
         result = super(FleetRequestLine, self).fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
         arch = etree.fromstring(result["arch"])
         arch.set("delete", "false")
-        if view_type == "tree" and not self.env.context.get("show_action_assign"):
+        if view_type == "list" and not self.env.context.get("show_action_assign"):
             button_element = arch.find('.//button')
             if button_element is not None: arch.remove(button_element)
         result["arch"] = etree.tostring(arch, pretty_print=True, encoding='unicode')

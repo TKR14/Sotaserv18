@@ -36,10 +36,10 @@ class building_order(models.Model):
         return {
             "name": "Bordereau des Prix",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "building.order",
             "views": [
-                (self.env.ref("building.view_order_tree").id, "tree"),
+                (self.env.ref("building.view_order_tree").id, "list"),
                 (self.env.ref("building.view_order_form").id, "form"),
                 
             ],
@@ -119,7 +119,7 @@ class building_order(models.Model):
                  "res_id": self.id})
         return {
             "name": _("Affichage ID du Bordereau"),
-            "view_mode": "tree",
+            "view_mode": "list",
             "res_model": "ir.model.data",
             "type": "ir.actions.act_window",
             "nodestroy": True,
@@ -136,7 +136,7 @@ class building_order(models.Model):
                  "res_id": self.id})
         return {
             "name": _("Affichage ID du Bordereau"),
-            "view_mode": "tree",
+            "view_mode": "list",
             "res_model": "ir.model.data",
             "type": "ir.actions.act_window",
             "nodestroy": True,

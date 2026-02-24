@@ -32,10 +32,10 @@ class PurchaseRequest(models.Model):
         return {
             "name": "Demandes d'achat",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "purchase.request",
             "views": [
-                (self.env.ref("purchase_igaser.purchase_request_view_tree").id, "tree"),
+                (self.env.ref("purchase_igaser.purchase_request_view_tree").id, "list"),
                 (self.env.ref("purchase_igaser.purchase_request_view_form").id, "form")
             ],
             "domain": domain,

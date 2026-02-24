@@ -30,10 +30,10 @@ class MaintenanceRequestResourceMaterial(models.Model):
         return {
             'name': 'Demandes Matériels',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'maintenance.request.resource.material',
             'views': [
-                (self.env.ref('building.maintenance_request_resource_material_tree_view').id, 'tree'),
+                (self.env.ref('building.maintenance_request_resource_material_tree_view').id, 'list'),
                 (self.env.ref('building.maintenance_request_resource_material_form_view').id, 'form')
             ],
             'domain': domain,
@@ -70,10 +70,10 @@ class MaintenanceRequestResourceMaterial(models.Model):
         return {
             'name': 'Demandes Matériels a Affecter',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'maintenance.request.resource.material',
             'views': [
-                (self.env.ref('building.maintenance_request_resource_material_tree_view').id, 'tree'),
+                (self.env.ref('building.maintenance_request_resource_material_tree_view').id, 'list'),
                 (self.env.ref('building.maintenance_request_resource_material_form_view').id, 'form')
             ],
             'domain': domain,
@@ -103,10 +103,10 @@ class MaintenanceRequestResourceMaterialLine(models.Model):
         return {
             'name': 'Demandes Matériels Line',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'maintenance.request.resource.material.line',
             'views': [
-                (self.env.ref('building.material_requests_line_view').id, 'tree')
+                (self.env.ref('building.material_requests_line_view').id, 'list')
             ],
             'domain': domain,
             'context': context,
@@ -137,10 +137,10 @@ class BuildingAssignmentLine(models.Model):
         return {
             'name': 'Affectations des Matériels',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'building.assignment.line',
             'views': [
-                (self.env.ref('building.building_assignment_vehicle_tree').id, 'tree')
+                (self.env.ref('building.building_assignment_vehicle_tree').id, 'list')
             ],
             'domain': domain,
             'context': context,
@@ -153,10 +153,10 @@ class MaterialsWorkedHours(models.Model):
         return {
             'name': 'Pointages Matériels',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'materials.worked.hours',
             'views': [
-                (self.env.ref('building.materials_worked_hours_tree_view').id, 'tree'),
+                (self.env.ref('building.materials_worked_hours_tree_view').id, 'list'),
                 (self.env.ref('building.materials_worked_hours_form_view').id, 'form')
             ]
         }
@@ -168,10 +168,10 @@ class FleetVehicle(models.Model):
         return {
             'name': 'Matériel',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'fleet.vehicle',
             'views': [
-                (self.env.ref('fleet.fleet_vehicle_view_tree').id, 'tree'),
+                (self.env.ref('fleet.fleet_vehicle_view_tree').id, 'list'),
                 (self.env.ref('fleet.fleet_vehicle_view_form').id, 'form')
             ]
         }
@@ -183,9 +183,9 @@ class FleetVehicleState(models.Model):
         return {
             'name': 'Statut du Matériel',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'res_model': 'fleet.vehicle.state',
             'views': [
-                (self.env.ref('fleet.fleet_vehicle_state_view_tree').id, 'tree'),
+                (self.env.ref('fleet.fleet_vehicle_state_view_tree').id, 'list'),
             ]
         }

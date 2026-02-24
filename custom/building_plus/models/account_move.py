@@ -29,10 +29,10 @@ class AccountMove(models.Model):
         return {
             'name': 'Factures fournisseurs',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'account.move',
             'views': [
-                (self.env.ref('account.view_in_invoice_tree').id, "tree"),
+                (self.env.ref('account.view_in_invoice_tree').id, "list"),
                 (self.env.ref('building_plus.account_invoice_readonly_form_view').id, "form")
             ],
             'domain': domain,

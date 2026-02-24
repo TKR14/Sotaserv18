@@ -31,10 +31,10 @@ class BuildingPurchaseNeed(models.Model):
         return {
             "name": "Liste des besoins",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "building.purchase.need",
             "views": [
-                (self.env.ref("building.building_purchase_need_tree").id, "tree"),
+                (self.env.ref("building.building_purchase_need_tree").id, "list"),
                 (self.env.ref("building_plus.building_purchase_need_form_inherit_building").id, "form")
             ],
             "domain": domain,

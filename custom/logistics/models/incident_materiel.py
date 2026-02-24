@@ -41,9 +41,9 @@ class IncidentMateriel(models.Model):
             'name': 'Pointages',
             'type': 'ir.actions.act_window',
             'res_model': 'incident.materiel',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'views': [
-                (self.env.ref('logistics.view_incident_materiel_tree').id, 'tree'),
+                (self.env.ref('logistics.view_incident_materiel_tree').id, 'list'),
                 (self.env.ref('logistics.view_incident_materiel_form').id, 'form'),
             ],
             'domain': domain,

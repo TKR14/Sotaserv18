@@ -86,7 +86,7 @@ class CrmLead(models.Model):
             "res_model": "crm.lead",
             "views": [
                 (self.env.ref("crm.crm_case_kanban_view_leads").id, "kanban"),
-                (self.env.ref("crm.crm_case_tree_view_oppor").id, "tree"),
+                (self.env.ref("crm.crm_case_tree_view_oppor").id, "list"),
                 (self.env.ref("crm.crm_lead_view_form").id, "form"),
                 (self.env.ref("crm.crm_case_calendar_view_leads").id, "calendar"),
                 (self.env.ref("crm.crm_lead_view_pivot").id, "pivot"),
@@ -210,7 +210,7 @@ class CrmLead(models.Model):
             "res_model": "building.order",
             "type": "ir.actions.act_window",
             "view_id": False,
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
         }
 
     def action_validate(self):

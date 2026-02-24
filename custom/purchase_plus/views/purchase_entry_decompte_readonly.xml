@@ -131,6 +131,7 @@
                                       (0, 0, {'view_mode': 'form', 'view_id': ref('purchase_entry_decompt_readonly_form')})]"/>
         <field name="context">{"create": False, "edit": False, "delete": False, 'group_by': ['site_id']}</field>
     </record>
+    
 
     <record id="action_purchase_entry_decompt_readonly2" model="ir.actions.server">
         <field name="name">Décompte fournisseurs</field>

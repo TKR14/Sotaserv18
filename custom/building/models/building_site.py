@@ -567,7 +567,7 @@ class building_site(models.Model):
             'res_model': 'building.attachment',
             'type': 'ir.actions.act_window',
             'view_id': False,
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'limit': 80
         }
 
@@ -712,7 +712,7 @@ class building_site(models.Model):
             'res_model': 'building.site.report',
             'type': 'ir.actions.act_window',
             'view_id': False,
-            'view_mode': 'tree,graph',
+            'view_mode': 'list,graph',
         }
 
     @api.model
@@ -737,7 +737,7 @@ class building_site(models.Model):
     #             'res_model': 'account.analytic.account',
     #             'type': 'ir.actions.act_window',
     #             'view_id': False,
-    #             'view_mode': 'tree,form',
+    #             'view_mode': 'lis,form',
     #              'limit': 80
     #         }
     #     return {}
@@ -1548,7 +1548,7 @@ class building_executed(models.Model):
             'res_model': 'building.executed.report',
             'type': 'ir.actions.act_window',
             'view_id': False,
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'search_view_id': search_view_id,
             'limit': 80
         }
@@ -1864,8 +1864,8 @@ class building_assignment_line(models.Model):
             'name': 'Affectations',
             'type': 'ir.actions.act_window',
             'res_model': 'building.assignment.line',
-            'view_mode': 'tree',
-            'views': [(tree_view.id, 'tree')],
+            'view_mode': 'list',
+            'views': [(tree_view.id, 'list')],
             'domain': domain,
             'context': context,
             'search_view_id': self.env.ref('building.building_assignment_line_filter').id,

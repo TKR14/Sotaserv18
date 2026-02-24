@@ -24,9 +24,9 @@
         'views/product_views.xml',
         'report/account_asset_report_views.xml',
     ],
-    'assets': {
-        'web.assets_backend': [
-            'om_account_asset/static/src/scss/account_asset.scss',
-        ],
-    },
+    # 'assets': {
+    #     'web.assets_backend': [
+    #         'om_account_asset/static/src/scss/account_asset.scss',
+    #     ],
+    # },
 }

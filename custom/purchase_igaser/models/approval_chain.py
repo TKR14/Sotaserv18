@@ -74,7 +74,7 @@ class ApprovalChain(models.Model):
             "name": "Lignes",
             "type": "ir.actions.act_window",
             "res_model": "approval.chain.line",
-            "view_mode": "tree,search",
+            "view_mode": "list,search",
             "domain": [("parent_id", "=", self.id)],
             "context": context,
             "target": "current",
@@ -86,7 +86,7 @@ class ApprovalChain(models.Model):
             "name": "Étapes",
             "type": "ir.actions.act_window",
             "res_model": "approval.chain.step",
-            "view_mode": "tree",
+            "view_mode": "list",
             "domain": [("parent_id", "=", self.id)],
             "context": {
                 "default_parent_id": self.id,

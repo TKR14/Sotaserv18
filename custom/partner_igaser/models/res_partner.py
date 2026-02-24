@@ -121,7 +121,7 @@ class ResPartner(models.Model):
             "views": [
                 (self.env.ref("base.res_partner_kanban_view").id, "kanban"),
                 (self.env.ref("base.view_partner_form").id, "form"),
-                (self.env.ref("base.view_partner_tree").id, "tree"),
+                (self.env.ref("base.view_partner_tree").id, "list"),
                 
             ],
             "domain": domain,
@@ -144,7 +144,7 @@ class ResPartner(models.Model):
             "views": [
                 (self.env.ref("base.res_partner_kanban_view").id, "kanban"),
                 (self.env.ref("base.view_partner_form").id, "form"),
-                (self.env.ref("base.view_partner_tree").id, "tree"),
+                (self.env.ref("base.view_partner_tree").id, "list"),
                 
             ],
             "context": {

@@ -551,9 +551,9 @@ class PurchaseRequest(models.Model):
         return {
             "name": "Lignes de demande d'achat",
             "type": "ir.actions.act_window",
-            "view_mode": "tree",
+            "view_mode": "list",
             "res_model": "purchase.request.line",
-            "views": [(self.env.ref("purchase_igaser.purchase_request_line_view_tree").id, "tree")],
+            "views": [(self.env.ref("purchase_igaser.purchase_request_line_view_tree").id, "list")],
             "domain": [("id", "in", self.line_ids.ids)],
             "context": {
                 "create": False,
@@ -681,7 +681,7 @@ class ProductProduct(models.Model):
     def fields_view_get(self, view_id=None, view_type=False, toolbar=False, submenu=False):
         result = super(ProductProduct, self).fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
 
-        if view_type == "tree":
+        if view_type == "list":
             doc = etree.XML(result["arch"])
             for field in doc.xpath("//field"):
                 field_name = field.attrib.get("name")

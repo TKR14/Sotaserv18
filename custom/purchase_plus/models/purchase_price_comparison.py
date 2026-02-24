@@ -59,10 +59,10 @@ class PurchasePriceComparison(models.Model):
         return {
             "name": "Comparaison des Offres",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "purchase.price.comparison",
             "views": [
-                (self.env.ref("purchase_igaser.purchase_price_comparison_tree").id, "tree"),
+                (self.env.ref("purchase_igaser.purchase_price_comparison_tree").id, "list"),
                 (view_form_id, "form"),
             ],
             "domain": domain,

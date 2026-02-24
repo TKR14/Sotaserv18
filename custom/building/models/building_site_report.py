@@ -60,7 +60,7 @@ class building_site_report(models.Model):
                 'res_model': 'building.executed.line.report',
                 'type': 'ir.actions.act_window',
                 'view_id': False,
-                'view_mode': 'tree',
+                'view_mode': 'list',
             }
         elif self.r0 == 'dlm':
             executed_line_report = self.env['building.executed.line.report'].search([('site_id', '=', self.site_id.id), ('r0', '=', 'load'), ('r1', 'in', ['site_install', 'mini_equipment', 'equipment']), ('is_rental', '=', False), ('executed_id', 'in', executeds.ids)])
@@ -71,7 +71,7 @@ class building_site_report(models.Model):
                 'res_model': 'building.executed.line.report',
                 'type': 'ir.actions.act_window',
                 'view_id': False,
-                'view_mode': 'tree',
+                'view_mode': 'list',
             }
         elif self.r0 == 'dlm_rental':
             executed_line_report = self.env['building.executed.line.report'].search([('site_id', '=', self.site_id.id), ('r0', '=', 'load'), ('r1', 'in', ['equipment']), ('is_rental', '=', True), ('executed_id', 'in', executeds.ids)])
@@ -82,7 +82,7 @@ class building_site_report(models.Model):
                 'res_model': 'building.executed.line.report',
                 'type': 'ir.actions.act_window',
                 'view_id': False,
-                'view_mode': 'tree',
+                'view_mode': 'list',
             }
 
         if self.r0 == 'rh':
@@ -94,7 +94,7 @@ class building_site_report(models.Model):
                 'res_model': 'building.executed.line.report',
                 'type': 'ir.actions.act_window',
                 'view_id': False,
-                'view_mode': 'tree',
+                'view_mode': 'list',
             }
         
         if self.r0 == 'invoiced':
@@ -130,7 +130,7 @@ class building_site_report(models.Model):
                 'res_model': 'building.site.invoiced.report',
                 'type': 'ir.actions.act_window',
                 'view_id': False,
-                'view_mode': 'tree',
+                'view_mode': 'list',
             }
 
         if self.r0 == 'cashed':
@@ -167,7 +167,7 @@ class building_site_report(models.Model):
                 'res_model': 'building.site.invoiced.report',
                 'type': 'ir.actions.act_window',
                 'view_id': False,
-                'view_mode': 'tree',
+                'view_mode': 'list',
             }
 
         if self.r0 == 'subcontracting':
@@ -204,7 +204,7 @@ class building_site_report(models.Model):
                 'res_model': 'building.site.invoiced.report',
                 'type': 'ir.actions.act_window',
                 'view_id': False,
-                'view_mode': 'tree',
+                'view_mode': 'list',
             }
         if self.r0 == 'prov_serv':
             self.env['building.site.invoiced.report'].search([('site_id', '=', self.site_id.id), ('invoice_state', 'in', ['other'])]).unlink()
@@ -241,7 +241,7 @@ class building_site_report(models.Model):
                 'res_model': 'building.site.invoiced.report',
                 'type': 'ir.actions.act_window',
                 'view_id': False,
-                'view_mode': 'tree',
+                'view_mode': 'list',
             }
 
             pickings_diesel = self.env['stock.picking'].search([('site_id', '=', self.site_id.id), ('state', '=', 'done'), ('location_dest_id', '=', self.site_id.location_diesel_id.id)])
@@ -289,7 +289,7 @@ class building_site_report(models.Model):
                 'res_model': 'building.site.stock.report',
                 'type': 'ir.actions.act_window',
                 'view_id': False,
-                'view_mode': 'tree',
+                'view_mode': 'list',
             }
 
         if self.r0 == 'consu':
@@ -335,7 +335,7 @@ class building_site_report(models.Model):
                 'res_model': 'building.site.stock.report',
                 'type': 'ir.actions.act_window',
                 'view_id': False,
-                'view_mode': 'tree',
+                'view_mode': 'list',
             }
 
         if self.r0 == 'diesel':
@@ -381,7 +381,7 @@ class building_site_report(models.Model):
                 'res_model': 'building.site.stock.report',
                 'type': 'ir.actions.act_window',
                 'view_id': False,
-                'view_mode': 'tree',
+                'view_mode': 'list',
             }
 
         # if self.r0 == 'inventory':
@@ -453,7 +453,7 @@ class building_site_report(models.Model):
         #         'res_model': 'building.site.stock.report',
         #         'type': 'ir.actions.act_window',
         #         'view_id': False,
-        #         'view_mode': 'tree',
+        #         'view_mode': 'list',
         #     }
 
 class building_site_invoiced_report(models.Model):
@@ -533,7 +533,7 @@ class building_executed_report(models.Model):
             'res_model': 'building.executed.line.report',
             'type': 'ir.actions.act_window',
             'view_id': False,
-            'view_mode': 'tree,graph',
+            'view_mode': 'list,graph',
             'limit': 80
         }
 
@@ -566,7 +566,7 @@ class building_executed_report_line(models.Model):
             'res_model': 'building.executed.detail.report',
             'type': 'ir.actions.act_window',
             'view_id': False,
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'search_view_id': search_view_id,
             'limit': 80
         }

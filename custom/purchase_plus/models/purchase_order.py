@@ -326,10 +326,10 @@ class PurchaseOrder(models.Model):
         return {
             'name': 'Bons de commande avec attachement',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'purchase.order',
             'views': [
-                (self.env.ref('purchase_plus.purchase_order_tree').id, 'tree'),
+                (self.env.ref('purchase_plus.purchase_order_tree').id, 'list'),
                 (self.env.ref('purchase_plus.purchase_order_line_attachment_form').id, 'form')
             ],
             'domain': domain,
@@ -364,10 +364,10 @@ class PurchaseOrder(models.Model):
         return {
             'name': 'Bons de commande avec attachement',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'purchase.order',
             'views': [
-                (self.env.ref('purchase_plus.purchase_order_tree').id, 'tree'),
+                (self.env.ref('purchase_plus.purchase_order_tree').id, 'list'),
                 (self.env.ref('purchase_plus.purchase_order_line_attachment_form').id, 'form')
             ],
             'domain': domain,
@@ -400,10 +400,10 @@ class PurchaseOrder(models.Model):
         return {
             'name': 'Bons de commande avec attachement',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'purchase.order',
             'views': [
-                (self.env.ref('purchase_plus.purchase_order_tree').id, 'tree'),
+                (self.env.ref('purchase_plus.purchase_order_tree').id, 'list'),
                 (self.env.ref('purchase_plus.purchase_order_line_attachment_form').id, 'form')
             ],
             'domain': domain,

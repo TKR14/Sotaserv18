@@ -224,9 +224,9 @@ class HrAssignmentRequest(models.Model):
             "name": "Demandes",
             "type": "ir.actions.act_window",
             "res_model": "hr.assignment.request",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "views": [
-                (self.env.ref("hr_assignment.hr_assignment_request_view_tree").id, "tree"),
+                (self.env.ref("hr_assignment.hr_assignment_request_view_tree").id, "list"),
                 (self.env.ref("hr_assignment.hr_assignment_request_view_form").id, "form"),
             ],
             "domain": domain,

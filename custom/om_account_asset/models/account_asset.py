@@ -383,7 +383,7 @@ class AccountAssetAsset(models.Model):
         view_mode = 'form'
         if len(move_ids) > 1:
             name = _('Disposal Moves')
-            view_mode = 'tree,form'
+            view_mode = 'list,form'
         return {
             'name': name,
             'view_type': 'form',

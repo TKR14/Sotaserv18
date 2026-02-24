@@ -86,7 +86,7 @@ class ProductCategory(models.Model):
             "name": "Acheteurs",
             "type": "ir.actions.act_window",
             "res_model": "product.buyer",
-            "view_mode": "tree",
+            "view_mode": "list",
             "domain": [("category_id", "=", self.id)],
             "context": {
                 "default_category_id": self.id,

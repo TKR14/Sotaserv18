@@ -86,7 +86,7 @@ class BuildingSite(models.Model):
             "name": "Profils",
             "type": "ir.actions.act_window",
             "res_model": "building.profile.assignment",
-            "view_mode": "tree,search",
+            "view_mode": "list,search",
             "target": "current",
             "context": context,
             "domain": [

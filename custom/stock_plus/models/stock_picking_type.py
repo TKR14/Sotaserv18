@@ -19,21 +19,21 @@ class StockPickingType(models.Model):
             view_form_id = self.env.ref("stock_plus.stock_picking_view_form_magasinier_chantier").id
 
         views = [
-            (self.env.ref("stock_plus.stock_picking_view_tree_no_buttons").id, "tree"),
+            (self.env.ref("stock_plus.stock_picking_view_tree_no_buttons").id, "list"),
             (view_form_id, "form"),
         ]
         domain = [("site_id", "=", site.id), ("picking_type_id.sequence_code", "=", self.sequence_code), ("location_dest_id.usage", "!=", "mobile")]
         if self.code == "outgoing":
             domain.append(("is_outgoing_process", "=", True))
             views = [
-                (self.env.ref("stock_plus.stock_picking_view_tree_outgoing").id, "tree"),
+                (self.env.ref("stock_plus.stock_picking_view_tree_outgoing").id, "list"),
                 (self.env.ref("stock_plus.stock_picking_view_form_outgoing").id, "form"),
             ]
 
         return {
             "name": self.name,
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "stock.picking",
             "domain": domain,
             "views": views,

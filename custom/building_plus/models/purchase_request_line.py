@@ -21,11 +21,11 @@ class PurchaseRequestLine(models.Model):
         return {
             "name": "Lignes de demande d'achat",
             "type": "ir.actions.act_window",
-            "view_mode": "tree",
+            "view_mode": "list",
             "res_model": "purchase.request.line",
             "search_view_id": (self.env.ref("purchase_igaser.purchase_request_line_view_search").id, "search"),
             "views": [
-                (self.env.ref("purchase_igaser.purchase_request_line_view_tree").id, "tree"),
+                (self.env.ref("purchase_igaser.purchase_request_line_view_tree").id, "list"),
             ],
             "domain": domain,
             "context": {
@@ -43,10 +43,10 @@ class PurchaseRequestLine(models.Model):
         return {
             "name": "Lignes de demande d'achat (Principal & Logistique)",
             "type": "ir.actions.act_window",
-            "view_mode": "tree",
+            "view_mode": "list",
             "res_model": "purchase.request.line",
             "views": [
-                (self.env.ref("purchase_plus.purchase_request_line_view_tree_readonly").id, "tree"),
+                (self.env.ref("purchase_plus.purchase_request_line_view_tree_readonly").id, "list"),
             ],
             "domain": [("site_id.number", "in", ["000", "002"])],
             "context": {

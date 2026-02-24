@@ -159,9 +159,9 @@ class PurchaseRequestLine(models.Model):
             "name": "Lignes de Demande d'Achat",
             "type": "ir.actions.act_window",
             "res_model": "purchase.request.line",
-            "view_mode": "tree",
+            "view_mode": "list",
             "search_view_id": (self.env.ref("purchase_igaser.purchase_request_line_view_search").id, "search"),
-            "views": [(self.env.ref("purchase_igaser.purchase_request_line_view_tree").id, "tree")],
+            "views": [(self.env.ref("purchase_igaser.purchase_request_line_view_tree").id, "list")],
             "domain": [
                 "|",
                 "|",

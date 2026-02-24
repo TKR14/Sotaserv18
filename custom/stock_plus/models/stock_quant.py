@@ -29,7 +29,7 @@ class StockInventory(models.Model):
             "type": "ir.actions.act_window",
             "name": "Ajustements de l'inventaire",
             "res_model": self._name,
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("site_id", "in", site_ids)],
             "context": {"search_default_status": True, "search_default_site_id": True},
         }

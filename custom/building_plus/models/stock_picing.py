@@ -67,7 +67,7 @@ class StockPicking(models.Model):
             'name': 'Affectations',
             'type': 'ir.actions.act_window',
             'res_model': 'stock.picking',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'domain': domain,
             'context': context,
             'search_view_id': self.env.ref('stock.view_picking_internal_search').id,
@@ -407,10 +407,10 @@ class StockPicking(models.Model):
         return {
             "name": "Réceptions",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "stock.picking",
             "views": [
-                (self.env.ref("stock.vpicktree").id, "tree"),
+                (self.env.ref("stock.vpicktree").id, "list"),
                 (self.env.ref("stock.view_picking_form").id, "form")
             ],
             "domain": [("location_dest_id", "in", site_ids), ("picking_type_id", "in", types)],
@@ -437,10 +437,10 @@ class StockPicking(models.Model):
         return {
             "name": name,
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "stock.picking",
             "views": [
-                (self.env.ref("stock.vpicktree").id, "tree"),
+                (self.env.ref("stock.vpicktree").id, "list"),
                 (self.env.ref("stock.view_picking_form").id, "form")
             ],
             "domain": domain,
@@ -459,10 +459,10 @@ class StockPicking(models.Model):
         return {
             "name": "Transferts",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "stock.picking",
             "views": [
-                (self.env.ref("stock.vpicktree").id, "tree"),
+                (self.env.ref("stock.vpicktree").id, "list"),
                 (self.env.ref("stock.view_picking_form").id, "form")
             ],
             "domain": [("location_dest_id", "in", location_ids), ("picking_type_code", "=", "internal")],
@@ -475,10 +475,10 @@ class StockPicking(models.Model):
         return {
             "name": "Sortie de fourniture",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "stock.picking",
             "views": [
-                (self.env.ref("stock_plus.stock_picking_view_tree_outgoing").id, "tree"),
+                (self.env.ref("stock_plus.stock_picking_view_tree_outgoing").id, "list"),
                 (self.env.ref("stock_plus.stock_picking_view_form_outgoing").id, "form"),
             ],
             "domain": [
@@ -517,10 +517,10 @@ class StockPicking(models.Model):
         return {
             "name": "Retour",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "stock.picking",
             "views": [
-                (self.env.ref("stock_plus.stock_picking_view_tree_return").id, "tree"),
+                (self.env.ref("stock_plus.stock_picking_view_tree_return").id, "list"),
                 (self.env.ref("stock_plus.stock_picking_view_form_return").id, "form"),
             ],
             "domain": domain,
@@ -546,10 +546,10 @@ class StockPicking(models.Model):
         return {
             "name": "Transfert intersiège",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "stock.picking",
             "views": [
-                (self.env.ref("stock_plus.stock_picking_view_tree_internal_transfer").id, "tree"),
+                (self.env.ref("stock_plus.stock_picking_view_tree_internal_transfer").id, "list"),
                 (self.env.ref("stock_plus.stock_picking_view_form_internal_transfer").id, "form"),
             ],
             "domain": domain,
@@ -574,10 +574,10 @@ class StockPicking(models.Model):
         return {
             "name": "Rebut",
             "type": "ir.actions.act_window",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "stock.picking",
             "views": [
-                (self.env.ref("stock_plus.stock_picking_view_tree_scrap").id, "tree"),
+                (self.env.ref("stock_plus.stock_picking_view_tree_scrap").id, "list"),
                 (self.env.ref("stock_plus.stock_picking_view_form_scrap").id, "form"),
             ],
             "domain": domain,
@@ -660,7 +660,7 @@ class StockQuant(models.Model):
             "name": "Stocks par emplacement",
             "type": "ir.actions.act_window",
             "res_model": "stock.quant",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("location_id", "in", location_ids), ("location_id.usage", "=", "internal")],
             "context": {
                 "search_default_sitegroup": True,
@@ -689,10 +689,10 @@ class StockQuant(models.Model):
         return {
             'name': 'Stocks par Emplacement',
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'lis,form',
             'res_model': 'stock.quant',
             'views': [
-                (self.env.ref('building.view_stock_quant_readonly_tree_inherit').id, 'tree'),
+                (self.env.ref('building.view_stock_quant_readonly_tree_inherit').id, 'list'),
                 (self.env.ref('stock.view_stock_quant_form').id, 'form'),
             ],
             'domain': domain,

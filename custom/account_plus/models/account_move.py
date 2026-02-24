@@ -228,8 +228,8 @@ class AccountMove(models.Model):
             'name': _('Réceptions associées'),
             'type': 'ir.actions.act_window',
             'res_model': 'stock.picking',
-            'view_mode': 'tree',
-            'views': [(tree_view.id, 'tree')],
+            'view_mode': 'list',
+            'views': [(tree_view.id, 'list')],
             'domain': [('id', 'in', stock_pickings.ids)],
             'target': 'current',
             'context': {
@@ -1111,11 +1111,11 @@ class AccountMove(models.Model):
 
             res['arch'] = etree.tostring(doc, encoding='unicode')
         
-        if view_type == 'tree':
+        if view_type == 'list':
             root = etree.fromstring(res['arch'])
             if (self.env.user.has_group('account_plus.acount_move_group_creer') or self.env.user.has_group('account_plus.acount_move_group_invoice')):
                 root.set("create", "true")
-            elif view_type == 'tree':
+            elif view_type == 'list':
                 root.set("create", "false")
             res['arch'] = etree.tostring(root)
 
@@ -1643,7 +1643,7 @@ class account_move_line(models.Model):
         help="Facture brouillon qui rapproche cette écriture comptable une fois comptabilisée.",
     )
 
-    def fields_view_get(self, view_id=None, view_type="tree", toolbar=False, submenu=False):
+    def fields_view_get(self, view_id=None, view_type="list", toolbar=False, submenu=False):
         res = super(account_move_line, self).fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
         if toolbar:
             if self._context.get("hide_actions"):
@@ -1871,8 +1871,8 @@ class account_move_line(models.Model):
             "name": "Libération RG",
             "type": "ir.actions.act_window",
             "res_model": "account.move.line",
-            "view_mode": "tree",
-            "views": [(tree_view_id, "tree")],
+            "view_mode": "list",
+            "views": [(tree_view_id, "list")],
             "domain": domain,
             "context": {
                 "search_default_group_by_site_id": True,

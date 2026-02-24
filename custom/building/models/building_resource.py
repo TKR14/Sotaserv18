@@ -46,7 +46,7 @@ class building_resource(models.Model):
                 dict_model[i['name']] = i['res_id']
             if view_type == 'form':
                 view_id = dict_model['building_resource_material_form']
-            elif view_type == 'tree':
+            elif view_type == 'list':
                 view_id = dict_model['building_resource_material_tree']
             else :
                view_id = dict_model['building_resource_search_material_form']
@@ -59,7 +59,7 @@ class building_resource(models.Model):
                 dict_model[i['name']] = i['res_id']
             if view_type == 'form':
                 view_id = dict_model['building_resource_form']
-            elif view_type == 'tree':
+            elif view_type == 'list':
                 view_id = dict_model['building_resource_human_tree']
             else:
                 view_id = dict_model['building_resource_search_human_form']

@@ -109,9 +109,9 @@
     'demo_xml': [],
     'installable': True,
     'active': False,
-    'assets': {
-        'web.assets_backend': [
-            '/building/static/src/js/*.js',
-        ],
-    },
+    # 'assets': {
+    #     'web.assets_backend': [
+    #         '/building/static/src/js/*.js',
+    #     ],
+    # },
 }
