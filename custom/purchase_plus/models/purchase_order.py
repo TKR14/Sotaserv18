@@ -326,7 +326,7 @@ class PurchaseOrder(models.Model):
         return {
             'name': 'Bons de commande avec attachement',
             'type': 'ir.actions.act_window',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'res_model': 'purchase.order',
             'views': [
                 (self.env.ref('purchase_plus.purchase_order_tree').id, 'list'),
@@ -364,7 +364,7 @@ class PurchaseOrder(models.Model):
         return {
             'name': 'Bons de commande avec attachement',
             'type': 'ir.actions.act_window',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'res_model': 'purchase.order',
             'views': [
                 (self.env.ref('purchase_plus.purchase_order_tree').id, 'list'),
@@ -400,7 +400,7 @@ class PurchaseOrder(models.Model):
         return {
             'name': 'Bons de commande avec attachement',
             'type': 'ir.actions.act_window',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'res_model': 'purchase.order',
             'views': [
                 (self.env.ref('purchase_plus.purchase_order_tree').id, 'list'),

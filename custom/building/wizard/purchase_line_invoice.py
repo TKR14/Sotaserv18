@@ -120,7 +120,7 @@ class purchase_line_invoice(osv.osv_memory):
             'domain': "[('id','in', ["+','.join(map(str,res))+"])]",
             'name': _('Supplier Invoices'),
             'view_type': 'form',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'res_model': 'account.invoice',
             'view_id': False,
             'context': "{'type':'in_invoice', 'journal_type': 'purchase'}",

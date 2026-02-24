@@ -67,7 +67,7 @@ class StockPicking(models.Model):
             'name': 'Affectations',
             'type': 'ir.actions.act_window',
             'res_model': 'stock.picking',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'domain': domain,
             'context': context,
             'search_view_id': self.env.ref('stock.view_picking_internal_search').id,
@@ -689,7 +689,7 @@ class StockQuant(models.Model):
         return {
             'name': 'Stocks par Emplacement',
             'type': 'ir.actions.act_window',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'res_model': 'stock.quant',
             'views': [
                 (self.env.ref('building.view_stock_quant_readonly_tree_inherit').id, 'list'),

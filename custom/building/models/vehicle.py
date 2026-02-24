@@ -179,7 +179,7 @@ class maintenance_request_resource_material(models.Model):
             'name': 'Demandes',
             'type': 'ir.actions.act_window',
             'res_model': 'maintenance.request.resource.material',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'views': [
                 (self.env.ref('building.maintenance_request_resource_material_tree_view').id, 'list'),
                 (self.env.ref('building.maintenance_request_resource_material_form_view').id, 'form'),
@@ -221,7 +221,7 @@ class maintenance_request_resource_material(models.Model):
             'name': 'Demandes',
             'type': 'ir.actions.act_window',
             'res_model': 'maintenance.request.resource.material',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'views': [
                 (self.env.ref('building.maintenance_request_resource_material_tree_view').id, 'list'),
                 (self.env.ref('building.maintenance_request_resource_small_material_form_view').id, 'form'),

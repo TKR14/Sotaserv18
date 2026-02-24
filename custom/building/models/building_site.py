@@ -567,7 +567,7 @@ class building_site(models.Model):
             'res_model': 'building.attachment',
             'type': 'ir.actions.act_window',
             'view_id': False,
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'limit': 80
         }
 
@@ -737,7 +737,7 @@ class building_site(models.Model):
     #             'res_model': 'account.analytic.account',
     #             'type': 'ir.actions.act_window',
     #             'view_id': False,
-    #             'view_mode': 'lis,form',
+    #             'view_mode': 'list,form',
     #              'limit': 80
     #         }
     #     return {}

@@ -30,7 +30,7 @@ class MaintenanceRequestResourceMaterial(models.Model):
         return {
             'name': 'Demandes Matériels',
             'type': 'ir.actions.act_window',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'res_model': 'maintenance.request.resource.material',
             'views': [
                 (self.env.ref('building.maintenance_request_resource_material_tree_view').id, 'list'),
@@ -70,7 +70,7 @@ class MaintenanceRequestResourceMaterial(models.Model):
         return {
             'name': 'Demandes Matériels a Affecter',
             'type': 'ir.actions.act_window',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'res_model': 'maintenance.request.resource.material',
             'views': [
                 (self.env.ref('building.maintenance_request_resource_material_tree_view').id, 'list'),
@@ -103,7 +103,7 @@ class MaintenanceRequestResourceMaterialLine(models.Model):
         return {
             'name': 'Demandes Matériels Line',
             'type': 'ir.actions.act_window',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'res_model': 'maintenance.request.resource.material.line',
             'views': [
                 (self.env.ref('building.material_requests_line_view').id, 'list')
@@ -137,7 +137,7 @@ class BuildingAssignmentLine(models.Model):
         return {
             'name': 'Affectations des Matériels',
             'type': 'ir.actions.act_window',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'res_model': 'building.assignment.line',
             'views': [
                 (self.env.ref('building.building_assignment_vehicle_tree').id, 'list')
@@ -153,7 +153,7 @@ class MaterialsWorkedHours(models.Model):
         return {
             'name': 'Pointages Matériels',
             'type': 'ir.actions.act_window',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'res_model': 'materials.worked.hours',
             'views': [
                 (self.env.ref('building.materials_worked_hours_tree_view').id, 'list'),
@@ -168,7 +168,7 @@ class FleetVehicle(models.Model):
         return {
             'name': 'Matériel',
             'type': 'ir.actions.act_window',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'res_model': 'fleet.vehicle',
             'views': [
                 (self.env.ref('fleet.fleet_vehicle_view_tree').id, 'list'),

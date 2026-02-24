@@ -353,7 +353,7 @@ class PurchaseEntry(models.Model):
         return {
             'name': 'Attachements fournisseur',
             'type': 'ir.actions.act_window',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'res_model': 'purchase.entry',
             'views': [
                 (self.env.ref('purchase_plus.view_purchase_entry_tree').id, 'list'),
@@ -384,7 +384,7 @@ class PurchaseEntry(models.Model):
         return {
             'name': 'Décompte fournisseurs',
             'type': 'ir.actions.act_window',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'res_model': 'purchase.entry',
             'views': [
                 (self.env.ref('purchase_plus.view_purchase_entry_decompt_tree').id, 'list'),
@@ -416,7 +416,7 @@ class PurchaseEntry(models.Model):
         return {
             'name': 'Décompte fournisseurs',
             'type': 'ir.actions.act_window',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'res_model': 'purchase.entry',
             'views': [
                 (self.env.ref('purchase_plus.view_purchase_entry_decompt_readonly_tree').id, 'list'),
@@ -867,7 +867,7 @@ class PurchaseEntry(models.Model):
         return {
             'name': 'Décompte final',
             'type': 'ir.actions.act_window',
-            'view_mode': 'lis,form',
+            'view_mode': 'list,form',
             'res_model': 'purchase.entry',
             'views': [
                 (self.env.ref('purchase_plus.view_purchase_entry_decompt_tree').id, 'list'),

@@ -113,7 +113,7 @@ class building_subcontracting_create(models.TransientModel):
                 'res_model': 'building.subcontracting',
                 'type': 'ir.actions.act_window',
                 'view_id': False,
-                'view_mode': 'lis,form',
+                'view_mode': 'list,form',
                 'view_type': 'form',
                 'limit': 80,
             }
