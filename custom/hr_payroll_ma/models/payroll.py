@@ -538,7 +538,7 @@ class hr_time_payroll(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Détails du Pointage',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'hr.time.payroll.line',
             'domain': [('payroll_id', '=', self.id)],
             'context': {'default_payroll_id': self.id},
@@ -549,7 +549,7 @@ class hr_time_payroll(models.Model):
     #     return {
     #         'name': 'Détail Pointage',
     #         'type': 'ir.actions.act_window',
-    #         'view_mode': 'tree,form',
+    #         'view_mode': 'list,form',
     #         'res_model': 'hr.time.payroll.line',
     #         'target': 'new',
     #         'context': {'default_payroll_id': self.id},
